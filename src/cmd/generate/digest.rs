@@ -2,6 +2,7 @@ use clap::Args;
 
 /// Generate a digest from the input data.
 #[derive(Debug, Args)]
+#[group(skip)]
 pub struct CommandArgs {
 }
 

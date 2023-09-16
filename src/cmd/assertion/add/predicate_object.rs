@@ -2,6 +2,7 @@ use clap::Args;
 
 /// (DEFAULT) Add an assertion with the given predicate and object to the given envelope.
 #[derive(Debug, Args)]
+#[group(skip)]
 pub struct CommandArgs {
 }
 

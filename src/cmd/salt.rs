@@ -2,6 +2,7 @@ use clap::Args;
 
 /// Add random salt to the envelope.
 #[derive(Debug, Args)]
+#[group(skip)]
 pub struct CommandArgs {
 }
 

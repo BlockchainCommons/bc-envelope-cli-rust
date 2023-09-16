@@ -2,6 +2,7 @@ use clap::Args;
 
 /// (DEFAULT) Create an envelope with the given subject.
 #[derive(Debug, Args)]
+#[group(skip)]
 pub struct CommandArgs {
 }
 

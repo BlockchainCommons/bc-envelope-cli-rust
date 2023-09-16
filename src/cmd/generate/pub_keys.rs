@@ -2,6 +2,7 @@ use clap::Args;
 
 /// Generate a public key base from a public key base.
 #[derive(Debug, Args)]
+#[group(skip)]
 pub struct CommandArgs {
 }
 

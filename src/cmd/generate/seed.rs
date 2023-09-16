@@ -2,6 +2,7 @@ use clap::Args;
 
 /// Generate a seed.
 #[derive(Debug, Args)]
+#[group(skip)]
 pub struct CommandArgs {
 }
 

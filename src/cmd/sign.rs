@@ -2,6 +2,7 @@ use clap::Args;
 
 /// Sign the envelope with the provided private key base.
 #[derive(Debug, Args)]
+#[group(skip)]
 pub struct CommandArgs {
 }
 

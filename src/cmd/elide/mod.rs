@@ -5,6 +5,7 @@ use clap::{Subcommand, Args};
 
 /// Elide a subset of elements.
 #[derive(Debug, Args)]
+#[group(skip)]
 pub struct CommandArgs {
     #[command(subcommand)]
     command: ElideCommands,

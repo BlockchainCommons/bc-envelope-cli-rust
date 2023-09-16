@@ -10,6 +10,7 @@ use clap::{Subcommand, Args};
 
 /// Utilities to generate and convert various objects.
 #[derive(Debug, Args)]
+#[group(skip)]
 pub struct CommandArgs {
     #[command(subcommand)]
     command: GenerateCommands,

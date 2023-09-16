@@ -2,6 +2,7 @@ use clap::Args;
 
 /// Generate an Apparently Random Identifer (ARID).
 #[derive(Debug, Args)]
+#[group(skip)]
 pub struct CommandArgs {
 }
 

@@ -2,6 +2,7 @@ use clap::Args;
 
 /// Generate a Number Used Once (Nonce).
 #[derive(Debug, Args)]
+#[group(skip)]
 pub struct CommandArgs {
 }
 

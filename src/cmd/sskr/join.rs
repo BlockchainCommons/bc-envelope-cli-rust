@@ -2,6 +2,7 @@ use clap::Args;
 
 /// Join a set of SSKR shares back into the original envelope.
 #[derive(Debug, Args)]
+#[group(skip)]
 pub struct CommandArgs {
 }
 

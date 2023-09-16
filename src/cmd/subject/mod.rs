@@ -5,6 +5,7 @@ use clap::{Subcommand, Args};
 
 /// Create an envelope with the given subject.
 #[derive(Debug, Args)]
+#[group(skip)]
 #[command(args_conflicts_with_subcommands = true)]
 pub struct CommandArgs {
     #[command(subcommand)]

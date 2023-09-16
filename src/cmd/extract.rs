@@ -2,6 +2,7 @@ use clap::Args;
 
 /// Extract the subject of the input envelope.
 #[derive(Debug, Args)]
+#[group(skip)]
 pub struct CommandArgs {
 }
 

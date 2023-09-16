@@ -5,6 +5,7 @@ use clap::{Subcommand, Args};
 
 /// Find all assertions matching the given criteria.
 #[derive(Debug, Args)]
+#[group(skip)]
 #[command(args_conflicts_with_subcommands = true)]
 pub struct CommandArgs {
     #[command(subcommand)]

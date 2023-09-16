@@ -2,6 +2,7 @@ use clap::Args;
 
 /// Generate a symmetric encryption key.
 #[derive(Debug, Args)]
+#[group(skip)]
 pub struct CommandArgs {
 }
 

@@ -6,6 +6,7 @@ use clap::{Args, ValueEnum};
 ///
 /// If the envelope is not supplied on the command line, it is read from stdin.
 #[derive(Debug, Args)]
+#[group(skip)]
 pub struct CommandArgs {
     /// Output format.
     #[arg(long = "type", id = "TYPE", default_value = "envelope")]

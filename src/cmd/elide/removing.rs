@@ -2,6 +2,7 @@ use clap::Args;
 
 /// Elide all objects in the target.
 #[derive(Debug, Args)]
+#[group(skip)]
 pub struct CommandArgs {
 }
 

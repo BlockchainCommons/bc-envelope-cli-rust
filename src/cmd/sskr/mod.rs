@@ -5,6 +5,7 @@ use clap::{Subcommand, Args};
 
 /// Sharded Secret Key Reconstruction (SSKR).
 #[derive(Debug, Args)]
+#[group(skip)]
 pub struct CommandArgs {
     #[command(subcommand)]
     command: SskrCommands,

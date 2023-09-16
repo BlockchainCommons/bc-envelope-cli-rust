@@ -2,6 +2,7 @@ use clap::Args;
 
 /// Verify a signature on the envelope using the provided public key base.
 #[derive(Debug, Args)]
+#[group(skip)]
 pub struct CommandArgs {
 }
 

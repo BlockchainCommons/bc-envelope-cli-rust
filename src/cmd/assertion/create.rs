@@ -2,6 +2,7 @@ use clap::Args;
 
 /// Create a bare assertion with the given predicate and object.
 #[derive(Debug, Args)]
+#[group(skip)]
 pub struct CommandArgs {
 }
 

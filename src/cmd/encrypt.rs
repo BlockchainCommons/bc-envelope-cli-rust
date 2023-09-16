@@ -2,6 +2,7 @@ use clap::Args;
 
 /// Encrypt the envelope's subject using the provided key.
 #[derive(Debug, Args)]
+#[group(skip)]
 pub struct CommandArgs {
 }
 
