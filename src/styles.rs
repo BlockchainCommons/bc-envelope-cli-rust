@@ -1,38 +1,40 @@
+use clap::builder::Styles;
+use anstyle::{Style, Color, AnsiColor};
 
-pub fn get_styles() -> clap::builder::Styles {
-    clap::builder::Styles::styled()
+pub fn get_styles() -> Styles {
+    Styles::styled()
         .usage(
-            anstyle::Style::new()
+            Style::new()
                 .bold()
                 .underline()
-                .fg_color(Some(anstyle::Color::Ansi(anstyle::AnsiColor::Yellow))),
+                .fg_color(Some(Color::Ansi(AnsiColor::Yellow))),
         )
         .header(
-            anstyle::Style::new()
+            Style::new()
                 .bold()
                 .underline()
-                .fg_color(Some(anstyle::Color::Ansi(anstyle::AnsiColor::Yellow))),
+                .fg_color(Some(Color::Ansi(AnsiColor::Yellow))),
         )
         .literal(
-            anstyle::Style::new().fg_color(Some(anstyle::Color::Ansi(anstyle::AnsiColor::Green))),
+            Style::new().fg_color(Some(Color::Ansi(AnsiColor::Green))),
         )
         .invalid(
-            anstyle::Style::new()
+            Style::new()
                 .bold()
-                .fg_color(Some(anstyle::Color::Ansi(anstyle::AnsiColor::Red))),
+                .fg_color(Some(Color::Ansi(AnsiColor::Red))),
         )
         .error(
-            anstyle::Style::new()
+            Style::new()
                 .bold()
-                .fg_color(Some(anstyle::Color::Ansi(anstyle::AnsiColor::Red))),
+                .fg_color(Some(Color::Ansi(AnsiColor::Red))),
         )
         .valid(
-            anstyle::Style::new()
+            Style::new()
                 .bold()
                 .underline()
-                .fg_color(Some(anstyle::Color::Ansi(anstyle::AnsiColor::Green))),
+                .fg_color(Some(Color::Ansi(AnsiColor::Green))),
         )
         .placeholder(
-            anstyle::Style::new().fg_color(Some(anstyle::Color::Ansi(anstyle::AnsiColor::BrightCyan))),
+            Style::new().fg_color(Some(Color::Ansi(AnsiColor::BrightCyan))),
         )
 }
