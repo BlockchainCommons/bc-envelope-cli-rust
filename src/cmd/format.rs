@@ -1,3 +1,5 @@
+use bc_envelope::{Envelope, with_format_context};
+use bc_ur::URDecodable;
 use clap::{Args, ValueEnum};
 
 /// (default) Print the envelope in textual format.
@@ -28,7 +30,16 @@ enum FormatType {
 }
 
 impl crate::exec::Exec for CommandArgs {
-    fn exec(&self) {
-        todo!();
+    fn exec(&self) -> Result<String, anyhow::Error> {
+        // If no envelope string, throw an error
+        if self.envelope.is_none() {
+            return Err(anyhow::anyhow!("No envelope provided"));
+        }
+        let ur_string = self.envelope.as_ref().unwrap();
+        let e = Envelope::from_ur_string(ur_string)?;
+        let output = with_format_context!(|context| {
+            e.format_opt(Some(context))
+        });
+        Ok(output)
     }
 }

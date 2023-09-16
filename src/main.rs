@@ -1,6 +1,8 @@
 pub mod cmd;
 pub mod exec;
 
+use std::error::Error;
+
 // use anyhow::{Context, Result};
 use clap::{Parser, Subcommand};
 
@@ -36,30 +38,29 @@ enum MainCommands {
     Subject(cmd::subject::CommandArgs),
     Uncompress(cmd::uncompress::CommandArgs),
     Verify(cmd::verify::CommandArgs),
-    // Diff,
-    // Proof,
 }
 
-fn main() {
+fn main() -> Result<(), Box<dyn Error>> {
     let cli = Cli::parse();
 
     let command = cli.command.unwrap_or(MainCommands::Format(cli.format));
-    println!("{command:?}");
-    match command {
-        MainCommands::Assertion(args) => args.exec(),
-        MainCommands::Compress(args) => args.exec(),
-        MainCommands::Digest(args) => args.exec(),
-        MainCommands::Decrypt(args) => args.exec(),
-        MainCommands::Elide(args) => args.exec(),
-        MainCommands::Encrypt(args) => args.exec(),
-        MainCommands::Extract(args) => args.exec(),
-        MainCommands::Format(args) => args.exec(),
-        MainCommands::Generate(args) => args.exec(),
-        MainCommands::Salt(args) => args.exec(),
-        MainCommands::Sign(args) => args.exec(),
-        MainCommands::Sskr(args) => args.exec(),
-        MainCommands::Subject(args) => args.exec(),
-        MainCommands::Uncompress(args) => args.exec(),
-        MainCommands::Verify(args) => args.exec(),
-    }
+    let output = match command {
+        MainCommands::Assertion(args) => args.exec()?,
+        MainCommands::Compress(args) => args.exec()?,
+        MainCommands::Digest(args) => args.exec()?,
+        MainCommands::Decrypt(args) => args.exec()?,
+        MainCommands::Elide(args) => args.exec()?,
+        MainCommands::Encrypt(args) => args.exec()?,
+        MainCommands::Extract(args) => args.exec()?,
+        MainCommands::Format(args) => args.exec()?,
+        MainCommands::Generate(args) => args.exec()?,
+        MainCommands::Salt(args) => args.exec()?,
+        MainCommands::Sign(args) => args.exec()?,
+        MainCommands::Sskr(args) => args.exec()?,
+        MainCommands::Subject(args) => args.exec()?,
+        MainCommands::Uncompress(args) => args.exec()?,
+        MainCommands::Verify(args) => args.exec()?,
+    };
+    println!("{}", output);
+    Ok(())
 }
