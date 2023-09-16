@@ -1,6 +1,6 @@
 use clap::Args;
 
-/// (DEFAULT) Add an assertion with the given predicate and object to the given envelope.
+/// Generate a public key base from a public key base.
 #[derive(Debug, Args)]
 pub struct CommandArgs {
 }

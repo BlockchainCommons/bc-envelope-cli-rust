@@ -1,6 +1,6 @@
 use clap::Args;
 
-/// (DEFAULT) Add an assertion with the given predicate and object to the given envelope.
+/// Join a set of SSKR shares back into the original envelope.
 #[derive(Debug, Args)]
 pub struct CommandArgs {
 }

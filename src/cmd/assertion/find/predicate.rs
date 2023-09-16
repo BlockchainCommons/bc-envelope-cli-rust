@@ -1,5 +1,6 @@
 use clap::Args;
 
+/// (DEFAULT) Find all assertions having the given predicate.
 #[derive(Debug, Args)]
 pub struct CommandArgs {
 }

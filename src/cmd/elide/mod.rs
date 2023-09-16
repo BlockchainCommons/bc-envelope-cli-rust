@@ -1,3 +1,6 @@
+pub mod removing;
+pub mod revealing;
+
 use clap::{Subcommand, Args};
 
 /// Elide a subset of elements.
@@ -9,8 +12,8 @@ pub struct CommandArgs {
 
 #[derive(Debug, Subcommand)]
 enum ElideCommands {
-    Revealing,
-    Removing,
+    Revealing(revealing::CommandArgs),
+    Removing(removing::CommandArgs),
 }
 
 impl crate::exec::Exec for CommandArgs {

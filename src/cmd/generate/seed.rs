@@ -1,6 +1,6 @@
 use clap::Args;
 
-/// (DEFAULT) Add an assertion with the given predicate and object to the given envelope.
+/// Generate a seed.
 #[derive(Debug, Args)]
 pub struct CommandArgs {
 }

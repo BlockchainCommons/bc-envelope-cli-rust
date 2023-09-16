@@ -3,6 +3,7 @@ pub mod object;
 
 use clap::{Subcommand, Args};
 
+/// Find all assertions matching the given criteria.
 #[derive(Debug, Args)]
 pub struct CommandArgs {
     #[command(subcommand)]

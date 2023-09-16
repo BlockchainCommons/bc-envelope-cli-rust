@@ -1,5 +1,6 @@
 use clap::Args;
 
+/// Print the count of the envelope's assertions.
 #[derive(Debug, Args)]
 pub struct CommandArgs {
 }

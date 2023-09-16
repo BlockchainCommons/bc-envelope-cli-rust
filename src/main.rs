@@ -1,5 +1,6 @@
 pub mod cmd;
 pub mod exec;
+pub mod styles;
 
 use std::error::Error;
 
@@ -13,6 +14,7 @@ use crate::exec::Exec;
 #[command(author, version)]
 #[command(propagate_version = true)]
 #[command(args_conflicts_with_subcommands = true)]
+#[command(styles=styles::get_styles())]
 struct Cli {
     #[command(subcommand)]
     command: Option<MainCommands>,
@@ -25,8 +27,8 @@ struct Cli {
 enum MainCommands {
     Assertion(cmd::assertion::CommandArgs),
     Compress(cmd::compress::CommandArgs),
-    Digest(cmd::digest::CommandArgs),
     Decrypt(cmd::decrypt::CommandArgs),
+    Digest(cmd::digest::CommandArgs),
     Elide(cmd::elide::CommandArgs),
     Encrypt(cmd::encrypt::CommandArgs),
     Extract(cmd::extract::CommandArgs),
@@ -47,8 +49,8 @@ fn main() -> Result<(), Box<dyn Error>> {
     let output = match command {
         MainCommands::Assertion(args) => args.exec()?,
         MainCommands::Compress(args) => args.exec()?,
-        MainCommands::Digest(args) => args.exec()?,
         MainCommands::Decrypt(args) => args.exec()?,
+        MainCommands::Digest(args) => args.exec()?,
         MainCommands::Elide(args) => args.exec()?,
         MainCommands::Encrypt(args) => args.exec()?,
         MainCommands::Extract(args) => args.exec()?,

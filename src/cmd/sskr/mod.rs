@@ -1,3 +1,6 @@
+pub mod join;
+pub mod split;
+
 use clap::{Subcommand, Args};
 
 /// Sharded Secret Key Reconstruction (SSKR).
@@ -9,8 +12,8 @@ pub struct CommandArgs {
 
 #[derive(Debug, Subcommand)]
 enum SskrCommands {
-    Split,
-    Join,
+    Split(split::CommandArgs),
+    Join(join::CommandArgs),
 }
 
 impl crate::exec::Exec for CommandArgs {

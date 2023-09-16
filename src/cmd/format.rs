@@ -2,7 +2,9 @@ use bc_envelope::{Envelope, with_format_context};
 use bc_ur::URDecodable;
 use clap::{Args, ValueEnum};
 
-/// (default) Print the envelope in textual format.
+/// (DEFAULT) Print the envelope in textual format.
+///
+/// If the envelope is not supplied on the command line, it is read from stdin.
 #[derive(Debug, Args)]
 pub struct CommandArgs {
     /// Output format.
@@ -31,12 +33,16 @@ enum FormatType {
 
 impl crate::exec::Exec for CommandArgs {
     fn exec(&self) -> Result<String, anyhow::Error> {
-        // If no envelope string, throw an error
+        let mut ur_string = String::new();
         if self.envelope.is_none() {
-            return Err(anyhow::anyhow!("No envelope provided"));
+            std::io::stdin().read_line(&mut ur_string)?;
+        } else {
+            ur_string = self.envelope.as_ref().unwrap().to_string();
         }
-        let ur_string = self.envelope.as_ref().unwrap();
-        let e = Envelope::from_ur_string(ur_string)?;
+        if ur_string.is_empty() {
+            anyhow::bail!("No envelope provided");
+        }
+        let e = Envelope::from_ur_string(ur_string.trim())?;
         let output = with_format_context!(|context| {
             e.format_opt(Some(context))
         });

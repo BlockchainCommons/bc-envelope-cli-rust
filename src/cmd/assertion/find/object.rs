@@ -1,5 +1,6 @@
 use clap::Args;
 
+/// Find all assertions having the given object.
 #[derive(Debug, Args)]
 pub struct CommandArgs {
 }

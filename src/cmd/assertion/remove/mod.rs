@@ -3,6 +3,7 @@ pub mod predicate_object;
 
 use clap::{Subcommand, Args};
 
+/// Remove an assertion from the given envelope.
 #[derive(Debug, Args)]
 pub struct CommandArgs {
     #[command(subcommand)]

@@ -1,5 +1,6 @@
 use clap::Args;
 
+/// Remove an assertion from the given envelope. The assertion must be a single envelope containing the entire assertion.
 #[derive(Debug, Args)]
 pub struct CommandArgs {
 }

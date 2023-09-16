@@ -3,6 +3,7 @@ pub mod envelope;
 
 use clap::{Subcommand, Args};
 
+/// (DEFAULT) Add an assertion to the given envelope.
 #[derive(Debug, Args)]
 pub struct CommandArgs {
     #[command(subcommand)]

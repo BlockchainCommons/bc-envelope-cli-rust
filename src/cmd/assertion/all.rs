@@ -1,5 +1,6 @@
 use clap::Args;
 
+/// Retrieve all the envelope's assertions.
 #[derive(Debug, Args)]
 pub struct CommandArgs {
 }

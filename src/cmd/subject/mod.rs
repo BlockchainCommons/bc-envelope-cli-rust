@@ -1,3 +1,6 @@
+pub mod single;
+pub mod assertion;
+
 use clap::{Subcommand, Args};
 
 /// Create an envelope with the given subject.
@@ -9,8 +12,8 @@ pub struct CommandArgs {
 
 #[derive(Debug, Subcommand)]
 enum SubjectCommands {
-    Single,
-    Assertion,
+    Single(single::CommandArgs),
+    Assertion(assertion::CommandArgs),
 }
 
 impl crate::exec::Exec for CommandArgs {

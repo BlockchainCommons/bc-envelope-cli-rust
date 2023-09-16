@@ -1,6 +1,6 @@
 use clap::Args;
 
-/// (DEFAULT) Add an assertion with the given predicate and object to the given envelope.
+/// Generate a private key base. Generated randomly, or deterministically if a seed is provided.
 #[derive(Debug, Args)]
 pub struct CommandArgs {
 }
