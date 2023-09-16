@@ -1,5 +1,5 @@
+use anstyle::{AnsiColor, Color, Style};
 use clap::builder::Styles;
-use anstyle::{Style, Color, AnsiColor};
 
 pub fn get_styles() -> Styles {
     Styles::styled()
@@ -15,9 +15,7 @@ pub fn get_styles() -> Styles {
                 .underline()
                 .fg_color(Some(Color::Ansi(AnsiColor::Yellow))),
         )
-        .literal(
-            Style::new().fg_color(Some(Color::Ansi(AnsiColor::Green))),
-        )
+        .literal(Style::new().fg_color(Some(Color::Ansi(AnsiColor::Green))))
         .invalid(
             Style::new()
                 .bold()
@@ -34,7 +32,5 @@ pub fn get_styles() -> Styles {
                 .underline()
                 .fg_color(Some(Color::Ansi(AnsiColor::Green))),
         )
-        .placeholder(
-            Style::new().fg_color(Some(Color::Ansi(AnsiColor::BrightCyan))),
-        )
+        .placeholder(Style::new().fg_color(Some(Color::Ansi(AnsiColor::BrightCyan))))
 }
