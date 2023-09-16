@@ -13,14 +13,10 @@ use crate::exec::Exec;
 #[derive(Debug, Parser)]
 #[command(author, version)]
 #[command(propagate_version = true)]
-#[command(args_conflicts_with_subcommands = true)]
 #[command(styles=styles::get_styles())]
 struct Cli {
     #[command(subcommand)]
-    command: Option<MainCommands>,
-
-    #[command(flatten)]
-    pub default_command: cmd::format::CommandArgs,
+    command: MainCommands,
 }
 
 #[derive(Debug, Subcommand)]
@@ -45,8 +41,7 @@ enum MainCommands {
 fn main() -> Result<(), Box<dyn Error>> {
     let cli = Cli::parse();
 
-    let command = cli.command.unwrap_or(MainCommands::Format(cli.default_command));
-    let output = match command {
+    let output = match cli.command {
         MainCommands::Assertion(args) => args.exec()?,
         MainCommands::Compress(args) => args.exec()?,
         MainCommands::Decrypt(args) => args.exec()?,

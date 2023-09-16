@@ -11,13 +11,9 @@ use clap::{Subcommand, Args};
 /// Work with the envelope's assertions.
 #[derive(Debug, Args)]
 #[group(skip)]
-#[command(args_conflicts_with_subcommands = true)]
 pub struct CommandArgs {
     #[command(subcommand)]
-    command: Option<SubCommands>,
-
-    #[command(flatten)]
-    pub default_command: add::CommandArgs,
+    command: SubCommands,
 }
 
 #[derive(Debug, Subcommand)]
@@ -33,15 +29,14 @@ enum SubCommands {
 
 impl crate::exec::Exec for CommandArgs {
     fn exec(&self) -> Result<String, anyhow::Error> {
-        match self.command.as_ref() {
-            Some(SubCommands::Add(args)) => args.exec(),
-            Some(SubCommands::All(args)) => args.exec(),
-            Some(SubCommands::At(args)) => args.exec(),
-            Some(SubCommands::Count(args)) => args.exec(),
-            Some(SubCommands::Create(args)) => args.exec(),
-            Some(SubCommands::Find(args)) => args.exec(),
-            Some(SubCommands::Remove(args)) => args.exec(),
-            None => self.default_command.exec(),
+        match &self.command {
+            SubCommands::Add(args) => args.exec(),
+            SubCommands::All(args) => args.exec(),
+            SubCommands::At(args) => args.exec(),
+            SubCommands::Count(args) => args.exec(),
+            SubCommands::Create(args) => args.exec(),
+            SubCommands::Find(args) => args.exec(),
+            SubCommands::Remove(args) => args.exec(),
         }
     }
 }

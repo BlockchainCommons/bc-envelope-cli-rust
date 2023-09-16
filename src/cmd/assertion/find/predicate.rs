@@ -1,6 +1,6 @@
 use clap::Args;
 
-/// (DEFAULT) Find all assertions having the given predicate.
+/// Find all assertions having the given predicate.
 #[derive(Debug, Args)]
 #[group(skip)]
 pub struct CommandArgs {

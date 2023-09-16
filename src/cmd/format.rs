@@ -2,9 +2,7 @@ use bc_envelope::{Envelope, with_format_context};
 use bc_ur::URDecodable;
 use clap::{Args, ValueEnum};
 
-/// (DEFAULT) Print the envelope in textual format.
-///
-/// If the envelope is not supplied on the command line, it is read from stdin.
+/// Print the envelope in textual format.
 #[derive(Debug, Args)]
 #[group(skip)]
 pub struct CommandArgs {
@@ -16,7 +14,7 @@ pub struct CommandArgs {
     #[arg(long)]
     hide_nodes: bool,
 
-    /// The envelope to output.
+    /// The envelope to output. If the envelope is not supplied on the command line, it is read from stdin.
     envelope: Option<String>,
 }
 

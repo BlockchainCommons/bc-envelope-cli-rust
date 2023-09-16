@@ -1,6 +1,6 @@
 use clap::Args;
 
-/// (DEFAULT) Elide all objects not in the target.
+/// Elide all objects not in the target.
 #[derive(Debug, Args)]
 #[group(skip)]
 pub struct CommandArgs {
