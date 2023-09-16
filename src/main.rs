@@ -20,7 +20,7 @@ struct Cli {
     command: Option<MainCommands>,
 
     #[command(flatten)]
-    pub format: cmd::format::CommandArgs,
+    pub default_command: cmd::format::CommandArgs,
 }
 
 #[derive(Debug, Subcommand)]
@@ -45,7 +45,7 @@ enum MainCommands {
 fn main() -> Result<(), Box<dyn Error>> {
     let cli = Cli::parse();
 
-    let command = cli.command.unwrap_or(MainCommands::Format(cli.format));
+    let command = cli.command.unwrap_or(MainCommands::Format(cli.default_command));
     let output = match command {
         MainCommands::Assertion(args) => args.exec()?,
         MainCommands::Compress(args) => args.exec()?,

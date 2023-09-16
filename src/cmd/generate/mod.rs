@@ -12,7 +12,7 @@ use clap::{Subcommand, Args};
 #[derive(Debug, Args)]
 pub struct CommandArgs {
     #[command(subcommand)]
-    command: Option<GenerateCommands>,
+    command: GenerateCommands,
 }
 
 #[derive(Debug, Subcommand)]
@@ -28,6 +28,14 @@ enum GenerateCommands {
 
 impl crate::exec::Exec for CommandArgs {
     fn exec(&self) -> Result<String, anyhow::Error> {
-        todo!();
+        match &self.command {
+            GenerateCommands::Arid(args) => args.exec(),
+            GenerateCommands::Digest(args) => args.exec(),
+            GenerateCommands::Key(args) => args.exec(),
+            GenerateCommands::Nonce(args) => args.exec(),
+            GenerateCommands::PrvKeys(args) => args.exec(),
+            GenerateCommands::PubKeys(args) => args.exec(),
+            GenerateCommands::Seed(args) => args.exec(),
+        }
     }
 }

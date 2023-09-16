@@ -7,7 +7,7 @@ use clap::{Subcommand, Args};
 #[derive(Debug, Args)]
 pub struct CommandArgs {
     #[command(subcommand)]
-    command: Option<SskrCommands>,
+    command: SskrCommands,
 }
 
 #[derive(Debug, Subcommand)]
@@ -18,6 +18,9 @@ enum SskrCommands {
 
 impl crate::exec::Exec for CommandArgs {
     fn exec(&self) -> Result<String, anyhow::Error> {
-        todo!();
+        match &self.command {
+            SskrCommands::Split(args) => args.exec(),
+            SskrCommands::Join(args) => args.exec(),
+        }
     }
 }

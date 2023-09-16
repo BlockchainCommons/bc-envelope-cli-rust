@@ -7,7 +7,7 @@ use clap::{Subcommand, Args};
 #[derive(Debug, Args)]
 pub struct CommandArgs {
     #[command(subcommand)]
-    command: Option<ElideCommands>,
+    command: ElideCommands,
 }
 
 #[derive(Debug, Subcommand)]
@@ -18,6 +18,9 @@ enum ElideCommands {
 
 impl crate::exec::Exec for CommandArgs {
     fn exec(&self) -> Result<String, anyhow::Error> {
-        todo!();
+        match &self.command {
+            ElideCommands::Revealing(args) => args.exec(),
+            ElideCommands::Removing(args) => args.exec(),
+        }
     }
 }
