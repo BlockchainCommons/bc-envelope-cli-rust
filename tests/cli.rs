@@ -117,11 +117,59 @@ fn test_generate_seed_with_hex() -> Result<(), Box<dyn std::error::Error>> {
         &["generate", "seed", "--hex", "7e31b2b14b895e75cdb82c22b013527c"],
         None,
     )?;
+    assert_eq!(
+        output,
+        indoc! {r#"
+        ur:crypto-seed/oyadgdkbehprpagrldhykpsnrodwcppfbwgmkemtaolbdt
+        "#}
+    );
     let seed = bc_components::Seed::from_ur_string(output.trim())?;
     assert_eq!(seed.data().len(), 16);
     assert_eq!(
         seed.data(),
         &hex::decode("7e31b2b14b895e75cdb82c22b013527c")?
+    );
+    Ok(())
+}
+
+#[test]
+fn test_generate_prvkeys() -> Result<(), Box<dyn std::error::Error>> {
+    let output1 = run_cli(&["generate", "prvkeys"], None)?;
+    let key1 = bc_components::PrivateKeyBase::from_ur_string(output1.trim())?;
+    let output2 = run_cli(&["generate", "prvkeys"], None)?;
+    let key2 = bc_components::PrivateKeyBase::from_ur_string(output2.trim())?;
+
+    assert_ne!(output1, output2);
+    assert_ne!(key1, key2);
+    Ok(())
+}
+
+#[test]
+fn test_generate_prvkeys_from_seed() -> Result<(), Box<dyn std::error::Error>> {
+    let output = run_cli(
+        &["generate", "prvkeys", "--seed", "ur:crypto-seed/oyadgdkbehprpagrldhykpsnrodwcppfbwgmkemtaolbdt"],
+        None,
+    )?;
+    assert_eq!(
+        output,
+        indoc! {r#"
+        ur:crypto-prvkeys/gdkbehprpagrldhykpsnrodwcppfbwgmkeadrturam
+        "#}
+    );
+    Ok(())
+}
+
+#[test]
+fn test_generate_pubkeys() -> Result<(), Box<dyn std::error::Error>> {
+    let output = run_cli(
+        &["generate", "pubkeys", "ur:crypto-prvkeys/gdkbehprpagrldhykpsnrodwcppfbwgmkeadrturam"],
+        None,
+    )?;
+    assert_eq!(
+        output,
+        indoc! {r#"
+        ur:crypto-pubkeys/lftanshfhdcxfpfwzcparpckfhvlidynjepsltsgjlprostpcmgehsmedtlbcktajodispgsfroytansgrhdcxenrytyrlpknyosfnfwlrwkdwsknduogwlyhdrfdrftflnnksbzsaierhbdrnrfbbfdvlwsca
+        "#}
     );
     Ok(())
 }
