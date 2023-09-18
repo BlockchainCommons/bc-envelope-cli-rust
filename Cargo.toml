@@ -4,11 +4,19 @@ version = "0.1.0"
 edition = "2021"
 
 [dependencies]
+# bc-ur = "0.1.7"
+bc-ur = { path = "../bc-ur-rust" }
+
+# bc-envelope = "0.5.0"
+bc-envelope = { path = "../bc-envelope-rust" }
+
+# bc-components = "0.4.0"
+bc-components = { path = "../bc-components-rust" }
+
 clap = { version = "4.4.3", features = ["derive", "unstable-styles"] }
 anyhow = "1.0"
-bc-ur = "0.1.7"
-bc-envelope = "0.5.0"
 anstyle = "1.0.1"
+hex = "0.4.3"
 
 [dev-dependencies]
 assert_cmd = "2.0.12"

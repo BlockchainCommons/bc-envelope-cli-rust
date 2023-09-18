@@ -22,13 +22,15 @@ enum GenerateCommands {
     Digest(digest::CommandArgs),
     Key(key::CommandArgs),
     Nonce(nonce::CommandArgs),
+    #[command(id = "prvkeys")]
     PrvKeys(prv_keys::CommandArgs),
+    #[command(id = "pubkeys")]
     PubKeys(pub_keys::CommandArgs),
     Seed(seed::CommandArgs),
 }
 
 impl crate::exec::Exec for CommandArgs {
-    fn exec(&self) -> Result<String, anyhow::Error> {
+    fn exec(&self) -> anyhow::Result<String> {
         match &self.command {
             GenerateCommands::Arid(args) => args.exec(),
             GenerateCommands::Digest(args) => args.exec(),

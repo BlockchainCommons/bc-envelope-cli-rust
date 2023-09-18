@@ -18,7 +18,7 @@ enum SubCommands {
 }
 
 impl crate::exec::Exec for CommandArgs {
-    fn exec(&self) -> Result<String, anyhow::Error> {
+    fn exec(&self) -> anyhow::Result<String> {
         match &self.command {
             SubCommands::Object(args) => args.exec(),
             SubCommands::Predicate(args) => args.exec(),

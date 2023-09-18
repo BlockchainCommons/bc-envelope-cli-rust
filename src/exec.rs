@@ -1,3 +1,3 @@
 pub trait Exec {
-    fn exec(&self) -> Result<String, anyhow::Error>;
+    fn exec(&self) -> anyhow::Result<String>;
 }

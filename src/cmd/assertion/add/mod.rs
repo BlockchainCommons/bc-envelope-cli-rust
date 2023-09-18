@@ -18,7 +18,7 @@ enum AddCommands {
 }
 
 impl crate::exec::Exec for CommandArgs {
-    fn exec(&self) -> Result<String, anyhow::Error> {
+    fn exec(&self) -> anyhow::Result<String> {
         match &self.command {
             AddCommands::Envelope(args) => args.exec(),
             AddCommands::PredicateObject(args) => args.exec(),

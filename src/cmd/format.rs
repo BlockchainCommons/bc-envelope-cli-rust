@@ -31,7 +31,7 @@ enum FormatType {
 }
 
 impl crate::exec::Exec for CommandArgs {
-    fn exec(&self) -> Result<String, anyhow::Error> {
+    fn exec(&self) -> anyhow::Result<String> {
         let mut ur_string = String::new();
         if self.envelope.is_none() {
             std::io::stdin().read_line(&mut ur_string)?;

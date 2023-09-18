@@ -18,7 +18,7 @@ enum SubjectCommands {
 }
 
 impl crate::exec::Exec for CommandArgs {
-    fn exec(&self) -> Result<String, anyhow::Error> {
+    fn exec(&self) -> anyhow::Result<String> {
         match &self.command {
             SubjectCommands::Single(args) => args.exec(),
             SubjectCommands::Assertion(args) => args.exec(),

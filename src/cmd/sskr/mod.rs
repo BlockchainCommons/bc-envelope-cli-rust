@@ -18,7 +18,7 @@ enum SskrCommands {
 }
 
 impl crate::exec::Exec for CommandArgs {
-    fn exec(&self) -> Result<String, anyhow::Error> {
+    fn exec(&self) -> anyhow::Result<String> {
         match &self.command {
             SskrCommands::Split(args) => args.exec(),
             SskrCommands::Join(args) => args.exec(),

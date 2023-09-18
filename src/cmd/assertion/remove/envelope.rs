@@ -7,7 +7,7 @@ pub struct CommandArgs {
 }
 
 impl crate::exec::Exec for CommandArgs {
-    fn exec(&self) -> Result<String, anyhow::Error> {
+    fn exec(&self) -> anyhow::Result<String> {
         todo!();
     }
 }

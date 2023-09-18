@@ -18,7 +18,7 @@ enum ElideCommands {
 }
 
 impl crate::exec::Exec for CommandArgs {
-    fn exec(&self) -> Result<String, anyhow::Error> {
+    fn exec(&self) -> anyhow::Result<String> {
         match &self.command {
             ElideCommands::Revealing(args) => args.exec(),
             ElideCommands::Removing(args) => args.exec(),

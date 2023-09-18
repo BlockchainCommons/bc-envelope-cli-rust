@@ -2,9 +2,6 @@ pub mod cmd;
 pub mod exec;
 pub mod styles;
 
-use std::error::Error;
-
-// use anyhow::{Context, Result};
 use clap::{Parser, Subcommand};
 
 use crate::exec::Exec;
@@ -38,26 +35,27 @@ enum MainCommands {
     Verify(cmd::verify::CommandArgs),
 }
 
-fn main() -> Result<(), Box<dyn Error>> {
+fn main() -> anyhow::Result<()> {
     let cli = Cli::parse();
 
     let output = match cli.command {
-        MainCommands::Assertion(args) => args.exec()?,
-        MainCommands::Compress(args) => args.exec()?,
-        MainCommands::Decrypt(args) => args.exec()?,
-        MainCommands::Digest(args) => args.exec()?,
-        MainCommands::Elide(args) => args.exec()?,
-        MainCommands::Encrypt(args) => args.exec()?,
-        MainCommands::Extract(args) => args.exec()?,
-        MainCommands::Format(args) => args.exec()?,
-        MainCommands::Generate(args) => args.exec()?,
-        MainCommands::Salt(args) => args.exec()?,
-        MainCommands::Sign(args) => args.exec()?,
-        MainCommands::Sskr(args) => args.exec()?,
-        MainCommands::Subject(args) => args.exec()?,
-        MainCommands::Uncompress(args) => args.exec()?,
-        MainCommands::Verify(args) => args.exec()?,
+        MainCommands::Assertion(args) => args.exec(),
+        MainCommands::Compress(args) => args.exec(),
+        MainCommands::Decrypt(args) => args.exec(),
+        MainCommands::Digest(args) => args.exec(),
+        MainCommands::Elide(args) => args.exec(),
+        MainCommands::Encrypt(args) => args.exec(),
+        MainCommands::Extract(args) => args.exec(),
+        MainCommands::Format(args) => args.exec(),
+        MainCommands::Generate(args) => args.exec(),
+        MainCommands::Salt(args) => args.exec(),
+        MainCommands::Sign(args) => args.exec(),
+        MainCommands::Sskr(args) => args.exec(),
+        MainCommands::Subject(args) => args.exec(),
+        MainCommands::Uncompress(args) => args.exec(),
+        MainCommands::Verify(args) => args.exec(),
     };
+    let output = output?;
     println!("{}", output);
     Ok(())
 }
