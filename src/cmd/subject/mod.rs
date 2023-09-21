@@ -1,4 +1,4 @@
-pub mod single;
+pub mod r#type;
 pub mod assertion;
 
 use clap::{Subcommand, Args};
@@ -13,14 +13,14 @@ pub struct CommandArgs {
 
 #[derive(Debug, Subcommand)]
 enum SubjectCommands {
-    Single(single::CommandArgs),
+    Type(r#type::CommandArgs),
     Assertion(assertion::CommandArgs),
 }
 
 impl crate::exec::Exec for CommandArgs {
     fn exec(&self) -> anyhow::Result<String> {
         match &self.command {
-            SubjectCommands::Single(args) => args.exec(),
+            SubjectCommands::Type(args) => args.exec(),
             SubjectCommands::Assertion(args) => args.exec(),
         }
     }
