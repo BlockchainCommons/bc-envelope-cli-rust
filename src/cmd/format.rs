@@ -1,6 +1,7 @@
 use bc_envelope::{Envelope, with_format_context};
 use bc_ur::URDecodable;
 use clap::{Args, ValueEnum};
+use dcbor::CBORTaggedEncodable;
 
 /// Print the envelope in textual format.
 #[derive(Debug, Args)]
@@ -42,9 +43,18 @@ impl crate::exec::Exec for CommandArgs {
             anyhow::bail!("No envelope provided");
         }
         let e = Envelope::from_ur_string(ur_string.trim())?;
-        let output = with_format_context!(|context| {
-            e.format_opt(Some(context))
-        });
+        let output = match self.format_type {
+            FormatType::Envelope => with_format_context!(|context| {
+                e.format_opt(Some(context))
+            }),
+            FormatType::Tree => with_format_context!(|context| {
+                e.tree_format_opt(self.hide_nodes, Some(context))
+            }),
+            FormatType::Diag => with_format_context!(|context| {
+                e.diagnostic_opt(true, Some(context))
+            }),
+            FormatType::Cbor => hex::encode(e.tagged_cbor_data()),
+        };
         Ok(output)
     }
 }

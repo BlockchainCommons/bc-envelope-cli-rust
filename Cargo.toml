@@ -4,6 +4,8 @@ version = "0.1.0"
 edition = "2021"
 
 [dependencies]
+dcbor = { path = "../bc-dcbor-rust" }
+
 # bc-ur = "0.1.7"
 bc-ur = { path = "../bc-ur-rust" }
 
