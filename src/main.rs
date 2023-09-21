@@ -1,6 +1,7 @@
 pub mod cmd;
 pub mod exec;
 pub mod styles;
+pub mod data_types;
 
 use clap::{Parser, Subcommand};
 

@@ -1,4 +1,4 @@
-use bc_ur::{URDecodable, UREncodable};
+use bc_ur::preamble::*;
 use clap::Args;
 
 /// Generate a private key base.

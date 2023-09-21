@@ -1,4 +1,4 @@
-use bc_envelope::{Envelope, with_format_context};
+use bc_envelope::preamble::*;
 use bc_ur::URDecodable;
 use clap::{Args, ValueEnum};
 use dcbor::CBORTaggedEncodable;
