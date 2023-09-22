@@ -9,28 +9,40 @@ use bc_ur::preamble::*;
 pub enum DataType {
     /// ARID: Apparently Random Identifier (ur:arid)
     Arid,
+
     /// CBOR data in hex
     Cbor,
+
     /// Binary byte string in hex
     Data,
-    /// Date
+
+    /// Date (ISO 8601)
     Date,
+
     /// Cryptographic digest (ur:digest)
     Digest,
+
     /// Envelope (ur:envelope)
     Envelope,
-    /// Numeric value,
-    Number,
+
     /// Known Value (number or string)
     Known,
+
+    /// Numeric value,
+    Number,
+
     /// UTF-8 String
     String,
+
     /// Uniform Resource (UR)
     Ur,
+
     /// URI
     Uri,
+
     /// UUID
     Uuid,
+
     /// Wrapped Envelope (ur:envelope)
     Wrapped,
 }

@@ -9,12 +9,11 @@ fn test_assertion_add_pred_obj() -> anyhow::Result<()> {
     )?;
     run_cli_expect(
         &["assertion", "add", "pred-obj", "known", "note", "string", "This is the note.", &subject],
-        None,
         "ur:envelope/lftpcsihfdihjzjzjloyaatpcsjsghisinjkcxinjkcxjyisihcxjtjljyihdmtshlgycm"
     )?;
-    run_cli_expect(
+    run_cli_expect_stdin(
         &["assertion", "add", "pred-obj", "known", "note", "string", "This is the note."],
-        Some(&subject),
-        "ur:envelope/lftpcsihfdihjzjzjloyaatpcsjsghisinjkcxinjkcxjyisihcxjtjljyihdmtshlgycm"
+        "ur:envelope/lftpcsihfdihjzjzjloyaatpcsjsghisinjkcxinjkcxjyisihcxjtjljyihdmtshlgycm",
+        Some(&subject)
     )
 }

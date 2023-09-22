@@ -14,17 +14,16 @@ fn test_generate_arid() -> anyhow::Result<()> {
 fn test_generate_digest_arg() -> anyhow::Result<()> {
     run_cli_expect(
         &["generate", "digest", "Hello"],
-        None,
         "ur:digest/hdcxcshelgqdcpjszedaykhsolztmuludmdsfxamwpdygltngylaatttkofddsetcfinrkcltpsp"
     )
 }
 
 #[test]
 fn test_generate_digest_stdin() -> anyhow::Result<()> {
-    run_cli_expect(
+    run_cli_expect_stdin(
         &["generate", "digest"],
-        Some("Hello"),
-        "ur:digest/hdcxcshelgqdcpjszedaykhsolztmuludmdsfxamwpdygltngylaatttkofddsetcfinrkcltpsp"
+        "ur:digest/hdcxcshelgqdcpjszedaykhsolztmuludmdsfxamwpdygltngylaatttkofddsetcfinrkcltpsp",
+        Some("Hello")
     )
 }
 
@@ -114,7 +113,6 @@ fn test_generate_prvkeys() -> anyhow::Result<()> {
 fn test_generate_prvkeys_from_seed() -> anyhow::Result<()> {
     run_cli_expect(
         &["generate", "prvkeys", "--seed", "ur:crypto-seed/oyadgdkbehprpagrldhykpsnrodwcppfbwgmkemtaolbdt"],
-        None,
         "ur:crypto-prvkeys/gdkbehprpagrldhykpsnrodwcppfbwgmkeadrturam"
     )
 }
@@ -123,7 +121,6 @@ fn test_generate_prvkeys_from_seed() -> anyhow::Result<()> {
 fn test_generate_pubkeys() -> anyhow::Result<()> {
     run_cli_expect(
         &["generate", "pubkeys", "ur:crypto-prvkeys/gdkbehprpagrldhykpsnrodwcppfbwgmkeadrturam"],
-        None,
         "ur:crypto-pubkeys/lftanshfhdcxfpfwzcparpckfhvlidynjepsltsgjlprostpcmgehsmedtlbcktajodispgsfroytansgrhdcxenrytyrlpknyosfnfwlrwkdwsknduogwlyhdrfdrftflnnksbzsaierhbdrnrfbbfdvlwsca"
     )
 }

@@ -19,8 +19,12 @@ pub fn run_cli(args: &[&str], stdin: Option<&str>) -> anyhow::Result<String> {
 }
 
 #[allow(dead_code)]
-pub fn run_cli_expect(args: &[&str], stdin: Option<&str>, expected: &str) -> anyhow::Result<()> {
+pub fn run_cli_expect_stdin(args: &[&str], expected: &str, stdin: Option<&str>) -> anyhow::Result<()> {
     let output = run_cli(args, stdin)?;
     assert_eq!(output, expected);
     Ok(())
+}
+
+pub fn run_cli_expect(args: &[&str], expected: &str) -> anyhow::Result<()> {
+    run_cli_expect_stdin(args, expected, None)
 }
