@@ -2,6 +2,8 @@ pub mod cmd;
 pub mod exec;
 pub mod styles;
 pub mod data_types;
+pub mod pred_obj_args;
+pub mod envelope_args;
 
 use clap::{Parser, Subcommand};
 

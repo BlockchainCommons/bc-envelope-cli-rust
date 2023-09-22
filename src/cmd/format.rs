@@ -1,7 +1,8 @@
 use bc_envelope::preamble::*;
-use bc_ur::URDecodable;
 use clap::{Args, ValueEnum};
 use dcbor::CBORTaggedEncodable;
+
+use crate::envelope_args::{EnvelopeArgs, EnvelopeArgsLike};
 
 /// Print the envelope in textual format.
 #[derive(Debug, Args)]
@@ -15,8 +16,14 @@ pub struct CommandArgs {
     #[arg(long)]
     hide_nodes: bool,
 
-    /// The envelope to output. If the envelope is not supplied on the command line, it is read from stdin.
-    envelope: Option<String>,
+    #[command(flatten)]
+    envelope_args: EnvelopeArgs,
+}
+
+impl EnvelopeArgsLike for CommandArgs {
+    fn envelope(&self) -> Option<&str> {
+        self.envelope_args.envelope()
+    }
 }
 
 #[derive(ValueEnum, Copy, Clone, Debug, PartialEq, Eq)]
@@ -33,16 +40,7 @@ enum FormatType {
 
 impl crate::exec::Exec for CommandArgs {
     fn exec(&self) -> anyhow::Result<String> {
-        let mut ur_string = String::new();
-        if self.envelope.is_none() {
-            std::io::stdin().read_line(&mut ur_string)?;
-        } else {
-            ur_string = self.envelope.as_ref().unwrap().to_string();
-        }
-        if ur_string.is_empty() {
-            anyhow::bail!("No envelope provided");
-        }
-        let e = Envelope::from_ur_string(ur_string.trim())?;
+        let e = self.get_envelope()?;
         let output = match self.format_type {
             FormatType::Envelope => with_format_context!(|context| {
                 e.format_opt(Some(context))

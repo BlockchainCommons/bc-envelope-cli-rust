@@ -1,5 +1,5 @@
 pub mod envelope;
-pub mod predicate_object;
+pub mod pred_obj;
 
 use clap::{Subcommand, Args};
 
@@ -14,7 +14,7 @@ pub struct CommandArgs {
 #[derive(Debug, Subcommand)]
 enum SubCommands {
     Envelope(envelope::CommandArgs),
-    PredicateObject(predicate_object::CommandArgs),
+    PredicateObject(pred_obj::CommandArgs),
 }
 
 impl crate::exec::Exec for CommandArgs {

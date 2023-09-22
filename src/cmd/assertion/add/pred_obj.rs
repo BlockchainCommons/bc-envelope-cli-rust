@@ -1,13 +1,17 @@
 use bc_ur::UREncodable;
 use clap::Args;
-use crate::{data_types::DataType, pred_obj_args::{PredObjArgs, PredObjArgsLike}};
 
-/// Create an envelope with the given assertion (predicate and object).
+use crate::{pred_obj_args::{PredObjArgs, PredObjArgsLike}, data_types::DataType, envelope_args::{EnvelopeArgs, EnvelopeArgsLike}};
+
+/// Add an assertion with the given predicate and object to the given envelope.
 #[derive(Debug, Args)]
 #[group(skip)]
 pub struct CommandArgs {
     #[command(flatten)]
     assertion_args: PredObjArgs,
+
+    #[command(flatten)]
+    envelope_args: EnvelopeArgs,
 }
 
 impl PredObjArgsLike for CommandArgs {
@@ -31,8 +35,16 @@ impl PredObjArgsLike for CommandArgs {
     }
 }
 
+impl EnvelopeArgsLike for CommandArgs {
+    fn envelope(&self) -> Option<&str> {
+        self.envelope_args.envelope()
+    }
+}
+
 impl crate::exec::Exec for CommandArgs {
     fn exec(&self) -> anyhow::Result<String> {
-        Ok(self.assertion_envelope()?.ur_string())
+        let envelope = self.get_envelope()?;
+        let assertion = self.assertion_envelope()?;
+        Ok(envelope.add_assertion_envelope(assertion)?.ur_string())
     }
 }

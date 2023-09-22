@@ -1,11 +1,9 @@
 use bc_ur::URDecodable;
-use indoc::indoc;
-
 mod common;
-use common::run_cli;
+use common::*;
 
 #[test]
-fn test_generate_arid() -> Result<(), Box<dyn std::error::Error>> {
+fn test_generate_arid() -> anyhow::Result<()> {
     let output1 = run_cli(&["generate", "arid"], None)?;
     let output2 = run_cli(&["generate", "arid"], None)?;
     assert_ne!(output1, output2);
@@ -13,31 +11,25 @@ fn test_generate_arid() -> Result<(), Box<dyn std::error::Error>> {
 }
 
 #[test]
-fn test_generate_digest_arg() -> Result<(), Box<dyn std::error::Error>> {
-    let output = run_cli(&["generate", "digest", "Hello"], None)?;
-    assert_eq!(
-        output,
-        indoc! {r#"
-        ur:digest/hdcxcshelgqdcpjszedaykhsolztmuludmdsfxamwpdygltngylaatttkofddsetcfinrkcltpsp
-        "#}
-    );
-    Ok(())
+fn test_generate_digest_arg() -> anyhow::Result<()> {
+    run_cli_expect(
+        &["generate", "digest", "Hello"],
+        None,
+        "ur:digest/hdcxcshelgqdcpjszedaykhsolztmuludmdsfxamwpdygltngylaatttkofddsetcfinrkcltpsp"
+    )
 }
 
 #[test]
-fn test_generate_digest_stdin() -> Result<(), Box<dyn std::error::Error>> {
-    let output = run_cli(&["generate", "digest"], Some("Hello"))?;
-    assert_eq!(
-        output,
-        indoc! {r#"
-        ur:digest/hdcxcshelgqdcpjszedaykhsolztmuludmdsfxamwpdygltngylaatttkofddsetcfinrkcltpsp
-        "#}
-    );
-    Ok(())
+fn test_generate_digest_stdin() -> anyhow::Result<()> {
+    run_cli_expect(
+        &["generate", "digest"],
+        Some("Hello"),
+        "ur:digest/hdcxcshelgqdcpjszedaykhsolztmuludmdsfxamwpdygltngylaatttkofddsetcfinrkcltpsp"
+    )
 }
 
 #[test]
-fn test_generate_key() -> Result<(), Box<dyn std::error::Error>> {
+fn test_generate_key() -> anyhow::Result<()> {
     let output1 = run_cli(&["generate", "key"], None)?;
     let key1 = bc_components::SymmetricKey::from_ur_string(output1.trim())?;
     let output2 = run_cli(&["generate", "key"], None)?;
@@ -49,7 +41,7 @@ fn test_generate_key() -> Result<(), Box<dyn std::error::Error>> {
 }
 
 #[test]
-fn test_generate_nonce() -> Result<(), Box<dyn std::error::Error>> {
+fn test_generate_nonce() -> anyhow::Result<()> {
     let output1 = run_cli(&["generate", "nonce"], None)?;
     let nonce1 = bc_components::Nonce::from_ur_string(output1.trim())?;
     let output2 = run_cli(&["generate", "nonce"], None)?;
@@ -61,7 +53,7 @@ fn test_generate_nonce() -> Result<(), Box<dyn std::error::Error>> {
 }
 
 #[test]
-fn test_generate_seed() -> Result<(), Box<dyn std::error::Error>> {
+fn test_generate_seed() -> anyhow::Result<()> {
     let output1 = run_cli(&["generate", "seed"], None)?;
     let seed1 = bc_components::Seed::from_ur_string(output1.trim())?;
     let output2 = run_cli(&["generate", "seed"], None)?;
@@ -73,7 +65,7 @@ fn test_generate_seed() -> Result<(), Box<dyn std::error::Error>> {
 }
 
 #[test]
-fn test_generate_seed_with_count() -> Result<(), Box<dyn std::error::Error>> {
+fn test_generate_seed_with_count() -> anyhow::Result<()> {
     let output = run_cli(&["generate", "seed", "--count", "32"], None)?;
     let seed = bc_components::Seed::from_ur_string(output.trim())?;
     assert_eq!(seed.data().len(), 32);
@@ -82,25 +74,22 @@ fn test_generate_seed_with_count() -> Result<(), Box<dyn std::error::Error>> {
 
 
 #[test]
-fn test_generate_seed_with_bad_count() -> Result<(), Box<dyn std::error::Error>> {
+fn test_generate_seed_with_bad_count() -> anyhow::Result<()> {
     assert!(run_cli(&["generate", "seed", "--count", "15"], None).is_err());
     assert!(run_cli(&["generate", "seed", "--count", "257"], None).is_err());
     Ok(())
 }
 
 #[test]
-fn test_generate_seed_with_hex() -> Result<(), Box<dyn std::error::Error>> {
+fn test_generate_seed_with_hex() -> anyhow::Result<()> {
     let output = run_cli(
         &["generate", "seed", "--hex", "7e31b2b14b895e75cdb82c22b013527c"],
-        None,
+        None
     )?;
-    assert_eq!(
-        output,
-        indoc! {r#"
-        ur:crypto-seed/oyadgdkbehprpagrldhykpsnrodwcppfbwgmkemtaolbdt
-        "#}
-    );
-    let seed = bc_components::Seed::from_ur_string(output.trim())?;
+
+    assert_eq!(output, "ur:crypto-seed/oyadgdkbehprpagrldhykpsnrodwcppfbwgmkemtaolbdt");
+
+    let seed = bc_components::Seed::from_ur_string(output)?;
     assert_eq!(seed.data().len(), 16);
     assert_eq!(
         seed.data(),
@@ -110,7 +99,7 @@ fn test_generate_seed_with_hex() -> Result<(), Box<dyn std::error::Error>> {
 }
 
 #[test]
-fn test_generate_prvkeys() -> Result<(), Box<dyn std::error::Error>> {
+fn test_generate_prvkeys() -> anyhow::Result<()> {
     let output1 = run_cli(&["generate", "prvkeys"], None)?;
     let key1 = bc_components::PrivateKeyBase::from_ur_string(output1.trim())?;
     let output2 = run_cli(&["generate", "prvkeys"], None)?;
@@ -122,31 +111,19 @@ fn test_generate_prvkeys() -> Result<(), Box<dyn std::error::Error>> {
 }
 
 #[test]
-fn test_generate_prvkeys_from_seed() -> Result<(), Box<dyn std::error::Error>> {
-    let output = run_cli(
+fn test_generate_prvkeys_from_seed() -> anyhow::Result<()> {
+    run_cli_expect(
         &["generate", "prvkeys", "--seed", "ur:crypto-seed/oyadgdkbehprpagrldhykpsnrodwcppfbwgmkemtaolbdt"],
         None,
-    )?;
-    assert_eq!(
-        output,
-        indoc! {r#"
-        ur:crypto-prvkeys/gdkbehprpagrldhykpsnrodwcppfbwgmkeadrturam
-        "#}
-    );
-    Ok(())
+        "ur:crypto-prvkeys/gdkbehprpagrldhykpsnrodwcppfbwgmkeadrturam"
+    )
 }
 
 #[test]
-fn test_generate_pubkeys() -> Result<(), Box<dyn std::error::Error>> {
-    let output = run_cli(
+fn test_generate_pubkeys() -> anyhow::Result<()> {
+    run_cli_expect(
         &["generate", "pubkeys", "ur:crypto-prvkeys/gdkbehprpagrldhykpsnrodwcppfbwgmkeadrturam"],
         None,
-    )?;
-    assert_eq!(
-        output,
-        indoc! {r#"
-        ur:crypto-pubkeys/lftanshfhdcxfpfwzcparpckfhvlidynjepsltsgjlprostpcmgehsmedtlbcktajodispgsfroytansgrhdcxenrytyrlpknyosfnfwlrwkdwsknduogwlyhdrfdrftflnnksbzsaierhbdrnrfbbfdvlwsca
-        "#}
-    );
-    Ok(())
+        "ur:crypto-pubkeys/lftanshfhdcxfpfwzcparpckfhvlidynjepsltsgjlprostpcmgehsmedtlbcktajodispgsfroytansgrhdcxenrytyrlpknyosfnfwlrwkdwsknduogwlyhdrfdrftflnnksbzsaierhbdrnrfbbfdvlwsca"
+    )
 }
