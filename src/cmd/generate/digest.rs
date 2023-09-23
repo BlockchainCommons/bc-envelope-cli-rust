@@ -1,8 +1,7 @@
 use std::io::Read;
 
 use clap::Args;
-use bc_ur::UREncodable;
-use bc_components::Digest;
+use bc_envelope::prelude::*;
 
 /// Generate a digest from the input data.
 ///

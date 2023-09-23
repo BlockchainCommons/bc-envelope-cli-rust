@@ -1,4 +1,4 @@
-use bc_ur::URDecodable;
+use bc_envelope::prelude::*;
 mod common;
 use common::*;
 

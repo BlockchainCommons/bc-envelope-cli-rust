@@ -1,5 +1,5 @@
 use bc_components::Nonce;
-use bc_ur::UREncodable;
+use bc_envelope::prelude::*;
 use clap::Args;
 
 /// Generate a Number Used Once (Nonce).

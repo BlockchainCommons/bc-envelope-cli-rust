@@ -1,4 +1,4 @@
-use bc_ur::UREncodable;
+use bc_envelope::prelude::*;
 use clap::Args;
 use crate::{data_types::DataType, pred_obj_args::{PredObjArgs, PredObjArgsLike}};
 

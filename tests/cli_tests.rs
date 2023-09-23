@@ -1,8 +1,7 @@
 use anyhow::Ok;
 use indoc::indoc;
 
-use bc_envelope::{known_values::*, preamble::*};
-use bc_ur::preamble::*;
+use bc_envelope::{known_values::*, prelude::*};
 
 mod common;
 use common::*;
@@ -756,6 +755,69 @@ fn test_assertion_all() -> anyhow::Result<()> {
         ur:envelope/oybttpcsksdkfekshsjnjojzihcxfejzihiajyjpiniahsjzcxfejtioinjtihihjpinjtiocxfwjlhsjpieasqdlbto
         "#
         ),
+        CREDENTIAL_EXAMPLE,
+    )
+}
+
+// ```swift
+// func testAssertionPredicateFind1() throws {
+//     let e = try pipe(["extract --wrapped", "assertion find predicate photo"], inputLine: credentialExample)
+//     XCTAssertEqual(e, "ur:envelope/oytpcsihjoisjljyjltpcsksckghisinjkcxinjkcxgehsjnihjkcxgthsksktihjzjzdijkcxjoisjljyjldmbaghdstp")
+//     XCTAssertEqual(try envelope(e), #""photo": "This is James Maxwell's photo.""#)
+// }
+// ```
+
+#[test]
+fn test_assertion_predicate_find_1() -> anyhow::Result<()> {
+    run_cli_piped_expect_stdin(
+        &[
+            &["extract", "wrapped"],
+            &["assertion", "find", "predicate", "string", "photo"],
+            &["format"]
+        ],
+        r#""photo": "This is James Maxwell's photo.""#,
+        CREDENTIAL_EXAMPLE,
+    )
+}
+
+// ```swift
+// func testAssertionPredicateFind2() throws {
+//     let e = try pipe(["extract --wrapped", "assertion find predicate --known isA"], inputLine: credentialExample)
+//     XCTAssertEqual(e, "ur:envelope/oyadtpcskscffxihjpjyiniyiniahsjyihcxjliycxfxjljnjojzihjyinjljtwdiyftes")
+//     XCTAssertEqual(try envelope(e), #"isA: "Certificate of Completion""#)
+// }
+// ```
+
+#[test]
+fn test_assertion_predicate_find_2() -> anyhow::Result<()> {
+    run_cli_piped_expect_stdin(
+        &[
+            &["extract", "wrapped"],
+            &["assertion", "find", "predicate", "known", "isA"],
+            &["format"]
+        ],
+        r#"'isA': "Certificate of Completion""#,
+        CREDENTIAL_EXAMPLE,
+    )
+}
+
+// ```swift
+// func testAssertionObjectFind1() throws {
+//     let e = try pipe(["extract --wrapped", "assertion find object Maxwell"], inputLine: credentialExample)
+//     XCTAssertEqual(e, "ur:envelope/oytpcsisjzhsjkjyglhsjnihtpcsiogthsksktihjzjzwshedtst")
+//     XCTAssertEqual(try envelope(e), #""lastName": "Maxwell""#)
+// }
+// ```
+
+#[test]
+fn test_assertion_object_find_1() -> anyhow::Result<()> {
+    run_cli_piped_expect_stdin(
+        &[
+            &["extract", "wrapped"],
+            &["assertion", "find", "object", "string", "Maxwell"],
+            &["format"]
+        ],
+        r#""lastName": "Maxwell""#,
         CREDENTIAL_EXAMPLE,
     )
 }

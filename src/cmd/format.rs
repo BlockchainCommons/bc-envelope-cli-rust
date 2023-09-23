@@ -1,4 +1,4 @@
-use bc_envelope::preamble::*;
+use bc_envelope::prelude::*;
 use clap::{Args, ValueEnum};
 use dcbor::CBORTaggedEncodable;
 

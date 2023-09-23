@@ -1,6 +1,6 @@
 use bc_components::ARID;
 use clap::Args;
-use bc_ur::UREncodable;
+use bc_envelope::prelude::*;
 
 /// Generate an Apparently Random Identifer (ARID).
 #[derive(Debug, Args)]

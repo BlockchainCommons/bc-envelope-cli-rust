@@ -1,4 +1,4 @@
-use bc_ur::preamble::*;
+use bc_envelope::prelude::*;
 use clap::Args;
 
 /// Generate a private key base.

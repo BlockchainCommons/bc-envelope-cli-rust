@@ -1,7 +1,7 @@
 use std::rc::Rc;
 
 use crate::data_types::{DataType, parse_data_type_to_envelope};
-use bc_envelope::preamble::*;
+use bc_envelope::prelude::*;
 use clap::Args;
 
 pub trait PredObjArgsLike {

@@ -1,6 +1,6 @@
 use bc_components::SymmetricKey;
-use bc_ur::UREncodable;
 use clap::Args;
+use bc_envelope::prelude::*;
 
 /// Generate a symmetric encryption key.
 #[derive(Debug, Args)]

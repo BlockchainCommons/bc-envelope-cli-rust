@@ -4,6 +4,7 @@ pub mod styles;
 pub mod data_types;
 pub mod pred_obj_args;
 pub mod envelope_args;
+pub mod subject_args;
 
 use clap::{Parser, Subcommand};
 
