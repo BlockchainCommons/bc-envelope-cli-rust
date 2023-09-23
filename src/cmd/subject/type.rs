@@ -14,11 +14,12 @@ pub struct CommandArgs {
     #[arg(name = "VALUE")]
     subject_value: String,
     /// The integer tag for an enclosed UR.
-    tag: Option<u64>,
+    #[arg(long)]
+    ur_tag: Option<u64>,
 }
 
 impl crate::exec::Exec for CommandArgs {
     fn exec(&self) -> anyhow::Result<String> {
-        Ok(parse_data_type_to_envelope(self.subject_type, &self.subject_value, self.tag)?.ur_string())
+        Ok(parse_data_type_to_envelope(self.subject_type, &self.subject_value, self.ur_tag)?.ur_string())
     }
 }

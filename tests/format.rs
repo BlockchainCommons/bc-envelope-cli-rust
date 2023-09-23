@@ -7,7 +7,7 @@ const ENVELOPE: &str = "ur:envelope/lftpsplntpcstansgshdcxchfdfwwdsrzofytsyndsve
 
 #[test]
 fn test_format_envelope() -> anyhow::Result<()> {
-    let output = run_cli_raw(&["format", ENVELOPE], None)?;
+    let output = run_cli_raw(&["format", ENVELOPE])?;
     assert_eq!(
         output,
         indoc! {r#"
@@ -49,7 +49,7 @@ fn test_format_cbor() -> anyhow::Result<()> {
 
 #[test]
 fn test_format_diag() -> anyhow::Result<()> {
-    let output: String = run_cli_raw(&["format", "--type", "diag", ENVELOPE], None)?;
+    let output: String = run_cli_raw(&["format", "--type", "diag", ENVELOPE])?;
     assert_eq!(
         output,
         indoc! {r#"
@@ -163,7 +163,7 @@ fn test_format_diag() -> anyhow::Result<()> {
 
 #[test]
 fn test_format_tree() -> anyhow::Result<()> {
-    let output: String = run_cli_raw(&["format", "--type", "tree", ENVELOPE], None)?;
+    let output: String = run_cli_raw(&["format", "--type", "tree", ENVELOPE])?;
     assert_eq!(
         output,
         indoc! {r#"

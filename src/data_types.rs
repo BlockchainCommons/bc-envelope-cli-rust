@@ -10,6 +10,9 @@ pub enum DataType {
     /// ARID: Apparently Random Identifier (ur:arid)
     Arid,
 
+    /// Boolean (`true` or `false`)
+    Bool,
+
     /// CBOR data in hex
     Cbor,
 
@@ -50,6 +53,7 @@ pub enum DataType {
 pub fn parse_data_type_to_envelope(data_type: DataType, s: &str, ur_cbor_tag_value: Option<u64>) -> anyhow::Result<Rc<Envelope>> {
     match data_type {
         DataType::Arid => parse_arid(s),
+        DataType::Bool => parse_boolean(s),
         DataType::Cbor => parse_cbor(s),
         DataType::Data => parse_data(s),
         DataType::Date => parse_date(s),
@@ -77,6 +81,14 @@ fn parse_arid(s: &str) -> anyhow::Result<Rc<Envelope>> {
     } else {
         anyhow::bail!("Invalid ARID")
     }
+}
+
+/// Parse a boolean from a string.
+///
+/// Accepts either "true" or "false".
+fn parse_boolean(s: &str) -> Result<Rc<Envelope>, anyhow::Error> {
+    let boolean = bool::from_str(s)?;
+    Ok(Envelope::new(boolean))
 }
 
 /// Parse a CBOR envelope from a string.
