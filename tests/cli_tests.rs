@@ -6,20 +6,6 @@ use bc_envelope::{known_values::*, prelude::*};
 mod common;
 use common::*;
 
-const HELLO_STR: &str = "Hello.";
-const HELLO_ENVELOPE_UR: &str = "ur:envelope/tpcsiyfdihjzjzjldmprrhtypk";
-const ARID_HEX: &str = "dec7e82893c32f7a4fcec633c02c0ec32a4361ca3ee3bc8758ae07742e940550";
-const ARID: &str =
-    "ur:arid/hdcxuestvsdemusrdlkngwtosweortdwbasrdrfxhssgfmvlrflthdplatjydmmwahgdwlflguqz";
-const DATE_EXAMPLE: &str = "2022-08-30T07:16:11Z";
-const DIGEST_EXAMPLE: &str =
-    "ur:digest/hdcxdplutstarkhelprdiefhadbetlbnreamoyzefxnnkonycpgdehmuwdhnfgrkltylrovyeeck";
-const SEED_UR_EXAMPLE: &str = "ur:crypto-seed/oyadgdaawzwplrbdhdpabgrnvokorolnrtemksayyadmut";
-const UUID_EXAMPLE: &str = "eb377e65-5774-410a-b9cb-510bfc73e6d9";
-const ALICE_KNOWS_BOB_EXAMPLE: &str =
-    "ur:envelope/lftpcsihfpjziniaihoytpcsihjejtjlktjktpcsiafwjliddssngwct";
-const CREDENTIAL_EXAMPLE: &str = "ur:envelope/lstpspmntpcstansgshdcxfgkoiahtjthnissawsfhzcmyyldsutfzcttefpaxjtmobsbwimcaleykvsdtgajnoytpcsjsiaihjpjyiniyiniahsjyihglkpjnidihjptpcsjeeheyeodpeeecendpemetesoytpcsjtihksjoinjphsjyinjljtfyhsjyihtpcssecyjncscxaeoytpcsisjzhsjkjyglhsjnihtpcsiogthsksktihjzjzoytpcsininjkjkkpihfyhsjyihtpcssecyhybdvyaeoyadtpcskscffxihjpjyiniyiniahsjyihcxjliycxfxjljnjojzihjyinjljtoytpcsihjoisjljyjltpcsksckghisinjkcxinjkcxgehsjnihjkcxgthsksktihjzjzdijkcxjoisjljyjldmoytpcskscejojpjliyihjkjkinjljthsjzfyihkoihjzjljojnihjtjyfdjlkpjpjktpcsbsoytpcsiniyinjpjkjyglhsjnihtpcsihgehsjnihjkoytpcsiyjyjljoiniajktpcslfingukpidimihiajycxehingukpidimihiajycxeyoytpcskscsiajljtjyinjtkpinjtiofeiekpiahsjyinjljtgojtinjyjktpcsadoyattpcsksdkfekshsjnjojzihcxfejzihiajyjpiniahsjzcxfejtioinjtihihjpinjtiocxfwjlhsjpieoytpcsiojkkpidimihiajytpcskscegmfgcxhsjtiecxgtiniajpjlkthskoihcxfejtioinjtihihjpinjtiooybttpcsksdkfekshsjnjojzihcxfejzihiajyjpiniahsjzcxfejtioinjtihihjpinjtiocxfwjlhsjpieoyaxtpcstansghhdfzdlmunbknwymowslbwfkidawyastikibksfhdosgslulecpwktysphprdheingyckvlrtjlrdhswnkbdereotdryapyhddpmnahcsmymnlsmtpdadsptyptmdbyosdllooyaatpcsksdmguiniojtihiecxidkkcxfekshsjnjojzihcxfejzihiajyjpiniahsjzcxfejtioinjtihihjpinjtiocxfwjlhsjpielabtrdda";
-
 #[test]
 fn test_invalid_command() -> anyhow::Result<()> {
     assert!(run_cli(&["invalid"]).is_err());
