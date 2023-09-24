@@ -143,13 +143,11 @@ fn test_wrapped_envelope_subject() -> anyhow::Result<()> {
     assert_eq!(e, "ur:envelope/tpsptpcsiyfdihjzjzjldmvysrenfx");
     assert_eq!(
         run_cli_raw(&["format", &e])?,
-        indoc!(
-            r#"
+        indoc!(r#"
         {
             "Hello."
         }
-        "#
-        )
+        "#)
     );
     run_cli_expect(&["extract", "wrapped", &e], HELLO_ENVELOPE_UR)?;
     run_cli_expect(&["extract", "cbor", &e], "d8186648656c6c6f2e")?;
@@ -357,13 +355,11 @@ fn test_envelope_ur_subject() -> anyhow::Result<()> {
     assert_eq!(e, "ur:envelope/tpsptpcsiyfdihjzjzjldmvysrenfx");
     assert_eq!(
         run_cli_raw(&["format", &e])?,
-        indoc!(
-            r#"
+        indoc!(r#"
         {
             "Hello."
         }
-        "#
-        )
+        "#)
     );
     run_cli_expect(&["extract", "ur", &e], HELLO_ENVELOPE_UR)?;
     run_cli_expect(&["extract", "wrapped", &e], HELLO_ENVELOPE_UR)?;
@@ -392,11 +388,9 @@ fn test_known_ur_subject() -> anyhow::Result<()> {
     );
     assert_eq!(
         run_cli_raw(&["format", &e])?,
-        indoc!(
-            r#"
+        indoc!(r#"
         crypto-seed(Map)
-        "#
-        )
+        "#)
     );
     run_cli_expect(&["extract", "ur", &e], SEED_UR_EXAMPLE)?;
     Ok(())
@@ -426,11 +420,9 @@ fn test_unknown_ur_subject() -> anyhow::Result<()> {
     );
     assert_eq!(
         run_cli_raw(&["format", &e])?,
-        indoc!(
-            r#"
+        indoc!(r#"
         555(Map)
-        "#
-        )
+        "#)
     );
     run_cli_expect(&["extract", "ur", &e, "--ur-type", "unknown"], unknown_ur)?;
     Ok(())
@@ -548,15 +540,13 @@ fn test_assertion_add() -> anyhow::Result<()> {
         ],
         ALICE_KNOWS_BOB_EXAMPLE,
     )?;
-    run_cli_raw_expect(
+    run_cli_expect(
         &["format", ALICE_KNOWS_BOB_EXAMPLE],
-        indoc!(
-            r#"
-    "Alice" [
-        "knows": "Bob"
-    ]
-    "#
-        ),
+        indoc!(r#"
+        "Alice" [
+            "knows": "Bob"
+        ]
+        "#),
     )?;
     Ok(())
 }
@@ -595,15 +585,13 @@ fn test_assertion_add_2() -> anyhow::Result<()> {
         ],
         ALICE_KNOWS_BOB_EXAMPLE,
     )?;
-    run_cli_raw_expect(
+    run_cli_expect(
         &["format", ALICE_KNOWS_BOB_EXAMPLE],
-        indoc!(
-            r#"
-    "Alice" [
-        "knows": "Bob"
-    ]
-    "#
-        ),
+        indoc!(r#"
+        "Alice" [
+            "knows": "Bob"
+        ]
+        "#),
     )?;
     Ok(())
 }
@@ -738,8 +726,7 @@ fn test_assertion_all() -> anyhow::Result<()> {
             &["extract", "wrapped"],
             &["assertion", "all"],
         ],
-        indoc!(
-        r#"
+        indoc!(r#"
         ur:envelope/oytpcsjsiaihjpjyiniyiniahsjyihglkpjnidihjptpcsjeeheyeodpeeecendpemetesmtskgyzt
         ur:envelope/oytpcsjtihksjoinjphsjyinjljtfyhsjyihtpcssecyjncscxaemupyjkaa
         ur:envelope/oytpcsisjzhsjkjyglhsjnihtpcsiogthsksktihjzjzwshedtst
@@ -753,8 +740,7 @@ fn test_assertion_all() -> anyhow::Result<()> {
         ur:envelope/oyattpcsksdkfekshsjnjojzihcxfejzihiajyjpiniahsjzcxfejtioinjtihihjpinjtiocxfwjlhsjpiedlmdssse
         ur:envelope/oytpcsiojkkpidimihiajytpcskscegmfgcxhsjtiecxgtiniajpjlkthskoihcxfejtioinjtihihjpinjtiotlbdctwd
         ur:envelope/oybttpcsksdkfekshsjnjojzihcxfejzihiajyjpiniahsjzcxfejtioinjtihihjpinjtiocxfwjlhsjpieasqdlbto
-        "#
-        ),
+        "#),
         CREDENTIAL_EXAMPLE,
     )
 }
@@ -843,4 +829,100 @@ fn test_envelope_digest_hex() -> anyhow::Result<()> {
         &["digest", "--hex", ALICE_KNOWS_BOB_EXAMPLE],
         "8955db5e016affb133df56c11fe6c5c82fa3036263d651286d134c7e56c0e9f2"
     )
+}
+
+// ```swift
+// func testElide1() throws {
+//     var target: [String] = []
+//     // Top level
+//     target.append(try envelope("digest \(aliceKnowsBobExample)"))
+//     // Subject
+//     target.append(try pipe(["extract --envelope \(aliceKnowsBobExample)", "digest"]))
+//     // Assertion
+//     let assertion = try envelope("assertion at 0 \(aliceKnowsBobExample)")
+//     target.append(try envelope("digest \(assertion)"))
+//     // Object
+//     let object = try envelope("extract --object \(assertion)")
+//     target.append(try envelope("digest \(object)"))
+
+//     let digests = target.joined(separator: " ")
+//     let elided = try envelope("elide \(aliceKnowsBobExample) \(digests)")
+//     XCTAssertEqual(elided, "ur:envelope/lftpcsihfpjziniaihoyhdcxuykitdcegyinqzlrlgdrcwsbbkihcemtchsntabdpldtbzjepkwsrkdrlernykrdtpcsiafwjlidcyhydiwe")
+//     XCTAssertEqual(try envelope(elided),
+//     """
+//     "Alice" [
+//         ELIDED: "Bob"
+//     ]
+//     """
+//     )
+// }
+// ```
+
+#[test]
+fn test_elide_1() -> anyhow::Result<()> {
+    let mut target = vec![];
+    // Top level
+    target.push(run_cli(&["digest", ALICE_KNOWS_BOB_EXAMPLE])?);
+    // Subject
+    target.push(run_cli_piped(&[&["extract", "envelope", ALICE_KNOWS_BOB_EXAMPLE], &["digest"]])?);
+    // Assertion
+    let assertion = run_cli(&["assertion", "at", "0", ALICE_KNOWS_BOB_EXAMPLE])?;
+    target.push(run_cli(&["digest", &assertion])?);
+    // Object
+    target.push(run_cli_piped(&[&["extract", "object", &assertion], &["digest"]])?);
+
+    let digests = target.join(" ");
+    let elided = run_cli(&["elide", "revealing", &digests, ALICE_KNOWS_BOB_EXAMPLE])?;
+    assert_eq!(
+        elided,
+        "ur:envelope/lftpcsihfpjziniaihoyhdcxuykitdcegyinqzlrlgdrcwsbbkihcemtchsntabdpldtbzjepkwsrkdrlernykrdtpcsiafwjlidcyhydiwe"
+    );
+    run_cli_expect(
+        &["format", &elided],
+        indoc!(r#"
+        "Alice" [
+            ELIDED: "Bob"
+        ]
+        "#)
+    )?;
+    Ok(())
+}
+
+// ```swift
+// func testElide2() throws {
+//     var target: [String] = []
+//     target.append(try pipe(["subject knows", "digest"]))
+//     let digests = target.joined(separator: " ")
+//     let elided = try envelope("elide removing \(aliceKnowsBobExample) \(digests)")
+//     XCTAssertEqual(elided, "ur:envelope/lftpcsihfpjziniaihoyhdcxuykitdcegyinqzlrlgdrcwsbbkihcemtchsntabdpldtbzjepkwsrkdrlernykrdtpcsiafwjlidcyhydiwe")
+//     XCTAssertEqual(try envelope(elided),
+//     """
+//     "Alice" [
+//         ELIDED: "Bob"
+//     ]
+//     """
+//     )
+// }
+// ```
+
+#[test]
+fn test_elide_2() -> anyhow::Result<()> {
+    let target = vec![
+        run_cli_piped(&[&["subject", "type", "string", "knows"], &["digest"]])?
+    ];
+    let digests = target.join(" ");
+    let elided = run_cli(&["elide", "removing", &digests, ALICE_KNOWS_BOB_EXAMPLE])?;
+    assert_eq!(
+        elided,
+        "ur:envelope/lftpcsihfpjziniaihoyhdcxuykitdcegyinqzlrlgdrcwsbbkihcemtchsntabdpldtbzjepkwsrkdrlernykrdtpcsiafwjlidcyhydiwe"
+    );
+    run_cli_expect(
+        &["format", &elided],
+        indoc!(r#"
+        "Alice" [
+            ELIDED: "Bob"
+        ]
+        "#)
+    )?;
+    Ok(())
 }

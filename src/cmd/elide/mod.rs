@@ -1,5 +1,6 @@
 pub mod removing;
 pub mod revealing;
+pub mod elide_args;
 
 use clap::{Subcommand, Args};
 
