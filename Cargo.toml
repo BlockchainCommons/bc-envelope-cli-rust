@@ -4,16 +4,17 @@ version = "0.1.0"
 edition = "2021"
 
 [dependencies]
-dcbor = { path = "../bc-dcbor-rust" }
+dcbor = "0.9.0"
+# dcbor = { path = "../bc-dcbor-rust" }
 
-# bc-ur = "0.1.7"
-bc-ur = { path = "../bc-ur-rust" }
+bc-ur = "0.2.0"
+# bc-ur = { path = "../bc-ur-rust" }
 
-# bc-envelope = "0.5.0"
-bc-envelope = { path = "../bc-envelope-rust" }
+bc-envelope = "0.6.0"
+# bc-envelope = { path = "../bc-envelope-rust" }
 
-# bc-components = "0.4.0"
-bc-components = { path = "../bc-components-rust" }
+bc-components = "0.5.0"
+# bc-components = { path = "../bc-components-rust" }
 
 clap = { version = "4.4.3", features = ["derive", "unstable-styles"] }
 anyhow = "1.0"
