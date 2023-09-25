@@ -10,7 +10,7 @@ use bc_envelope::prelude::*;
 #[derive(Debug, Args)]
 #[group(skip)]
 pub struct CommandArgs {
-    /// The key to use to encrypt the envelope's subject. (ur:crypto-key)
+    /// The symmetric key to use to encrypt the envelope's subject. (ur:crypto-key)
     ///
     /// If not provided and recipients are provided, an ephemerally-generated key is used.
     #[arg(long, short)]

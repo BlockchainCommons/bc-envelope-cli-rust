@@ -912,3 +912,224 @@ fn test_elide_2() -> anyhow::Result<()> {
     )?;
     Ok(())
 }
+
+/// ```swift
+// func testEncrypt() throws {
+//     let encrypted = try envelope("encrypt \(aliceKnowsBobExample) --key \(keyExample)")
+//     XCTAssertEqual(try envelope(encrypted),
+//     """
+//     ENCRYPTED [
+//         "knows": "Bob"
+//     ]
+//     """
+//     )
+//     let decrypted = try envelope("decrypt \(encrypted) --key \(keyExample)")
+//     XCTAssertEqual(decrypted, aliceKnowsBobExample)
+// }
+// ```
+
+#[test]
+fn test_encrypt() -> anyhow::Result<()> {
+    let encrypted = run_cli(&[
+        "encrypt",
+        "--key",
+        KEY_EXAMPLE,
+        ALICE_KNOWS_BOB_EXAMPLE
+    ])?;
+    run_cli_expect(
+        &["format", &encrypted],
+        indoc!(r#"
+        ENCRYPTED [
+            "knows": "Bob"
+        ]
+        "#)
+    )?;
+    let decrypted = run_cli(&[
+        "decrypt",
+        "--key",
+        KEY_EXAMPLE,
+        &encrypted,
+    ])?;
+    assert_eq!(decrypted, ALICE_KNOWS_BOB_EXAMPLE);
+    Ok(())
+}
+
+// ```swift
+// func testGeneratePrivateKeys1() throws {
+//     let prvkeys = try envelope("generate prvkeys")
+//     XCTAssertEqual(try UR(urString: prvkeys).type, "crypto-prvkeys")
+// }
+// ```
+
+#[test]
+fn test_generate_private_keys_1() -> anyhow::Result<()> {
+    let prvkeys = run_cli(&["generate", "prvkeys"])?;
+    assert_eq!(UR::from_ur_string(prvkeys)?.ur_type(), "crypto-prvkeys");
+    Ok(())
+}
+
+// ```swift
+// func testGeneratePrivateKeys2() throws {
+//     let seed = "ur:crypto-seed/oyadhdcxhsinuesrennenlhfaopycnrfrkdmfnsrvltowmtbmyfwdafxvwmthersktcpetdweocfztrd"
+//     let prvkeys1 = try envelope("generate prvkeys \(seed)")
+//     XCTAssertEqual(prvkeys1, "ur:crypto-prvkeys/hdcxhsinuesrennenlhfaopycnrfrkdmfnsrvltowmtbmyfwdafxvwmthersktcpetdwfnbndeah")
+//     let prvkeys2 = try envelope("generate prvkeys \(seed)")
+//     XCTAssertEqual(prvkeys1, prvkeys2)
+
+//     let pubkeys = try envelope("generate pubkeys \(prvkeys1)")
+//     XCTAssertEqual(pubkeys, "ur:crypto-pubkeys/lftanshfhdcxayvazmflzsfrotemfxvoghtbynbsgywztlheisvapypmidzmaoldisdybkvdlerytansgrhdcxfdgwgacloxsrmupdcybdchfylewsdilrbestjodpwnknndjoztjprfkkjopkdejobebtdlhd")
+// }
+// ```
+
+#[test]
+fn test_generate_private_keys_2() -> anyhow::Result<()> {
+    let seed = "ur:crypto-seed/oyadhdcxhsinuesrennenlhfaopycnrfrkdmfnsrvltowmtbmyfwdafxvwmthersktcpetdweocfztrd";
+    let prvkeys1 = run_cli(&["generate", "prvkeys", "--seed", seed])?;
+    assert_eq!(
+        prvkeys1,
+        "ur:crypto-prvkeys/hdcxhsinuesrennenlhfaopycnrfrkdmfnsrvltowmtbmyfwdafxvwmthersktcpetdwfnbndeah"
+    );
+    let prvkeys2 = run_cli(&["generate", "prvkeys", "--seed", seed])?;
+    assert_eq!(prvkeys1, prvkeys2);
+
+    let pubkeys = run_cli(&["generate", "pubkeys", &prvkeys1])?;
+    assert_eq!(
+        pubkeys,
+        "ur:crypto-pubkeys/lftanshfhdcxayvazmflzsfrotemfxvoghtbynbsgywztlheisvapypmidzmaoldisdybkvdlerytansgrhdcxfdgwgacloxsrmupdcybdchfylewsdilrbestjodpwnknndjoztjprfkkjopkdejobebtdlhd"
+    );
+    Ok(())
+}
+
+// ```swift
+// func testSign() throws {
+//     let prvkeys = "ur:crypto-prvkeys/hdcxhsinuesrennenlhfaopycnrfrkdmfnsrvltowmtbmyfwdafxvwmthersktcpetdwfnbndeah"
+//     let signed = try envelope("sign \(aliceKnowsBobExample) --prvkeys \(prvkeys)")
+//     XCTAssertEqual(try envelope(signed),
+//     """
+//     "Alice" [
+//         "knows": "Bob"
+//         verifiedBy: Signature
+//     ]
+//     """
+//     )
+
+//     let pubkeys = try envelope("generate pubkeys \(prvkeys)")
+
+//     XCTAssertNoThrow(try envelope("verify \(signed) --pubkeys \(pubkeys)"))
+
+//     XCTAssertThrowsError(try envelope("verify \(aliceKnowsBobExample) --pubkeys \(pubkeys)"))
+
+//     let badPubkeys = try pipe(["generate prvkeys", "generate pubkeys"])
+//     XCTAssertThrowsError(try envelope("verify \(signed) --pubkeys \(badPubkeys)"))
+// }
+// ```
+
+#[test]
+fn test_sign() -> anyhow::Result<()> {
+    let prvkeys = "ur:crypto-prvkeys/hdcxhsinuesrennenlhfaopycnrfrkdmfnsrvltowmtbmyfwdafxvwmthersktcpetdwfnbndeah";
+    let signed = run_cli(&[
+        "sign",
+        "--prvkeys",
+        prvkeys,
+        ALICE_KNOWS_BOB_EXAMPLE,
+    ])?;
+    run_cli_expect(
+        &["format", &signed],
+        indoc!(r#"
+        "Alice" [
+            "knows": "Bob"
+            'verifiedBy': Signature
+        ]
+        "#)
+    )?;
+
+    let pubkeys = run_cli(&["generate", "pubkeys", prvkeys])?;
+
+    run_cli(&["verify", &signed, "--pubkeys", &pubkeys])?;
+
+    assert!(run_cli(&["verify", ALICE_KNOWS_BOB_EXAMPLE, "--pubkeys", &pubkeys]).is_err());
+
+    let bad_prvkeys = run_cli(&["generate", "prvkeys"])?;
+    let bad_pubkeys = run_cli(&["generate", "pubkeys", &bad_prvkeys])?;
+    assert!(run_cli(&["verify", &signed, "--pubkeys", &bad_pubkeys, &signed]).is_err());
+
+    Ok(())
+}
+
+// ```swift
+// func testSign2() throws {
+//     let prvkeys = "ur:crypto-prvkeys/hdcxhsinuesrennenlhfaopycnrfrkdmfnsrvltowmtbmyfwdafxvwmthersktcpetdwfnbndeah"
+//     let wrappedSigned = try pipe(["subject --wrapped \(aliceKnowsBobExample)", "sign --prvkeys \(prvkeys)"])
+//     XCTAssertEqual(try envelope(wrappedSigned),
+//     """
+//     {
+//         "Alice" [
+//             "knows": "Bob"
+//         ]
+//     } [
+//         verifiedBy: Signature
+//     ]
+//     """
+//     )
+
+//     let pubkeys = try envelope("generate pubkeys \(prvkeys)")
+//     XCTAssertNoThrow(try envelope("verify \(wrappedSigned) --pubkeys \(pubkeys)"))
+// }
+// ```
+
+#[test]
+fn test_sign_2() -> anyhow::Result<()> {
+    let prvkeys = "ur:crypto-prvkeys/hdcxhsinuesrennenlhfaopycnrfrkdmfnsrvltowmtbmyfwdafxvwmthersktcpetdwfnbndeah";
+    let wrapped_signed = run_cli_piped(&[
+        &["subject", "type", "wrapped", ALICE_KNOWS_BOB_EXAMPLE],
+        &["sign", "--prvkeys", prvkeys]
+    ])?;
+    run_cli_expect(
+        &["format", &wrapped_signed],
+        indoc!(r#"
+        {
+            "Alice" [
+                "knows": "Bob"
+            ]
+        } [
+            'verifiedBy': Signature
+        ]
+        "#)
+    )?;
+
+    let pubkeys = run_cli(&["generate", "pubkeys", prvkeys])?;
+    run_cli(&["verify", &wrapped_signed, "--pubkeys", &pubkeys])?;
+    Ok(())
+}
+
+// ```swift
+// func testSign3() throws {
+//     let e = try pipe(["subject \(helloString)", "sign --prvkeys \(alicePrvkeys) --prvkeys \(carolPrvkeys)"])
+//     XCTAssertEqual(try envelope(e),
+//     """
+//     "Hello." [
+//         verifiedBy: Signature
+//         verifiedBy: Signature
+//     ]
+//     """
+//     )
+// }
+// ```
+
+#[test]
+fn test_sign_3() -> anyhow::Result<()> {
+    let e = run_cli_piped(&[
+        &["subject", "type", "string", "Hello."],
+        &["sign", "--prvkeys", ALICE_PRVKEYS, "--prvkeys", CAROL_PRVKEYS]
+    ])?;
+    run_cli_expect(
+        &["format", &e],
+        indoc!(r#"
+        "Hello." [
+            'verifiedBy': Signature
+            'verifiedBy': Signature
+        ]
+        "#)
+    )?;
+    Ok(())
+}

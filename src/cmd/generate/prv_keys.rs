@@ -7,7 +7,7 @@ use clap::Args;
 #[derive(Debug, Args)]
 #[group(skip)]
 pub struct CommandArgs {
-    /// The seed from which to derive the private key base.
+    /// The seed from which to derive the private key base (ur:crypto-seed).
     #[arg(long, short)]
     seed: Option<String>,
 }
