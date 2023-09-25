@@ -19,6 +19,7 @@ clap = { version = "4.4.3", features = ["derive", "unstable-styles"] }
 anyhow = "1.0"
 anstyle = "1.0.1"
 hex = "0.4.3"
+regex = "1.9.5"
 
 [dev-dependencies]
 assert_cmd = "2.0.12"

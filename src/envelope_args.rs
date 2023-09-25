@@ -23,7 +23,9 @@ pub trait EnvelopeArgsLike {
 #[derive(Debug, Args)]
 #[group(skip)]
 pub struct EnvelopeArgs {
-    /// The envelope to process. If the envelope is not supplied on the command line, it is read from stdin.
+    /// The envelope to process.
+    ///
+    /// If the envelope is not supplied on the command line, it is read from stdin.
     envelope: Option<String>,
 }
 
