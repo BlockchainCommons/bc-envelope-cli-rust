@@ -14,14 +14,14 @@ pub struct CommandArgs {
 #[derive(Debug, Subcommand)]
 enum SubCommands {
     Envelope(envelope::CommandArgs),
-    PredicateObject(pred_obj::CommandArgs),
+    PredObj(pred_obj::CommandArgs),
 }
 
 impl crate::exec::Exec for CommandArgs {
     fn exec(&self) -> anyhow::Result<String> {
         match &self.command {
             SubCommands::Envelope(args) => args.exec(),
-            SubCommands::PredicateObject(args) => args.exec(),
+            SubCommands::PredObj(args) => args.exec(),
         }
     }
 }

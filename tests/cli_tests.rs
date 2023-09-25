@@ -1208,3 +1208,51 @@ fn test_assertion_create() -> anyhow::Result<()> {
     )?;
     Ok(())
 }
+
+#[test]
+fn test_assertion_remove_envelope() -> anyhow::Result<()> {
+    let assertion = run_cli(&[
+        "assertion",
+        "at",
+        "0",
+        ALICE_KNOWS_BOB_EXAMPLE,
+    ])?;
+
+    let removed = run_cli(&[
+        "assertion",
+        "remove",
+        "envelope",
+        &assertion,
+        ALICE_KNOWS_BOB_EXAMPLE,
+    ])?;
+
+    run_cli_expect(
+        &["format", &removed],
+        indoc!(r#"
+        "Alice"
+        "#)
+    )?;
+    Ok(())
+}
+
+#[test]
+fn test_assertion_remove_pred_obj() -> anyhow::Result<()> {
+    let removed = run_cli(&[
+        "assertion",
+        "remove",
+        "pred-obj",
+        "string",
+        "knows",
+        "string",
+        "Bob",
+        ALICE_KNOWS_BOB_EXAMPLE,
+    ])?;
+
+    run_cli_expect(
+        &["format", &removed],
+        indoc!(r#"
+        "Alice"
+        "#)
+    )?;
+    Ok(())
+}
