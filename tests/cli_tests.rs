@@ -1183,3 +1183,27 @@ fn test_salt() -> anyhow::Result<()> {
     )?;
     Ok(())
 }
+
+#[test]
+fn test_assertion_create() -> anyhow::Result<()> {
+    let assertion = run_cli(&[
+        "assertion",
+        "create",
+        "--salted",
+        "string",
+        "knows",
+        "string",
+        "Bob",
+    ])?;
+    run_cli_expect(
+        &["format", &assertion],
+        indoc!(r#"
+        {
+            "knows": "Bob"
+        } [
+            'salt': Salt
+        ]
+        "#)
+    )?;
+    Ok(())
+}
