@@ -1195,6 +1195,7 @@ fn test_assertion_create() -> anyhow::Result<()> {
         "string",
         "Bob",
     ])?;
+
     run_cli_expect(
         &["format", &assertion],
         indoc!(r#"
