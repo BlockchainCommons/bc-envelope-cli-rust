@@ -1,5 +1,7 @@
 # Overview of the Commands
 
+**NOTE:** Most of this documentation has *not* been updated to reflect the new command line syntax.
+
 ## Help
 
 Help is available for the tool and its subcommands.

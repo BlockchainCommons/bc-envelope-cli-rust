@@ -10,7 +10,7 @@ use clap::{Parser, Subcommand};
 
 use crate::exec::Exec;
 
-/// A tool for manipulating the Envelope data type.
+/// A tool for manipulating the Gordian Envelope data type.
 #[derive(Debug, Parser)]
 #[command(author, version)]
 #[command(propagate_version = true)]
