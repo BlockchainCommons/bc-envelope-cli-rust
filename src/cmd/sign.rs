@@ -29,27 +29,6 @@ impl EnvelopeArgsLike for CommandArgs {
     }
 }
 
-// ```swift
-// mutating func run() throws {
-//     resetOutput()
-//     try fill()
-//     guard let envelope else {
-//         throw EnvelopeToolError.missingArgument("envelope")
-//     }
-//     guard !prvkeys.isEmpty else {
-//         throw EnvelopeToolError.missingArgument("prvkeys")
-//     }
-//     if let note {
-//         guard prvkeys.count == 1 else {
-//             throw EnvelopeToolError.invalidParameters("Can only add a note on a single signature.")
-//         }
-//         printOut(envelope.sign(with: prvkeys.first!, note: note).ur)
-//     } else {
-//         printOut(envelope.sign(with: prvkeys).ur)
-//     }
-// }
-// ```
-
 impl crate::exec::Exec for CommandArgs {
     fn exec(&self) -> anyhow::Result<String> {
         let envelope = self.get_envelope()?;

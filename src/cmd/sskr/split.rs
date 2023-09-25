@@ -43,53 +43,6 @@ impl EnvelopeArgsLike for CommandArgs {
     }
 }
 
-/// ```swift
-// mutating func run() throws {
-//     resetOutput()
-//     try fill()
-
-//     guard let envelope else {
-//         throw EnvelopeToolError.missingArgument("envelope")
-//     }
-
-//     guard groupThreshold <= group.count else {
-//         throw EnvelopeToolError.invalidGroupThreshold(groupThreshold)
-//     }
-
-//     let regex = try ~/#"(\d{1,2})-of-(\d{1,2})"#
-//     let groups: [(Int, Int)] = try group.map {
-//         guard
-//             let matches = regex.matchedSubstrings(in: $0),
-//             matches.count == 2,
-//             let m = Int(matches[0]),
-//             let n = Int(matches[1])
-//         else {
-//             throw EnvelopeToolError.invalidGroupSpecifier($0)
-//         }
-//         return (m, n)
-//     }
-
-//     let contentKey = key ?? SymmetricKey()
-//     let wrapped = envelope.wrap()
-//     let encrypted = try wrapped.encryptSubject(with: contentKey)
-//     let groupedShares = encrypted.split(groupThreshold: groupThreshold, groups: groups, contentKey: contentKey)
-//     var flattenedShares = groupedShares.flatMap { $0 }
-//     if !recipient.isEmpty {
-//         flattenedShares = flattenedShares.map {
-//             var share = $0
-//             for recipientPubliKey in recipient {
-//                 share = share.addRecipient(recipientPubliKey, contentKey: contentKey)
-//             }
-//             return share
-//         }
-//     }
-//     let outputShares = flattenedShares.map {
-//         $0.ur.string
-//     }.joined(separator: " ")
-//     printOut(outputShares)
-// }
-/// ```
-
 impl crate::exec::Exec for CommandArgs {
     fn exec(&self) -> anyhow::Result<String> {
         let envelope = self.get_envelope()?;

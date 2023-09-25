@@ -36,26 +36,6 @@ impl EnvelopeArgsLike for CommandArgs {
 }
 
 impl crate::exec::Exec for CommandArgs {
-    // ```swift
-    // mutating func run() throws {
-    //     resetOutput()
-    //     try fill()
-    //     guard let envelope else {
-    //         throw EnvelopeToolError.missingArgument("envelope")
-    //     }
-    //     let digests: Set<Digest>
-    //     switch depth {
-    //     case .top:
-    //         digests = [envelope.digest]
-    //     case .shallow:
-    //         digests = envelope.shallowDigests
-    //     case .deep:
-    //         digests = envelope.deepDigests
-    //     }
-    //     printOut(digests.sorted().map { isHex ? $0.hex : $0.ur.string }.joined(separator: " "))
-    // }
-    // ```
-
     fn exec(&self) -> anyhow::Result<String> {
         let envelope = self.get_envelope()?;
         let digests: HashSet<Digest> = match self.depth {

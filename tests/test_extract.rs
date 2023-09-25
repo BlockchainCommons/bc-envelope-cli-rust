@@ -1,6 +1,8 @@
 mod common;
 use common::*;
 
+use bc_envelope::{known_values::*, prelude::*};
+
 const ALICE_KNOWS_BOB: &str = "ur:envelope/lftpcsihfpjziniaihoytpcsihjejtjlktjktpcsiafwjliddssngwct";
 
 #[test]
@@ -129,4 +131,18 @@ fn test_extract_wrapped() -> anyhow::Result<()> {
         &["extract", "wrapped", "ur:envelope/tpsptpcslsadaoaxqzsshsyl"],
         "ur:envelope/tpcslsadaoaxgedmotks"
     )
+}
+
+#[test]
+fn test_extract_assertion_subject() -> anyhow::Result<()> {
+    let e = Envelope::new_assertion(NOTE, "This is a note.");
+    let ur = e.ur_string();
+
+    let predicate_envelope = "ur:envelope/aatljldnmw";
+    let object_envelope = "ur:envelope/tpcsjlghisinjkcxinjkcxhscxjtjljyihdmbamnatmn";
+    let pred_obj_envelope = [predicate_envelope, object_envelope].join("\n");
+
+    run_cli_expect(&["extract", "assertion", &ur], &pred_obj_envelope)?;
+    run_cli_expect(&["extract", "predicate", &ur], predicate_envelope)?;
+    run_cli_expect(&["extract", "object", &ur], object_envelope)
 }

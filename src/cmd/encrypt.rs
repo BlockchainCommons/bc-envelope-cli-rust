@@ -33,28 +33,6 @@ impl EnvelopeArgsLike for CommandArgs {
 }
 
 impl crate::exec::Exec for CommandArgs {
-    // ```swift
-    // mutating func run() throws {
-    //     resetOutput()
-    //     try fill()
-    //     guard let envelope else {
-    //         throw EnvelopeToolError.missingArgument("envelope")
-    //     }
-    //     guard let key else {
-    //         throw EnvelopeToolError.missingArgument("key")
-    //     }
-    //     if recipient.isEmpty {
-    //         printOut(try envelope.encryptSubject(with: key).ur)
-    //     } else {
-    //         var e = try envelope.encryptSubject(with: key)
-    //         for pubkeys in recipient {
-    //             e = e.addRecipient(pubkeys, contentKey: key)
-    //         }
-    //         printOut(e.ur)
-    //     }
-    // }
-    // ```
-
     fn exec(&self) -> anyhow::Result<String> {
         let envelope = self.get_envelope()?;
 
