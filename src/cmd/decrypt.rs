@@ -29,7 +29,7 @@ impl EnvelopeArgsLike for CommandArgs {
 
 impl crate::exec::Exec for CommandArgs {
     fn exec(&self) -> anyhow::Result<String> {
-        let envelope = self.get_envelope()?;
+        let envelope = self.read_envelope()?;
         if let Some(key_ur) = &self.key {
             let key = SymmetricKey::from_ur_string(key_ur)?;
             Ok(envelope.decrypt_subject(&key)?.ur_string())

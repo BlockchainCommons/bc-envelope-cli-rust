@@ -45,7 +45,7 @@ impl EnvelopeArgsLike for CommandArgs {
 
 impl crate::exec::Exec for CommandArgs {
     fn exec(&self) -> anyhow::Result<String> {
-        let envelope = self.get_envelope()?;
+        let envelope = self.read_envelope()?;
 
         if self.group_threshold > self.groups.len() {
             bail!("Group threshold must be less than or equal to the number of groups");

@@ -49,22 +49,26 @@ pub enum DataType {
     Wrapped,
 }
 
-pub fn parse_data_type_to_envelope(data_type: DataType, s: &str, ur_cbor_tag_value: Option<u64>) -> anyhow::Result<Rc<Envelope>> {
-    match data_type {
-        DataType::Arid => parse_arid(s),
-        DataType::Bool => parse_boolean(s),
-        DataType::Cbor => parse_cbor(s),
-        DataType::Data => parse_data(s),
-        DataType::Date => parse_date(s),
-        DataType::Digest => parse_digest(s),
-        DataType::Envelope => parse_envelope(s),
-        DataType::Known => parse_known_value(s),
-        DataType::Number => parse_number(s),
-        DataType::String => parse_string(s),
-        DataType::Ur => parse_ur(s, ur_cbor_tag_value),
-        DataType::Uri => parse_uri(s),
-        DataType::Uuid => parse_uuid(s),
-        DataType::Wrapped => parse_wrapped_envelope(s),
+pub fn parse_data_type_to_envelope(data_type: DataType, s: Option<&str>, ur_cbor_tag_value: Option<u64>) -> anyhow::Result<Rc<Envelope>> {
+    if let Some(s) = s {
+        match data_type {
+            DataType::Arid => parse_arid(s),
+            DataType::Bool => parse_boolean(s),
+            DataType::Cbor => parse_cbor(s),
+            DataType::Data => parse_data(s),
+            DataType::Date => parse_date(s),
+            DataType::Digest => parse_digest(s),
+            DataType::Envelope => parse_envelope(s),
+            DataType::Known => parse_known_value(s),
+            DataType::Number => parse_number(s),
+            DataType::String => parse_string(s),
+            DataType::Ur => parse_ur(s, ur_cbor_tag_value),
+            DataType::Uri => parse_uri(s),
+            DataType::Uuid => parse_uuid(s),
+            DataType::Wrapped => parse_wrapped_envelope(s),
+        }
+    } else {
+        anyhow::bail!("No value provided")
     }
 }
 

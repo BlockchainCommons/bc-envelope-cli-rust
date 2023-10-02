@@ -3,8 +3,21 @@ use crate::data_types::DataType;
 
 pub trait SubjectArgsLike {
     fn subject_type(&self) -> DataType;
-    fn subject_value(&self) -> &str;
+    fn subject_value(&self) -> Option<&str>;
     fn ur_tag(&self) -> Option<u64>;
+
+    fn read_subject_value(&self) -> anyhow::Result<String> {
+        let mut string = String::new();
+        if self.subject_value().is_none() {
+            std::io::stdin().read_line(&mut string)?;
+        } else {
+            string = self.subject_value().as_ref().unwrap().to_string();
+        }
+        if string.is_empty() {
+            anyhow::bail!("No value provided");
+        }
+        Ok(string.trim().to_string())
+    }
 }
 
 #[derive(Debug, Args)]
@@ -15,7 +28,7 @@ pub struct SubjectArgs {
     subject_type: DataType,
     /// Subject value.
     #[arg(name = "VALUE")]
-    subject_value: String,
+    subject_value: Option<String>,
     /// The integer tag for an enclosed UR.
     #[arg(long)]
     ur_tag: Option<u64>,
@@ -26,8 +39,8 @@ impl SubjectArgsLike for SubjectArgs {
         self.subject_type
     }
 
-    fn subject_value(&self) -> &str {
-        &self.subject_value
+    fn subject_value(&self) -> Option<&str> {
+        self.subject_value.as_deref()
     }
 
     fn ur_tag(&self) -> Option<u64> {

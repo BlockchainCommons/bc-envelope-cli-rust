@@ -26,7 +26,7 @@ impl EnvelopeArgsLike for CommandArgs {
 
 impl crate::exec::Exec for CommandArgs {
     fn exec(&self) -> anyhow::Result<String> {
-        let envelope = self.get_envelope()?;
+        let envelope = self.read_envelope()?;
         let assertion = Rc::new(Envelope::from_ur_string(&self.assertion)?);
         Ok(envelope.remove_assertion(assertion).ur_string())
     }

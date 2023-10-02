@@ -28,7 +28,7 @@ impl EnvelopeArgsLike for CommandArgs {
 
 impl crate::exec::Exec for CommandArgs {
     fn exec(&self) -> anyhow::Result<String> {
-        let envelope = self.get_envelope()?;
+        let envelope = self.read_envelope()?;
         Ok((if let Some(size) = self.size {
             envelope.add_salt_with_len(size)?
         } else {

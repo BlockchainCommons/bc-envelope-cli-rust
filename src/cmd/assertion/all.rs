@@ -18,7 +18,7 @@ impl EnvelopeArgsLike for CommandArgs {
 
 impl crate::exec::Exec for CommandArgs {
     fn exec(&self) -> anyhow::Result<String> {
-        let envelope = self.get_envelope()?;
+        let envelope = self.read_envelope()?;
         let assertions = envelope.assertions();
         let output = assertions.iter().map(|a| a.ur_string()).collect::<Vec<String>>().join("\n");
         Ok(output)

@@ -16,7 +16,7 @@ impl SubjectArgsLike for CommandArgs {
         self.subject_args.subject_type()
     }
 
-    fn subject_value(&self) -> &str {
+    fn subject_value(&self) -> Option<&str> {
         self.subject_args.subject_value()
     }
 
@@ -27,6 +27,6 @@ impl SubjectArgsLike for CommandArgs {
 
 impl crate::exec::Exec for CommandArgs {
     fn exec(&self) -> anyhow::Result<String> {
-        Ok(parse_data_type_to_envelope(self.subject_type(), self.subject_value(), self.ur_tag())?.ur_string())
+        Ok(parse_data_type_to_envelope(self.subject_type(), Some(self.read_subject_value()?).as_deref(), self.ur_tag())?.ur_string())
     }
 }

@@ -40,7 +40,7 @@ enum FormatType {
 
 impl crate::exec::Exec for CommandArgs {
     fn exec(&self) -> anyhow::Result<String> {
-        let e = self.get_envelope()?;
+        let e = self.read_envelope()?;
         let output = match self.format_type {
             FormatType::Envelope => with_format_context!(|context| {
                 e.format_opt(Some(context))

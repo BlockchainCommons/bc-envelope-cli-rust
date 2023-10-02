@@ -22,7 +22,7 @@ impl EnvelopeArgsLike for CommandArgs {
 
 impl crate::exec::Exec for CommandArgs {
     fn exec(&self) -> anyhow::Result<String> {
-        let envelope = self.get_envelope()?;
+        let envelope = self.read_envelope()?;
         let assertions = envelope.assertions();
         let assertion = assertions.get(self.index).ok_or_else(|| anyhow::anyhow!("Index out of bounds"))?;
         Ok(assertion.ur_string())

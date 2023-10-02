@@ -34,7 +34,7 @@ impl EnvelopeArgsLike for CommandArgs {
 
 impl crate::exec::Exec for CommandArgs {
     fn exec(&self) -> anyhow::Result<String> {
-        let envelope = self.get_envelope()?;
+        let envelope = self.read_envelope()?;
 
         // Convert recipients to public key bases.
         let recipients = self.recipient.iter().map(PublicKeyBase::from_ur_string).collect::<anyhow::Result<Vec<PublicKeyBase>>>()?;

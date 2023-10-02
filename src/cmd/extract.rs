@@ -89,7 +89,7 @@ impl EnvelopeArgsLike for CommandArgs {
 
 impl crate::exec::Exec for CommandArgs {
     fn exec(&self) -> anyhow::Result<String> {
-        let envelope = self.get_envelope()?;
+        let envelope = self.read_envelope()?;
         let string = match self.subject_type {
             SubjectType::Assertion => extract_assertion(envelope)?,
             SubjectType::Object => extract_object(envelope)?,

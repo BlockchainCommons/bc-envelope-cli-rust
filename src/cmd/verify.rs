@@ -38,7 +38,7 @@ impl EnvelopeArgsLike for CommandArgs {
 
 impl crate::exec::Exec for CommandArgs {
     fn exec(&self) -> anyhow::Result<String> {
-        let envelope = self.get_envelope()?;
+        let envelope = self.read_envelope()?;
         if self.pubkeys.is_empty() {
             bail!("at least one pubkey must be provided");
         }

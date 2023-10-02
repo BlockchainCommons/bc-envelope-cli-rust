@@ -5,7 +5,7 @@ use clap::Args;
 pub trait EnvelopeArgsLike {
     fn envelope(&self) -> Option<&str>;
 
-    fn get_envelope(&self) -> anyhow::Result<Rc<Envelope>> {
+    fn read_envelope(&self) -> anyhow::Result<Rc<Envelope>> {
         let mut ur_string = String::new();
         if self.envelope().is_none() {
             std::io::stdin().read_line(&mut ur_string)?;
@@ -15,8 +15,7 @@ pub trait EnvelopeArgsLike {
         if ur_string.is_empty() {
             anyhow::bail!("No envelope provided");
         }
-        let a = Rc::new(Envelope::from_ur_string(ur_string.trim())?);
-        Ok(a)
+        Ok(Rc::new(Envelope::from_ur_string(ur_string.trim())?))
     }
 }
 

@@ -13,8 +13,8 @@ pub trait PredObjArgsLike {
     fn obj_tag(&self) -> Option<u64>;
 
     fn assertion_envelope(&self) -> anyhow::Result<Rc<Envelope>> {
-        let predicate = parse_data_type_to_envelope(self.pred_type(), self.pred_value(), self.pred_tag())?;
-        let object = parse_data_type_to_envelope(self.obj_type(), self.obj_value(), self.obj_tag())?;
+        let predicate = parse_data_type_to_envelope(self.pred_type(), Some(self.pred_value()), self.pred_tag())?;
+        let object = parse_data_type_to_envelope(self.obj_type(), Some(self.obj_value()), self.obj_tag())?;
         Ok(Envelope::new_assertion(predicate, object))
     }
 }
