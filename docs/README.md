@@ -1,8 +1,6 @@
 # `nvelope` Docs
 
-**NOTE:** Most of these docs have *not* been updated to reflect the new command line syntax, and some of them describe functionality that is not yet supported. Right now the built-in `--help` is the best source of information. You may also find the unit tests in the [tests](../tests/) directory useful.
-
-The following docs exemplify the basic functionality of the `nvelope` tool.
+The following docs exemplify the basic functionality of the `nvelope` tool. the built-in `--help` is the best source of information. You may also find the unit tests in the [tests](../tests/) directory useful.
 
 * [1: Overview of Commands](1-OVERVIEW.md) — Adding subjects, assertions, signatures, and salt.
 * [2: Basic Examples](2-BASIC-EXAMPLES.md) — Demonstrating standard methodologies for entry, encryption, and signing.
