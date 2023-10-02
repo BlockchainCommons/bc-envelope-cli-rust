@@ -11,7 +11,7 @@ The following docs exemplify the basic functionality of the `nvelope` tool.
 * [5: DID Document Example](5-DID-EXAMPLE.md) — Creating and wrapping identifiers.
 * [6: Verifiable Credential Example](6-VC-RESIDENT-EXAMPLE.md) — Building complex credentials around an identifier.
 * [7: Verifiable Credential with Detailed Elision Example](7-VC-ELISION-EXAMPLE.md) — Eliding some of a credential.
-* [8: Existence Proofs](8-EXISTENCE-PROOFS.md) — Proving the existence of an elided credential.
-* [9: Diffing](9-DIFFING.md) — Showing the differences between two envelopes.
+<!--* [8: Existence Proofs](8-EXISTENCE-PROOFS.md) — Proving the existence of an elided credential.
+* [9: Diffing](9-DIFFING.md) — Showing the differences between two envelopes.-->
 
 For more examples of `envelope-cli` usage, see the [envelope-cli videos](https://github.com/BlockchainCommons/envelope-cli-swift#videos) and their transcripts.

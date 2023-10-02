@@ -1,7 +1,5 @@
 # envelope - Elision/Redaction Example
 
-**NOTE:** Most of this documentation has *not* been updated to reflect the new command line syntax.
-
 In this example, The employer of an employee with a continuing education credential uses elision to warrant to a third-party that their employee has such a credential, without revealing anything else about the employee.
 
 This example goes into detail about creating the target set for elision, building it up piece by piece.

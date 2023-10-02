@@ -4,6 +4,8 @@
 
 **See Associated Video:**
 
+**NOTE:** This video shows the command line syntax of the Swift `envelope` command line tool. The Rust-based `nvelope` tool has a slightly different syntax, but the meaning of the commands is the same.
+
 [![Gordian Envelope CLI - 5 - Existence Proofs](https://img.youtube.com/vi/LUQ-n9EZa0U/mqdefault.jpg)](https://www.youtube.com/watch?v=LUQ-n9EZa0U)
 
 ## Introduction
