@@ -1,6 +1,4 @@
-# envelope - Verifiable Credential Example
-
-**NOTE:** Most of this documentation has *not* been updated to reflect the new command line syntax.
+# nvelope - Verifiable Credential Example
 
 In this example we build a permanent resident card, which the holder then redacts to reveal only selected information necessary to prove his identity.
 
@@ -10,24 +8,26 @@ John Smith's identifier:
 
 ```bash
 👉
-JOHN_ARID=`envelope generate arid --hex 78bc30004776a3905bccb9b8a032cf722ceaf0bbfb1a49eaf3185fab5808cadc`
+JOHN_ARID=`nvelope generate arid`
+echo $JOHN_ARID
+78bc30004776a3905bccb9b8a032cf722ceaf0bbfb1a49eaf3185fab5808cadc
 ```
 
 A photo of John Smith:
 
 ```bash
 👉
-JOHN_IMAGE=`envelope subject "John Smith Smiling" | \
-envelope assertion --known note "This is an image of John Smith." | \
-envelope assertion --known dereferenceVia --uri https://exampleledger.com/digest/36be30726befb65ca13b136ae29d8081f64792c2702415eb60ad1c56ed33c999`
-envelope $JOHN_IMAGE
+JOHN_IMAGE=`nvelope subject type string "John Smith Smiling" | \
+nvelope assertion add pred-obj known note string "This is an image of John Smith." | \
+nvelope assertion add pred-obj known dereferenceVia uri https://exampleledger.com/digest/36be30726befb65ca13b136ae29d8081f64792c2702415eb60ad1c56ed33c999`
+nvelope format $JOHN_IMAGE
 ```
 
 ```
 👈
 "John Smith Smiling" [
-    dereferenceVia: URI(https://exampleledger.com/digest/36be30726befb65ca13b136ae29d8081f64792c2702415eb60ad1c56ed33c999)
-    note: "This is an image of John Smith."
+    'dereferenceVia': URI(https://exampleledger.com/digest/36be30726befb65ca13b136ae29d8081f64792c2702415eb60ad1c56ed33c999)
+    'note': "This is an image of John Smith."
 ]
 ```
 
@@ -35,69 +35,69 @@ John Smith's Permanent Resident Card issued by the State of Example:
 
 ```bash
 👉
-ISSUER=`envelope subject --ur $STATE_ARID | \
-    envelope assertion --known note "Issued by the State of Example" | \
-    envelope assertion --known dereferenceVia --uri https://exampleledger.com/arid/04363d5ff99733bc0f1577baba440af1cf344ad9e454fad9d128c00fef6505e8`
+ISSUER=`nvelope subject type ur $STATE_ARID | \
+    nvelope assertion add pred-obj known note string "Issued by the State of Example" | \
+    nvelope assertion add pred-obj known dereferenceVia uri https://exampleledger.com/arid/04363d5ff99733bc0f1577baba440af1cf344ad9e454fad9d128c00fef6505e8`
 
-BIRTH_COUNTRY=`envelope subject bs | \
-    envelope assertion --known note "The Bahamas"`
+BIRTH_COUNTRY=`nvelope subject type string bs | \
+    nvelope assertion add pred-obj known note string "The Bahamas"`
 
-HOLDER=`envelope subject --ur $JOHN_ARID | \
-    envelope assertion --known isA Person | \
-    envelope assertion --known isA "Permanent Resident" | \
-    envelope assertion givenName JOHN | \
-    envelope assertion familyName SMITH | \
-    envelope assertion sex MALE | \
-    envelope assertion --string birthDate --date 1974-02-18 | \
-    envelope assertion --string image --envelope $JOHN_IMAGE | \
-    envelope assertion lprCategory C09 | \
-    envelope assertion --string birthCountry --envelope $BIRTH_COUNTRY | \
-    envelope assertion --string residentSince --date 2018-01-07`
+HOLDER=`nvelope subject type ur $JOHN_ARID | \
+    nvelope assertion add pred-obj known isA string Person | \
+    nvelope assertion add pred-obj known isA string "Permanent Resident" | \
+    nvelope assertion add pred-obj string givenName string JOHN | \
+    nvelope assertion add pred-obj string familyName string SMITH | \
+    nvelope assertion add pred-obj string sex string MALE | \
+    nvelope assertion add pred-obj string birthDate date 1974-02-18 | \
+    nvelope assertion add pred-obj string image envelope $JOHN_IMAGE | \
+    nvelope assertion add pred-obj string lprCategory string C09 | \
+    nvelope assertion add pred-obj string birthCountry envelope $BIRTH_COUNTRY | \
+    nvelope assertion add pred-obj string residentSince date 2018-01-07`
 
-JOHN_RESIDENT_CARD=`envelope subject --ur $JOHN_ARID | \
-    envelope assertion --known isA "credential" | \
-    envelope assertion --string "dateIssued" --date 2022-04-27 | \
-    envelope assertion --known issuer --envelope $ISSUER | \
-    envelope assertion --known holder --envelope $HOLDER | \
-    envelope assertion --known note "The State of Example recognizes JOHN SMITH as a Permanent Resident." | \
-    envelope subject --wrapped | \
-    envelope sign --prvkeys $STATE_PRVKEYS --note "Made by the State of Example."`
+JOHN_RESIDENT_CARD=`nvelope subject type ur $JOHN_ARID | \
+    nvelope assertion add pred-obj known isA string "credential" | \
+    nvelope assertion add pred-obj string "dateIssued" date 2022-04-27 | \
+    nvelope assertion add pred-obj known issuer envelope $ISSUER | \
+    nvelope assertion add pred-obj known holder envelope $HOLDER | \
+    nvelope assertion add pred-obj known note string "The State of Example recognizes JOHN SMITH as a Permanent Resident." | \
+    nvelope subject type wrapped | \
+    nvelope sign --prvkeys $STATE_PRVKEYS --note "Made by the State of Example."`
 
-envelope $JOHN_RESIDENT_CARD
+nvelope format $JOHN_RESIDENT_CARD
 ```
 
 ```
 👈
 {
-    ARID(78bc3000) [
-        isA: "credential"
+    ARID(72998c48) [
+        'isA': "credential"
         "dateIssued": 2022-04-27
-        holder: ARID(78bc3000) [
-            isA: "Permanent Resident"
-            isA: "Person"
+        'holder': ARID(72998c48) [
+            'isA': "Permanent Resident"
+            'isA': "Person"
             "birthCountry": "bs" [
-                note: "The Bahamas"
+                'note': "The Bahamas"
             ]
             "birthDate": 1974-02-18
             "familyName": "SMITH"
             "givenName": "JOHN"
             "image": "John Smith Smiling" [
-                dereferenceVia: URI(https://exampleledger.com/digest/36be30726befb65ca13b136ae29d8081f64792c2702415eb60ad1c56ed33c999)
-                note: "This is an image of John Smith."
+                'dereferenceVia': URI(https://exampleledger.com/digest/36be30726befb65ca13b136ae29d8081f64792c2702415eb60ad1c56ed33c999)
+                'note': "This is an image of John Smith."
             ]
             "lprCategory": "C09"
             "residentSince": 2018-01-07
             "sex": "MALE"
         ]
-        issuer: ARID(04363d5f) [
-            dereferenceVia: URI(https://exampleledger.com/arid/04363d5ff99733bc0f1577baba440af1cf344ad9e454fad9d128c00fef6505e8)
-            note: "Issued by the State of Example"
+        'issuer': ARID(04363d5f) [
+            'dereferenceVia': URI(https://exampleledger.com/arid/04363d5ff99733bc0f1577baba440af1cf344ad9e454fad9d128c00fef6505e8)
+            'note': "Issued by the State of Example"
         ]
-        note: "The State of Example recognizes JOHN SMITH as a Permanent Resident."
+        'note': "The State of Example recognizes JOHN SMITH as a Permanent Resident."
     ]
 } [
-    verifiedBy: Signature [
-        note: "Made by the State of Example."
+    'verifiedBy': Signature [
+        'note': "Made by the State of Example."
     ]
 ]
 ```
@@ -112,61 +112,61 @@ Redaction is performed by building a set of digests that will be revealed. All d
 TARGET=()
 
 # Reveal the card. Without this, everything about the card would be elided.
-TARGET+=(`envelope digest $JOHN_RESIDENT_CARD`)
+TARGET+=(`nvelope digest $JOHN_RESIDENT_CARD`)
 
 # Reveal everything about the state's signature on the card
-TARGET+=(`envelope assertion find --known verifiedBy $JOHN_RESIDENT_CARD | envelope digest --deep`)
+TARGET+=(`nvelope assertion find predicate known verifiedBy $JOHN_RESIDENT_CARD | nvelope digest --depth deep`)
 
 # Reveal the top level of the card.
-TARGET+=(`envelope digest $JOHN_RESIDENT_CARD --shallow`)
-CARD=`envelope extract --wrapped $JOHN_RESIDENT_CARD`
-TARGET+=(`envelope digest $CARD`)
-TARGET+=(`envelope extract $CARD --envelope | envelope digest`)
+TARGET+=(`nvelope digest $JOHN_RESIDENT_CARD --depth shallow`)
+CARD=`nvelope extract wrapped $JOHN_RESIDENT_CARD`
+TARGET+=(`nvelope digest $CARD`)
+TARGET+=(`nvelope extract envelope $CARD | nvelope digest`)
 
 # Reveal everything about the `isA` and `issuer` assertions at the top level of the card.
-TARGET+=(`envelope assertion find --known isA $CARD | envelope digest --deep`)
-TARGET+=(`envelope assertion find --known issuer $CARD | envelope digest --deep`)
+TARGET+=(`nvelope assertion find predicate known isA $CARD | nvelope digest --depth deep`)
+TARGET+=(`nvelope assertion find predicate known issuer $CARD | nvelope digest --depth deep`)
 
 # Reveal the `holder` assertion on the card, but not any of its sub-assertions.
-HOLDER=`envelope assertion find --known holder $CARD`
-TARGET+=(`envelope digest --shallow $HOLDER`)
+HOLDER=`nvelope assertion find predicate known holder $CARD`
+TARGET+=(`nvelope digest --depth shallow $HOLDER`)
 
 # Within the `holder` assertion, reveal everything about just the `givenName`, `familyName`, and `image` assertions.
-HOLDER_OBJECT=`envelope extract --object $HOLDER`
-TARGET+=(`envelope assertion find givenName $HOLDER_OBJECT | envelope digest --deep`)
-TARGET+=(`envelope assertion find familyName $HOLDER_OBJECT | envelope digest --deep`)
-TARGET+=(`envelope assertion find image $HOLDER_OBJECT | envelope digest --deep`)
+HOLDER_OBJECT=`nvelope extract object $HOLDER`
+TARGET+=(`nvelope assertion find predicate string givenName $HOLDER_OBJECT | nvelope digest --depth deep`)
+TARGET+=(`nvelope assertion find predicate string familyName $HOLDER_OBJECT | nvelope digest --depth deep`)
+TARGET+=(`nvelope assertion find predicate string image $HOLDER_OBJECT | nvelope digest --depth deep`)
 
 # Perform the elision
-ELIDED_CARD=`envelope elide revealing $JOHN_RESIDENT_CARD $TARGET`
+ELIDED_CARD=`nvelope elide revealing "$TARGET" $JOHN_RESIDENT_CARD`
 
 # Show the elided card
-envelope $ELIDED_CARD
+nvelope format $ELIDED_CARD
 ```
 
 ```
 👈
 {
-    ARID(78bc3000) [
-        isA: "credential"
-        holder: ARID(78bc3000) [
+    ARID(72998c48) [
+        'isA': "credential"
+        'holder': ARID(72998c48) [
             "familyName": "SMITH"
             "givenName": "JOHN"
             "image": "John Smith Smiling" [
-                dereferenceVia: URI(https://exampleledger.com/digest/36be30726befb65ca13b136ae29d8081f64792c2702415eb60ad1c56ed33c999)
-                note: "This is an image of John Smith."
+                'dereferenceVia': URI(https://exampleledger.com/digest/36be30726befb65ca13b136ae29d8081f64792c2702415eb60ad1c56ed33c999)
+                'note': "This is an image of John Smith."
             ]
             ELIDED (7)
         ]
-        issuer: ARID(04363d5f) [
-            dereferenceVia: URI(https://exampleledger.com/arid/04363d5ff99733bc0f1577baba440af1cf344ad9e454fad9d128c00fef6505e8)
-            note: "Issued by the State of Example"
+        'issuer': ARID(04363d5f) [
+            'dereferenceVia': URI(https://exampleledger.com/arid/04363d5ff99733bc0f1577baba440af1cf344ad9e454fad9d128c00fef6505e8)
+            'note': "Issued by the State of Example"
         ]
         ELIDED (2)
     ]
 } [
-    verifiedBy: Signature [
-        note: "Made by the State of Example."
+    'verifiedBy': Signature [
+        'note': "Made by the State of Example."
     ]
 ]
 ```
@@ -200,18 +200,18 @@ Note that the original card and the elided card have the same digest.
 
 ```bash
 👉
-envelope digest $JOHN_RESIDENT_CARD; envelope digest $ELIDED_CARD
+nvelope digest $JOHN_RESIDENT_CARD; nvelope digest $ELIDED_CARD
 ```
 
 ```
 👈
-ur:digest/hdcxmkdsntinmugmykyakkprcntlcydkmstdcendgessltdahsmhlkmymkjnbscxlsgwwdpywpeo
-ur:digest/hdcxmkdsntinmugmykyakkprcntlcydkmstdcendgessltdahsmhlkmymkjnbscxlsgwwdpywpeo
+ur:digest/hdcxlpkpltrebkbzhneojntbjtaeayrdclpdbwhdonglkpiyhnoemklpcpsskogufgtkzmtywsid
+ur:digest/hdcxlpkpltrebkbzhneojntbjtaeayrdclpdbwhdonglkpiyhnoemklpcpsskogufgtkzmtywsid
 ```
 
 Note that the state's signature on the elided card still verifies.
 
 ```bash
 👉
-envelope verify --silent $ELIDED_CARD --pubkeys $STATE_PUBKEYS
+nvelope verify --silent $ELIDED_CARD --pubkeys $STATE_PUBKEYS
 ```
