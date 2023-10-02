@@ -1,6 +1,4 @@
-# envelope - SSKR Example
-
-**NOTE:** Most of this documentation has *not* been updated to reflect the new command line syntax.
+# nvelope - SSKR Example
 
 This example demonstrates the use of SSKR to shard a symmetric key that encrypted a message. The shares are then enclosed in individual envelopes and the seed can be recovered from those shares, allowing the future decryption of the message.
 
@@ -15,7 +13,7 @@ Dan encloses his seed in an envelope.
 
 ```bash
 👉
-DAN_ENVELOPE=`envelope subject --ur $DAN_SEED`
+DAN_ENVELOPE=`nvelope subject type ur $DAN_SEED`
 echo $DAN_ENVELOPE
 ```
 
@@ -28,7 +26,7 @@ Dan examines the contents of his envelope.
 
 ```bash
 👉
-envelope $DAN_ENVELOPE
+nvelope format $DAN_ENVELOPE
 ```
 
 ```
@@ -40,15 +38,15 @@ Dan generates a public/private key pair that will allow him to recover his seed 
 
 ```bash
 👉
-DAN_PRIVATE_KEY=`envelope generate prvkeys`
-DAN_PUBLIC_KEY=`envelope generate pubkeys $DAN_PRIVATE_KEY`
+DAN_PRIVATE_KEY=`nvelope generate prvkeys`
+DAN_PUBLIC_KEY=`nvelope generate pubkeys $DAN_PRIVATE_KEY`
 ```
 
-Dan splits the envelope into a single group 2-of-3. The output of the `envelope` tool contains the list of share envelopes separated by spaces. He then assigns this to a shell array.
+Dan splits the envelope into a single group 2-of-3. The output of the `nvelope` tool contains the list of share envelopes separated by spaces. He then assigns this to a shell array.
 
 ```bash
 👉
-SHARE_ENVELOPES=(`envelope sskr split -g 2-of-3 --recipient $DAN_PUBLIC_KEY $DAN_ENVELOPE`)
+SHARE_ENVELOPES=(`nvelope sskr split -g 2-of-3 --recipient $DAN_PUBLIC_KEY $DAN_ENVELOPE`)
 ```
 
 Dan sends one envelope to each of Alice, Bob, and Carol.
@@ -66,14 +64,14 @@ Bob examines the contents of his envelope, but can't recover the original seed: 
 
 ```bash
 👉
-envelope $SHARE_ENVELOPE_BOB
+nvelope format $SHARE_ENVELOPE_BOB
 ```
 
 ```
 👈
 ENCRYPTED [
-    hasRecipient: SealedMessage
-    sskrShare: SSKRShare
+    'hasRecipient': SealedMessage
+    'sskrShare': SSKRShare
 ]
 ```
 
@@ -81,19 +79,19 @@ By himself, Bob can't recover the seed.
 
 ```bash
 👉
-envelope sskr join $SHARE_ENVELOPE_BOB
+nvelope sskr join $SHARE_ENVELOPE_BOB
 ```
 
 ```
 👈
-Error: invalidShares
+Error: the given SSKR shares were not correct
 ```
 
 At some future point, Dan retrieves two of the three envelopes so he can recover his seed.
 
 ```bash
 👉
-envelope sskr join $SHARE_ENVELOPE_BOB $SHARE_ENVELOPE_CAROL | envelope extract --ur
+nvelope sskr join $SHARE_ENVELOPE_BOB $SHARE_ENVELOPE_CAROL | nvelope extract ur
 ```
 
 ```
@@ -105,7 +103,7 @@ Dan can also recover his seed from a single share by decrypting it with his priv
 
 ```bash
 👉
-envelope decrypt --recipient $DAN_PRIVATE_KEY $SHARE_ENVELOPE_BOB | envelope extract --wrapped | envelope extract --ur
+nvelope decrypt --recipient $DAN_PRIVATE_KEY $SHARE_ENVELOPE_BOB | nvelope extract wrapped | nvelope extract ur
 ```
 
 ```

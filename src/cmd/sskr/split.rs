@@ -30,7 +30,7 @@ pub struct CommandArgs {
     /// One or more public keys (ur:crypto-pubkeys) to also encrypt the message to.
     ///
     /// May be specified multiple times.
-    #[arg(short = 'r', long = "receipient")]
+    #[arg(short = 'r', long = "recipient")]
     recipients: Vec<String>,
 
     #[command(flatten)]

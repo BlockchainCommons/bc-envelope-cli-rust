@@ -1,34 +1,34 @@
 # envelope - Distributed Identifier Example
 
-**NOTE:** Most of this documentation has *not* been updated to reflect the new command line syntax.
-
 This example offers an analogue of a DID document, which identifies an entity. The document itself can be referred to by its ARID, while the signed document can be referred to by its digest.
 
 **See Associated Video:**
+
+**NOTE:** This video shows the command line syntax of the Swift `envelope` command line tool. The Rust-based `nvelope` tool has a slightly different syntax, but the meaning of the commands is the same.
 
 [![Gordian Envelope CLI - 4 - DID Example](https://img.youtube.com/vi/Dvs2CT60_uI/mqdefault.jpg)](https://www.youtube.com/watch?v=Dvs2CT60_uI)
 
 
 ```bash
 👉
-ALICE_UNSIGNED_DOCUMENT=`envelope subject --ur $ALICE_ARID | \
-    envelope assertion --known controller --ur $ALICE_ARID | \
-    envelope assertion --known publicKeys --ur $ALICE_PUBKEYS`
-ALICE_SIGNED_DOCUMENT=`envelope subject --wrapped $ALICE_UNSIGNED_DOCUMENT | \
-    envelope sign --prvkeys $ALICE_PRVKEYS --note "Made by Alice."`
-envelope $ALICE_SIGNED_DOCUMENT
+ALICE_UNSIGNED_DOCUMENT=`nvelope subject type ur $ALICE_ARID | \
+    nvelope assertion add pred-obj known controller ur $ALICE_ARID | \
+    nvelope assertion add pred-obj known publicKeys ur $ALICE_PUBKEYS`
+ALICE_SIGNED_DOCUMENT=`nvelope subject type wrapped $ALICE_UNSIGNED_DOCUMENT | \
+    nvelope sign --prvkeys $ALICE_PRVKEYS --note "Made by Alice."`
+nvelope format $ALICE_SIGNED_DOCUMENT
 ```
 
 ```
 👈
 {
     ARID(d44c5e0a) [
-        controller: ARID(d44c5e0a)
-        publicKeys: PublicKeyBase
+        'controller': ARID(d44c5e0a)
+        'publicKeys': PublicKeyBase
     ]
 } [
-    verifiedBy: Signature [
-        note: "Made by Alice."
+    'verifiedBy': Signature [
+        'note': "Made by Alice."
     ]
 ]
 ```
@@ -39,10 +39,10 @@ A registrar checks the signature on Alice's submitted identifier document, perfo
 
 ```bash
 👉
-ALICE_UNWRAPPED=`envelope verify $ALICE_SIGNED_DOCUMENT --pubkeys $ALICE_PUBKEYS | \
-    envelope extract --wrapped`
-ALICE_ARID_UR=`envelope extract $ALICE_UNWRAPPED --ur`
-ALICE_ARID_HEX=`envelope extract $ALICE_UNWRAPPED --arid`
+ALICE_UNWRAPPED=`nvelope verify $ALICE_SIGNED_DOCUMENT --pubkeys $ALICE_PUBKEYS | \
+    nvelope extract wrapped`
+ALICE_ARID_UR=`nvelope extract arid $ALICE_UNWRAPPED`
+ALICE_ARID_HEX=`nvelope extract arid-hex $ALICE_UNWRAPPED`
 ```
 
 The registrar creates its own registration document using Alice's ARID as the subject, incorporating Alice's signed document, and adding its own signature.
@@ -50,46 +50,46 @@ The registrar creates its own registration document using Alice's ARID as the su
 ```bash
 👉
 ALICE_URI="https://exampleledger.com/arid/$ALICE_ARID_HEX"
-ALICE_REGISTRATION=`envelope subject --ur $ALICE_ARID_UR | \
-    envelope assertion --known entity --envelope $ALICE_SIGNED_DOCUMENT | \
-    envelope assertion --known dereferenceVia --uri $ALICE_URI | \
-    envelope subject --wrapped | \
-    envelope sign --prvkeys $LEDGER_PRVKEYS --note "Made by ExampleLedger."`
-envelope $ALICE_REGISTRATION
+ALICE_REGISTRATION=`nvelope subject type ur $ALICE_ARID_UR | \
+    nvelope assertion add pred-obj known entity envelope $ALICE_SIGNED_DOCUMENT | \
+    nvelope assertion add pred-obj known dereferenceVia uri $ALICE_URI | \
+    nvelope subject type wrapped | \
+    nvelope sign --prvkeys $LEDGER_PRVKEYS --note "Made by ExampleLedger."`
+nvelope format $ALICE_REGISTRATION
 ```
 
 ```
 👈
 {
     ARID(d44c5e0a) [
-        dereferenceVia: URI(https://exampleledger.com/arid/d44c5e0afd353f47b02f58a5a3a29d9a2efa6298692f896cd2923268599a0d0f)
-        entity: {
+        'dereferenceVia': URI(https://exampleledger.com/arid/d44c5e0afd353f47b02f58a5a3a29d9a2efa6298692f896cd2923268599a0d0f)
+        'entity': {
             ARID(d44c5e0a) [
-                controller: ARID(d44c5e0a)
-                publicKeys: PublicKeyBase
+                'controller': ARID(d44c5e0a)
+                'publicKeys': PublicKeyBase
             ]
         } [
-            verifiedBy: Signature [
-                note: "Made by Alice."
+            'verifiedBy': Signature [
+                'note': "Made by Alice."
             ]
         ]
     ]
 } [
-    verifiedBy: Signature [
-        note: "Made by ExampleLedger."
+    'verifiedBy': Signature [
+        'note': "Made by ExampleLedger."
     ]
 ]
-
+```
 
 Alice receives the registration document back, verifies its signature, and extracts the URI that now points to her record.
 
 ```bash
 👉
-ALICE_URI=`envelope verify $ALICE_REGISTRATION --pubkeys $LEDGER_PUBKEYS | \
-    envelope extract --wrapped | \
-    envelope assertion find --known dereferenceVia | \
-    envelope extract --object | \
-    envelope extract --uri`
+ALICE_URI=`nvelope verify $ALICE_REGISTRATION --pubkeys $LEDGER_PUBKEYS | \
+    nvelope extract wrapped | \
+    nvelope assertion find predicate known dereferenceVia | \
+    nvelope extract object | \
+    nvelope extract uri`
 echo $ALICE_URI
 ```
 
@@ -102,9 +102,9 @@ Alice wants to introduce herself to Bob, so Bob needs to know she controls her i
 
 ```bash
 👉
-ALICE_CHALLENGE=`envelope generate nonce | \
-    envelope subject --ur | \
-    envelope assertion --known note "Challenge to Alice from Bob."`
+ALICE_CHALLENGE=`nvelope generate nonce | \
+    nvelope subject type ur | \
+    nvelope assertion add pred-obj known note string "Challenge to Alice from Bob."`
 echo $ALICE_CHALLENGE
 ```
 
@@ -115,7 +115,7 @@ ur:envelope/lftpcstansglgspygwfrjzjpiewlwtinwyhpmkoyaatpcskscefxishsjzjzihjtioih
 
 ```bash
 👉
-envelope $ALICE_CHALLENGE
+nvelope format $ALICE_CHALLENGE
 ```
 
 ```
@@ -129,11 +129,11 @@ Alice responds by adding her registered URI to the nonce, and signing it.
 
 ```bash
 👉
-ALICE_RESPONSE=`envelope subject --wrapped $ALICE_CHALLENGE | \
-    envelope assertion --known dereferenceVia --uri $ALICE_URI | \
-    envelope subject --wrapped | \
-    envelope sign --prvkeys $ALICE_PRVKEYS --note "Made by Alice."`
-envelope $ALICE_RESPONSE
+ALICE_RESPONSE=`nvelope subject type wrapped $ALICE_CHALLENGE | \
+    nvelope assertion add pred-obj known dereferenceVia uri $ALICE_URI | \
+    nvelope subject type wrapped | \
+    nvelope sign --prvkeys $ALICE_PRVKEYS --note "Made by Alice."`
+nvelope format $ALICE_RESPONSE
 ```
 
 ```
@@ -141,14 +141,14 @@ envelope $ALICE_RESPONSE
 {
     {
         Nonce [
-            note: "Challenge to Alice from Bob."
+            'note': "Challenge to Alice from Bob."
         ]
     } [
-        dereferenceVia: URI(https://exampleledger.com/arid/d44c5e0afd353f47b02f58a5a3a29d9a2efa6298692f896cd2923268599a0d0f)
+        'dereferenceVia': URI(https://exampleledger.com/arid/d44c5e0afd353f47b02f58a5a3a29d9a2efa6298692f896cd2923268599a0d0f)
     ]
 } [
-    verifiedBy: Signature [
-        note: "Made by Alice."
+    'verifiedBy': Signature [
+        'note': "Made by Alice."
     ]
 ]
 ```
@@ -156,8 +156,8 @@ envelope $ALICE_RESPONSE
 Bob receives Alice's response, and first checks that the nonce is the once he sent.
 ```bash
 👉
-ALICE_CHALLENGE_2=`envelope extract --wrapped $ALICE_RESPONSE | \
-    envelope extract --wrapped`
+ALICE_CHALLENGE_2=`nvelope extract wrapped $ALICE_RESPONSE | \
+    nvelope extract wrapped`
 echo $ALICE_CHALLENGE_2
 ```
 
@@ -170,10 +170,10 @@ ur:envelope/lftpcstansglgspygwfrjzjpiewlwtinwyhpmkoyaatpcskscefxishsjzjzihjtioih
 
 ```bash
 👉
-ALICE_URI=`envelope extract --wrapped $ALICE_RESPONSE | \
-    envelope assertion find --known dereferenceVia | \
-    envelope extract --object | \
-    envelope extract --uri`
+ALICE_URI=`nvelope extract wrapped $ALICE_RESPONSE | \
+    nvelope assertion find predicate known dereferenceVia | \
+    nvelope extract object | \
+    nvelope extract uri`
 echo $ALICE_URI
 ```
 
@@ -186,19 +186,19 @@ Bob uses the URI to ask ExampleLedger for Alice's identifier document, then chec
 
 ```bash
 👉
-ALICE_PUBKEYS=`envelope verify $ALICE_REGISTRATION --pubkeys $LEDGER_PUBKEYS | \
-    envelope extract --wrapped | \
-    envelope assertion find --known entity | \
-    envelope extract --object | \
-    envelope extract --wrapped | \
-    envelope assertion find --known publicKeys | \
-    envelope extract --object | \
-    envelope extract --ur`
+ALICE_PUBKEYS=`nvelope verify $ALICE_REGISTRATION --pubkeys $LEDGER_PUBKEYS | \
+    nvelope extract wrapped | \
+    nvelope assertion find predicate known entity | \
+    nvelope extract object | \
+    nvelope extract wrapped | \
+    nvelope assertion find predicate known publicKeys | \
+    nvelope extract object | \
+    nvelope extract ur`
 ```
 
 Finally, Bob uses Alice's public keys to validate the challenge he sent her.
 
 ```bash
 👉
-envelope verify --silent $ALICE_RESPONSE --pubkeys $ALICE_PUBKEYS
+nvelope verify --silent $ALICE_RESPONSE --pubkeys $ALICE_PUBKEYS
 ```
