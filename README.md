@@ -1,4 +1,4 @@
-# `nevelope`
+# `nvelope`
 
 ## A command line tool for manipulating the Gordian Envelope data type, written in pure Rust.
 
@@ -23,7 +23,7 @@ Make sure your `~/.cargo/bin` directory is in your `PATH`.
 **NOTE:** This version does *not* have the same command line syntax as the Swift `envelope` tool. The difference in tool names is so they can be installed side-by-side.
 
 ```bash
-nevelope --help
+nvelope --help
 ```
 
 See the [docs](docs/README.md) directory for more information.
