@@ -132,7 +132,7 @@ fn parse_known_value(s: &str) -> anyhow::Result<Rc<Envelope>> {
     } else {
         with_format_context!(|context: &FormatContext| {
             let store = context.known_values();
-            if let Some(known_value) = bc_envelope::known_values::KnownValuesStore::known_value_for_name(s, Some(store)) {
+            if let Some(known_value) = KnownValuesStore::known_value_for_name(s, Some(store)) {
                 Ok(Envelope::new(known_value))
             } else {
                 anyhow::bail!("Unknown known value")

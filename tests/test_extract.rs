@@ -1,7 +1,7 @@
 mod common;
 use common::*;
 
-use bc_envelope::{known_values::*, prelude::*};
+use bc_envelope::prelude::*;
 
 const ALICE_KNOWS_BOB: &str = "ur:envelope/lftpcsihfpjziniaihoytpcsihjejtjlktjktpcsiafwjliddssngwct";
 
@@ -135,7 +135,7 @@ fn test_extract_wrapped() -> anyhow::Result<()> {
 
 #[test]
 fn test_extract_assertion_subject() -> anyhow::Result<()> {
-    let e = Envelope::new_assertion(NOTE, "This is a note.");
+    let e = Envelope::new_assertion(known_values::NOTE, "This is a note.");
     let ur = e.ur_string();
 
     let predicate_envelope = "ur:envelope/aatljldnmw";

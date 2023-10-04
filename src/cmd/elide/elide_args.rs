@@ -3,7 +3,7 @@ use std::{rc::Rc, collections::HashSet};
 use bc_components::SymmetricKey;
 use clap::{ValueEnum, Args};
 
-use bc_envelope::{prelude::*, elide::ObscureAction};
+use bc_envelope::prelude::*;
 
 /// The action to take on the elements.
 #[derive(ValueEnum, Copy, Clone, Debug, PartialEq, Eq)]
