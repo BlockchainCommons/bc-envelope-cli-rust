@@ -20,7 +20,7 @@ Make sure your `~/.cargo/bin` directory is in your `PATH`.
 
 ### Usage
 
-**NOTE:** This version does *not* have the same command line syntax as the Swift `envelope` tool. The difference in tool names is so they can be installed side-by-side.
+**NOTE:** The `nvelope` tool does *not* have the same command line syntax as the Swift `envelope` tool. The difference in tool names is so they can be installed side-by-side.
 
 ```bash
 nvelope --help
