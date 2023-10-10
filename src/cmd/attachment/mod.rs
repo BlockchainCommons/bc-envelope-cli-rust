@@ -1,4 +1,7 @@
 pub mod create;
+pub mod conforms_to;
+pub mod payload;
+pub mod vendor;
 
 use clap::{Subcommand, Args};
 
@@ -17,6 +20,9 @@ enum SubCommands {
     // At(at::CommandArgs),
     // Count(count::CommandArgs),
     Create(create::CommandArgs),
+    Payload(payload::CommandArgs),
+    Vendor(vendor::CommandArgs),
+    ConformsTo(conforms_to::CommandArgs),
     // Find(find::CommandArgs),
     // Remove(remove::CommandArgs),
 }
@@ -29,6 +35,9 @@ impl crate::exec::Exec for CommandArgs {
             // SubCommands::At(args) => args.exec(),
             // SubCommands::Count(args) => args.exec(),
             SubCommands::Create(args) => args.exec(),
+            SubCommands::Payload(args) => args.exec(),
+            SubCommands::Vendor(args) => args.exec(),
+            SubCommands::ConformsTo(args) => args.exec(),
             // SubCommands::Find(args) => args.exec(),
             // SubCommands::Remove(args) => args.exec(),
         }
