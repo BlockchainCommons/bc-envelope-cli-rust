@@ -2,20 +2,13 @@ use std::rc::Rc;
 use bc_envelope::prelude::*;
 use clap::Args;
 
+use crate::utils::read_envelope;
+
 pub trait EnvelopeArgsLike {
     fn envelope(&self) -> Option<&str>;
 
     fn read_envelope(&self) -> anyhow::Result<Rc<Envelope>> {
-        let mut ur_string = String::new();
-        if self.envelope().is_none() {
-            std::io::stdin().read_line(&mut ur_string)?;
-        } else {
-            ur_string = self.envelope().as_ref().unwrap().to_string();
-        }
-        if ur_string.is_empty() {
-            anyhow::bail!("No envelope provided");
-        }
-        Ok(Rc::new(Envelope::from_ur_string(ur_string.trim())?))
+        read_envelope(self.envelope())
     }
 }
 

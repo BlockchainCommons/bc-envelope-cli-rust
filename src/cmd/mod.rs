@@ -1,4 +1,5 @@
 pub mod assertion;
+pub mod attachment;
 pub mod compress;
 pub mod digest;
 pub mod decrypt;

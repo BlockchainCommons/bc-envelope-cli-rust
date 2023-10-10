@@ -5,6 +5,7 @@ pub mod data_types;
 pub mod pred_obj_args;
 pub mod envelope_args;
 pub mod subject_args;
+pub mod utils;
 
 use clap::{Parser, Subcommand};
 
@@ -23,6 +24,7 @@ struct Cli {
 #[derive(Debug, Subcommand)]
 enum MainCommands {
     Assertion(cmd::assertion::CommandArgs),
+    Attachment(cmd::attachment::CommandArgs),
     Compress(cmd::compress::CommandArgs),
     Decrypt(cmd::decrypt::CommandArgs),
     Digest(cmd::digest::CommandArgs),
@@ -44,6 +46,7 @@ fn main() -> anyhow::Result<()> {
 
     let output = match cli.command {
         MainCommands::Assertion(args) => args.exec(),
+        MainCommands::Attachment(args) => args.exec(),
         MainCommands::Compress(args) => args.exec(),
         MainCommands::Decrypt(args) => args.exec(),
         MainCommands::Digest(args) => args.exec(),
