@@ -31,7 +31,7 @@ pub const CAROL_PRVKEYS: &str = "ur:crypto-prvkeys/gdlpjypepycsvodtihcecwvsyljlz
 pub const CAROL_PUBKEYS: &str = "ur:crypto-pubkeys/lftaaosehdcxptwewyrttbfswnsonswdvweydkfxmwfejsmdlgbajyaymwhstotymyfwrosprhsstpvahdcxnnzeontnuechectylgjytbvlbkfnmsmyeohhvwbzftdwrplrpkptloctdtflwnguoyytemnn";
 
 pub fn run_cli_raw_stdin(args: &[&str], stdin: &str) -> anyhow::Result<String> {
-    let output = Command::cargo_bin("nvelope").unwrap()
+    let output = Command::cargo_bin("envelope").unwrap()
         .args(args)
         .write_stdin(stdin)
         .assert();

@@ -1,4 +1,4 @@
-# `nvelope` - Verifiable Credential Example
+# `envelope` - Verifiable Credential Example
 
 In this example we build a permanent resident card, which the holder then redacts to reveal only selected information necessary to prove his identity.
 
@@ -8,7 +8,7 @@ John Smith's identifier:
 
 ```bash
 👉
-JOHN_ARID=`nvelope generate arid`
+JOHN_ARID=`envelope generate arid`
 echo $JOHN_ARID
 78bc30004776a3905bccb9b8a032cf722ceaf0bbfb1a49eaf3185fab5808cadc
 ```
@@ -17,10 +17,10 @@ A photo of John Smith:
 
 ```bash
 👉
-JOHN_IMAGE=`nvelope subject type string "John Smith Smiling" | \
-nvelope assertion add pred-obj known note string "This is an image of John Smith." | \
-nvelope assertion add pred-obj known dereferenceVia uri https://exampleledger.com/digest/36be30726befb65ca13b136ae29d8081f64792c2702415eb60ad1c56ed33c999`
-nvelope format $JOHN_IMAGE
+JOHN_IMAGE=`envelope subject type string "John Smith Smiling" | \
+envelope assertion add pred-obj known note string "This is an image of John Smith." | \
+envelope assertion add pred-obj known dereferenceVia uri https://exampleledger.com/digest/36be30726befb65ca13b136ae29d8081f64792c2702415eb60ad1c56ed33c999`
+envelope format $JOHN_IMAGE
 ```
 
 ```
@@ -35,35 +35,35 @@ John Smith's Permanent Resident Card issued by the State of Example:
 
 ```bash
 👉
-ISSUER=`nvelope subject type ur $STATE_ARID | \
-    nvelope assertion add pred-obj known note string "Issued by the State of Example" | \
-    nvelope assertion add pred-obj known dereferenceVia uri https://exampleledger.com/arid/04363d5ff99733bc0f1577baba440af1cf344ad9e454fad9d128c00fef6505e8`
+ISSUER=`envelope subject type ur $STATE_ARID | \
+    envelope assertion add pred-obj known note string "Issued by the State of Example" | \
+    envelope assertion add pred-obj known dereferenceVia uri https://exampleledger.com/arid/04363d5ff99733bc0f1577baba440af1cf344ad9e454fad9d128c00fef6505e8`
 
-BIRTH_COUNTRY=`nvelope subject type string bs | \
-    nvelope assertion add pred-obj known note string "The Bahamas"`
+BIRTH_COUNTRY=`envelope subject type string bs | \
+    envelope assertion add pred-obj known note string "The Bahamas"`
 
-HOLDER=`nvelope subject type ur $JOHN_ARID | \
-    nvelope assertion add pred-obj known isA string Person | \
-    nvelope assertion add pred-obj known isA string "Permanent Resident" | \
-    nvelope assertion add pred-obj string givenName string JOHN | \
-    nvelope assertion add pred-obj string familyName string SMITH | \
-    nvelope assertion add pred-obj string sex string MALE | \
-    nvelope assertion add pred-obj string birthDate date 1974-02-18 | \
-    nvelope assertion add pred-obj string image envelope $JOHN_IMAGE | \
-    nvelope assertion add pred-obj string lprCategory string C09 | \
-    nvelope assertion add pred-obj string birthCountry envelope $BIRTH_COUNTRY | \
-    nvelope assertion add pred-obj string residentSince date 2018-01-07`
+HOLDER=`envelope subject type ur $JOHN_ARID | \
+    envelope assertion add pred-obj known isA string Person | \
+    envelope assertion add pred-obj known isA string "Permanent Resident" | \
+    envelope assertion add pred-obj string givenName string JOHN | \
+    envelope assertion add pred-obj string familyName string SMITH | \
+    envelope assertion add pred-obj string sex string MALE | \
+    envelope assertion add pred-obj string birthDate date 1974-02-18 | \
+    envelope assertion add pred-obj string image envelope $JOHN_IMAGE | \
+    envelope assertion add pred-obj string lprCategory string C09 | \
+    envelope assertion add pred-obj string birthCountry envelope $BIRTH_COUNTRY | \
+    envelope assertion add pred-obj string residentSince date 2018-01-07`
 
-JOHN_RESIDENT_CARD=`nvelope subject type ur $JOHN_ARID | \
-    nvelope assertion add pred-obj known isA string "credential" | \
-    nvelope assertion add pred-obj string "dateIssued" date 2022-04-27 | \
-    nvelope assertion add pred-obj known issuer envelope $ISSUER | \
-    nvelope assertion add pred-obj known holder envelope $HOLDER | \
-    nvelope assertion add pred-obj known note string "The State of Example recognizes JOHN SMITH as a Permanent Resident." | \
-    nvelope subject type wrapped | \
-    nvelope sign --prvkeys $STATE_PRVKEYS --note "Made by the State of Example."`
+JOHN_RESIDENT_CARD=`envelope subject type ur $JOHN_ARID | \
+    envelope assertion add pred-obj known isA string "credential" | \
+    envelope assertion add pred-obj string "dateIssued" date 2022-04-27 | \
+    envelope assertion add pred-obj known issuer envelope $ISSUER | \
+    envelope assertion add pred-obj known holder envelope $HOLDER | \
+    envelope assertion add pred-obj known note string "The State of Example recognizes JOHN SMITH as a Permanent Resident." | \
+    envelope subject type wrapped | \
+    envelope sign --prvkeys $STATE_PRVKEYS --note "Made by the State of Example."`
 
-nvelope format $JOHN_RESIDENT_CARD
+envelope format $JOHN_RESIDENT_CARD
 ```
 
 ```
@@ -112,36 +112,36 @@ Redaction is performed by building a set of digests that will be revealed. All d
 TARGET=()
 
 # Reveal the card. Without this, everything about the card would be elided.
-TARGET+=(`nvelope digest $JOHN_RESIDENT_CARD`)
+TARGET+=(`envelope digest $JOHN_RESIDENT_CARD`)
 
 # Reveal everything about the state's signature on the card
-TARGET+=(`nvelope assertion find predicate known verifiedBy $JOHN_RESIDENT_CARD | nvelope digest --depth deep`)
+TARGET+=(`envelope assertion find predicate known verifiedBy $JOHN_RESIDENT_CARD | envelope digest --depth deep`)
 
 # Reveal the top level of the card.
-TARGET+=(`nvelope digest $JOHN_RESIDENT_CARD --depth shallow`)
-CARD=`nvelope extract wrapped $JOHN_RESIDENT_CARD`
-TARGET+=(`nvelope digest $CARD`)
-TARGET+=(`nvelope extract envelope $CARD | nvelope digest`)
+TARGET+=(`envelope digest $JOHN_RESIDENT_CARD --depth shallow`)
+CARD=`envelope extract wrapped $JOHN_RESIDENT_CARD`
+TARGET+=(`envelope digest $CARD`)
+TARGET+=(`envelope extract envelope $CARD | envelope digest`)
 
 # Reveal everything about the `isA` and `issuer` assertions at the top level of the card.
-TARGET+=(`nvelope assertion find predicate known isA $CARD | nvelope digest --depth deep`)
-TARGET+=(`nvelope assertion find predicate known issuer $CARD | nvelope digest --depth deep`)
+TARGET+=(`envelope assertion find predicate known isA $CARD | envelope digest --depth deep`)
+TARGET+=(`envelope assertion find predicate known issuer $CARD | envelope digest --depth deep`)
 
 # Reveal the `holder` assertion on the card, but not any of its sub-assertions.
-HOLDER=`nvelope assertion find predicate known holder $CARD`
-TARGET+=(`nvelope digest --depth shallow $HOLDER`)
+HOLDER=`envelope assertion find predicate known holder $CARD`
+TARGET+=(`envelope digest --depth shallow $HOLDER`)
 
 # Within the `holder` assertion, reveal everything about just the `givenName`, `familyName`, and `image` assertions.
-HOLDER_OBJECT=`nvelope extract object $HOLDER`
-TARGET+=(`nvelope assertion find predicate string givenName $HOLDER_OBJECT | nvelope digest --depth deep`)
-TARGET+=(`nvelope assertion find predicate string familyName $HOLDER_OBJECT | nvelope digest --depth deep`)
-TARGET+=(`nvelope assertion find predicate string image $HOLDER_OBJECT | nvelope digest --depth deep`)
+HOLDER_OBJECT=`envelope extract object $HOLDER`
+TARGET+=(`envelope assertion find predicate string givenName $HOLDER_OBJECT | envelope digest --depth deep`)
+TARGET+=(`envelope assertion find predicate string familyName $HOLDER_OBJECT | envelope digest --depth deep`)
+TARGET+=(`envelope assertion find predicate string image $HOLDER_OBJECT | envelope digest --depth deep`)
 
 # Perform the elision
-ELIDED_CARD=`nvelope elide revealing "$TARGET" $JOHN_RESIDENT_CARD`
+ELIDED_CARD=`envelope elide revealing "$TARGET" $JOHN_RESIDENT_CARD`
 
 # Show the elided card
-nvelope format $ELIDED_CARD
+envelope format $ELIDED_CARD
 ```
 
 ```
@@ -200,7 +200,7 @@ Note that the original card and the elided card have the same digest.
 
 ```bash
 👉
-nvelope digest $JOHN_RESIDENT_CARD; nvelope digest $ELIDED_CARD
+envelope digest $JOHN_RESIDENT_CARD; envelope digest $ELIDED_CARD
 ```
 
 ```
@@ -213,5 +213,5 @@ Note that the state's signature on the elided card still verifies.
 
 ```bash
 👉
-nvelope verify --silent $ELIDED_CARD --pubkeys $STATE_PUBKEYS
+envelope verify --silent $ELIDED_CARD --pubkeys $STATE_PUBKEYS
 ```

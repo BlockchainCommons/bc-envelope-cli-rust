@@ -1,21 +1,21 @@
-# `nvelope` - Attachments
+# `envelope` - Attachments
 
 Attachments are defined in [BCR-2023-006](https://github.com/BlockchainCommons/Research/blob/master/papers/bcr-2023-006-envelope-attachment.md). They are a standardized way to add discoverable third-party data to an envelope.
 
-Attachments are assertions that can be built up by using various invocations of the `nvelope` command line tool, but since they have a specific format, the `nvelope` tool provides shortcuts for creating and working with them.
+Attachments are assertions that can be built up by using various invocations of the `envelope` command line tool, but since they have a specific format, the `envelope` tool provides shortcuts for creating and working with them.
 
 ## Attachment Subcommands
 
 ```bash
 👉
-nvelope attachment --help
+envelope attachment --help
 ```
 
 ```
 👈
 Work with the envelope's attachments
 
-Usage: nvelope attachment <COMMAND>
+Usage: envelope attachment <COMMAND>
 
 Commands:
   add          Add an assertion to the given envelope
@@ -40,14 +40,14 @@ The `attachment create` command lets you create an attachment by specifying its 
 
 ```bash
 👉
-nvelope attachment create --help
+envelope attachment create --help
 ```
 
 ```
 👈
 Create an attachment
 
-Usage: nvelope attachment create [OPTIONS] <VENDOR> [PAYLOAD]
+Usage: envelope attachment create [OPTIONS] <VENDOR> [PAYLOAD]
 
 Arguments:
   <VENDOR>
@@ -73,7 +73,7 @@ But first we need an envelope that is our attachment "payload", i.e., the vendor
 
 ```bash
 👉
-PAYLOAD_ENVELOPE=`nvelope subject type string "this-is-the-payload"`
+PAYLOAD_ENVELOPE=`envelope subject type string "this-is-the-payload"`
 ```
 
 Now we create our attachment with our payload, and specify the vendor and conformance strings:
@@ -82,14 +82,14 @@ Now we create our attachment with our payload, and specify the vendor and confor
 👉
 VENDOR="com.example"
 CONFORMS_TO="https://example.com/attachment"
-ATTACHMENT=`nvelope attachment create $VENDOR --conforms-to $CONFORMS_TO $PAYLOAD_ENVELOPE`
+ATTACHMENT=`envelope attachment create $VENDOR --conforms-to $CONFORMS_TO $PAYLOAD_ENVELOPE`
 ```
 
 Here's what our attachment looks like in envelope notation:
 
 ```bash
 👉
-nvelope format $ATTACHMENT
+envelope format $ATTACHMENT
 ```
 
 ```
@@ -110,7 +110,7 @@ Now that we have an attachment, we can query it for its vendor:
 
 ```bash
 👉
-nvelope attachment vendor $ATTACHMENT
+envelope attachment vendor $ATTACHMENT
 ```
 
 ```
@@ -122,7 +122,7 @@ Or for its conformance:
 
 ```bash
 👉
-nvelope attachment conforms-to $ATTACHMENT
+envelope attachment conforms-to $ATTACHMENT
 ```
 
 ```
@@ -134,7 +134,7 @@ Or for its payload:
 
 ```bash
 👉
-nvelope attachment payload $ATTACHMENT
+envelope attachment payload $ATTACHMENT
 ```
 
 ```
@@ -146,7 +146,7 @@ Note that since the payload is itself an envelope which can be arbitrarily compl
 
 ```bash
 👉
-nvelope extract string `nvelope attachment payload $ATTACHMENT`
+envelope extract string `envelope attachment payload $ATTACHMENT`
 ```
 
 ```
@@ -160,16 +160,16 @@ Now that we have an attachment, let's create a simple envelope to add it to:
 
 ```bash
 👉
-ENVELOPE=`nvelope subject type string "this-is-the-envelope"`
+ENVELOPE=`envelope subject type string "this-is-the-envelope"`
 ```
 
 Since we already have an attachment, we can add it to our envelope using the `attachment add envelope` command:
 
 ```bash
 👉
-ENVELOPE_WITH_ATTACHMENT=`nvelope attachment add envelope $ATTACHMENT $ENVELOPE`
+ENVELOPE_WITH_ATTACHMENT=`envelope attachment add envelope $ATTACHMENT $ENVELOPE`
 
-nvelope format $ENVELOPE_WITH_ATTACHMENT
+envelope format $ENVELOPE_WITH_ATTACHMENT
 ```
 
 ```
@@ -190,16 +190,16 @@ Let's say the vendor releases a new version of the attachment spec. But for back
 
 ```bash
 👉
-PAYLOAD_ENVELOPE_V2=`nvelope subject type string "this-is-the-payload-v2"`
+PAYLOAD_ENVELOPE_V2=`envelope subject type string "this-is-the-payload-v2"`
 ```
 
 In the previous example we created the attachment and then added it to the envelope, but we can also do it in one step by using the `attachment add components` command:
 
 ```bash
 👉
-ENVELOPE_WITH_TWO_ATTACHMENTS=`nvelope attachment add components "com.example" --conforms-to "https://example.com/attachment-v2" $PAYLOAD_ENVELOPE_V2 $ENVELOPE_WITH_ATTACHMENT`
+ENVELOPE_WITH_TWO_ATTACHMENTS=`envelope attachment add components "com.example" --conforms-to "https://example.com/attachment-v2" $PAYLOAD_ENVELOPE_V2 $ENVELOPE_WITH_ATTACHMENT`
 
-nvelope format $ENVELOPE_WITH_TWO_ATTACHMENTS
+envelope format $ENVELOPE_WITH_TWO_ATTACHMENTS
 ```
 
 ```
@@ -226,7 +226,7 @@ The `count`, `all`, and `at` commands let you enumerate the attachments in an en
 
 ```bash
 👉
-nvelope attachment count $ENVELOPE_WITH_TWO_ATTACHMENTS
+envelope attachment count $ENVELOPE_WITH_TWO_ATTACHMENTS
 ```
 
 ```
@@ -236,7 +236,7 @@ nvelope attachment count $ENVELOPE_WITH_TWO_ATTACHMENTS
 
 ```bash
 👉
-nvelope attachment all $ENVELOPE_WITH_TWO_ATTACHMENTS
+envelope attachment all $ENVELOPE_WITH_TWO_ATTACHMENTS
 ```
 
 ```
@@ -247,7 +247,7 @@ ur:envelope/oycseylstpsptpcskojyisinjkdpinjkdpjyisihdpjohskkjzjlhsiedpkoeyoycsee
 
 ```bash
 👉
-nvelope attachment at 0 $ENVELOPE_WITH_TWO_ATTACHMENTS
+envelope attachment at 0 $ENVELOPE_WITH_TWO_ATTACHMENTS
 ```
 
 ```
@@ -263,7 +263,7 @@ There are two attachments in our envelope, and both were added by the same vendo
 
 ```bash
 👉
-nvelope attachment find --vendor "com.example" $ENVELOPE_WITH_TWO_ATTACHMENTS | wc -l
+envelope attachment find --vendor "com.example" $ENVELOPE_WITH_TWO_ATTACHMENTS | wc -l
 ```
 
 ```
@@ -275,7 +275,7 @@ Each of these two attachments have different conformance URIs, so we can just fi
 
 ```bash
 👉
-nvelope attachment find --conforms-to "https://example.com/attachment-v2" $ENVELOPE_WITH_TWO_ATTACHMENTS | wc -l
+envelope attachment find --conforms-to "https://example.com/attachment-v2" $ENVELOPE_WITH_TWO_ATTACHMENTS | wc -l
 ```
 
 ```

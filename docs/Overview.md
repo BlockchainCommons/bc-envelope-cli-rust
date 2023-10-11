@@ -1,4 +1,4 @@
-# `nvelope` - Overview of the Commands
+# `envelope` - Overview of the Commands
 
 ## Help
 
@@ -6,14 +6,14 @@ Help is available for the tool and its subcommands.
 
 ```bash
 👉
-nvelope --help
+envelope --help
 ```
 
 ```
 👈
 A tool for manipulating the Gordian Envelope data type
 
-Usage: nvelope <COMMAND>
+Usage: envelope <COMMAND>
 
 Commands:
   assertion   Work with the envelope's assertions
@@ -53,7 +53,7 @@ Without any options, the `format` command takes an envelope in UR format prints 
 
 ```bash
 👉
-nvelope format $ALICE_KNOWS_BOB
+envelope format $ALICE_KNOWS_BOB
 ```
 
 ```
@@ -69,7 +69,7 @@ The `format` command has several output format options specified using `--type`.
 
 ```bash
 👉
-nvelope format --type cbor $ALICE_KNOWS_BOB
+envelope format --type cbor $ALICE_KNOWS_BOB
 ```
 
 ```
@@ -83,7 +83,7 @@ Or your can output the annotated CBOR diagnostic annotation of the envelope:
 
 ```bash
 👉
-nvelope format --type diag $ALICE_KNOWS_BOB
+envelope format --type diag $ALICE_KNOWS_BOB
 ```
 
 ```
@@ -105,7 +105,7 @@ The envelope tree notation shows the structure of the envelope as a tree, includ
 
 ```bash
 👉
-nvelope format --type tree $ALICE_KNOWS_BOB
+envelope format --type tree $ALICE_KNOWS_BOB
 ```
 
 ```
@@ -123,7 +123,7 @@ With the `--hide-nodes` option, the structure of the envelope is shown without d
 
 ```bash
 👉
-nvelope format --type tree --hide-nodes $ALICE_KNOWS_BOB
+envelope format --type tree --hide-nodes $ALICE_KNOWS_BOB
 ```
 
 ```
@@ -140,7 +140,7 @@ The `subject type` subcommand creates a new envelope with a subject of the given
 
 ```bash
 👉
-nvelope subject type string "Hello."
+envelope subject type string "Hello."
 ```
 
 ```
@@ -152,7 +152,7 @@ When we feed this envelope back into the `format` comand, we get the envelope pr
 
 ```bash
 👉
-nvelope format ur:envelope/tpcsiyfdihjzjzjldmprrhtypk
+envelope format ur:envelope/tpcsiyfdihjzjzjldmprrhtypk
 ```
 
 ```
@@ -164,7 +164,7 @@ Using the help command, you can see a listing of all the types supported:
 
 ```bash
 👉
-nvelope subject type --help
+envelope subject type --help
 ```
 
 ```
@@ -194,7 +194,7 @@ To extract the actual data of the envelope's subject, use the `extract` command:
 
 ```bash
 👉
-nvelope extract string ur:envelope/tpcsiyfdihjzjzjldmprrhtypk
+envelope extract string ur:envelope/tpcsiyfdihjzjzjldmprrhtypk
 ```
 
 ```
@@ -206,7 +206,7 @@ In an envelope with assertions, the `extract` command just returns the subject w
 
 ```bash
 👉
-nvelope extract string $ALICE_KNOWS_BOB
+envelope extract string $ALICE_KNOWS_BOB
 ```
 
 ```
@@ -218,7 +218,7 @@ If you want the subject returned as an envelope, use the `envelope` data type:
 
 ```bash
 👉
-nvelope extract envelope $ALICE_KNOWS_BOB
+envelope extract envelope $ALICE_KNOWS_BOB
 ```
 
 ```
@@ -228,7 +228,7 @@ ur:envelope/tpcsihfpjziniaihnsrsnyue
 
 ```bash
 👉
-nvelope format ur:envelope/tpcsihfpjziniaihnsrsnyue
+envelope format ur:envelope/tpcsihfpjziniaihnsrsnyue
 ```
 
 ```
@@ -238,11 +238,11 @@ nvelope format ur:envelope/tpcsihfpjziniaihnsrsnyue
 
 ## Assertion
 
-To add an assertion to an existing envelope, use the `assertion` command. In this example, `nvelope` is invoked twice, once to create the envelope with its subject, and the second to add an assertion to it:
+To add an assertion to an existing envelope, use the `assertion` command. In this example, `envelope` is invoked twice, once to create the envelope with its subject, and the second to add an assertion to it:
 
 ```bash
 👉
-nvelope subject type string "Alice" | nvelope assertion add pred-obj string "knows" string "Bob"
+envelope subject type string "Alice" | envelope assertion add pred-obj string "knows" string "Bob"
 ```
 
 ```
@@ -256,14 +256,14 @@ The `assertion` command has several subcommands that help us work with assertion
 
 ```bash
 👉
-nvelope help assertion
+envelope help assertion
 ```
 
 ```
 👈
 Work with the envelope's assertions
 
-Usage: nvelope assertion <COMMAND>
+Usage: envelope assertion <COMMAND>
 
 Commands:
   add     Add an assertion to the given envelope
@@ -288,7 +288,7 @@ This prints the digest of the envelope as a whole:
 
 ```bash
 👉
-nvelope digest $ALICE_KNOWS_BOB
+envelope digest $ALICE_KNOWS_BOB
 ```
 
 ```
@@ -300,7 +300,7 @@ While this prints the digest of the *subject* of the envelope:
 
 ```bash
 👉
-nvelope extract envelope $ALICE_KNOWS_BOB | nvelope digest
+envelope extract envelope $ALICE_KNOWS_BOB | envelope digest
 ```
 
 ```
@@ -314,7 +314,7 @@ Let's print the digest of the example envelope's assertion:
 
 ```bash
 👉
-nvelope assertion at 0 $ALICE_KNOWS_BOB | nvelope digest
+envelope assertion at 0 $ALICE_KNOWS_BOB | envelope digest
 ```
 
 ```
@@ -326,9 +326,9 @@ Finally, let's print the digest of the object of the envelope's assertion:
 
 ```bash
 👉
-nvelope assertion at 0 $ALICE_KNOWS_BOB |    # Gets the assertion
-    nvelope extract object |                 # Gets the object of the assertion
-    nvelope digest                           # Prints the digest
+envelope assertion at 0 $ALICE_KNOWS_BOB |    # Gets the assertion
+    envelope extract object |                 # Gets the object of the assertion
+    envelope digest                           # Prints the digest
 ```
 
 ```
@@ -344,7 +344,7 @@ Let's start by getting the digest of the subject of our example envelope:
 
 ```bash
 👉
-SUBJECT_DIGEST=`nvelope extract envelope $ALICE_KNOWS_BOB | nvelope digest`
+SUBJECT_DIGEST=`envelope extract envelope $ALICE_KNOWS_BOB | envelope digest`
 echo $SUBJECT_DIGEST
 ```
 
@@ -357,7 +357,7 @@ Now if we want to produce a version of the envelope with its subject elided, we 
 
 ```bash
 👉
-nvelope elide removing $SUBJECT_DIGEST $ALICE_KNOWS_BOB | nvelope format
+envelope elide removing $SUBJECT_DIGEST $ALICE_KNOWS_BOB | envelope format
 ```
 
 ```
@@ -374,7 +374,7 @@ Here we provide two digests: the first for the subject as above, and the digest 
 ```bash
 👉
 BOB_DIGEST=ur:digest/hdcxbwrlfpmwnsemrovtnssrtnotcfgshdvezcjedlbbtypatiwtecoxjnjnhtcafhbysptsnsnl
-nvelope elide removing "$SUBJECT_DIGEST $BOB_DIGEST" $ALICE_KNOWS_BOB | nvelope format
+envelope elide removing "$SUBJECT_DIGEST $BOB_DIGEST" $ALICE_KNOWS_BOB | envelope format
 ```
 
 ```
@@ -390,7 +390,7 @@ Let's compare the original envelope's digest to the elided version's digest:
 
 ```bash
 👉
-nvelope digest $ALICE_KNOWS_BOB
+envelope digest $ALICE_KNOWS_BOB
 ```
 
 ```
@@ -400,7 +400,7 @@ ur:digest/hdcxldgouyhyadimzmpaeourhfsectvaskspdlotaxidiatbgydejnbwgskbhfrtwlwzne
 
 ```bash
 👉
-nvelope elide removing "$SUBJECT_DIGEST $BOB_DIGEST" $ALICE_KNOWS_BOB | nvelope digest
+envelope elide removing "$SUBJECT_DIGEST $BOB_DIGEST" $ALICE_KNOWS_BOB | envelope digest
 ```
 
 ```
@@ -412,11 +412,11 @@ So even though the original and elided versions are in fact *different envelopes
 
 ## Symmetric Key Encryption
 
-The `nvelope` tool provides the `encrypt` and `decrypt` commands to perform symmetric key encryption of an envelope's subject. Why not the *whole* envelope? That's easy too, and we'll get to it shortly, but first we need a key. `nvelope` has the `generate key` command that generates a new encryption key.
+The `envelope` tool provides the `encrypt` and `decrypt` commands to perform symmetric key encryption of an envelope's subject. Why not the *whole* envelope? That's easy too, and we'll get to it shortly, but first we need a key. `envelope` has the `generate key` command that generates a new encryption key.
 
 ```bash
 👉
-KEY=`nvelope generate key`
+KEY=`envelope generate key`
 echo $KEY
 ```
 
@@ -429,8 +429,8 @@ Once we have this, we can produce a version of our example envelope that has its
 
 ```bash
 👉
-ENCRYPTED=`nvelope encrypt --key $KEY $ALICE_KNOWS_BOB`
-nvelope format $ENCRYPTED
+ENCRYPTED=`envelope encrypt --key $KEY $ALICE_KNOWS_BOB`
+envelope format $ENCRYPTED
 ```
 
 ```
@@ -444,7 +444,7 @@ Note that encryption uses randomness to help hide what has been encrypted. So ea
 
 ```bash
 👉
-nvelope encrypt --key $KEY $ALICE_KNOWS_BOB
+envelope encrypt --key $KEY $ALICE_KNOWS_BOB
 ```
 
 ```
@@ -454,7 +454,7 @@ ur:envelope/lftansfwlrgemudytouolnmtisaauosngsurlouozontzeahrphfashnbngdstghadsa
 
 ```bash
 👉
-nvelope encrypt --key $KEY $ALICE_KNOWS_BOB
+envelope encrypt --key $KEY $ALICE_KNOWS_BOB
 ```
 
 ```
@@ -466,7 +466,7 @@ But notice! When you encrypt parts of an envelope, its *digest* remains the same
 
 ```bash
 👉
-nvelope digest $ALICE_KNOWS_BOB
+envelope digest $ALICE_KNOWS_BOB
 ```
 
 ```
@@ -476,7 +476,7 @@ ur:digest/hdcxldgouyhyadimzmpaeourhfsectvaskspdlotaxidiatbgydejnbwgskbhfrtwlwzne
 
 ```bash
 👉
-nvelope encrypt --key $KEY $ALICE_KNOWS_BOB | nvelope digest
+envelope encrypt --key $KEY $ALICE_KNOWS_BOB | envelope digest
 ```
 
 ```
@@ -492,8 +492,8 @@ For this, you simply wrap the envelope in an outer envelope, and encrypt that!
 
 ```bash
 👉
-WRAPPED=`nvelope subject type wrapped $ALICE_KNOWS_BOB`
-nvelope format $WRAPPED
+WRAPPED=`envelope subject type wrapped $ALICE_KNOWS_BOB`
+envelope format $WRAPPED
 ```
 
 ```
@@ -513,7 +513,7 @@ Note that since we created a new envelope by doing the wrapping, that this new e
 
 ```bash
 👉
-nvelope digest $ALICE_KNOWS_BOB
+envelope digest $ALICE_KNOWS_BOB
 ```
 
 ```
@@ -523,7 +523,7 @@ ur:digest/hdcxldgouyhyadimzmpaeourhfsectvaskspdlotaxidiatbgydejnbwgskbhfrtwlwzne
 
 ```bash
 👉
-nvelope digest $WRAPPED
+envelope digest $WRAPPED
 ```
 
 ```
@@ -533,8 +533,8 @@ ur:digest/hdcxzclocydkrespdwwygrldbyvabyplolrdfgfnsolnjkgwledyvwhtghlncylkhgdnlt
 
 ```bash
 👉
-WRAPPED_ENCRYPTED=`nvelope encrypt --key $KEY $WRAPPED`
-nvelope format $WRAPPED_ENCRYPTED
+WRAPPED_ENCRYPTED=`envelope encrypt --key $KEY $WRAPPED`
+envelope format $WRAPPED_ENCRYPTED
 ```
 
 ```
@@ -546,7 +546,7 @@ This encrypted envelope still has the same digest as the wrapped but unencrypted
 
 ```bash
 👉
-nvelope digest $WRAPPED
+envelope digest $WRAPPED
 ```
 
 ```
@@ -556,7 +556,7 @@ ur:digest/hdcxzclocydkrespdwwygrldbyvabyplolrdfgfnsolnjkgwledyvwhtghlncylkhgdnlt
 
 ```bash
 👉
-nvelope digest $WRAPPED_ENCRYPTED
+envelope digest $WRAPPED_ENCRYPTED
 ```
 
 ```
@@ -568,9 +568,9 @@ To recover the original envelope we reverse the steps, first decrypting, then un
 
 ```bash
 👉
-nvelope decrypt --key $KEY $WRAPPED_ENCRYPTED |   # Decrypt the envelope
-    nvelope extract wrapped |                     # Unwrap the inner envelope
-    nvelope format                                # Show the formatted contents
+envelope decrypt --key $KEY $WRAPPED_ENCRYPTED |   # Decrypt the envelope
+    envelope extract wrapped |                     # Unwrap the inner envelope
+    envelope format                                # Show the formatted contents
 ```
 
 ```
@@ -586,7 +586,7 @@ Similar to how you can encrypt an envelope's subject, you can also cryptographic
 
 ```bash
 👉
-nvelope generate prvkeys
+envelope generate prvkeys
 ```
 
 ```
@@ -599,7 +599,7 @@ The above generation is random. If you wish to use a `crypto-seed` as your start
 ```bash
 👉
 SEED=ur:crypto-seed/oyadgdmdeefejoaonnatcycefxjedrfyaspkiakionamgl
-PRVKEYS=`nvelope generate prvkeys --seed $SEED`
+PRVKEYS=`envelope generate prvkeys --seed $SEED`
 echo $PRVKEYS
 ```
 
@@ -612,7 +612,7 @@ Of course, we'll also want to distribute the public key, so the signature can be
 
 ```bash
 👉
-PUBKEYS=`nvelope generate pubkeys $PRVKEYS`
+PUBKEYS=`envelope generate pubkeys $PRVKEYS`
 echo $PUBKEYS
 ```
 
@@ -625,14 +625,14 @@ Now we can sign our envelope:
 
 ```bash
 👉
-SIGNED=`nvelope sign --prvkeys $PRVKEYS $ALICE_KNOWS_BOB`
+SIGNED=`envelope sign --prvkeys $PRVKEYS $ALICE_KNOWS_BOB`
 ```
 
 Let's see what it looks like when formatted now:
 
 ```bash
 👉
-nvelope format $SIGNED
+envelope format $SIGNED
 ```
 
 ```
@@ -649,8 +649,8 @@ Wrapping to the rescue again!
 
 ```bash
 👉
-WRAPPED_SIGNED=`nvelope subject type wrapped $ALICE_KNOWS_BOB | nvelope sign --prvkeys $PRVKEYS`
-nvelope format $WRAPPED_SIGNED
+WRAPPED_SIGNED=`envelope subject type wrapped $ALICE_KNOWS_BOB | envelope sign --prvkeys $PRVKEYS`
+envelope format $WRAPPED_SIGNED
 ```
 
 ```
@@ -668,7 +668,7 @@ Now the entire contents of the envelope are signed, and if we send it to someone
 
 ```bash
 👉
-nvelope verify --pubkeys $PUBKEYS $WRAPPED_SIGNED
+envelope verify --pubkeys $PUBKEYS $WRAPPED_SIGNED
 ```
 
 ```
@@ -680,8 +680,8 @@ To facilitate piping commands, the `verify` command prints the input envelope if
 
 ```bash
 👉
-BAD_PUBKEYS=`nvelope generate prvkeys | nvelope generate pubkeys`
-nvelope verify --pubkeys $BAD_PUBKEYS $WRAPPED_SIGNED
+BAD_PUBKEYS=`envelope generate prvkeys | envelope generate pubkeys`
+envelope verify --pubkeys $BAD_PUBKEYS $WRAPPED_SIGNED
 ```
 
 ```
@@ -697,7 +697,7 @@ SSKR lets you split ("shard") an envelope into several shares, a threshold of wh
 
 ```bash
 👉
-SHARE_ENVELOPES=(`nvelope sskr split -g 2-of-3 $ALICE_KNOWS_BOB`)
+SHARE_ENVELOPES=(`envelope sskr split -g 2-of-3 $ALICE_KNOWS_BOB`)
 echo $SHARE_ENVELOPES
 ```
 
@@ -721,7 +721,7 @@ If we format the first of those shares, we see that the subject is a symmetrical
 
 ```bash
 👉
-nvelope format $SHARE_1
+envelope format $SHARE_1
 ```
 
 ```
@@ -735,8 +735,8 @@ Taking the first and third of those shares, we can recover the original envelope
 
 ```bash
 👉
-RECOVERED=`nvelope sskr join $SHARE_1 $SHARE_3`
-nvelope format $RECOVERED
+RECOVERED=`envelope sskr join $SHARE_1 $SHARE_3`
+envelope format $RECOVERED
 ```
 
 ```
@@ -750,7 +750,7 @@ But just one of the shares is insufficient:
 
 ```bash
 👉
-nvelope sskr join $SHARE_2
+envelope sskr join $SHARE_2
 ```
 
 ```
@@ -766,10 +766,10 @@ Here we compare the digests produced by the plaintext and encrypted versions of 
 
 ```bash
 👉
-KEY=`nvelope generate key`
-WRAPPED=`nvelope subject type wrapped $ALICE_KNOWS_BOB`
-ENCRYPTED=`nvelope encrypt --key $KEY $WRAPPED`
-nvelope digest $WRAPPED; nvelope digest $ENCRYPTED
+KEY=`envelope generate key`
+WRAPPED=`envelope subject type wrapped $ALICE_KNOWS_BOB`
+ENCRYPTED=`envelope encrypt --key $KEY $WRAPPED`
+envelope digest $WRAPPED; envelope digest $ENCRYPTED
 ```
 
 ```
@@ -782,8 +782,8 @@ The `salt` command lets us add an assertion with random data. If we do this befo
 
 ```bash
 👉
-SALTED_WRAPPED=`nvelope salt $ALICE_KNOWS_BOB | nvelope subject type wrapped`
-nvelope format $SALTED_WRAPPED
+SALTED_WRAPPED=`envelope salt $ALICE_KNOWS_BOB | envelope subject type wrapped`
+envelope format $SALTED_WRAPPED
 ```
 
 ```
@@ -798,8 +798,8 @@ nvelope format $SALTED_WRAPPED
 
 ```bash
 👉
-SALTED_ENCRYPTED=`nvelope encrypt --key $KEY $SALTED_WRAPPED`
-nvelope digest $ENCRYPTED; nvelope digest $SALTED_ENCRYPTED
+SALTED_ENCRYPTED=`envelope encrypt --key $KEY $SALTED_WRAPPED`
+envelope digest $ENCRYPTED; envelope digest $SALTED_ENCRYPTED
 ```
 
 ```
@@ -816,7 +816,7 @@ Let's define a helper function to output the number of CBOR bytes an envelope co
 
 ```bash
 👉
-function env_cbor_count { nvelope format --type cbor "$1" | wc -c | bc -l <<< "($(cat)) / 2" | xargs printf "%.0f\n" }
+function env_cbor_count { envelope format --type cbor "$1" | wc -c | bc -l <<< "($(cat)) / 2" | xargs printf "%.0f\n" }
 ```
 
 In this example, we create an envelope with a long text note then print the number of bytes it takes to encode as CBOR and the envelope's digest.
@@ -824,9 +824,9 @@ In this example, we create an envelope with a long text note then print the numb
 ```bash
 👉
 NOTE='Lorem ipsum dolor sit amet consectetur adipiscing elit mi nibh ornare proin blandit diam ridiculus, faucibus mus dui eu vehicula nam donec dictumst sed vivamus bibendum aliquet efficitur. Felis imperdiet sodales dictum morbi vivamus augue dis duis aliquet velit ullamcorper porttitor, lobortis dapibus hac purus aliquam natoque iaculis blandit montes nunc pretium.'
-ENVELOPE=`nvelope subject type string "Alice" | nvelope assertion add pred-obj known note string "${NOTE}${NOTE}${NOTE}"`
+ENVELOPE=`envelope subject type string "Alice" | envelope assertion add pred-obj known note string "${NOTE}${NOTE}${NOTE}"`
 env_cbor_count $ENVELOPE
-nvelope digest $ENVELOPE
+envelope digest $ENVELOPE
 ```
 
 ```bash
@@ -839,9 +839,9 @@ Now we compress the envelope, and again print the number of bytes it takes to en
 
 ```bash
 👉
-COMPRESSED=`nvelope compress $ENVELOPE`
+COMPRESSED=`envelope compress $ENVELOPE`
 env_cbor_count $COMPRESSED
-nvelope digest $COMPRESSED
+envelope digest $COMPRESSED
 ```
 
 ```
@@ -854,7 +854,7 @@ When an envelope is compressed, you treat it like any other envelope (add assert
 
 ```bash
 👉
-nvelope format $COMPRESSED
+envelope format $COMPRESSED
 ```
 
 ```
@@ -866,9 +866,9 @@ When the envelope is uncompressed, it returns to its original size.
 
 ```bash
 👉
-UNCOMPRESSED=`nvelope uncompress $COMPRESSED`
+UNCOMPRESSED=`envelope uncompress $COMPRESSED`
 env_cbor_count $UNCOMPRESSED
-nvelope digest $UNCOMPRESSED
+envelope digest $UNCOMPRESSED
 ```
 
 ```
@@ -881,8 +881,8 @@ The above technique compresses the entire envelope. You can also compress or unc
 
 ```bash
 👉
-ALICE_COMPRESSED=`nvelope compress --subject $ALICE_KNOWS_BOB`
-nvelope format $ALICE_COMPRESSED
+ALICE_COMPRESSED=`envelope compress --subject $ALICE_KNOWS_BOB`
+envelope format $ALICE_COMPRESSED
 ```
 
 ```

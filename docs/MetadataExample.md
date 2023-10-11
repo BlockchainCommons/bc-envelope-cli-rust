@@ -1,4 +1,4 @@
-# `nvelope` - Complex Metadata Example
+# `envelope` - Complex Metadata Example
 
 Complex, tiered metadata can be added to an envelope.
 
@@ -10,10 +10,10 @@ Start by creating an envelope that represents the author and what is known about
 
 ```bash
 👉
-AUTHOR=`nvelope subject type arid 9c747ace78a4c826392510dd6285551e7df4e5164729a1b36198e56e017666c8 | \
-    nvelope assertion add pred-obj known dereferenceVia string LibraryOfCongress | \
-    nvelope assertion add pred-obj known hasName string "Ayn Rand"`
-nvelope format $AUTHOR
+AUTHOR=`envelope subject type arid 9c747ace78a4c826392510dd6285551e7df4e5164729a1b36198e56e017666c8 | \
+    envelope assertion add pred-obj known dereferenceVia string LibraryOfCongress | \
+    envelope assertion add pred-obj known hasName string "Ayn Rand"`
+envelope format $AUTHOR
 ```
 
 ```
@@ -28,9 +28,9 @@ Create two envelopes representing the name of the novel in two different languag
 
 ```bash
 👉
-NAME_EN=`nvelope subject type string "Atlas Shrugged" | \
-    nvelope assertion add pred-obj known language string en`
-nvelope format $NAME_EN
+NAME_EN=`envelope subject type string "Atlas Shrugged" | \
+    envelope assertion add pred-obj known language string en`
+envelope format $NAME_EN
 ```
 
 ```
@@ -42,9 +42,9 @@ nvelope format $NAME_EN
 
 ```bash
 👉
-NAME_ES=`nvelope subject type string "La rebelión de Atlas" | \
-    nvelope assertion add pred-obj known language string es`
-nvelope format $NAME_ES
+NAME_ES=`envelope subject type string "La rebelión de Atlas" | \
+    envelope assertion add pred-obj known language string es`
+envelope format $NAME_ES
 ```
 
 ```
@@ -58,14 +58,14 @@ Create an envelope that specifies known information about the novel. This envelo
 
 ```bash
 👉
-WORK=`nvelope subject type arid 7fb90a9d96c07f39f75ea6acf392d79f241fac4ec0be2120f7c82489711e3e80 | \
-    nvelope assertion add pred-obj known isA string Novel | \
-    nvelope assertion add pred-obj string isbn string "9780451191144" | \
-    nvelope assertion add pred-obj string author envelope $AUTHOR | \
-    nvelope assertion add pred-obj known dereferenceVia string "LibraryOfCongress" | \
-    nvelope assertion add pred-obj known hasName envelope $NAME_EN | \
-    nvelope assertion add pred-obj known hasName envelope $NAME_ES`
-nvelope format $WORK
+WORK=`envelope subject type arid 7fb90a9d96c07f39f75ea6acf392d79f241fac4ec0be2120f7c82489711e3e80 | \
+    envelope assertion add pred-obj known isA string Novel | \
+    envelope assertion add pred-obj string isbn string "9780451191144" | \
+    envelope assertion add pred-obj string author envelope $AUTHOR | \
+    envelope assertion add pred-obj known dereferenceVia string "LibraryOfCongress" | \
+    envelope assertion add pred-obj known hasName envelope $NAME_EN | \
+    envelope assertion add pred-obj known hasName envelope $NAME_ES`
+envelope format $WORK
 ```
 
 ```
@@ -92,7 +92,7 @@ Create an envelope that refers to the digest of a particular digital embodiment 
 ```bash
 👉
 BOOK_DATA="This is the entire book “Atlas Shrugged” in EPUB format."
-BOOK_DIGEST=`nvelope generate digest $BOOK_DATA`
+BOOK_DIGEST=`envelope generate digest $BOOK_DATA`
 echo $BOOK_DIGEST
 ```
 
@@ -105,11 +105,11 @@ Create the final metadata object, which provides information about the object to
 
 ```bash
 👉
-BOOK_METADATA=`nvelope subject type digest $BOOK_DIGEST | \
-    nvelope assertion add pred-obj string "work" envelope $WORK | \
-    nvelope assertion add pred-obj string format string EPUB | \
-    nvelope assertion add pred-obj known dereferenceVia string "IPFS"`
-nvelope format $BOOK_METADATA
+BOOK_METADATA=`envelope subject type digest $BOOK_DIGEST | \
+    envelope assertion add pred-obj string "work" envelope $WORK | \
+    envelope assertion add pred-obj string format string EPUB | \
+    envelope assertion add pred-obj known dereferenceVia string "IPFS"`
+envelope format $BOOK_METADATA
 ```
 
 ```

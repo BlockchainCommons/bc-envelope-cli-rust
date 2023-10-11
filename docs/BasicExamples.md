@@ -1,10 +1,10 @@
-# `nvelope` - Basic Examples
+# `envelope` - Basic Examples
 
-This document walks you through a set of basic examples using the `nvelope` command line tool. There are several companion documents that contain more complex examples.
+This document walks you through a set of basic examples using the `envelope` command line tool. There are several companion documents that contain more complex examples.
 
 **See Associated Video:**
 
-**NOTE:** These videos show the command line syntax of the Swift `envelope` command line tool. The Rust-based `nvelope` tool has a slightly different syntax, but the meaning of the commands is the same.
+**NOTE:** These videos show the command line syntax of the Swift `envelope` command line tool. The Rust-based `envelope` tool has a slightly different syntax, but the meaning of the commands is the same.
 
 [![Gordian Envelope CLI - 1 - Overview](https://img.youtube.com/vi/1Z3Z4Z2Z2Z4/mqdefault.jpg)](https://www.youtube.com/watch?v=1Z3Z4Z2Z2Z4)
 [![Gordian Envelope CLI - 2 - Examples](https://img.youtube.com/vi/LYjtuBO1Sgw/mqdefault.jpg)](https://www.youtube.com/watch?v=LYjtuBO1Sgw)
@@ -71,7 +71,7 @@ Alice sends a plaintext message to Bob.
 
 ```bash
 👉
-HELLO_ENVELOPE=`nvelope subject type string $PLAINTEXT_HELLO`
+HELLO_ENVELOPE=`envelope subject type string $PLAINTEXT_HELLO`
 echo $HELLO_ENVELOPE
 ```
 
@@ -86,7 +86,7 @@ Bob receives the envelope and reads the message.
 
 ```bash
 👉
-nvelope extract string $HELLO_ENVELOPE
+envelope extract string $HELLO_ENVELOPE
 ```
 
 ```
@@ -102,7 +102,7 @@ Alice sends a signed plaintext message to Bob.
 
 ```bash
 👉
-SIGNED_ENVELOPE=`nvelope subject type string $PLAINTEXT_HELLO | nvelope sign --prvkeys $ALICE_PRVKEYS`
+SIGNED_ENVELOPE=`envelope subject type string $PLAINTEXT_HELLO | envelope sign --prvkeys $ALICE_PRVKEYS`
 echo $SIGNED_ENVELOPE
 ```
 
@@ -117,7 +117,7 @@ Bob receives the envelope and examines its contents.
 
 ```bash
 👉
-nvelope $SIGNED_ENVELOPE
+envelope $SIGNED_ENVELOPE
 ```
 
 ```
@@ -131,14 +131,14 @@ Bob verifies Alice's signature. Note that the `--silent` flag is used to generat
 
 ```bash
 👉
-nvelope verify --silent $SIGNED_ENVELOPE --pubkeys $ALICE_PUBKEYS
+envelope verify --silent $SIGNED_ENVELOPE --pubkeys $ALICE_PUBKEYS
 ```
 
 Bob extracts the message.
 
 ```bash
 👉
-nvelope extract string $SIGNED_ENVELOPE
+envelope extract string $SIGNED_ENVELOPE
 ```
 
 ```
@@ -150,7 +150,7 @@ Confirm that it wasn't signed by Carol. Note that a failed verification results 
 
 ```bash
 👉
-nvelope verify $SIGNED_ENVELOPE --pubkeys $CAROL_PUBKEYS
+envelope verify $SIGNED_ENVELOPE --pubkeys $CAROL_PUBKEYS
 ```
 
 ```
@@ -162,14 +162,14 @@ Confirm that it was signed by Alice OR Carol.
 
 ```bash
 👉
-nvelope verify --silent $SIGNED_ENVELOPE --threshold 1 --pubkeys $ALICE_PUBKEYS --pubkeys $CAROL_PUBKEYS
+envelope verify --silent $SIGNED_ENVELOPE --threshold 1 --pubkeys $ALICE_PUBKEYS --pubkeys $CAROL_PUBKEYS
 ```
 
 Confirm that it was not signed by Alice AND Carol.
 
 ```bash
 👉
-nvelope verify $SIGNED_ENVELOPE --threshold 2 --pubkeys $ALICE_PUBKEYS --pubkeys $CAROL_PUBKEYS
+envelope verify $SIGNED_ENVELOPE --threshold 2 --pubkeys $ALICE_PUBKEYS --pubkeys $CAROL_PUBKEYS
 ```
 
 ```
@@ -185,7 +185,7 @@ Alice and Carol jointly send a signed plaintext message to Bob.
 
 ```bash
 👉
-MULTISIGNED_ENVELOPE=`nvelope subject type string $PLAINTEXT_HELLO | nvelope sign --prvkeys $ALICE_PRVKEYS --prvkeys $CAROL_PRVKEYS`
+MULTISIGNED_ENVELOPE=`envelope subject type string $PLAINTEXT_HELLO | envelope sign --prvkeys $ALICE_PRVKEYS --prvkeys $CAROL_PRVKEYS`
 echo $MULTISIGNED_ENVELOPE
 ```
 
@@ -199,7 +199,7 @@ Alice & Carol ➡️ ☁️ ➡️ Bob
 Bob receives the envelope and examines its contents.
 ```bash
 👉
-nvelope format $MULTISIGNED_ENVELOPE
+envelope format $MULTISIGNED_ENVELOPE
 ```
 
 ```
@@ -214,14 +214,14 @@ Bob verifies the message was signed by both Alice and Carol.
 
 ```bash
 👉
-nvelope verify --silent $MULTISIGNED_ENVELOPE --pubkeys $ALICE_PUBKEYS --pubkeys $CAROL_PUBKEYS
+envelope verify --silent $MULTISIGNED_ENVELOPE --pubkeys $ALICE_PUBKEYS --pubkeys $CAROL_PUBKEYS
 ```
 
 Bob extracts the message.
 
 ```bash
 👉
-nvelope extract string $MULTISIGNED_ENVELOPE
+envelope extract string $MULTISIGNED_ENVELOPE
 ```
 
 ```
@@ -237,7 +237,7 @@ Alice and Bob have agreed to use this key:
 
 ```bash
 👉
-KEY=`nvelope generate key`
+KEY=`envelope generate key`
 echo $KEY
 ```
 
@@ -250,7 +250,7 @@ Alice sends a message encrypted with the key to Bob.
 
 ```bash
 👉
-ENCRYPTED_ENVELOPE=`nvelope subject type string $PLAINTEXT_HELLO | nvelope encrypt --key $KEY`
+ENCRYPTED_ENVELOPE=`envelope subject type string $PLAINTEXT_HELLO | envelope encrypt --key $KEY`
 echo $ENCRYPTED_ENVELOPE
 ```
 
@@ -265,7 +265,7 @@ Bob receives the envelope and examines its contents.
 
 ```bash
 👉
-nvelope format $ENCRYPTED_ENVELOPE
+envelope format $ENCRYPTED_ENVELOPE
 ```
 
 ```
@@ -277,8 +277,8 @@ Bob decrypts the message and extracts its subject.
 
 ```bash
 👉
-DECRYPTED=`nvelope decrypt $ENCRYPTED_ENVELOPE --key $KEY`
-nvelope extract string $DECRYPTED
+DECRYPTED=`envelope decrypt $ENCRYPTED_ENVELOPE --key $KEY`
+envelope extract string $DECRYPTED
 ```
 
 ```
@@ -290,7 +290,7 @@ Can't read with incorrect key.
 
 ```bash
 👉
-nvelope decrypt $ENCRYPTED_ENVELOPE --key `nvelope generate key`
+envelope decrypt $ENCRYPTED_ENVELOPE --key `envelope generate key`
 ```
 
 ```
@@ -305,7 +305,7 @@ This example combines the previous ones, first signing, then encrypting a messag
 Alice and Bob have agreed to use this key.
 ```bash
 👉
-KEY=`nvelope generate key`
+KEY=`envelope generate key`
 echo $KEY
 ```
 
@@ -318,7 +318,7 @@ Alice signs a plaintext message, wraps it so her signature will also be encrypte
 
 ```bash
 👉
-SIGNED_ENCRYPTED=`nvelope subject type string $PLAINTEXT_HELLO | nvelope sign --prvkeys $ALICE_PRVKEYS | nvelope subject type wrapped | nvelope encrypt --key $KEY`
+SIGNED_ENCRYPTED=`envelope subject type string $PLAINTEXT_HELLO | envelope sign --prvkeys $ALICE_PRVKEYS | envelope subject type wrapped | envelope encrypt --key $KEY`
 echo $SIGNED_ENCRYPTED
 ```
 
@@ -333,7 +333,7 @@ Bob receives the envelope, and examines its contents.
 
 ```bash
 👉
-nvelope format $SIGNED_ENCRYPTED
+envelope format $SIGNED_ENCRYPTED
 ```
 
 ```
@@ -345,8 +345,8 @@ Bob decrypts it using the shared key, and then examines the decrypted envelope's
 
 ```bash
 👉
-DECRYPTED=`nvelope decrypt $SIGNED_ENCRYPTED --key $KEY`
-nvelope format $DECRYPTED
+DECRYPTED=`envelope decrypt $SIGNED_ENCRYPTED --key $KEY`
+envelope format $DECRYPTED
 ```
 
 ```
@@ -362,7 +362,7 @@ Bob unwraps the inner envelope, verifies Alice's signature, and then extracts th
 
 ```bash
 👉
-nvelope extract wrapped $DECRYPTED | nvelope verify --pubkeys $ALICE_PUBKEYS | nvelope extract string
+envelope extract wrapped $DECRYPTED | envelope verify --pubkeys $ALICE_PUBKEYS | envelope extract string
 ```
 
 ```
@@ -374,7 +374,7 @@ Attempting to verify the wrong key exits with an error.
 
 ```bash
 👉
-nvelope extract wrapped $DECRYPTED | nvelope verify --pubkeys $CAROL_PUBKEYS
+envelope extract wrapped $DECRYPTED | envelope verify --pubkeys $CAROL_PUBKEYS
 ```
 
 ```
@@ -396,7 +396,7 @@ Alice and Bob have agreed to use this key.
 
 ```bash
 👉
-KEY=`nvelope generate key`
+KEY=`envelope generate key`
 echo $KEY
 ```
 
@@ -409,7 +409,7 @@ Alice encrypts a plaintext message, then signs it.
 
 ```bash
 👉
-ENCRYPTED_SIGNED=`nvelope subject type string $PLAINTEXT_HELLO | nvelope encrypt --key $KEY | nvelope sign --prvkeys $ALICE_PRVKEYS`
+ENCRYPTED_SIGNED=`envelope subject type string $PLAINTEXT_HELLO | envelope encrypt --key $KEY | envelope sign --prvkeys $ALICE_PRVKEYS`
 echo $ENCRYPTED_SIGNED
 ```
 
@@ -424,7 +424,7 @@ Bob receives the envelope and examines its contents.
 
 ```bash
 👉
-nvelope format $ENCRYPTED_SIGNED
+envelope format $ENCRYPTED_SIGNED
 ```
 
 ```
@@ -438,9 +438,9 @@ Bob verifies Alice's signature, decrypts the message, then extracts the message.
 
 ```bash
 👉
-nvelope verify $ENCRYPTED_SIGNED --pubkeys $ALICE_PUBKEYS | \
-    nvelope decrypt --key $KEY | \
-    nvelope extract string
+envelope verify $ENCRYPTED_SIGNED --pubkeys $ALICE_PUBKEYS | \
+    envelope decrypt --key $KEY | \
+    envelope extract string
 ```
 
 ```
@@ -456,7 +456,7 @@ Alice encrypts a message so that it can only be decrypted by Bob or Carol.
 
 ```bash
 👉
-ENVELOPE_TO=`nvelope subject type string $PLAINTEXT_HELLO | nvelope encrypt --recipient $BOB_PUBKEYS --recipient $CAROL_PUBKEYS`
+ENVELOPE_TO=`envelope subject type string $PLAINTEXT_HELLO | envelope encrypt --recipient $BOB_PUBKEYS --recipient $CAROL_PUBKEYS`
 echo $ENVELOPE_TO
 ```
 
@@ -473,7 +473,7 @@ Bob receives the envelope and examines its structure:
 
 ```bash
 👉
-nvelope format $ENVELOPE_TO
+envelope format $ENVELOPE_TO
 ```
 
 ```
@@ -488,7 +488,7 @@ Bob decrypts and reads the message.
 
 ```bash
 👉
-nvelope decrypt $ENVELOPE_TO --recipient $BOB_PRVKEYS | nvelope extract string
+envelope decrypt $ENVELOPE_TO --recipient $BOB_PRVKEYS | envelope extract string
 ```
 
 ```
@@ -500,7 +500,7 @@ Carol decrypts and reads the message.
 
 ```bash
 👉
-nvelope decrypt $ENVELOPE_TO --recipient $CAROL_PRVKEYS | nvelope extract string
+envelope decrypt $ENVELOPE_TO --recipient $CAROL_PRVKEYS | envelope extract string
 ```
 
 ```
@@ -512,7 +512,7 @@ Alice didn't encrypt it to herself, so she can't read it.
 
 ```bash
 👉
-nvelope decrypt $ENVELOPE_TO --recipient $ALICE_PRVKEYS
+envelope decrypt $ENVELOPE_TO --recipient $ALICE_PRVKEYS
 ```
 
 ```
@@ -527,7 +527,7 @@ This example demonstrates a signed, then encrypted message, sent to multiple par
 Alice signs a message, and then encrypts it so that it can only be decrypted by Bob or Carol.
 ```bash
 👉
-ENVELOPE_SIGNED_TO=`nvelope subject type string $PLAINTEXT_HELLO | nvelope sign --prvkeys $ALICE_PRVKEYS | nvelope encrypt --recipient $BOB_PUBKEYS --recipient $CAROL_PUBKEYS`
+ENVELOPE_SIGNED_TO=`envelope subject type string $PLAINTEXT_HELLO | envelope sign --prvkeys $ALICE_PRVKEYS | envelope encrypt --recipient $BOB_PUBKEYS --recipient $CAROL_PUBKEYS`
 echo $ENVELOPE_SIGNED_TO
 ```
 
@@ -544,7 +544,7 @@ Bob receives the envelope and examines its structure:
 
 ```bash
 👉
-nvelope format $ENVELOPE_SIGNED_TO
+envelope format $ENVELOPE_SIGNED_TO
 ```
 
 ```
@@ -560,7 +560,7 @@ Bob verifies Alice's signature, then decrypts and reads the message
 
 ```bash
 👉
-nvelope verify $ENVELOPE_SIGNED_TO --pubkeys $ALICE_PUBKEYS | nvelope decrypt --recipient $BOB_PRVKEYS | nvelope extract string
+envelope verify $ENVELOPE_SIGNED_TO --pubkeys $ALICE_PUBKEYS | envelope decrypt --recipient $BOB_PRVKEYS | envelope extract string
 ```
 
 ```

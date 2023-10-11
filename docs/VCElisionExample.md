@@ -1,4 +1,4 @@
-# `nvelope` - Elision/Redaction Example
+# `envelope` - Elision/Redaction Example
 
 In this example, The employer of an employee with a continuing education credential uses elision to warrant to a third-party that their employee has such a credential, without revealing anything else about the employee.
 
