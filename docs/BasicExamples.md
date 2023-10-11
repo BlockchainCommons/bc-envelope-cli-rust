@@ -1,4 +1,4 @@
-# nvelope - Basic Examples
+# `nvelope` - Basic Examples
 
 This document walks you through a set of basic examples using the `nvelope` command line tool. There are several companion documents that contain more complex examples.
 

@@ -1,4 +1,4 @@
-# nvelope - Complex Metadata Example
+# `nvelope` - Complex Metadata Example
 
 Complex, tiered metadata can be added to an envelope.
 

@@ -1,4 +1,4 @@
-# nvelope - Verifiable Credential Example
+# `nvelope` - Verifiable Credential Example
 
 In this example we build a permanent resident card, which the holder then redacts to reveal only selected information necessary to prove his identity.
 

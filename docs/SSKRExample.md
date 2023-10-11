@@ -1,4 +1,4 @@
-# nvelope - SSKR Example
+# `nvelope` - SSKR Example
 
 This example demonstrates the use of SSKR to shard a symmetric key that encrypted a message. The shares are then enclosed in individual envelopes and the seed can be recovered from those shares, allowing the future decryption of the message.
 

@@ -1,4 +1,4 @@
-# envelope - Distributed Identifier Example
+# `envelope` - Distributed Identifier Example
 
 This example offers an analogue of a DID document, which identifies an entity. The document itself can be referred to by its ARID, while the signed document can be referred to by its digest.
 
