@@ -49,7 +49,7 @@ ALICE_KNOWS_BOB=ur:envelope/lftpcsihfpjziniaihoytpcsihjejtjlktjktpcsiafwjliddssn
 
 **NOTE:** Unlike the Swift `envelope` tool, the Rust-based tool has no default commands. The downside of this is that some common commands are necessarily more verbose. The upside is that the meaning of commands is more explicit.
 
-Without any options, the `format` command takes an envelope in UR format prints out its formatted contents in Envelope Notation:
+Without any options, the `format` command takes an envelope in UR format prints out its formatted contents in envelope notation:
 
 ```bash
 👉
@@ -101,7 +101,7 @@ nvelope format --type diag $ALICE_KNOWS_BOB
 
 ### Tree Output
 
-The Envelope Tree Notation shows the structure of the envelope as a tree, including each element's digest:
+The envelope tree notation shows the structure of the envelope as a tree, including each element's digest:
 
 ```bash
 👉
@@ -117,9 +117,9 @@ nvelope format --type tree $ALICE_KNOWS_BOB
         13b74194 obj "Bob"
 ```
 
-Note that internally, Envelope uses 256-bit SHA-256 digests, but the tree format only shows the first 32 bits of the digest.
+Note that internally, envelope uses 256-bit SHA-256 digests, but the tree format only shows the first 32 bits of the digest.
 
-With the `--hide-nodes` option, the structure of the Envelope is shown without digests and without the `NODE` element. This is useful for understanding the semantic structure of the Envelope:
+With the `--hide-nodes` option, the structure of the envelope is shown without digests and without the `NODE` element. This is useful for understanding the semantic structure of the envelope:
 
 ```bash
 👉
@@ -148,7 +148,7 @@ nvelope subject type string "Hello."
 ur:envelope/tpcsiyfdihjzjzjldmprrhtypk
 ```
 
-When we feed this envelope back into the `format` comand, we get the envelope printed in Envelope Notation. This is why `"Hello."` is printed with quotes around it:
+When we feed this envelope back into the `format` comand, we get the envelope printed in envelope notation. This is why `"Hello."` is printed with quotes around it:
 
 ```bash
 👉
@@ -340,7 +340,7 @@ ur:digest/hdcxbwrlfpmwnsemrovtnssrtnotcfgshdvezcjedlbbtypatiwtecoxjnjnhtcafhbysp
 
 Now that we can use digests to specify the parts of an envelope, we can transform it in interesting ways. Elision means to remove various parts of an envelope without changing its digest. The `elide` command and its two subcommands `removing` and `revealing` (the default) provide this service.
 
-Let's start by getting the digest of the subject of our example Envelope:
+Let's start by getting the digest of the subject of our example envelope:
 
 ```bash
 👉

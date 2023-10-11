@@ -21,7 +21,7 @@ EMPLOYER_PUBKEYS="ur:crypto-pubkeys/lftanshfhdcxdnknjkmsmstypasfonchmyrktpgdesda
 
 Now we can compose the credential.
 
-One of the fields of the credential is a CBOR array of strings. The Envelope type can handle raw CBOR in any position but the `envelope` command line tool isn't for composing general purpose CBOR, so we turn to the [cbor-cli tool](https://www.npmjs.com/package/cbor-cli) to do that:
+One of the fields of the credential is a CBOR array of strings. The envelope type can handle raw CBOR in any position but the `envelope` command line tool isn't for composing general purpose CBOR, so we turn to the [cbor-cli tool](https://www.npmjs.com/package/cbor-cli) to do that:
 
 ```
 👉
@@ -141,7 +141,7 @@ ELIDED [
 ]
 ```
 
-There are two important things to note in the above commands, one dealing with the shell commands and one dealing with the nature of the Envelope type.
+There are two important things to note in the above commands, one dealing with the shell commands and one dealing with the nature of the envelope type.
 
 Regarding the shell, in the above commands we needed the outer parentheses to ensure that the shell adds each of the digests to the array as a separate element, instead of adding them all as a single element.
 
