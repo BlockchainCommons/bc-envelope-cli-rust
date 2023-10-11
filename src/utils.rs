@@ -13,3 +13,11 @@ pub fn read_envelope(envelope: Option<&str>) -> Result<Rc<Envelope>, anyhow::Err
     }
     Ok(Rc::new(Envelope::from_ur_string(ur_string.trim())?))
 }
+
+pub fn read_optional_envelope(envelope: Option<&str>) -> Result<Option<Rc<Envelope>>, anyhow::Error> {
+    if let Some(envelope) = envelope {
+        Ok(Some(read_envelope(Some(envelope))?))
+    } else {
+        Ok(None)
+    }
+}

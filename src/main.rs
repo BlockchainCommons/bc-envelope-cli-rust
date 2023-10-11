@@ -63,6 +63,8 @@ fn main() -> anyhow::Result<()> {
         MainCommands::Verify(args) => args.exec(),
     };
     let output = output?;
-    println!("{}", output);
+    if !output.is_empty() {
+        println!("{}", output);
+    }
     Ok(())
 }

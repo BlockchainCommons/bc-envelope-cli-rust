@@ -2,7 +2,7 @@ use clap::Args;
 
 use crate::utils::read_envelope;
 
-/// Get the vendor of the attachment.
+/// Get the optional conformance of the attachment.
 #[derive(Debug, Args)]
 #[group(skip)]
 pub struct CommandArgs {
