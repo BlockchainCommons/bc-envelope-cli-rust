@@ -1,5 +1,5 @@
 [package]
-name = "envelope"
+name = "bc-envelope-cli"
 version = "0.3.0"
 edition = "2021"
 description = "Gordian Envelope Command Line Tool."
@@ -7,6 +7,13 @@ authors = ["Blockchain Commons"]
 keywords = ["encoding", "cbor", "binary", "format", "serialization"]
 repository = "https://github.com/BlockchainCommons/bc-envelope-cli-rust"
 readme = "README.md"
+license = "BSD-2-Clause-Patent"
+categories = ["data-structures", "encoding"]
+documentation = "https://docs.rs/bc-envelope-cli"
+
+[[bin]]
+name = "envelope"
+path = "src/main.rs"
 
 [dependencies]
 dcbor = "0.9.0"

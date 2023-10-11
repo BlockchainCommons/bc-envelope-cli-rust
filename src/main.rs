@@ -1,11 +1,21 @@
-pub mod cmd;
-pub mod exec;
-pub mod styles;
-pub mod data_types;
-pub mod pred_obj_args;
-pub mod envelope_args;
-pub mod subject_args;
-pub mod utils;
+//! A command line tool for manipulating the Gordian Envelope data type. See the main repo [README](https://github.com/BlockchainCommons/bc-envelope-cli-rust/blob/master/README.md).
+
+#[doc(hidden)]
+mod cmd;
+#[doc(hidden)]
+mod exec;
+#[doc(hidden)]
+mod styles;
+#[doc(hidden)]
+mod data_types;
+#[doc(hidden)]
+mod pred_obj_args;
+#[doc(hidden)]
+mod envelope_args;
+#[doc(hidden)]
+mod subject_args;
+#[doc(hidden)]
+mod utils;
 
 use clap::{Parser, Subcommand};
 
@@ -16,12 +26,14 @@ use crate::exec::Exec;
 #[command(author, version)]
 #[command(propagate_version = true)]
 #[command(styles=styles::get_styles())]
+#[doc(hidden)]
 struct Cli {
     #[command(subcommand)]
     command: MainCommands,
 }
 
 #[derive(Debug, Subcommand)]
+#[doc(hidden)]
 enum MainCommands {
     Assertion(cmd::assertion::CommandArgs),
     Attachment(cmd::attachment::CommandArgs),
@@ -41,6 +53,7 @@ enum MainCommands {
     Verify(cmd::verify::CommandArgs),
 }
 
+#[doc(hidden)]
 fn main() -> anyhow::Result<()> {
     let cli = Cli::parse();
 
