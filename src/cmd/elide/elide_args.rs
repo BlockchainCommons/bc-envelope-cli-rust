@@ -5,6 +5,8 @@ use clap::{ValueEnum, Args};
 
 use bc_envelope::prelude::*;
 
+use crate::utils::parse_digests;
+
 /// The action to take on the elements.
 #[derive(ValueEnum, Copy, Clone, Debug, PartialEq, Eq)]
 pub enum Action {
@@ -22,9 +24,7 @@ pub trait ElideArgsLike {
     fn target(&self) -> &String;
 
     fn get_target_set(&self) -> anyhow::Result<HashSet<Digest>> {
-        let target = self.target();
-        let digests = target.split(' ').map(Digest::from_ur_string).collect::<anyhow::Result<HashSet<Digest>>>()?;
-        Ok(digests)
+        parse_digests(self.target())
     }
 
     fn get_action(&self) -> anyhow::Result<ObscureAction> {
@@ -51,16 +51,17 @@ pub trait ElideArgsLike {
 #[derive(Debug, Args)]
 #[group(skip)]
 pub struct ElideArgs {
-    /// The action to take. If omitted, the action is elide.
+    /// The action to take. If omitted, the action is `--elide`.
     #[arg(long, default_value = "elide")]
     action: Action,
 
-    /// The encryption key (ur:crypto-key) to use when action is --encrypt. Ignored otherwise.
+    /// The encryption key (ur:crypto-key) to use when action is `--encrypt`.
+    /// Ignored otherwise.
     #[arg(long)]
     key: Option<String>,
 
-    /// The target set of digests: one or more `ur:digest` separated by a single
-    /// space.
+    /// The target set of digests: zero or more `ur:digest` or `ur:envelope`
+    /// separated by a single space.
     target: String,
 }
 
