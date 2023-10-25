@@ -1,4 +1,4 @@
-use std::{rc::Rc, str::FromStr};
+use std::str::FromStr;
 
 use clap::ValueEnum;
 use bc_envelope::prelude::*;
@@ -49,7 +49,7 @@ pub enum DataType {
     Wrapped,
 }
 
-pub fn parse_data_type_to_envelope(data_type: DataType, s: Option<&str>, ur_cbor_tag_value: Option<u64>) -> anyhow::Result<Rc<Envelope>> {
+pub fn parse_data_type_to_envelope(data_type: DataType, s: Option<&str>, ur_cbor_tag_value: Option<u64>) -> anyhow::Result<Envelope> {
     if let Some(s) = s {
         match data_type {
             DataType::Arid => parse_arid(s),
@@ -75,9 +75,9 @@ pub fn parse_data_type_to_envelope(data_type: DataType, s: Option<&str>, ur_cbor
 /// Parse an ARID from a string.
 ///
 /// Accepts either a hex-encoded ARID or a UR-encoded ARID.
-fn parse_arid(s: &str) -> anyhow::Result<Rc<Envelope>> {
+fn parse_arid(s: &str) -> anyhow::Result<Envelope> {
     if let Ok(hex) = hex::decode(s) {
-        let arid = ARID::from_data_ref(&hex)?;
+        let arid = ARID::from_data_ref(hex)?;
         Ok(Envelope::new(arid))
     } else if let Ok(arid) = ARID::from_ur_string(s) {
         Ok(Envelope::new(arid))
@@ -89,44 +89,44 @@ fn parse_arid(s: &str) -> anyhow::Result<Rc<Envelope>> {
 /// Parse a boolean from a string.
 ///
 /// Accepts either "true" or "false".
-fn parse_boolean(s: &str) -> Result<Rc<Envelope>, anyhow::Error> {
+fn parse_boolean(s: &str) -> Result<Envelope, anyhow::Error> {
     let boolean = bool::from_str(s)?;
     Ok(Envelope::new(boolean))
 }
 
 /// Parse a CBOR envelope from a string.
-fn parse_cbor(s: &str) -> anyhow::Result<Rc<Envelope>> {
+fn parse_cbor(s: &str) -> anyhow::Result<Envelope> {
     let cbor = CBOR::from_hex(s)?;
     Ok(Envelope::new(cbor))
 }
 
 /// Parse a bytestring from a string.
-fn parse_data(s: &str) -> anyhow::Result<Rc<Envelope>> {
+fn parse_data(s: &str) -> anyhow::Result<Envelope> {
     let data = CBOR::byte_string(hex::decode(s)?);
     Ok(Envelope::new(data))
 }
 
 /// Parse a Date from a string.
-fn parse_date(s: &str) -> anyhow::Result<Rc<Envelope>> {
+fn parse_date(s: &str) -> anyhow::Result<Envelope> {
     let date = dcbor::Date::new_from_string(s)?;
     Ok(Envelope::new(date))
 }
 
 /// Parse a Digest from a ur:digest string.
-fn parse_digest(s: &str) -> anyhow::Result<Rc<Envelope>> {
+fn parse_digest(s: &str) -> anyhow::Result<Envelope> {
     let digest = Digest::from_ur_string(s)?;
     Ok(Envelope::new(digest))
 }
 
 /// Parse an Envelope from a string.
-fn parse_envelope(s: &str) -> anyhow::Result<Rc<Envelope>> {
-    Ok(Rc::new(Envelope::from_ur_string(s)?))
+fn parse_envelope(s: &str) -> anyhow::Result<Envelope> {
+    Envelope::from_ur_string(s)
 }
 
 /// Parse a KnownValue from a string.
 ///
 /// Accepts either a integer or a string.
-fn parse_known_value(s: &str) -> anyhow::Result<Rc<Envelope>> {
+fn parse_known_value(s: &str) -> anyhow::Result<Envelope> {
     if let Ok(number) = s.parse::<u64>() {
         Ok(Envelope::new(KnownValue::new(number)))
     } else {
@@ -142,13 +142,13 @@ fn parse_known_value(s: &str) -> anyhow::Result<Rc<Envelope>> {
 }
 
 /// Parse a numeric value from a string.
-fn parse_number(s: &str) -> anyhow::Result<Rc<Envelope>> {
+fn parse_number(s: &str) -> anyhow::Result<Envelope> {
     let number = s.parse::<f64>()?;
     Ok(Envelope::new(number))
 }
 
 /// Parse a string from a string.
-fn parse_string(s: &str) -> anyhow::Result<Rc<Envelope>> {
+fn parse_string(s: &str) -> anyhow::Result<Envelope> {
     Ok(Envelope::new(s))
 }
 
@@ -159,10 +159,10 @@ fn parse_string(s: &str) -> anyhow::Result<Rc<Envelope>> {
 /// encodes the envelope with the tagged CBOR content of the UR.
 /// - If the UR is of an unknown type, then a tag must be used to specify the CBOR tag
 /// to use.
-fn parse_ur(s: &str, cbor_tag_value: Option<u64>) -> anyhow::Result<Rc<Envelope>> {
+fn parse_ur(s: &str, cbor_tag_value: Option<u64>) -> anyhow::Result<Envelope> {
     let ur = UR::from_ur_string(s)?;
     if ur.ur_type() == "envelope" {
-        let envelope = Rc::new(Envelope::from_ur(&ur)?);
+        let envelope = Envelope::from_ur(&ur)?;
         Ok(envelope.wrap_envelope())
     } else {
         let cbor_tag = with_format_context!(|context: &FormatContext| {
@@ -184,19 +184,19 @@ fn parse_ur(s: &str, cbor_tag_value: Option<u64>) -> anyhow::Result<Rc<Envelope>
 }
 
 /// Parse a URI from a string.
-fn parse_uri(s: &str) -> anyhow::Result<Rc<Envelope>> {
+fn parse_uri(s: &str) -> anyhow::Result<Envelope> {
     let uri = bc_components::URI::new(s)?;
     Ok(Envelope::new(uri))
 }
 
 /// Parse a UUID from a string.
-fn parse_uuid(s: &str) -> anyhow::Result<Rc<Envelope>> {
+fn parse_uuid(s: &str) -> anyhow::Result<Envelope> {
     let uuid = bc_components::UUID::from_str(s)?;
     Ok(Envelope::new(uuid))
 }
 
 /// Parse a wrapped envelope from a ur:envelope string.
-fn parse_wrapped_envelope(s: &str) -> anyhow::Result<Rc<Envelope>> {
-    let envelope = Rc::new(Envelope::from_ur_string(s)?);
+fn parse_wrapped_envelope(s: &str) -> anyhow::Result<Envelope> {
+    let envelope = Envelope::from_ur_string(s)?;
     Ok(envelope.wrap_envelope())
 }

@@ -1,4 +1,3 @@
-use std::rc::Rc;
 use bc_envelope::prelude::*;
 use clap::Args;
 
@@ -7,7 +6,7 @@ use crate::utils::read_envelope;
 pub trait EnvelopeArgsLike {
     fn envelope(&self) -> Option<&str>;
 
-    fn read_envelope(&self) -> anyhow::Result<Rc<Envelope>> {
+    fn read_envelope(&self) -> anyhow::Result<Envelope> {
         read_envelope(self.envelope())
     }
 }

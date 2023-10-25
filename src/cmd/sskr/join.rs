@@ -1,5 +1,3 @@
-use std::rc::Rc;
-
 use clap::Args;
 use bc_envelope::prelude::*;
 
@@ -23,9 +21,9 @@ impl crate::exec::Exec for CommandArgs {
             }
         }
 
-        let shares: Vec<Rc<Envelope>> = shares
+        let shares: Vec<Envelope> = shares
             .iter()
-            .map(|s| Rc::new(Envelope::from_ur_string(s).unwrap()))
+            .map(|s| Envelope::from_ur_string(s).unwrap())
             .collect();
 
         // Make sure we have at least one.

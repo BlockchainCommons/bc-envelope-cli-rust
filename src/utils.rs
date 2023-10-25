@@ -1,7 +1,7 @@
-use std::{rc::Rc, collections::HashSet};
+use std::collections::HashSet;
 use bc_envelope::prelude::*;
 
-pub fn read_envelope(envelope: Option<&str>) -> Result<Rc<Envelope>, anyhow::Error> {
+pub fn read_envelope(envelope: Option<&str>) -> Result<Envelope, anyhow::Error> {
     let mut ur_string = String::new();
     if envelope.is_none() {
         std::io::stdin().read_line(&mut ur_string)?;
@@ -11,7 +11,7 @@ pub fn read_envelope(envelope: Option<&str>) -> Result<Rc<Envelope>, anyhow::Err
     if ur_string.is_empty() {
         anyhow::bail!("No envelope provided");
     }
-    Ok(Rc::new(Envelope::from_ur_string(ur_string.trim())?))
+    Envelope::from_ur_string(ur_string.trim())
 }
 
 pub fn parse_digest(target: &str) -> Result<Digest, anyhow::Error> {

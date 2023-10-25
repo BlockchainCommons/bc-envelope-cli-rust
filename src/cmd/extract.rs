@@ -1,5 +1,3 @@
-use std::{ops::Deref, rc::Rc};
-
 use anyhow::bail;
 use bc_components::{ARID, URI, UUID, Digest, with_tags, tags::ENVELOPE};
 use bc_envelope::prelude::*;
@@ -105,7 +103,7 @@ impl crate::exec::Exec for CommandArgs {
             SubjectType::Envelope => envelope.subject().ur_string(),
             SubjectType::Known => extract_known(envelope)?,
             SubjectType::Number => envelope.extract_subject::<f64>()?.to_string(),
-            SubjectType::String => envelope.extract_subject::<String>()?.deref().clone(),
+            SubjectType::String => envelope.extract_subject::<String>()?,
             SubjectType::Ur => self.extract_ur(envelope)?,
             SubjectType::Uri => envelope.extract_subject::<URI>()?.to_string(),
             SubjectType::Uuid => envelope.extract_subject::<UUID>()?.to_string(),
@@ -115,7 +113,7 @@ impl crate::exec::Exec for CommandArgs {
     }
 }
 
-fn extract_assertion(envelope: Rc<Envelope>) -> anyhow::Result<String> {
+fn extract_assertion(envelope: Envelope) -> anyhow::Result<String> {
     if let Some(assertion) = envelope.assertion() {
         let pred_obj = [assertion.clone().predicate().unwrap(), assertion.object().unwrap()];
         Ok(pred_obj.into_iter().map(|e| e.ur_string()).collect::<Vec<String>>().join("\n"))
@@ -124,7 +122,7 @@ fn extract_assertion(envelope: Rc<Envelope>) -> anyhow::Result<String> {
     }
 }
 
-fn extract_object(envelope: Rc<Envelope>) -> anyhow::Result<String> {
+fn extract_object(envelope: Envelope) -> anyhow::Result<String> {
     if let Some(assertion) = envelope.assertion() {
         Ok(assertion.object().unwrap().ur_string())
     } else {
@@ -132,7 +130,7 @@ fn extract_object(envelope: Rc<Envelope>) -> anyhow::Result<String> {
     }
 }
 
-fn extract_predicate(envelope: Rc<Envelope>) -> anyhow::Result<String> {
+fn extract_predicate(envelope: Envelope) -> anyhow::Result<String> {
     if let Some(assertion) = envelope.assertion() {
         Ok(assertion.predicate().unwrap().ur_string())
     } else {
@@ -141,7 +139,7 @@ fn extract_predicate(envelope: Rc<Envelope>) -> anyhow::Result<String> {
 }
 
 impl CommandArgs {
-    fn extract_ur(&self, envelope: Rc<Envelope>) -> anyhow::Result<String> {
+    fn extract_ur(&self, envelope: Envelope) -> anyhow::Result<String> {
         Ok(if let Some(cbor) = envelope.clone().subject().leaf() {
             if let CBOR::Tagged(tag, untagged_cbor) = cbor {
                 let known_tag = with_tags!(|tags: &dyn dcbor::TagsStoreTrait| {
@@ -179,14 +177,14 @@ impl CommandArgs {
     }
 }
 
-fn extract_known(envelope: Rc<Envelope>) -> anyhow::Result<String> {
+fn extract_known(envelope: Envelope) -> anyhow::Result<String> {
     let _k = envelope.extract_subject::<KnownValue>()?;
     Ok(with_format_context!(|context| {
         envelope.subject().format_opt(Some(context))
     }))
 }
 
-fn extract_cbor(envelope: Rc<Envelope>) -> anyhow::Result<String> {
+fn extract_cbor(envelope: Envelope) -> anyhow::Result<String> {
     Ok(if let Some(cbor) = envelope.leaf() {
         cbor.hex()
     } else if envelope.is_wrapped() {

@@ -27,7 +27,7 @@ impl crate::exec::Exec for CommandArgs {
     fn exec(&self) -> anyhow::Result<String> {
         let envelope = self.read_envelope()?;
         let digests = parse_digests(&self.target)?;
-        let proof: Option<std::rc::Rc<Envelope>> = envelope.proof_contains_set(&digests);
+        let proof: Option<Envelope> = envelope.proof_contains_set(&digests);
         if let Some(proof) = proof {
             Ok(proof.ur_string())
         } else {

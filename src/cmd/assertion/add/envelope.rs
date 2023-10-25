@@ -1,5 +1,3 @@
-use std::rc::Rc;
-
 use clap::Args;
 
 use crate::envelope_args::{EnvelopeArgs, EnvelopeArgsLike};
@@ -30,7 +28,7 @@ impl EnvelopeArgsLike for CommandArgs {
 impl crate::exec::Exec for CommandArgs {
     fn exec(&self) -> anyhow::Result<String> {
         let envelope = self.read_envelope()?;
-        let assertion = Rc::new(Envelope::from_ur_string(&self.assertion)?);
+        let assertion = Envelope::from_ur_string(&self.assertion)?;
         Ok(envelope.add_assertion_envelope_salted(assertion, self.salted)?.ur_string())
     }
 }
