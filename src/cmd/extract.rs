@@ -179,9 +179,7 @@ impl CommandArgs {
 
 fn extract_known(envelope: Envelope) -> anyhow::Result<String> {
     let _k = envelope.extract_subject::<KnownValue>()?;
-    Ok(with_format_context!(|context| {
-        envelope.subject().format_opt(Some(context))
-    }))
+    Ok(envelope.subject().format())
 }
 
 fn extract_cbor(envelope: Envelope) -> anyhow::Result<String> {

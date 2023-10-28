@@ -1,4 +1,3 @@
-use bc_envelope::prelude::*;
 use clap::{Args, ValueEnum};
 use dcbor::CBORTaggedEncodable;
 
@@ -42,15 +41,9 @@ impl crate::exec::Exec for CommandArgs {
     fn exec(&self) -> anyhow::Result<String> {
         let e = self.read_envelope()?;
         let output = match self.format_type {
-            FormatType::Envelope => with_format_context!(|context| {
-                e.format_opt(Some(context))
-            }),
-            FormatType::Tree => with_format_context!(|context| {
-                e.tree_format_opt(self.hide_nodes, Some(context))
-            }),
-            FormatType::Diag => with_format_context!(|context| {
-                e.diagnostic_opt(true, Some(context))
-            }),
+            FormatType::Envelope => e.format(),
+            FormatType::Tree => e.tree_format(self.hide_nodes),
+            FormatType::Diag => e.diagnostic(),
             FormatType::Cbor => hex::encode(e.tagged_cbor_data()),
         };
         Ok(output)
