@@ -24,11 +24,11 @@ This document contains a list of people Alice knows. Each "knows" assertion has 
 
 ```bash
 👉
-ALICE_FRIENDS=`nvelope subject type string "Alice" |
-    nvelope assertion add pred-obj string "knows" string "Bob" --salted |
-    nvelope assertion add pred-obj string "knows" string "Carol" --salted |
-    nvelope assertion add pred-obj string "knows" string "Dan" --salted`
-nvelope format $ALICE_FRIENDS
+ALICE_FRIENDS=`envelope subject type string "Alice" |
+    envelope assertion add pred-obj string "knows" string "Bob" --salted |
+    envelope assertion add pred-obj string "knows" string "Carol" --salted |
+    envelope assertion add pred-obj string "knows" string "Dan" --salted`
+envelope format $ALICE_FRIENDS
 ```
 
 ```
@@ -56,8 +56,8 @@ Alice provides just the root digest of her document to a third party. This is si
 
 ```bash
 👉
-ALICE_FRIENDS_ROOT=`nvelope elide revealing '' $ALICE_FRIENDS`
-nvelope format $ALICE_FRIENDS_ROOT
+ALICE_FRIENDS_ROOT=`envelope elide revealing '' $ALICE_FRIENDS`
+envelope format $ALICE_FRIENDS_ROOT
 ```
 
 ```
@@ -71,9 +71,9 @@ Note that in the proof the digests of the two other elided "knows" assertions ar
 
 ```bash
 👉
-KNOWS_BOB_DIGEST=`nvelope subject assertion string "knows" string "Bob" | nvelope digest`
-KNOWS_BOB_PROOF=`nvelope proof create $KNOWS_BOB_DIGEST $ALICE_FRIENDS`
-nvelope format $KNOWS_BOB_PROOF
+KNOWS_BOB_DIGEST=`envelope subject assertion string "knows" string "Bob" | envelope digest`
+KNOWS_BOB_PROOF=`envelope proof create $KNOWS_BOB_DIGEST $ALICE_FRIENDS`
+envelope format $KNOWS_BOB_PROOF
 ```
 
 ```
@@ -90,7 +90,7 @@ The third party then uses the previously known and trusted root to confirm that 
 
 ```bash
 👉
-nvelope proof confirm --silent $KNOWS_BOB_PROOF $KNOWS_BOB_DIGEST $ALICE_FRIENDS_ROOT
+envelope proof confirm --silent $KNOWS_BOB_PROOF $KNOWS_BOB_DIGEST $ALICE_FRIENDS_ROOT
 ```
 
 There is no output because the proof succeeded.
@@ -103,24 +103,24 @@ A verifiable credential is constructed such that elements that might be elided a
 ```bash
 👉
 BOARD_PRVKEYS="ur:crypto-prvkeys/hdcxynlntpsbfrbgjkcetpzorohgsafsihcnhyrtoebzwegtvyzolbgtdaskcsldfgadtldmrkld"
-CREDENTIAL=`nvelope subject type arid 4676635a6e6068c2ef3ffd8ff726dd401fd341036e920f136a1d8af5e829496d |
-    nvelope assertion add pred-obj known isA string "Certificate of Completion" |
-    nvelope assertion add pred-obj known issuer string "Example Electrical Engineering Board" |
-    nvelope assertion add pred-obj known controller string "Example Electrical Engineering Board" |
-    nvelope assertion add pred-obj string "firstName" string "James" --salted |
-    nvelope assertion add pred-obj string "lastName" string "Maxwell" --salted |
-    nvelope assertion add pred-obj string "issueDate" date 2020-01-01 --salted |
-    nvelope assertion add pred-obj string "expirationDate" date 2028-01-01 --salted |
-    nvelope assertion add pred-obj string "photo" string "This is James Maxwell's photo." --salted |
-    nvelope assertion add pred-obj string "certificateNumber" string 123-456-789 --salted |
-    nvelope assertion add pred-obj string "subject" string "RF and Microwave Engineering" --salted |
-    nvelope assertion add pred-obj string "continuingEducationUnits" number 1.5 |
-    nvelope assertion add pred-obj string "professionalDevelopmentHours" number 15 |
-    nvelope assertion add pred-obj string "topics" cbor 82695375626a6563742031695375626a6563742032 |
-    nvelope subject type wrapped |
-    nvelope sign --prvkeys $BOARD_PRVKEYS |
-    nvelope assertion add pred-obj known note string "Signed by Example Electrical Engineering Board"`
-nvelope format $CREDENTIAL
+CREDENTIAL=`envelope subject type arid 4676635a6e6068c2ef3ffd8ff726dd401fd341036e920f136a1d8af5e829496d |
+    envelope assertion add pred-obj known isA string "Certificate of Completion" |
+    envelope assertion add pred-obj known issuer string "Example Electrical Engineering Board" |
+    envelope assertion add pred-obj known controller string "Example Electrical Engineering Board" |
+    envelope assertion add pred-obj string "firstName" string "James" --salted |
+    envelope assertion add pred-obj string "lastName" string "Maxwell" --salted |
+    envelope assertion add pred-obj string "issueDate" date 2020-01-01 --salted |
+    envelope assertion add pred-obj string "expirationDate" date 2028-01-01 --salted |
+    envelope assertion add pred-obj string "photo" string "This is James Maxwell's photo." --salted |
+    envelope assertion add pred-obj string "certificateNumber" string 123-456-789 --salted |
+    envelope assertion add pred-obj string "subject" string "RF and Microwave Engineering" --salted |
+    envelope assertion add pred-obj string "continuingEducationUnits" number 1.5 |
+    envelope assertion add pred-obj string "professionalDevelopmentHours" number 15 |
+    envelope assertion add pred-obj string "topics" cbor 82695375626a6563742031695375626a6563742032 |
+    envelope subject type wrapped |
+    envelope sign --prvkeys $BOARD_PRVKEYS |
+    envelope assertion add pred-obj known note string "Signed by Example Electrical Engineering Board"`
+envelope format $CREDENTIAL
 ```
 
 ```
@@ -177,8 +177,8 @@ nvelope format $CREDENTIAL
 
 ```bash
 👉
-CREDENTIAL_ROOT=`nvelope elide revealing '' $CREDENTIAL`
-nvelope format $CREDENTIAL_ROOT
+CREDENTIAL_ROOT=`envelope elide revealing '' $CREDENTIAL`
+envelope format $CREDENTIAL_ROOT
 ```
 
 ```
@@ -190,9 +190,9 @@ In this case the holder of a credential wants to prove a single assertion from i
 
 ```bash
 👉
-SUBJECT_DIGEST=`nvelope subject assertion string "subject" string "RF and Microwave Engineering" | nvelope digest`
-SUBJECT_PROOF=`nvelope proof create $SUBJECT_DIGEST $CREDENTIAL`
-nvelope format $SUBJECT_PROOF
+SUBJECT_DIGEST=`envelope subject assertion string "subject" string "RF and Microwave Engineering" | envelope digest`
+SUBJECT_PROOF=`envelope proof create $SUBJECT_DIGEST $CREDENTIAL`
+envelope format $SUBJECT_PROOF
 ```
 
 The proof includes digests from all the elided assertions.
@@ -215,23 +215,23 @@ The proof confirms the subject, as intended.
 
 ```bash
 👉
-nvelope proof confirm --silent $SUBJECT_PROOF $SUBJECT_DIGEST $CREDENTIAL_ROOT
+envelope proof confirm --silent $SUBJECT_PROOF $SUBJECT_DIGEST $CREDENTIAL_ROOT
 ```
 
 Assertions without salt can be guessed at, and confirmed if the the guess is correct.
 
 ```bash
 👉
-ISSUER_DIGEST=`nvelope subject assertion known issuer string "Example Electrical Engineering Board" | nvelope digest`
-nvelope proof confirm --silent $SUBJECT_PROOF $ISSUER_DIGEST $CREDENTIAL_ROOT
+ISSUER_DIGEST=`envelope subject assertion known issuer string "Example Electrical Engineering Board" | envelope digest`
+envelope proof confirm --silent $SUBJECT_PROOF $ISSUER_DIGEST $CREDENTIAL_ROOT
 ```
 
 The proof cannot be used to confirm salted assertions.
 
 ```bash
 👉
-FIRST_NAME_DIGEST=`nvelope subject assertion string "firstName" string "James" | nvelope digest`
-nvelope proof confirm --silent $SUBJECT_PROOF $FIRST_NAME_DIGEST $CREDENTIAL_ROOT
+FIRST_NAME_DIGEST=`envelope subject assertion string "firstName" string "James" | envelope digest`
+envelope proof confirm --silent $SUBJECT_PROOF $FIRST_NAME_DIGEST $CREDENTIAL_ROOT
 ```
 
 ```
@@ -245,10 +245,10 @@ A single proof can be generated to reveal multiple target digests. In this examp
 
 ```bash
 👉
-FIRST_NAME_DIGEST=`nvelope subject assertion string "firstName" string "James" | nvelope digest`
-LAST_NAME_DIGEST=`nvelope subject assertion string "lastName" string "Maxwell" | nvelope digest`
-NAME_PROOF=`nvelope proof create "$FIRST_NAME_DIGEST $LAST_NAME_DIGEST" $CREDENTIAL`
-nvelope format $NAME_PROOF
+FIRST_NAME_DIGEST=`envelope subject assertion string "firstName" string "James" | envelope digest`
+LAST_NAME_DIGEST=`envelope subject assertion string "lastName" string "Maxwell" | envelope digest`
+NAME_PROOF=`envelope proof create "$FIRST_NAME_DIGEST $LAST_NAME_DIGEST" $CREDENTIAL`
+envelope format $NAME_PROOF
 ```
 
 ```
@@ -272,7 +272,7 @@ Now we confirm the contents of both fields with a single command.
 
 ```bash
 👉
-nvelope proof confirm --silent $NAME_PROOF "$FIRST_NAME_DIGEST $LAST_NAME_DIGEST" $CREDENTIAL_ROOT
+envelope proof confirm --silent $NAME_PROOF "$FIRST_NAME_DIGEST $LAST_NAME_DIGEST" $CREDENTIAL_ROOT
 ```
 
 Inclusion proofs are a way to confirm the existence of a digest or set of digests within an envelope using minimal disclosure, but they are only one tool in the toolbox of techniques that Envelope provides. Real-life applications are likely to employ several of these tools. In the example above, we're assuming certain things such as the credential root being trusted and the signature on the envelope having been validated; these aren't provided for by the inclusion proof mechanism on its own. In addition, it's possible for a specific digest to appear in more than one place in the structure of an envelope, so proving that it exists in a single place where it's expected to exist also needs to be part of the process. Using tools that incorporate randomness, like salting, signing, and encryption, as well as the tree structure of the envelope provide a variety of ways to ensure that a specific digest occurs in exactly one place.

@@ -1,6 +1,6 @@
-# `nvelope` Docs
+# `envelope` Docs
 
-The following docs exemplify the basic functionality of the `nvelope` tool. The built-in `--help` is a good source of information. You may also find the unit tests in the [tests](../tests/) directory useful.
+The following docs exemplify the basic functionality of the `envelope` tool. The built-in `--help` is a good source of information. You may also find the unit tests in the [tests](../tests/) directory useful.
 
 * [Overview of Commands](Overview.md) — Adding subjects, assertions, signatures, and salt.
 * [Basic Examples](BasicExamples.md) — Demonstrating standard methodologies for entry, encryption, and signing.
