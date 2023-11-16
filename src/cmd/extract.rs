@@ -141,7 +141,7 @@ fn extract_predicate(envelope: Envelope) -> anyhow::Result<String> {
 impl CommandArgs {
     fn extract_ur(&self, envelope: Envelope) -> anyhow::Result<String> {
         Ok(if let Some(cbor) = envelope.clone().subject().leaf() {
-            if let CBOR::Tagged(tag, untagged_cbor) = cbor {
+            if let CBORCase::Tagged(tag, untagged_cbor) = cbor.case() {
                 let known_tag = with_tags!(|tags: &dyn dcbor::TagsStoreTrait| {
                     tags.tag_for_value(tag.value())
                 });
