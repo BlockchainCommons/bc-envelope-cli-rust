@@ -40,7 +40,7 @@ impl crate::exec::Exec for CommandArgs {
         let object = parse_data_type_to_envelope(self.subject_type(), self.subject_value(), self.ur_tag())?;
         let assertions = envelope.clone().assertions();
         let result = assertions
-            .iter().cloned().filter(|a| a.clone().object().unwrap().digest() == object.digest()).collect::<Vec<_>>()
+            .iter().filter(|&a| a.clone().object().unwrap().digest() == object.digest()).cloned().collect::<Vec<_>>()
             .iter().map(|a| a.ur_string()).collect::<Vec<String>>().join("\n");
         Ok(result)
     }
