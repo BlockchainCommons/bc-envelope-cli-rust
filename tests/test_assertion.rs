@@ -8,11 +8,11 @@ fn test_assertion_add_pred_obj() -> anyhow::Result<()> {
     let subject = run_cli(&["subject", "type", "string", "Hello"])?;
     run_cli_expect(
         &["assertion", "add", "pred-obj", "known", "note", "string", "This is the note.", &subject],
-        "ur:envelope/lftpcsihfdihjzjzjloyaatpcsjsghisinjkcxinjkcxjyisihcxjtjljyihdmtshlgycm"
+        "ur:envelope/lftpsoihfdihjzjzjloyaatpsojsghisinjkcxinjkcxjyisihcxjtjljyihdmrdyasoie"
     )?;
     run_cli_expect_stdin(
         &["assertion", "add", "pred-obj", "known", "note", "string", "This is the note."],
-        "ur:envelope/lftpcsihfdihjzjzjloyaatpcsjsghisinjkcxinjkcxjyisihcxjtjljyihdmtshlgycm",
+        "ur:envelope/lftpsoihfdihjzjzjloyaatpsojsghisinjkcxinjkcxjyisihcxjtjljyihdmrdyasoie",
         &subject
     )
 }
@@ -20,7 +20,7 @@ fn test_assertion_add_pred_obj() -> anyhow::Result<()> {
 #[test]
 fn test_assertion() -> anyhow::Result<()> {
     let e = run_cli(&["subject", "assertion", "string", "Alpha", "string", "Beta"])?;
-    assert_eq!(e, "ur:envelope/oytpcsihfpjzjoishstpcsiefwihjyhsptyngldp");
+    assert_eq!(e, "ur:envelope/oytpsoihfpjzjoishstpsoiefwihjyhsgavlfypl");
     run_cli_expect(&["format", &e], r#""Alpha": "Beta""#)?;
     Ok(())
 }
@@ -28,7 +28,7 @@ fn test_assertion() -> anyhow::Result<()> {
 #[test]
 fn test_assertion_2() -> anyhow::Result<()> {
     let e = run_cli(&["subject", "assertion", "number", "1", "number", "2"])?;
-    assert_eq!(e, "ur:envelope/oytpcsadtpcsaolpkbrsfs");
+    assert_eq!(e, "ur:envelope/oytpsoadtpsoaoptspcale");
     run_cli_expect(&["format", &e], "1: 2")?;
     Ok(())
 }
@@ -43,7 +43,7 @@ fn test_assertion_3() -> anyhow::Result<()> {
         "string",
         "ThisIsANote.",
     ])?;
-    assert_eq!(e, "ur:envelope/oyaatpcsjzghisinjkgajkfpgljljyihdmsnnbgahp");
+    assert_eq!(e, "ur:envelope/oyaatpsojzghisinjkgajkfpgljljyihdmwktslkgm");
     run_cli_expect(&["format", &e], r#"'note': "ThisIsANote.""#)?;
     Ok(())
 }
@@ -129,7 +129,7 @@ fn test_assertion_count_3() -> anyhow::Result<()> {
 #[test]
 fn test_assertion_at() -> anyhow::Result<()> {
     let e = run_cli(&["assertion", "at", "0", ALICE_KNOWS_BOB_EXAMPLE])?;
-    assert_eq!(e, "ur:envelope/oytpcsihjejtjlktjktpcsiafwjlidmhaxgwio");
+    assert_eq!(e, "ur:envelope/oytpsoihjejtjlktjktpsoiafwjlidgdvttdjn");
     run_cli_expect(&["format", &e], r#""knows": "Bob""#)?;
     Ok(())
 }
@@ -169,19 +169,19 @@ fn test_assertion_all() -> anyhow::Result<()> {
             &["assertion", "all"],
         ],
         indoc!(r#"
-        ur:envelope/oytpcsjsiaihjpjyiniyiniahsjyihglkpjnidihjptpcsjeeheyeodpeeecendpemetesmtskgyzt
-        ur:envelope/oytpcsjtihksjoinjphsjyinjljtfyhsjyihtpcssecyjncscxaemupyjkaa
-        ur:envelope/oytpcsisjzhsjkjyglhsjnihtpcsiogthsksktihjzjzwshedtst
-        ur:envelope/oytpcsininjkjkkpihfyhsjyihtpcssecyhybdvyaeldwtsovs
-        ur:envelope/oyadtpcskscffxihjpjyiniyiniahsjyihcxjliycxfxjljnjojzihjyinjljtwdiyftes
-        ur:envelope/oytpcsihjoisjljyjltpcsksckghisinjkcxinjkcxgehsjnihjkcxgthsksktihjzjzdijkcxjoisjljyjldmbaghdstp
-        ur:envelope/oytpcskscejojpjliyihjkjkinjljthsjzfyihkoihjzjljojnihjtjyfdjlkpjpjktpcsbsbdjyeeby
-        ur:envelope/oytpcsiniyinjpjkjyglhsjnihtpcsihgehsjnihjklkpmjngm
-        ur:envelope/oytpcsiyjyjljoiniajktpcslfingukpidimihiajycxehingukpidimihiajycxeyhnnegwax
-        ur:envelope/oytpcskscsiajljtjyinjtkpinjtiofeiekpiahsjyinjljtgojtinjyjktpcsadbygssbue
-        ur:envelope/oyattpcsksdkfekshsjnjojzihcxfejzihiajyjpiniahsjzcxfejtioinjtihihjpinjtiocxfwjlhsjpiedlmdssse
-        ur:envelope/oytpcsiojkkpidimihiajytpcskscegmfgcxhsjtiecxgtiniajpjlkthskoihcxfejtioinjtihihjpinjtiotlbdctwd
-        ur:envelope/oybttpcsksdkfekshsjnjojzihcxfejzihiajyjpiniahsjzcxfejtioinjtihihjpinjtiocxfwjlhsjpieasqdlbto
+        ur:envelope/oytpsojsiaihjpjyiniyiniahsjyihglkpjnidihjptpsojeeheyeodpeeecendpemetesoxptasse
+        ur:envelope/oytpsojtihksjoinjphsjyinjljtfyhsjyihtpsosecyjncscxaebdeejtdy
+        ur:envelope/oytpsoisjzhsjkjyglhsjnihtpsoiogthsksktihjzjzemlubnve
+        ur:envelope/oytpsoininjkjkkpihfyhsjyihtpsosecyhybdvyaemszcgleo
+        ur:envelope/oyadtpsokscffxihjpjyiniyiniahsjyihcxjliycxfxjljnjojzihjyinjljtflbturee
+        ur:envelope/oytpsoihjoisjljyjltpsoksckghisinjkcxinjkcxgehsjnihjkcxgthsksktihjzjzdijkcxjoisjljyjldmwtatehnt
+        ur:envelope/oytpsokscejojpjliyihjkjkinjljthsjzfyihkoihjzjljojnihjtjyfdjlkpjpjktpsobswzkndabs
+        ur:envelope/oytpsoiniyinjpjkjyglhsjnihtpsoihgehsjnihjkmonbwdld
+        ur:envelope/oytpsoiyjyjljoiniajktpsolfingukpidimihiajycxehingukpidimihiajycxeypkgmdlbt
+        ur:envelope/oytpsokscsiajljtjyinjtkpinjtiofeiekpiahsjyinjljtgojtinjyjktpsoadwpoyzsgy
+        ur:envelope/oyattpsoksdkfekshsjnjojzihcxfejzihiajyjpiniahsjzcxfejtioinjtihihjpinjtiocxfwjlhsjpietnqzoets
+        ur:envelope/oytpsoiojkkpidimihiajytpsokscegmfgcxhsjtiecxgtiniajpjlkthskoihcxfejtioinjtihihjpinjtionswfrlyn
+        ur:envelope/oybttpsoksdkfekshsjnjojzihcxfejzihiajyjpiniahsjzcxfejtioinjtihihjpinjtiocxfwjlhsjpieztmocftp
         "#),
         CREDENTIAL_EXAMPLE,
     )

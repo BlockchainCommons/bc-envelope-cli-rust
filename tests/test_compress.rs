@@ -26,7 +26,7 @@ fn test_compress_2() -> anyhow::Result<()> {
 
     println!("{} {}", CREDENTIAL_EXAMPLE.len(), compressed.len());
     assert_eq!(CREDENTIAL_EXAMPLE.len(), 1210);
-    assert_eq!(compressed.len(), 1032);
+    assert_eq!(compressed.len(), 1036);
 
     run_cli_expect(
         &["format", &compressed],

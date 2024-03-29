@@ -42,7 +42,7 @@ Here is an example envelope we'll use in many of the examples below. The `envelo
 
 ```bash
 👉
-ALICE_KNOWS_BOB=ur:envelope/lftpcsihfpjziniaihoytpcsihjejtjlktjktpcsiafwjliddssngwct
+ALICE_KNOWS_BOB=ur:envelope/lftpsoihfpjziniaihoytpsoihjejtjlktjktpsoiafwjlidutgmnnns
 ```
 
 ## Format
@@ -74,7 +74,7 @@ envelope format --type cbor $ALICE_KNOWS_BOB
 
 ```
 👈
-d8c882d81865416c696365a1d818656b6e6f7773d81863426f62
+d8c882d8c965416c696365a1d8c9656b6e6f7773d8c963426f62
 ```
 
 ### CBOR Diagnostic Notation Output
@@ -90,10 +90,10 @@ envelope format --type diag $ALICE_KNOWS_BOB
 👈
 200(   / envelope /
    [
-      24("Alice"),   / leaf /
+      201("Alice"),   / leaf /
       {
-         24("knows"):   / leaf /
-         24("Bob")   / leaf /
+         201("knows"):   / leaf /
+         201("Bob")   / leaf /
       }
    ]
 )
@@ -145,14 +145,14 @@ envelope subject type string "Hello."
 
 ```
 👈
-ur:envelope/tpcsiyfdihjzjzjldmprrhtypk
+ur:envelope/tpsoiyfdihjzjzjldmksbaoede
 ```
 
 When we feed this envelope back into the `format` comand, we get the envelope printed in envelope notation. This is why `"Hello."` is printed with quotes around it:
 
 ```bash
 👉
-envelope format ur:envelope/tpcsiyfdihjzjzjldmprrhtypk
+envelope format ur:envelope/tpsoiyfdihjzjzjldmksbaoede
 ```
 
 ```
@@ -194,7 +194,7 @@ To extract the actual data of the envelope's subject, use the `extract` command:
 
 ```bash
 👉
-envelope extract string ur:envelope/tpcsiyfdihjzjzjldmprrhtypk
+envelope extract string ur:envelope/tpsoiyfdihjzjzjldmksbaoede
 ```
 
 ```
@@ -223,12 +223,12 @@ envelope extract envelope $ALICE_KNOWS_BOB
 
 ```
 👈
-ur:envelope/tpcsihfpjziniaihnsrsnyue
+ur:envelope/tpsoihfpjziniaihmebdmodl
 ```
 
 ```bash
 👉
-envelope format ur:envelope/tpcsihfpjziniaihnsrsnyue
+envelope format ur:envelope/tpsoihfpjziniaihmebdmodl
 ```
 
 ```
@@ -247,7 +247,7 @@ envelope subject type string "Alice" | envelope assertion add pred-obj string "k
 
 ```
 👈
-ur:envelope/lftpcsihfpjziniaihoytpcsihjejtjlktjktpcsiafwjliddssngwct
+ur:envelope/lftpsoihfpjziniaihoytpsoihjejtjlktjktpsoiafwjlidutgmnnns
 ```
 
 Note that we have just constructed the `$ALICE_KNOWS_BOB` example envelope from scratch!
@@ -449,7 +449,7 @@ envelope encrypt --key $KEY $ALICE_KNOWS_BOB
 
 ```
 👈
-ur:envelope/lftansfwlrgemudytouolnmtisaauosngsurlouozontzeahrphfashnbngdstghadsapkbgzsflcsamwemerpvsbksbhddatansfphdcxbwmwcwfdkecauerfvsdirpwpfhfgtalfmulesnstvlrpoyfzuyenamdpmdcfutdloytpcsihjejtjlktjktpcsiafwjlidwnbevwax
+ur:envelope/lftansfwlrgepkbnsgostemndaknguidgsmdpkfhtsimkibeotvymynbsggdcknegmfnspbdmhenchnswelslkzcnsbzhddatansfphdcxbwmwcwfdkecauerfvsdirpwpfhfgtalfmulesnstvlrpoyfzuyenamdpmdcfutdloytpsoihjejtjlktjktpsoiafwjlidbnvlrtin
 ```
 
 ```bash
@@ -459,7 +459,7 @@ envelope encrypt --key $KEY $ALICE_KNOWS_BOB
 
 ```
 👈
-ur:envelope/lftansfwlrgepsuyvdtiplfrnlwnytengssrgacpynmtrtlthkbswnqduogdsbecssvteccyntjecantahtsasvwetfhhddatansfphdcxbwmwcwfdkecauerfvsdirpwpfhfgtalfmulesnstvlrpoyfzuyenamdpmdcfutdloytpcsihjejtjlktjktpcsiafwjlidvyzmpkdk
+ur:envelope/lftansfwlrgectvameeovwntswtdhllagsecvalrsrfgamsovtolnnmopfgdaectsfvazopdbketfgfpckweuochiaolhddatansfphdcxbwmwcwfdkecauerfvsdirpwpfhfgtalfmulesnstvlrpoyfzuyenamdpmdcfutdloytpsoihjejtjlktjktpsoiafwjlidytztdpms
 ```
 
 But notice! When you encrypt parts of an envelope, its *digest* remains the same as the unencrypted version:
@@ -703,7 +703,7 @@ echo $SHARE_ENVELOPES
 
 ```
 👈
-ur:envelope/lftansfwlrhdcerfserhcmcfvdlslrloylsfimnddwpewpynnypflrmsyaidoerpwkbntygswknlbdchghgadsrernvleckpgdrkpamuhhjlostpfnhpspaecftsfsdkurhddatansfphdcxzclocydkrespdwwygrldbyvabyplolrdfgfnsolnjkgwledyvwhtghlncylkhgdnoyamtpcstaadechddaeyfzaeadaewmtbtkaxlnlflpfgnewdflflwzecvlfmlrkemucakemykbotrdlpoyhybsnbfmglvtbdwldl ur:envelope/lftansfwlrhdcerfserhcmcfvdlslrloylsfimnddwpewpynnypflrmsyaidoerpwkbntygswknlbdchghgadsrernvleckpgdrkpamuhhjlostpfnhpspaecftsfsdkurhddatansfphdcxzclocydkrespdwwygrldbyvabyplolrdfgfnsolnjkgwledyvwhtghlncylkhgdnoyamtpcstaadechddaeyfzaeadadkiflhswnplkonbfglyhhsfdneomevokidejtjptkwfrogocktylfutinbzlrcldknlctdigl ur:envelope/lftansfwlrhdcerfserhcmcfvdlslrloylsfimnddwpewpynnypflrmsyaidoerpwkbntygswknlbdchghgadsrernvleckpgdrkpamuhhjlostpfnhpspaecftsfsdkurhddatansfphdcxzclocydkrespdwwygrldbyvabyplolrdfgfnsolnjkgwledyvwhtghlncylkhgdnoyamtpcstaadechddaeyfzaeadaouowslozttbjstkfgotntgenejeiyvyrosthdgeoekkvydesaiyluhkdyfrvsaenyghnnhpps
+ur:envelope/lftansfwlrhdcehtqzrsmdihaxjsidbemsrhjpvdyltlmyrlctimasaewdpertdyhlidrtgslupfssiyjzmymwrnfhfnkisegdpdjytodeptinntfzismulkiagtstoxplhddatansfphdcxzclocydkrespdwwygrldbyvabyplolrdfgfnsolnjkgwledyvwhtghlncylkhgdnoyamtpsotaadechddajlimaeadaegtptkedabegdzebgjtfnvobddkiopyhllnseeesogudkqdpsfpmefhemrswzeevsjpnnwmto ur:envelope/lftansfwlrhdcehtqzrsmdihaxjsidbemsrhjpvdyltlmyrlctimasaewdpertdyhlidrtgslupfssiyjzmymwrnfhfnkisegdpdjytodeptinntfzismulkiagtstoxplhddatansfphdcxzclocydkrespdwwygrldbyvabyplolrdfgfnsolnjkgwledyvwhtghlncylkhgdnoyamtpsotaadechddajlimaeadadnyvojpkkpktbidtkhyndgdiosbpatndazegwkndrhffzfxcnjegaplhtaxahpmaebdfncsyl ur:envelope/lftansfwlrhdcehtqzrsmdihaxjsidbemsrhjpvdyltlmyrlctimasaewdpertdyhlidrtgslupfssiyjzmymwrnfhfnkisegdpdjytodeptinntfzismulkiagtstoxplhddatansfphdcxzclocydkrespdwwygrldbyvabyplolrdfgfnsolnjkgwledyvwhtghlncylkhgdnoyamtpsotaadechddajlimaeadaoyafhhnntlbflutqdbainnttevytigapmkoswpdbbhkwpfdptbzftamweuoatcacncnlukbpa
 ```
 
 For brevity, we assign the elements of the array three shell variables: `$SHARE_1`, `SHARE_2`, and `SHARE_3`:
@@ -755,7 +755,7 @@ envelope sskr join $SHARE_2
 
 ```
 👈
-Error: the given SSKR shares were not correct
+Error: invalid SSKR shares
 ```
 
 ## Salt
@@ -805,7 +805,7 @@ envelope digest $ENCRYPTED; envelope digest $SALTED_ENCRYPTED
 ```
 👈
 ur:digest/hdcxzclocydkrespdwwygrldbyvabyplolrdfgfnsolnjkgwledyvwhtghlncylkhgdnltdkjest
-ur:digest/hdcxpdestpchbgayvtjpwyhhknglurkpftfltsiahlwslnknchrsrfswrssevwsnghrebtisknpe
+ur:digest/hdcxcxzmtedefmfmzoayurlniewzwtcylahndrsozoehcapfoesspfdwglonmownylknldnydncm
 ```
 
 ## Compression

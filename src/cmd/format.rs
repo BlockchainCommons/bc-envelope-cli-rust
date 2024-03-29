@@ -2,6 +2,7 @@ use clap::{Args, ValueEnum};
 use dcbor::CBORTaggedEncodable;
 
 use crate::envelope_args::{EnvelopeArgs, EnvelopeArgsLike};
+use bc_envelope::prelude::*;
 
 /// Print the envelope in textual format.
 #[derive(Debug, Args)]
@@ -35,6 +36,8 @@ enum FormatType {
     Diag,
     /// CBOR hex.
     Cbor,
+    /// UR format.
+    UR,
 }
 
 impl crate::exec::Exec for CommandArgs {
@@ -45,6 +48,7 @@ impl crate::exec::Exec for CommandArgs {
             FormatType::Tree => e.tree_format(self.hide_nodes),
             FormatType::Diag => e.diagnostic(),
             FormatType::Cbor => hex::encode(e.tagged_cbor_data()),
+            FormatType::UR => e.ur_string(),
         };
         Ok(output)
     }

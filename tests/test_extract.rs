@@ -3,7 +3,7 @@ use common::*;
 
 use bc_envelope::prelude::*;
 
-const ALICE_KNOWS_BOB: &str = "ur:envelope/lftpcsihfpjziniaihoytpcsihjejtjlktjktpcsiafwjliddssngwct";
+const ALICE_KNOWS_BOB: &str = "ur:envelope/lftpsoihfpjziniaihoytpsoihjejtjlktjktpsoiafwjlidutgmnnns";
 
 #[test]
 fn test_extract_assertion() -> anyhow::Result<()> {
@@ -68,7 +68,7 @@ fn test_extract_digest() -> anyhow::Result<()> {
 fn test_extract_envelope() -> anyhow::Result<()> {
     run_cli_expect(
         &["extract", "envelope", ALICE_KNOWS_BOB],
-        "ur:envelope/tpcsihfpjziniaihnsrsnyue"
+        "ur:envelope/tpsoihfpjziniaihmebdmodl"
     )
 }
 
@@ -129,7 +129,7 @@ fn test_extract_uuid() -> anyhow::Result<()> {
 fn test_extract_wrapped() -> anyhow::Result<()> {
     run_cli_expect(
         &["extract", "wrapped", "ur:envelope/tpsptpcslsadaoaxqzsshsyl"],
-        "ur:envelope/tpcslsadaoaxgedmotks"
+        "ur:envelope/tpsolsadaoaxzerkykme"
     )
 }
 
@@ -139,7 +139,7 @@ fn test_extract_assertion_subject() -> anyhow::Result<()> {
     let ur = e.ur_string();
 
     let predicate_envelope = "ur:envelope/aatljldnmw";
-    let object_envelope = "ur:envelope/tpcsjlghisinjkcxinjkcxhscxjtjljyihdmbamnatmn";
+    let object_envelope = "ur:envelope/tpsojlghisinjkcxinjkcxhscxjtjljyihdmkkqdzops";
     let pred_obj_envelope = [predicate_envelope, object_envelope].join("\n");
 
     run_cli_expect(&["extract", "assertion", &ur], &pred_obj_envelope)?;

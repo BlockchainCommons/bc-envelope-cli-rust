@@ -20,7 +20,7 @@ fn test_elide_1() -> anyhow::Result<()> {
     let elided = run_cli(&["elide", "revealing", &digests, ALICE_KNOWS_BOB_EXAMPLE])?;
     assert_eq!(
         elided,
-        "ur:envelope/lftpcsihfpjziniaihoyhdcxuykitdcegyinqzlrlgdrcwsbbkihcemtchsntabdpldtbzjepkwsrkdrlernykrdtpcsiafwjlidcyhydiwe"
+        "ur:envelope/lftpsoihfpjziniaihoyhdcxuykitdcegyinqzlrlgdrcwsbbkihcemtchsntabdpldtbzjepkwsrkdrlernykrdtpsoiafwjlidgraehkfp"
     );
     run_cli_expect(
         &["format", &elided],
@@ -42,7 +42,7 @@ fn test_elide_2() -> anyhow::Result<()> {
     let elided = run_cli(&["elide", "removing", &digests, ALICE_KNOWS_BOB_EXAMPLE])?;
     assert_eq!(
         elided,
-        "ur:envelope/lftpcsihfpjziniaihoyhdcxuykitdcegyinqzlrlgdrcwsbbkihcemtchsntabdpldtbzjepkwsrkdrlernykrdtpcsiafwjlidcyhydiwe"
+        "ur:envelope/lftpsoihfpjziniaihoyhdcxuykitdcegyinqzlrlgdrcwsbbkihcemtchsntabdpldtbzjepkwsrkdrlernykrdtpsoiafwjlidgraehkfp"
     );
     run_cli_expect(
         &["format", &elided],

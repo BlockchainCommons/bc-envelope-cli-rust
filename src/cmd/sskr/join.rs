@@ -31,7 +31,8 @@ impl crate::exec::Exec for CommandArgs {
             anyhow::bail!("No share envelopes provided");
         }
 
-        let wrapped = bc_envelope::Envelope::sskr_join(&shares)?;
+        let shares_refs: Vec<&Envelope> = shares.iter().collect();
+        let wrapped = bc_envelope::Envelope::sskr_join(&shares_refs)?;
         let result = wrapped.unwrap_envelope()?;
         Ok(result.ur_string())
     }
