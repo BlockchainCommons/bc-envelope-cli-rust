@@ -10,7 +10,7 @@ John Smith's identifier:
 👉
 JOHN_ARID=`envelope generate arid`
 echo $JOHN_ARID
-78bc30004776a3905bccb9b8a032cf722ceaf0bbfb1a49eaf3185fab5808cadc
+ur:arid/hdcxrowefshyrpbapewtbwjowpvlimztemamzevoktdwdytnvldloltadeihwewschlflutinbfm
 ```
 
 A photo of John Smith:
@@ -19,7 +19,7 @@ A photo of John Smith:
 👉
 JOHN_IMAGE=`envelope subject type string "John Smith Smiling" | \
 envelope assertion add pred-obj known note string "This is an image of John Smith." | \
-envelope assertion add pred-obj known dereferenceVia uri https://exampleledger.com/digest/36be30726befb65ca13b136ae29d8081f64792c2702415eb60ad1c56ed33c999`
+envelope assertion add pred-obj known dereferenceVia uri "https://exampleledger.com/digest/36be30726befb65ca13b136ae29d8081f64792c2702415eb60ad1c56ed33c999"`
 envelope format $JOHN_IMAGE
 ```
 
@@ -35,28 +35,30 @@ John Smith's Permanent Resident Card issued by the State of Example:
 
 ```bash
 👉
+STATE_ARID="ur:arid/hdcxaaenfsheytmseorfbsbzktrdrdfybkwntkeegetaveghzstattdertbswsihahvspllbghcp"
+
 ISSUER=`envelope subject type ur $STATE_ARID | \
     envelope assertion add pred-obj known note string "Issued by the State of Example" | \
-    envelope assertion add pred-obj known dereferenceVia uri https://exampleledger.com/arid/04363d5ff99733bc0f1577baba440af1cf344ad9e454fad9d128c00fef6505e8`
+    envelope assertion add pred-obj known dereferenceVia uri "https://exampleledger.com/arid/04363d5ff99733bc0f1577baba440af1cf344ad9e454fad9d128c00fef6505e8"`
 
-BIRTH_COUNTRY=`envelope subject type string bs | \
+BIRTH_COUNTRY=`envelope subject type string "bs" | \
     envelope assertion add pred-obj known note string "The Bahamas"`
 
 HOLDER=`envelope subject type ur $JOHN_ARID | \
-    envelope assertion add pred-obj known isA string Person | \
+    envelope assertion add pred-obj known isA string "Person" | \
     envelope assertion add pred-obj known isA string "Permanent Resident" | \
-    envelope assertion add pred-obj string givenName string JOHN | \
-    envelope assertion add pred-obj string familyName string SMITH | \
-    envelope assertion add pred-obj string sex string MALE | \
-    envelope assertion add pred-obj string birthDate date 1974-02-18 | \
-    envelope assertion add pred-obj string image envelope $JOHN_IMAGE | \
-    envelope assertion add pred-obj string lprCategory string C09 | \
-    envelope assertion add pred-obj string birthCountry envelope $BIRTH_COUNTRY | \
-    envelope assertion add pred-obj string residentSince date 2018-01-07`
+    envelope assertion add pred-obj string "givenName" string "JOHN" | \
+    envelope assertion add pred-obj string "familyName" string "SMITH" | \
+    envelope assertion add pred-obj string "sex" string "MALE" | \
+    envelope assertion add pred-obj string "birthDate" date "1974-02-18" | \
+    envelope assertion add pred-obj string "image" envelope $JOHN_IMAGE | \
+    envelope assertion add pred-obj string "lprCategory" string "C09" | \
+    envelope assertion add pred-obj string "birthCountry" envelope $BIRTH_COUNTRY | \
+    envelope assertion add pred-obj string "residentSince" date "2018-01-07"`
 
 JOHN_RESIDENT_CARD=`envelope subject type ur $JOHN_ARID | \
     envelope assertion add pred-obj known isA string "credential" | \
-    envelope assertion add pred-obj string "dateIssued" date 2022-04-27 | \
+    envelope assertion add pred-obj string "dateIssued" date "2022-04-27" | \
     envelope assertion add pred-obj known issuer envelope $ISSUER | \
     envelope assertion add pred-obj known holder envelope $HOLDER | \
     envelope assertion add pred-obj known note string "The State of Example recognizes JOHN SMITH as a Permanent Resident." | \
@@ -69,10 +71,10 @@ envelope format $JOHN_RESIDENT_CARD
 ```
 👈
 {
-    ARID(72998c48) [
+    ARID(b8ed3d5e) [
         'isA': "credential"
         "dateIssued": 2022-04-27
-        'holder': ARID(72998c48) [
+        'holder': ARID(b8ed3d5e) [
             'isA': "Permanent Resident"
             'isA': "Person"
             "birthCountry": "bs" [
@@ -147,9 +149,9 @@ envelope format $ELIDED_CARD
 ```
 👈
 {
-    ARID(72998c48) [
+    ARID(b8ed3d5e) [
         'isA': "credential"
-        'holder': ARID(72998c48) [
+        'holder': ARID(b8ed3d5e) [
             "familyName": "SMITH"
             "givenName": "JOHN"
             "image": "John Smith Smiling" [
@@ -205,8 +207,8 @@ envelope digest $JOHN_RESIDENT_CARD; envelope digest $ELIDED_CARD
 
 ```
 👈
-ur:digest/hdcxlpkpltrebkbzhneojntbjtaeayrdclpdbwhdonglkpiyhnoemklpcpsskogufgtkzmtywsid
-ur:digest/hdcxlpkpltrebkbzhneojntbjtaeayrdclpdbwhdonglkpiyhnoemklpcpsskogufgtkzmtywsid
+ur:digest/hdcxstcnlogtmnuraesttbnngojeryeebswtqznsbbgdjnfemucwonhlbbhfrywyadlyhpcftkft
+ur:digest/hdcxstcnlogtmnuraesttbnngojeryeebswtqznsbbgdjnfemucwonhlbbhfrywyadlyhpcftkft
 ```
 
 Note that the state's signature on the elided card still verifies.

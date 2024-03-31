@@ -34,31 +34,31 @@ We use the CBOR hex with the `topics` assertion below:
 
 ```bash
 👉
-CREDENTIAL=`envelope subject --arid 4676635a6e6068c2ef3ffd8ff726dd401fd341036e920f136a1d8af5e829496d |
-    envelope assertion --known isA "Certificate of Completion" |
-    envelope assertion --known issuer "Example Electrical Engineering Board" |
-    envelope assertion --known controller "Example Electrical Engineering Board" |
-    envelope assertion firstName James |
-    envelope assertion lastName Maxwell |
-    envelope assertion --string issueDate --date 2020-01-01 |
-    envelope assertion --string expirationDate --date 2028-01-01 |
-    envelope assertion photo "This is James Maxwell's photo." |
-    envelope assertion certificateNumber 123-456-789 |
-    envelope assertion subject "RF and Microwave Engineering" |
-    envelope assertion --string continuingEducationUnits --number 1.5 |
-    envelope assertion --string professionalDevelopmentHours --number 15 |
-    envelope assertion --string topics --cbor 0x82695375626a6563742031695375626a6563742032 |
-    envelope subject --wrapped |
+CREDENTIAL=`envelope subject type arid 4676635a6e6068c2ef3ffd8ff726dd401fd341036e920f136a1d8af5e829496d |
+    envelope assertion add pred-obj known isA string "Certificate of Completion" |
+    envelope assertion add pred-obj known issuer string "Example Electrical Engineering Board" |
+    envelope assertion add pred-obj known controller string "Example Electrical Engineering Board" |
+    envelope assertion add pred-obj string "firstName" string "James" |
+    envelope assertion add pred-obj string "lastName" string "Maxwell" |
+    envelope assertion add pred-obj string "issueDate" date "2020-01-01" |
+    envelope assertion add pred-obj string "expirationDate" date "2028-01-01" |
+    envelope assertion add pred-obj string "photo" string "This is James Maxwell's photo." |
+    envelope assertion add pred-obj string "certificateNumber" string "123-456-789" |
+    envelope assertion add pred-obj string "subject" string "RF and Microwave Engineering" |
+    envelope assertion add pred-obj string "continuingEducationUnits" number 1.5 |
+    envelope assertion add pred-obj string "professionalDevelopmentHours" number 15 |
+    envelope assertion add pred-obj string "topics" cbor "82695375626a6563742031695375626a6563742032" |
+    envelope subject type wrapped |
     envelope sign --prvkeys $BOARD_PRVKEYS |
-    envelope assertion --known note "Signed by Example Electrical Engineering Board"`
-envelope $CREDENTIAL
+    envelope assertion add pred-obj known note string "Signed by Example Electrical Engineering Board"`
+envelope format $CREDENTIAL
 ```
 
 ```
 👈
 {
     ARID(4676635a) [
-        isA: "Certificate of Completion"
+        'isA': "Certificate of Completion"
         "certificateNumber": "123-456-789"
         "continuingEducationUnits": 1.5
         "expirationDate": 2028-01-01
@@ -69,14 +69,13 @@ envelope $CREDENTIAL
         "professionalDevelopmentHours": 15
         "subject": "RF and Microwave Engineering"
         "topics": ["Subject 1", "Subject 2"]
-        controller: "Example Electrical Engineering Board"
-        issuer: "Example Electrical Engineering Board"
+        'controller': "Example Electrical Engineering Board"
+        'issuer': "Example Electrical Engineering Board"
     ]
 } [
-    note: "Signed by Example Electrical Engineering Board"
-    verifiedBy: Signature
-]
-```
+    'note': "Signed by Example Electrical Engineering Board"
+    'verifiedBy': Signature
+]```
 
 Every part of an envelope generates a digest, and these together form a Merkle tree. So when eliding a document, we can decide what to remove or reveal by identifying a subset of all the digests that make up the tree. This set is known as the *target*. Normally we would create the target and then perform the elision in a single operation, but in this example we are going to build up the target in increments, showing the result of each step.
 
@@ -91,7 +90,7 @@ If we use this empty target to elide the target using the `elide revealing` comm
 
 ```bash
 👉
-REDACTED_CREDENTIAL=`envelope elide revealing $CREDENTIAL $TARGET`; envelope $REDACTED_CREDENTIAL
+REDACTED_CREDENTIAL=`envelope elide revealing "$TARGET" $CREDENTIAL`; envelope format $REDACTED_CREDENTIAL
 ```
 
 ...then the entire envelope will be elided:
@@ -110,7 +109,7 @@ The first digest we need is the top-level digest of the envelope. This reveals t
 ```bash
 👉
 TARGET+=`envelope digest $CREDENTIAL`
-REDACTED_CREDENTIAL=`envelope elide revealing $CREDENTIAL $TARGET`; envelope $REDACTED_CREDENTIAL
+REDACTED_CREDENTIAL=`envelope elide revealing "$TARGET" $CREDENTIAL`; envelope format $REDACTED_CREDENTIAL
 ```
 
 ```
@@ -124,20 +123,20 @@ This shows us that the envelope has a subject, which is still elided, and two as
 
 ## Revealing the Signature
 
-To reveal the two assertions, we iterate through them and add their "deep digests" to the target. Using `envelope digest --deep` means that *everying* about the revealed assertions will be revealed, including any assertions they may have, recursively.
+To reveal the two assertions, we iterate through them and add their "deep digests" to the target. Using `envelope digest --depth deep` means that *everying* about the revealed assertions will be revealed, including any assertions they may have, recursively.
 
 ```bash
 👉
-TARGET+=(`envelope assertion at 0 $CREDENTIAL | envelope digest --deep`)
-TARGET+=(`envelope assertion at 1 $CREDENTIAL | envelope digest --deep`)
-REDACTED_CREDENTIAL=`envelope elide revealing $CREDENTIAL $TARGET`; envelope $REDACTED_CREDENTIAL
+TARGET+=(`envelope assertion at 0 $CREDENTIAL | envelope digest --depth deep`)
+TARGET+=(`envelope assertion at 1 $CREDENTIAL | envelope digest --depth deep`)
+REDACTED_CREDENTIAL=`envelope elide revealing "$TARGET" $CREDENTIAL`; envelope format $REDACTED_CREDENTIAL
 ```
 
 ```
 👈
 ELIDED [
-    note: "Signed by Example Electrical Engineering Board"
-    verifiedBy: Signature
+    'note': "Signed by Example Electrical Engineering Board"
+    'verifiedBy': Signature
 ]
 ```
 
@@ -152,7 +151,6 @@ At this point, if one had the proper public keys, the receiver of this redacted 
 ```bash
 👉
 envelope verify --silent $REDACTED_CREDENTIAL --pubkeys $BOARD_PUBKEYS
-REDACTED_CREDENTIAL=`envelope elide revealing $CREDENTIAL $TARGET`; envelope $REDACTED_CREDENTIAL
 ```
 
 ## Revealing the Subject
@@ -161,8 +159,8 @@ The subject of the envelope, containing all the holder's information is still el
 
 ```bash
 👉
-TARGET+=`envelope extract $CREDENTIAL --envelope | envelope digest`
-REDACTED_CREDENTIAL=`envelope elide revealing $CREDENTIAL $TARGET`; envelope $REDACTED_CREDENTIAL
+TARGET+=`envelope extract envelope $CREDENTIAL | envelope digest`
+REDACTED_CREDENTIAL=`envelope elide revealing "$TARGET" $CREDENTIAL`; envelope format $REDACTED_CREDENTIAL
 ```
 
 ```
@@ -170,12 +168,12 @@ REDACTED_CREDENTIAL=`envelope elide revealing $CREDENTIAL $TARGET`; envelope $RE
 {
     ELIDED
 } [
-    note: "Signed by Example Electrical Engineering Board"
-    verifiedBy: Signature
+    'note': "Signed by Example Electrical Engineering Board"
+    'verifiedBy': Signature
 ]
 ```
 
-Comparing to the results of the previous step, we see a new pair of braces has appeared. This is because the subject of the document is *another* envelope that has been wrapped in its entirety to be signed. Notice the invocation of the `envelope subject --wrapped` command at the start of this example above.
+Comparing to the results of the previous step, we see a new pair of braces has appeared. This is because the subject of the document is *another* envelope that has been wrapped in its entirety to be signed. Notice the invocation of the `envelope subject type wrapped` command at the start of this example above.
 
 ## Revealing the Content
 
@@ -183,9 +181,9 @@ So now we need to reveal the unwrapped content:
 
 ```bash
 👉
-CONTENT=`envelope extract --wrapped $CREDENTIAL`
+CONTENT=`envelope extract wrapped $CREDENTIAL`
 TARGET+=`envelope digest $CONTENT`
-REDACTED_CREDENTIAL=`envelope elide revealing $CREDENTIAL $TARGET`; envelope $REDACTED_CREDENTIAL
+REDACTED_CREDENTIAL=`envelope elide revealing "$TARGET" $CREDENTIAL`; envelope format $REDACTED_CREDENTIAL
 ```
 
 ```
@@ -195,8 +193,8 @@ REDACTED_CREDENTIAL=`envelope elide revealing $CREDENTIAL $TARGET`; envelope $RE
         ELIDED (13)
     ]
 } [
-    note: "Signed by Example Electrical Engineering Board"
-    verifiedBy: Signature
+    'note': "Signed by Example Electrical Engineering Board"
+    'verifiedBy': Signature
 ]
 ```
 
@@ -208,8 +206,8 @@ We want to reveal the ARID representing the issuing authority's unique reference
 
 ```bash
 👉
-TARGET+=`envelope extract --envelope $CONTENT | envelope digest`
-REDACTED_CREDENTIAL=`envelope elide revealing $CREDENTIAL $TARGET`; envelope $REDACTED_CREDENTIAL
+TARGET+=`envelope extract envelope $CONTENT | envelope digest`
+REDACTED_CREDENTIAL=`envelope elide revealing "$TARGET" $CREDENTIAL`; envelope format $REDACTED_CREDENTIAL
 ```
 
 ```
@@ -219,37 +217,37 @@ REDACTED_CREDENTIAL=`envelope elide revealing $CREDENTIAL $TARGET`; envelope $RE
         ELIDED (13)
     ]
 } [
-    note: "Signed by Example Electrical Engineering Board"
-    verifiedBy: Signature
+    'note': "Signed by Example Electrical Engineering Board"
+    'verifiedBy': Signature
 ]
 ```
 
 ## Revealing the Claims
 
-The only actual assertions we want to reveal are, `isA`, `issuer`, `subject` and `expirationDate`, so we do this by finding those specific assertions by their predicate. The `envelope digest --shallow` command returns just a necessary set of attributes to reveal the assertion, its predicate, and its object (yes, all three of them need to be revealed) but *not* any deeper assertions on them.
+The only actual assertions we want to reveal are, `isA`, `issuer`, `subject` and `expirationDate`, so we do this by finding those specific assertions by their predicate. The `envelope digest --depth shallow` command returns just a necessary set of attributes to reveal the assertion, its predicate, and its object (yes, all three of them need to be revealed) but *not* any deeper assertions on them.
 
 ```bash
 👉
-TARGET+=(`envelope assertion find --known isA $CONTENT | envelope digest --shallow`)
-TARGET+=(`envelope assertion find --known issuer $CONTENT | envelope digest --shallow`)
-TARGET+=(`envelope assertion find "subject" $CONTENT | envelope digest --shallow`)
-TARGET+=(`envelope assertion find "expirationDate" $CONTENT | envelope digest --shallow`)
-REDACTED_CREDENTIAL=`envelope elide revealing $CREDENTIAL $TARGET`; envelope $REDACTED_CREDENTIAL
+TARGET+=(`envelope assertion find predicate known isA $CONTENT | envelope digest --depth shallow`)
+TARGET+=(`envelope assertion find predicate known issuer $CONTENT | envelope digest --depth shallow`)
+TARGET+=(`envelope assertion find predicate string "subject" $CONTENT | envelope digest --depth shallow`)
+TARGET+=(`envelope assertion find predicate string "expirationDate" $CONTENT | envelope digest --depth shallow`)
+REDACTED_CREDENTIAL=`envelope elide revealing "$TARGET" $CREDENTIAL`; envelope format $REDACTED_CREDENTIAL
 ```
 
 ```
 👈
 {
     ARID(4676635a) [
-        isA: "Certificate of Completion"
+        'isA': "Certificate of Completion"
         "expirationDate": 2028-01-01
         "subject": "RF and Microwave Engineering"
-        issuer: "Example Electrical Engineering Board"
+        'issuer': "Example Electrical Engineering Board"
         ELIDED (9)
     ]
 } [
-    note: "Signed by Example Electrical Engineering Board"
-    verifiedBy: Signature
+    'note': "Signed by Example Electrical Engineering Board"
+    'verifiedBy': Signature
 ]
 ```
 
@@ -257,13 +255,13 @@ Finally, the employer wants to enclose this envelope, add some non-repudiable as
 
 ```bash
 👉
-WARRANTY=`envelope subject --wrapped $REDACTED_CREDENTIAL |
-    envelope assertion --string employeeHiredDate --date 2022-01-01 |
-    envelope assertion employeeStatus active |
-    envelope subject --wrapped |
-    envelope assertion --known note "Signed by Employer Corp." |
+WARRANTY=`envelope subject type wrapped $REDACTED_CREDENTIAL |
+    envelope assertion add pred-obj string "employeeHiredDate" date "2022-01-01" |
+    envelope assertion add pred-obj string "employeeStatus" string "active" |
+    envelope subject type wrapped |
+    envelope assertion add pred-obj known note string "Signed by Employer Corp." |
     envelope sign --prvkeys $EMPLOYER_PRVKEYS`
-envelope $WARRANTY
+envelope format $WARRANTY
 ```
 
 ```
@@ -272,23 +270,23 @@ envelope $WARRANTY
     {
         {
             ARID(4676635a) [
-                isA: "Certificate of Completion"
+                'isA': "Certificate of Completion"
                 "expirationDate": 2028-01-01
                 "subject": "RF and Microwave Engineering"
-                issuer: "Example Electrical Engineering Board"
+                'issuer': "Example Electrical Engineering Board"
                 ELIDED (9)
             ]
         } [
-            note: "Signed by Example Electrical Engineering Board"
-            verifiedBy: Signature
+            'note': "Signed by Example Electrical Engineering Board"
+            'verifiedBy': Signature
         ]
     } [
         "employeeHiredDate": 2022-01-01
         "employeeStatus": "active"
     ]
 } [
-    note: "Signed by Employer Corp."
-    verifiedBy: Signature
+    'note': "Signed by Employer Corp."
+    'verifiedBy': Signature
 ]
 ```
 
@@ -298,24 +296,24 @@ If we take all the command lines from above and compose them into a single scrip
 👉
 TARGET=()
 TARGET+=`envelope digest $CREDENTIAL`
-TARGET+=(`envelope assertion at 0 $CREDENTIAL | envelope digest --deep`)
-TARGET+=(`envelope assertion at 1 $CREDENTIAL | envelope digest --deep`)
-TARGET+=`envelope extract $CREDENTIAL --envelope | envelope digest`
-CONTENT=`envelope extract --wrapped $CREDENTIAL`
+TARGET+=(`envelope assertion at 0 $CREDENTIAL | envelope digest --depth deep`)
+TARGET+=(`envelope assertion at 1 $CREDENTIAL | envelope digest --depth deep`)
+TARGET+=`envelope extract envelope $CREDENTIAL | envelope digest`
+CONTENT=`envelope extract wrapped $CREDENTIAL`
 TARGET+=`envelope digest $CONTENT`
-TARGET+=`envelope extract --envelope $CONTENT | envelope digest`
-TARGET+=(`envelope assertion find --known isA $CONTENT | envelope digest --shallow`)
-TARGET+=(`envelope assertion find --known issuer $CONTENT | envelope digest --shallow`)
-TARGET+=(`envelope assertion find "firstName" $CONTENT | envelope digest --shallow`)
-TARGET+=(`envelope assertion find "lastName" $CONTENT | envelope digest --shallow`)
-TARGET+=(`envelope assertion find "subject" $CONTENT | envelope digest --shallow`)
-TARGET+=(`envelope assertion find "expirationDate" $CONTENT | envelope digest --shallow`)
-REDACTED_CREDENTIAL=`envelope elide revealing $CREDENTIAL $TARGET`
-WARRANTY=`envelope subject --wrapped $REDACTED_CREDENTIAL |
-    envelope assertion --string employeeHiredDate --date 2022-01-01 |
-    envelope assertion employeeStatus active |
-    envelope subject --wrapped |
-    envelope assertion --known note "Signed by Employer Corp." |
+TARGET+=`envelope extract envelope $CONTENT | envelope digest`
+TARGET+=(`envelope assertion find predicate known isA $CONTENT | envelope digest --depth shallow`)
+TARGET+=(`envelope assertion find predicate known issuer $CONTENT | envelope digest --depth shallow`)
+TARGET+=(`envelope assertion find predicate string "firstName" $CONTENT | envelope digest --depth shallow`)
+TARGET+=(`envelope assertion find predicate string "lastName" $CONTENT | envelope digest --depth shallow`)
+TARGET+=(`envelope assertion find predicate string "subject" $CONTENT | envelope digest --depth shallow`)
+TARGET+=(`envelope assertion find predicate string "expirationDate" $CONTENT | envelope digest --depth shallow`)
+REDACTED_CREDENTIAL=`envelope elide revealing "$TARGET" $CREDENTIAL`
+WARRANTY=`envelope subject type wrapped $REDACTED_CREDENTIAL |
+    envelope assertion add pred-obj string "employeeHiredDate" date "2022-01-01" |
+    envelope assertion add pred-obj string "employeeStatus" string "active" |
+    envelope subject type wrapped |
+    envelope assertion add pred-obj known note string "Signed by Employer Corp." |
     envelope sign --prvkeys $EMPLOYER_PRVKEYS`
 ```
 
@@ -325,24 +323,24 @@ The same command that is used to elide a target set of digests can also be used 
 
 ```
 👉
-envelope elide revealing --compress $CREDENTIAL $TARGET | envelope
+envelope elide revealing --action compress "$TARGET" $CREDENTIAL | envelope format
 ```
 
 ```
 👈
 {
     ARID(4676635a) [
-        isA: "Certificate of Completion"
+        'isA': "Certificate of Completion"
         "expirationDate": 2028-01-01
         "firstName": "James"
         "lastName": "Maxwell"
         "subject": "RF and Microwave Engineering"
-        issuer: "Example Electrical Engineering Board"
+        'issuer': "Example Electrical Engineering Board"
         COMPRESSED (7)
     ]
 } [
-    note: "Signed by Example Electrical Engineering Board"
-    verifiedBy: Signature
+    'note': "Signed by Example Electrical Engineering Board"
+    'verifiedBy': Signature
 ]
 ```
 
@@ -350,23 +348,23 @@ When you encrypt, you must also supply a symmetric key with the `--key` option.
 
 ```
 👉
-envelope elide revealing --encrypt --key ur:crypto-key/hdcxcnqzoeuobzdksphpfxonrlkemsislfloahurgygojnkblfktrkvdpyrklykbiawynncmtlpl $CREDENTIAL $TARGET | envelope
+envelope elide revealing --action encrypt --key ur:crypto-key/hdcxcnqzoeuobzdksphpfxonrlkemsislfloahurgygojnkblfktrkvdpyrklykbiawynncmtlpl "$TARGET" $CREDENTIAL | envelope format
 ```
 
 ```
 👈
 {
     ARID(4676635a) [
-        isA: "Certificate of Completion"
+        'isA': "Certificate of Completion"
         "expirationDate": 2028-01-01
         "firstName": "James"
         "lastName": "Maxwell"
         "subject": "RF and Microwave Engineering"
-        issuer: "Example Electrical Engineering Board"
+        'issuer': "Example Electrical Engineering Board"
         ENCRYPTED (7)
     ]
 } [
-    note: "Signed by Example Electrical Engineering Board"
-    verifiedBy: Signature
+    'note': "Signed by Example Electrical Engineering Board"
+    'verifiedBy': Signature
 ]
 ```

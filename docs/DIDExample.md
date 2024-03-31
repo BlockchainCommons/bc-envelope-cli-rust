@@ -110,7 +110,7 @@ echo $ALICE_CHALLENGE
 
 ```
 👈
-ur:envelope/lftpcstansglgspygwfrjzjpiewlwtinwyhpmkoyaatpcskscefxishsjzjzihjtioihcxjyjlcxfpjziniaihcxiyjpjljncxfwjliddmqdetdsta
+ur:envelope/lftpsotansglgshevewshdtobktdemaslfdyrsoyaatpsokscefxishsjzjzihjtioihcxjyjlcxfpjziniaihcxiyjpjljncxfwjliddmbtcavsrl
 ```
 
 ```bash
@@ -163,7 +163,7 @@ echo $ALICE_CHALLENGE_2
 
 ```
 👈
-ur:envelope/lftpcstansglgspygwfrjzjpiewlwtinwyhpmkoyaatpcskscefxishsjzjzihjtioihcxjyjlcxfpjziniaihcxiyjpjljncxfwjliddmqdetdsta
+ur:envelope/lftpsotansglgshevewshdtobktdemaslfdyrsoyaatpsokscefxishsjzjzihjtioihcxjyjlcxfpjziniaihcxiyjpjljncxfwjliddmbtcavsrl
 ```
 
 `ALICE_CHALLENGE_2` is indeed the same as `ALICE_CHALLENGE`, above. Bob then extracts Alice's registered URI.

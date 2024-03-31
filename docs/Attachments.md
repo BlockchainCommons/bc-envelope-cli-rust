@@ -139,7 +139,7 @@ envelope attachment payload $ATTACHMENT
 
 ```
 👈
-ur:envelope/tpcsjkjyisinjkdpinjkdpjyisihdpjohskkjzjlhsiefgjtesdk
+ur:envelope/tpsojkjyisinjkdpinjkdpjyisihdpjohskkjzjlhsieghaoksaa
 ```
 
 Note that since the payload is itself an envelope which can be arbitrarily complex, it is returned as a UR. So we can take the result of the above command and extract its subject as a string:
@@ -241,8 +241,8 @@ envelope attachment all $ENVELOPE_WITH_TWO_ATTACHMENTS
 
 ```
 👈
-ur:envelope/oycseylstpsptpcsjkjyisinjkdpinjkdpjyisihdpjohskkjzjlhsieoycseetpcsksckisjyjyjojkftdldlihkshsjnjojzihdmiajljndlhsjyjyhsiaisjnihjtjyoycseotpcsjeiajljndmihkshsjnjojzihzozmhhao
-ur:envelope/oycseylstpsptpcskojyisinjkdpinjkdpjyisihdpjohskkjzjlhsiedpkoeyoycseetpcsksclisjyjyjojkftdldlihkshsjnjojzihdmiajljndlhsjyjyhsiaisjnihjtjydpkoeyoycseotpcsjeiajljndmihkshsjnjojzihjtlflpst
+ur:envelope/oycseylstpsptpsojkjyisinjkdpinjkdpjyisihdpjohskkjzjlhsieoycseetpsoksckisjyjyjojkftdldlihkshsjnjojzihdmiajljndlhsjyjyhsiaisjnihjtjyoycseotpsojeiajljndmihkshsjnjojziheyttoezm
+ur:envelope/oycseylstpsptpsokojyisinjkdpinjkdpjyisihdpjohskkjzjlhsiedpkoeyoycseetpsoksclisjyjyjojkftdldlihkshsjnjojzihdmiajljndlhsjyjyhsiaisjnihjtjydpkoeyoycseotpsojeiajljndmihkshsjnjojzihsslriaki
 ```
 
 ```bash
@@ -252,7 +252,7 @@ envelope attachment at 0 $ENVELOPE_WITH_TWO_ATTACHMENTS
 
 ```
 👈
-ur:envelope/oycseylstpsptpcsjkjyisinjkdpinjkdpjyisihdpjohskkjzjlhsieoycseetpcsksckisjyjyjojkftdldlihkshsjnjojzihdmiajljndlhsjyjyhsiaisjnihjtjyoycseotpcsjeiajljndmihkshsjnjojzihzozmhhao
+ur:envelope/oycseylstpsptpsojkjyisinjkdpinjkdpjyisihdpjohskkjzjlhsieoycseetpsoksckisjyjyjojkftdldlihkshsjnjojzihdmiajljndlhsjyjyhsiaisjnihjtjyoycseotpsojeiajljndmihkshsjnjojziheyttoezm
 ```
 
 ## Finding Attachments
