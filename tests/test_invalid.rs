@@ -11,7 +11,7 @@ fn test_invalid_command() -> anyhow::Result<()> {
 fn test_invalid_data() -> anyhow::Result<()> {
     assert!(run_cli(&[
         "format",
-        "ur:crypto-seed/oyadgdtokgdpwkrsonfdltvdwttsnddneonbmdbntakkss"
+        "ur:seed/oyadgdtokgdpwkrsonfdltvdwttsnddneonbmdbntakkss"
     ])
     .is_err());
     Ok(())

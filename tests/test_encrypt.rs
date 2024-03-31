@@ -40,7 +40,7 @@ fn test_generate_private_keys_1() -> anyhow::Result<()> {
 
 #[test]
 fn test_generate_private_keys_2() -> anyhow::Result<()> {
-    let seed = "ur:crypto-seed/oyadhdcxhsinuesrennenlhfaopycnrfrkdmfnsrvltowmtbmyfwdafxvwmthersktcpetdweocfztrd";
+    let seed = "ur:seed/oyadhdcxhsinuesrennenlhfaopycnrfrkdmfnsrvltowmtbmyfwdafxvwmthersktcpetdweocfztrd";
     let prvkeys1 = run_cli(&["generate", "prvkeys", "--seed", seed])?;
     assert_eq!(
         prvkeys1,

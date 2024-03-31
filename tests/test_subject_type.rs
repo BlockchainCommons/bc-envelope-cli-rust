@@ -306,12 +306,12 @@ fn test_known_ur_subject() -> anyhow::Result<()> {
     let e = run_cli(&["subject", "type", "ur", SEED_UR_EXAMPLE])?;
     assert_eq!(
         e,
-        "ur:envelope/tpsotaaddwoyadgdaawzwplrbdhdpabgrnvokorolnrtemksynldiond"
+        "ur:envelope/tpsotantjzoyadgdaawzwplrbdhdpabgrnvokorolnrtemkslgdpfebs"
     );
     assert_eq!(
         run_cli_raw(&["format", &e])?,
         indoc!(r#"
-        crypto-seed(Map)
+        seed(Map)
         "#)
     );
     run_cli_expect(&["extract", "ur", &e], SEED_UR_EXAMPLE)?;

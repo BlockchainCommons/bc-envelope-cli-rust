@@ -594,11 +594,11 @@ envelope generate prvkeys
 ur:crypto-prvkeys/hdcxhdvsaelylaaesfqdwzghfmsswfrlzsfgytbbnecpkshekstbhdwzrkktasknztkecycaotda
 ```
 
-The above generation is random. If you wish to use a `crypto-seed` as your starting point:
+The above generation is random. If you wish to use a `seed` as your starting point:
 
 ```bash
 👉
-SEED=ur:crypto-seed/oyadgdmdeefejoaonnatcycefxjedrfyaspkiakionamgl
+SEED=ur:seed/oyadgdmdeefejoaonnatcycefxjedrfyaspkiakionamgl
 PRVKEYS=`envelope generate prvkeys --seed $SEED`
 echo $PRVKEYS
 ```

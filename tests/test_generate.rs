@@ -85,7 +85,7 @@ fn test_generate_seed_with_hex() -> anyhow::Result<()> {
         &["generate", "seed", "--hex", "7e31b2b14b895e75cdb82c22b013527c"]
     )?;
 
-    assert_eq!(output, "ur:crypto-seed/oyadgdkbehprpagrldhykpsnrodwcppfbwgmkemtaolbdt");
+    assert_eq!(output, "ur:seed/oyadgdkbehprpagrldhykpsnrodwcppfbwgmkemtaolbdt");
 
     let seed = bc_components::Seed::from_ur_string(output)?;
     assert_eq!(seed.data().len(), 16);
@@ -111,7 +111,7 @@ fn test_generate_prvkeys() -> anyhow::Result<()> {
 #[test]
 fn test_generate_prvkeys_from_seed() -> anyhow::Result<()> {
     run_cli_expect(
-        &["generate", "prvkeys", "--seed", "ur:crypto-seed/oyadgdkbehprpagrldhykpsnrodwcppfbwgmkemtaolbdt"],
+        &["generate", "prvkeys", "--seed", "ur:seed/oyadgdkbehprpagrldhykpsnrodwcppfbwgmkemtaolbdt"],
         "ur:crypto-prvkeys/gdkbehprpagrldhykpsnrodwcppfbwgmkeadrturam"
     )
 }

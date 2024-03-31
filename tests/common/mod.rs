@@ -9,24 +9,24 @@ pub const ARID_HEX: &str = "dec7e82893c32f7a4fcec633c02c0ec32a4361ca3ee3bc8758ae
 pub const ARID: &str = "ur:arid/hdcxuestvsdemusrdlkngwtosweortdwbasrdrfxhssgfmvlrflthdplatjydmmwahgdwlflguqz";
 pub const DATE_EXAMPLE: &str = "2022-08-30T07:16:11Z";
 pub const DIGEST_EXAMPLE: &str = "ur:digest/hdcxdplutstarkhelprdiefhadbetlbnreamoyzefxnnkonycpgdehmuwdhnfgrkltylrovyeeck";
-pub const SEED_UR_EXAMPLE: &str = "ur:crypto-seed/oyadgdaawzwplrbdhdpabgrnvokorolnrtemksayyadmut";
+pub const SEED_UR_EXAMPLE: &str = "ur:seed/oyadgdaawzwplrbdhdpabgrnvokorolnrtemksayyadmut";
 pub const UUID_EXAMPLE: &str = "eb377e65-5774-410a-b9cb-510bfc73e6d9";
 pub const ALICE_KNOWS_BOB_EXAMPLE: &str = "ur:envelope/lftpsoihfpjziniaihoytpsoihjejtjlktjktpsoiafwjlidutgmnnns";
 pub const CREDENTIAL_EXAMPLE: &str = "ur:envelope/lstpspmntpsotansgshdcxfgkoiahtjthnissawsfhzcmyyldsutfzcttefpaxjtmobsbwimcaleykvsdtgajnoytpsojsiaihjpjyiniyiniahsjyihglkpjnidihjptpsojeeheyeodpeeecendpemetesoytpsojtihksjoinjphsjyinjljtfyhsjyihtpsosecyjncscxaeoytpsoisjzhsjkjyglhsjnihtpsoiogthsksktihjzjzoytpsoininjkjkkpihfyhsjyihtpsosecyhybdvyaeoyadtpsokscffxihjpjyiniyiniahsjyihcxjliycxfxjljnjojzihjyinjljtoytpsoihjoisjljyjltpsoksckghisinjkcxinjkcxgehsjnihjkcxgthsksktihjzjzdijkcxjoisjljyjldmoytpsokscejojpjliyihjkjkinjljthsjzfyihkoihjzjljojnihjtjyfdjlkpjpjktpsobsoytpsoiniyinjpjkjyglhsjnihtpsoihgehsjnihjkoytpsoiyjyjljoiniajktpsolfingukpidimihiajycxehingukpidimihiajycxeyoytpsokscsiajljtjyinjtkpinjtiofeiekpiahsjyinjljtgojtinjyjktpsoadoyattpsoksdkfekshsjnjojzihcxfejzihiajyjpiniahsjzcxfejtioinjtihihjpinjtiocxfwjlhsjpieoytpsoiojkkpidimihiajytpsokscegmfgcxhsjtiecxgtiniajpjlkthskoihcxfejtioinjtihihjpinjtiooybttpsoksdkfekshsjnjojzihcxfejzihiajyjpiniahsjzcxfejtioinjtihihjpinjtiocxfwjlhsjpieoyaxtpsotansghhdfzdlmunbknwymowslbwfkidawyastikibksfhdosgslulecpwktysphprdheingyckvlrtjlrdhswnkbdereotdryapyhddpmnahcsmymnlsmtpdadsptyptmdbyosdllooyaatpsoksdmguiniojtihiecxidkkcxfekshsjnjojzihcxfejzihiajyjpiniahsjzcxfejtioinjtihihjpinjtiocxfwjlhsjpietdeoahrf";
 pub const KEY_EXAMPLE: &str = "ur:crypto-key/hdcxmszmjlfsgssrbzehsslphdlgtbwesofnlpehlftldwotpaiyfwbtzsykwttomsbatnzswlqd";
 
-pub const ALICE_ARID: &str = "ur:crypto-arid/hdcxtygshybkzcecfhflpfdlhdonotoentnydmzsidmkindlldjztdmoeyishknybtbswtgwwpdi";
-pub const ALICE_SEED: &str = "ur:crypto-seed/oyadgdlfwfdwlphlfsghcphfcsaybekkkbaejkhphdfndy";
+pub const ALICE_ARID: &str = "ur:arid/hdcxtygshybkzcecfhflpfdlhdonotoentnydmzsidmkindlldjztdmoeyishknybtbswtgwwpdi";
+pub const ALICE_SEED: &str = "ur:seed/oyadgdlfwfdwlphlfsghcphfcsaybekkkbaejkhphdfndy";
 pub const ALICE_PRVKEYS: &str = "ur:crypto-prvkeys/gdlfwfdwlphlfsghcphfcsaybekkkbaejksfnynsct";
 pub const ALICE_PUBKEYS: &str = "ur:crypto-pubkeys/lftaaosehdcxwduymnadmebbgwlolfemsgotgdnlgdcljpntzocwmwolrpimdabgbaqzcscmzopftpvahdcxolgtwyjotsndgeechglgeypmoemtmdsnjzyncaidgrbklegopasbgmchidtdvsctwdpffsee";
 
-pub const BOB_ARID: &str = "ur:crypto-arid/hdcxdkreprfslewefgdwhtfnaosfgajpehhyrlcyjzheurrtamfsvolnaxwkioplgansesiabtdr";
-pub const BOB_SEED: &str = "ur:crypto-seed/oyadgdcsknhkjkswgtecnslsjtrdfgimfyuykglfsfwtso";
+pub const BOB_ARID: &str = "ur:arid/hdcxdkreprfslewefgdwhtfnaosfgajpehhyrlcyjzheurrtamfsvolnaxwkioplgansesiabtdr";
+pub const BOB_SEED: &str = "ur:seed/oyadgdcsknhkjkswgtecnslsjtrdfgimfyuykglfsfwtso";
 pub const BOB_PRVKEYS: &str = "ur:crypto-prvkeys/gdcsknhkjkswgtecnslsjtrdfgimfyuykgbzbagdva";
 pub const BOB_PUBKEYS: &str = "ur:crypto-pubkeys/lftaaosehdcxpspsfsglwewlttrplbetmwaelkrkdeolylwsswchfshepycpzowkmojezmlehdentpvahdcxlaaybzfngdsbheeyvlwkrldpgocpgewpykneotlugaieidfplstacejpkgmhaxbkbswtmecm";
 
-pub const CAROL_ARID: &str = "ur:crypto-arid/hdcxamstktdsdlplurgaoxfxdijyjysertlpehwstkwkskmnnsqdpfgwlbsertvatbbtcaryrdta";
-pub const CAROL_SEED: &str = "ur:crypto-seed/oyadgdlpjypepycsvodtihcecwvsyljlzevwcnmepllulo";
+pub const CAROL_ARID: &str = "ur:arid/hdcxamstktdsdlplurgaoxfxdijyjysertlpehwstkwkskmnnsqdpfgwlbsertvatbbtcaryrdta";
+pub const CAROL_SEED: &str = "ur:seed/oyadgdlpjypepycsvodtihcecwvsyljlzevwcnmepllulo";
 pub const CAROL_PRVKEYS: &str = "ur:crypto-prvkeys/gdlpjypepycsvodtihcecwvsyljlzevwcnamjzdnos";
 pub const CAROL_PUBKEYS: &str = "ur:crypto-pubkeys/lftaaosehdcxptwewyrttbfswnsonswdvweydkfxmwfejsmdlgbajyaymwhstotymyfwrosprhsstpvahdcxnnzeontnuechectylgjytbvlbkfnmsmyeohhvwbzftdwrplrpkptloctdtflwnguoyytemnn";
 
