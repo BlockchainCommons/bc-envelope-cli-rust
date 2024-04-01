@@ -5,7 +5,7 @@ use crate::envelope_args::{EnvelopeArgs, EnvelopeArgsLike};
 use super::elide_args::{ElideArgs, ElideArgsLike, Action};
 use bc_envelope::prelude::*;
 
-/// Elide all objects in the target.
+/// Elide all objects not in the target.
 #[derive(Debug, Args)]
 #[group(skip)]
 pub struct CommandArgs {
