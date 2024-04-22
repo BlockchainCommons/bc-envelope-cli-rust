@@ -1,6 +1,6 @@
 [package]
 name = "bc-envelope-cli"
-version = "0.7.1"
+version = "0.7.2"
 edition = "2021"
 description = "Gordian Envelope Command Line Tool."
 authors = ["Blockchain Commons"]

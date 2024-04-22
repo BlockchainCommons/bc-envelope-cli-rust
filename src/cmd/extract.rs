@@ -183,11 +183,12 @@ fn extract_known(envelope: Envelope) -> anyhow::Result<String> {
 }
 
 fn extract_cbor(envelope: Envelope) -> anyhow::Result<String> {
-    Ok(if let Some(cbor) = envelope.leaf() {
+    let subject = &envelope.subject();
+    Ok(if let Some(cbor) = subject.leaf() {
         cbor.hex()
-    } else if envelope.is_wrapped() {
+    } else if subject.is_wrapped() {
         envelope.unwrap_envelope()?.cbor().hex()
-    } else if let Some(known_value) = envelope.known_value() {
+    } else if let Some(known_value) = subject.known_value() {
         known_value.cbor().hex()
     } else {
         bail!("No CBOR data found in envelope subject");
