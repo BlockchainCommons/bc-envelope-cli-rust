@@ -7,6 +7,7 @@ pub mod pub_keys;
 pub mod seed;
 
 use clap::{Subcommand, Args};
+use anyhow::Result;
 
 /// Utilities to generate and convert various objects.
 #[derive(Debug, Args)]
@@ -30,7 +31,7 @@ enum GenerateCommands {
 }
 
 impl crate::exec::Exec for CommandArgs {
-    fn exec(&self) -> anyhow::Result<String> {
+    fn exec(&self) -> Result<String> {
         match &self.command {
             GenerateCommands::Arid(args) => args.exec(),
             GenerateCommands::Digest(args) => args.exec(),

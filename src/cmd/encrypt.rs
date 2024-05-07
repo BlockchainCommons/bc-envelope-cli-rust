@@ -1,3 +1,4 @@
+use anyhow::{bail, Result};
 use clap::Args;
 
 use crate::envelope_args::{EnvelopeArgs, EnvelopeArgsLike};
@@ -33,18 +34,18 @@ impl EnvelopeArgsLike for CommandArgs {
 }
 
 impl crate::exec::Exec for CommandArgs {
-    fn exec(&self) -> anyhow::Result<String> {
+    fn exec(&self) -> Result<String> {
         let envelope = self.read_envelope()?;
 
         // Convert recipients to public key bases.
-        let recipients = self.recipient.iter().map(PublicKeyBase::from_ur_string).collect::<anyhow::Result<Vec<PublicKeyBase>>>()?;
+        let recipients = self.recipient.iter().map(PublicKeyBase::from_ur_string).collect::<Result<Vec<PublicKeyBase>>>()?;
 
         // Get the key
         let key = match self.key {
             Some(ref key) => SymmetricKey::from_ur_string(key)?,
             None => {
                 if recipients.is_empty() {
-                    anyhow::bail!("Must provide either a key or recipients.");
+                    bail!("Must provide either a key or recipients.");
                 }
                 SymmetricKey::new()
             }

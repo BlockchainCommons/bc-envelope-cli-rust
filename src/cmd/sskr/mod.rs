@@ -1,5 +1,6 @@
 pub mod join;
 pub mod split;
+pub use anyhow::Result;
 
 use clap::{Subcommand, Args};
 
@@ -18,7 +19,7 @@ enum SskrCommands {
 }
 
 impl crate::exec::Exec for CommandArgs {
-    fn exec(&self) -> anyhow::Result<String> {
+    fn exec(&self) -> Result<String> {
         match &self.command {
             SskrCommands::Split(args) => args.exec(),
             SskrCommands::Join(args) => args.exec(),

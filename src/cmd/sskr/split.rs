@@ -1,6 +1,7 @@
 use anyhow::bail;
 use bc_components::{SymmetricKey, SSKRSpec, SSKRGroupSpec, SSKRError, PublicKeyBase};
 use clap::Args;
+pub use anyhow::Result;
 
 use crate::envelope_args::{EnvelopeArgs, EnvelopeArgsLike};
 use bc_envelope::prelude::*;
@@ -44,7 +45,7 @@ impl EnvelopeArgsLike for CommandArgs {
 }
 
 impl crate::exec::Exec for CommandArgs {
-    fn exec(&self) -> anyhow::Result<String> {
+    fn exec(&self) -> Result<String> {
         let envelope = self.read_envelope()?;
 
         if self.group_threshold > self.groups.len() {
@@ -63,7 +64,7 @@ impl crate::exec::Exec for CommandArgs {
                 let n = matches[2].parse()?;
                 Ok((m, n))
             })
-            .collect::<anyhow::Result<_>>()?;
+            .collect::<Result<_>>()?;
 
         let content_key = match &self.key {
             Some(key) => SymmetricKey::from_ur_string(key)?,
@@ -89,7 +90,7 @@ impl crate::exec::Exec for CommandArgs {
                 .recipients
                 .iter()
                 .map(PublicKeyBase::from_ur_string)
-                .collect::<anyhow::Result<_>>()?;
+                .collect::<Result<_>>()?;
             flattened_shares
                 .into_iter()
                 .map(|share| {
@@ -99,7 +100,7 @@ impl crate::exec::Exec for CommandArgs {
                     }
                     Ok(share)
                 })
-                .collect::<anyhow::Result<Vec<_>>>()?
+                .collect::<Result<Vec<_>>>()?
         };
 
         let output_shares = flattened_shares

@@ -2,6 +2,7 @@ use clap::Args;
 
 use crate::{pred_obj_args::{PredObjArgsLike, PredObjArgs}, data_types::DataType};
 use bc_envelope::prelude::*;
+use anyhow::Result;
 
 /// Create a bare assertion with the given predicate and object.
 #[derive(Debug, Args)]
@@ -36,7 +37,7 @@ impl PredObjArgsLike for CommandArgs {
 }
 
 impl crate::exec::Exec for CommandArgs {
-    fn exec(&self) -> anyhow::Result<String> {
+    fn exec(&self) -> Result<String> {
         let mut result = self.pred_obj_args.assertion_envelope()?;
         if self.salted {
             result = result.add_salt();

@@ -7,6 +7,7 @@ pub mod find;
 pub mod remove;
 
 use clap::{Subcommand, Args};
+use anyhow::Result;
 
 /// Work with the envelope's assertions.
 #[derive(Debug, Args)]
@@ -28,7 +29,7 @@ enum SubCommands {
 }
 
 impl crate::exec::Exec for CommandArgs {
-    fn exec(&self) -> anyhow::Result<String> {
+    fn exec(&self) -> Result<String> {
         match &self.command {
             SubCommands::Add(args) => args.exec(),
             SubCommands::All(args) => args.exec(),

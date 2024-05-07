@@ -18,6 +18,7 @@ mod subject_args;
 mod utils;
 
 use clap::{Parser, Subcommand};
+use anyhow::Result;
 
 use crate::exec::Exec;
 
@@ -55,7 +56,7 @@ enum MainCommands {
 }
 
 #[doc(hidden)]
-fn main() -> anyhow::Result<()> {
+fn main() -> Result<()> {
     let cli = Cli::parse();
 
     let output = match cli.command {

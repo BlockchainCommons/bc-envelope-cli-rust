@@ -1,5 +1,6 @@
 use bc_envelope::prelude::*;
 use clap::Args;
+use anyhow::Result;
 
 use crate::{subject_args::{SubjectArgs, SubjectArgsLike}, envelope_args::{EnvelopeArgs, EnvelopeArgsLike}, data_types::{DataType, parse_data_type_to_envelope}};
 
@@ -35,12 +36,12 @@ impl EnvelopeArgsLike for CommandArgs {
 }
 
 impl crate::exec::Exec for CommandArgs {
-    fn exec(&self) -> anyhow::Result<String> {
+    fn exec(&self) -> Result<String> {
         let envelope = self.read_envelope()?;
         let object = parse_data_type_to_envelope(self.subject_type(), self.subject_value(), self.ur_tag())?;
         let assertions = envelope.clone().assertions();
         let result = assertions
-            .iter().filter(|&a| a.clone().object().unwrap().digest() == object.digest()).cloned().collect::<Vec<_>>()
+            .iter().filter(|&a| a.clone().as_object().unwrap().digest() == object.digest()).cloned().collect::<Vec<_>>()
             .iter().map(|a| a.ur_string()).collect::<Vec<String>>().join("\n");
         Ok(result)
     }

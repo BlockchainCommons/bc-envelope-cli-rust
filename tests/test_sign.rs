@@ -1,10 +1,11 @@
 use indoc::indoc;
+use anyhow::Result;
 
 mod common;
 use common::*;
 
 #[test]
-fn test_sign() -> anyhow::Result<()> {
+fn test_sign() -> Result<()> {
     let prvkeys = "ur:crypto-prvkeys/hdcxhsinuesrennenlhfaopycnrfrkdmfnsrvltowmtbmyfwdafxvwmthersktcpetdwfnbndeah";
     let signed = run_cli(&[
         "sign",
@@ -36,7 +37,7 @@ fn test_sign() -> anyhow::Result<()> {
 }
 
 #[test]
-fn test_sign_2() -> anyhow::Result<()> {
+fn test_sign_2() -> Result<()> {
     let prvkeys = "ur:crypto-prvkeys/hdcxhsinuesrennenlhfaopycnrfrkdmfnsrvltowmtbmyfwdafxvwmthersktcpetdwfnbndeah";
     let wrapped_signed = run_cli_piped(&[
         &["subject", "type", "wrapped", ALICE_KNOWS_BOB_EXAMPLE],
@@ -61,7 +62,7 @@ fn test_sign_2() -> anyhow::Result<()> {
 }
 
 #[test]
-fn test_sign_3() -> anyhow::Result<()> {
+fn test_sign_3() -> Result<()> {
     let e = run_cli_piped(&[
         &["subject", "type", "string", "Hello."],
         &["sign", "--prvkeys", ALICE_PRVKEYS, "--prvkeys", CAROL_PRVKEYS]

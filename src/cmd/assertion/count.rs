@@ -1,4 +1,5 @@
 use clap::Args;
+use anyhow::Result;
 
 use crate::envelope_args::{EnvelopeArgs, EnvelopeArgsLike};
 
@@ -17,7 +18,7 @@ impl EnvelopeArgsLike for CommandArgs {
 }
 
 impl crate::exec::Exec for CommandArgs {
-    fn exec(&self) -> anyhow::Result<String> {
+    fn exec(&self) -> Result<String> {
         let envelope = self.read_envelope()?;
         Ok(envelope.assertions().len().to_string())
     }

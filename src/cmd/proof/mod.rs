@@ -1,5 +1,6 @@
 pub mod create;
 pub mod confirm;
+pub use anyhow::Result;
 
 use clap::{Subcommand, Args};
 
@@ -18,7 +19,7 @@ enum SubCommands {
 }
 
 impl crate::exec::Exec for CommandArgs {
-    fn exec(&self) -> anyhow::Result<String> {
+    fn exec(&self) -> Result<String> {
         match &self.command {
             SubCommands::Create(args) => args.exec(),
             SubCommands::Confirm(args) => args.exec(),

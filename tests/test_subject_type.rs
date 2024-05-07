@@ -1,12 +1,14 @@
 use indoc::indoc;
+use anyhow::Result;
 
 mod common;
 use common::*;
 
+
 use bc_envelope::prelude::*;
 
 #[test]
-fn test_subject_type_arid_1() -> anyhow::Result<()> {
+fn test_subject_type_arid_1() -> Result<()> {
     run_cli_expect(
         &["subject", "type", "arid", "ur:arid/hdcxaywpflbdnyynyaeyykssbwfxbzcwwnyaampacnetbssatkpasrmerospveluinsgpdesltpe"],
         "ur:envelope/tpsotansgshdcxaywpflbdnyynyaeyykssbwfxbzcwwnyaampacnetbssatkpasrmerospveluinsgfejejkyk"
@@ -14,7 +16,7 @@ fn test_subject_type_arid_1() -> anyhow::Result<()> {
 }
 
 #[test]
-fn test_subject_type_arid_2() -> anyhow::Result<()> {
+fn test_subject_type_arid_2() -> Result<()> {
     run_cli_expect(
         &["subject", "type", "arid", "08ec470b9af6f832f5c41343151bf1f806b123380fc2cfb1c391b8c8e48b69ca"],
         "ur:envelope/tpsotansgshdcxaywpflbdnyynyaeyykssbwfxbzcwwnyaampacnetbssatkpasrmerospveluinsgfejejkyk"
@@ -22,7 +24,7 @@ fn test_subject_type_arid_2() -> anyhow::Result<()> {
 }
 
 #[test]
-fn test_subject_type_cbor() -> anyhow::Result<()> {
+fn test_subject_type_cbor() -> Result<()> {
     run_cli_expect(
         &["subject", "type", "cbor", "83010203"],
         "ur:envelope/tpsolsadaoaxzerkykme"
@@ -30,7 +32,7 @@ fn test_subject_type_cbor() -> anyhow::Result<()> {
 }
 
 #[test]
-fn test_subject_type_data() -> anyhow::Result<()> {
+fn test_subject_type_data() -> Result<()> {
     run_cli_expect(
         &["subject", "type", "data", "010203"],
         "ur:envelope/tpsofxadaoaxloyncwms"
@@ -38,7 +40,7 @@ fn test_subject_type_data() -> anyhow::Result<()> {
 }
 
 #[test]
-fn test_subject_type_date_1() -> anyhow::Result<()> {
+fn test_subject_type_date_1() -> Result<()> {
     run_cli_expect(
         &["subject", "type", "date", "2022-08-30T07:16:11Z"],
         "ur:envelope/tpsosecyiabtrhfrrfztcase"
@@ -46,7 +48,7 @@ fn test_subject_type_date_1() -> anyhow::Result<()> {
 }
 
 #[test]
-fn test_subject_type_date_2() -> anyhow::Result<()> {
+fn test_subject_type_date_2() -> Result<()> {
     run_cli_expect(
         &["subject", "type", "date", "2022-08-30"],
         "ur:envelope/tpsosecyiabtguaeptiywsls"
@@ -54,7 +56,7 @@ fn test_subject_type_date_2() -> anyhow::Result<()> {
 }
 
 #[test]
-fn test_subject_type_digest() -> anyhow::Result<()> {
+fn test_subject_type_digest() -> Result<()> {
     run_cli_expect(
         &["subject", "type", "digest", "ur:digest/hdcxvlfgdmamwlsshgiaemcsnelkylfwjefdsktadpfwolgmlrlevduyontbbbpyiaspvadsadje"],
         "ur:envelope/tpsotansfphdcxvlfgdmamwlsshgiaemcsnelkylfwjefdsktadpfwolgmlrlevduyontbbbpyiasplnecbehy"
@@ -62,7 +64,7 @@ fn test_subject_type_digest() -> anyhow::Result<()> {
 }
 
 #[test]
-fn test_subject_type_envelope() -> anyhow::Result<()> {
+fn test_subject_type_envelope() -> Result<()> {
     run_cli_expect(
         &["subject", "type", "envelope", "ur:envelope/tpcsfyadaoaxaatitospwz"],
         "ur:envelope/tpsofyadaoaxaaaspsatks"
@@ -70,7 +72,7 @@ fn test_subject_type_envelope() -> anyhow::Result<()> {
 }
 
 #[test]
-fn test_subject_type_know_1() -> anyhow::Result<()> {
+fn test_subject_type_know_1() -> Result<()> {
     run_cli_expect(
         &["subject", "type", "known", "1"],
         "ur:envelope/adonahurcw"
@@ -78,7 +80,7 @@ fn test_subject_type_know_1() -> anyhow::Result<()> {
 }
 
 #[test]
-fn test_subject_type_known_2() -> anyhow::Result<()> {
+fn test_subject_type_known_2() -> Result<()> {
     run_cli_expect(
         &["subject", "type", "known", "isA"],
         "ur:envelope/adonahurcw"
@@ -86,7 +88,7 @@ fn test_subject_type_known_2() -> anyhow::Result<()> {
 }
 
 #[test]
-fn test_subject_type_number_1() -> anyhow::Result<()> {
+fn test_subject_type_number_1() -> Result<()> {
     run_cli_expect(
         &["subject", "type", "number", "3.14"],
         "ur:envelope/tpsozofzasckrogywmlpctynlngyfx"
@@ -94,7 +96,7 @@ fn test_subject_type_number_1() -> anyhow::Result<()> {
 }
 
 #[test]
-fn test_subject_type_number_2() -> anyhow::Result<()> {
+fn test_subject_type_number_2() -> Result<()> {
         run_cli_expect(
         &["subject", "type", "number", "42"],
         "ur:envelope/tpsocsdrahknprdr"
@@ -102,7 +104,7 @@ fn test_subject_type_number_2() -> anyhow::Result<()> {
 }
 
 #[test]
-fn test_subject_type_string() -> anyhow::Result<()> {
+fn test_subject_type_string() -> Result<()> {
     run_cli_expect(
         &["subject", "type", "string", "Hello"],
         "ur:envelope/tpsoihfdihjzjzjllamdlowy"
@@ -110,7 +112,7 @@ fn test_subject_type_string() -> anyhow::Result<()> {
 }
 
 #[test]
-fn test_subject_type_uri() -> anyhow::Result<()> {
+fn test_subject_type_uri() -> Result<()> {
     run_cli_expect(
         &["subject", "type", "uri", "https://example.com"],
         "ur:envelope/tpsotpcxjkisjyjyjojkftdldlihkshsjnjojzihdmiajljnrlsrpsas"
@@ -118,7 +120,7 @@ fn test_subject_type_uri() -> anyhow::Result<()> {
 }
 
 #[test]
-fn test_subject_type_uuid() -> anyhow::Result<()> {
+fn test_subject_type_uuid() -> Result<()> {
     run_cli_expect(
         &["subject", "type", "uuid", "492ACBF4-13DC-4872-8A3B-4BF65C6BDF7C"],
         "ur:envelope/tpsotpdagdgadrsbwkbwuofdjplefrgrynhhjeurkeflkgehwt"
@@ -126,7 +128,7 @@ fn test_subject_type_uuid() -> anyhow::Result<()> {
 }
 
 #[test]
-fn test_subject_type_wrapped() -> anyhow::Result<()> {
+fn test_subject_type_wrapped() -> Result<()> {
     run_cli_expect(
         &["subject", "type", "wrapped", "ur:envelope/tpcslsadaoaxgedmotks"],
         "ur:envelope/tpsptpsolsadaoaxaegyemck"
@@ -134,8 +136,8 @@ fn test_subject_type_wrapped() -> anyhow::Result<()> {
 }
 
 #[test]
-fn test_cbor_subject() -> anyhow::Result<()> {
-    let cbor_array_example = vec![1, 2, 3].cbor().hex();
+fn test_cbor_subject() -> Result<()> {
+    let cbor_array_example = vec![1, 2, 3].to_cbor().hex();
     let e = run_cli(&["subject", "type", "cbor", &cbor_array_example])?;
     assert_eq!(e, "ur:envelope/tpsolsadaoaxzerkykme");
     run_cli_expect(&["format", &e], "[1, 2, 3]")?;
@@ -144,7 +146,7 @@ fn test_cbor_subject() -> anyhow::Result<()> {
 }
 
 #[test]
-fn test_arid_subject() -> anyhow::Result<()> {
+fn test_arid_subject() -> Result<()> {
     let e = run_cli(&["subject", "type", "arid", ARID_HEX])?;
     assert_eq!(e, "ur:envelope/tpsotansgshdcxuestvsdemusrdlkngwtosweortdwbasrdrfxhssgfmvlrflthdplatjydmmwahgdaabzoswy");
     run_cli_expect(
@@ -164,7 +166,7 @@ fn test_arid_subject() -> anyhow::Result<()> {
 }
 
 #[test]
-fn test_bool_subject() -> anyhow::Result<()> {
+fn test_bool_subject() -> Result<()> {
     let e = run_cli(&["subject", "type", "bool", "true"])?;
     assert_eq!(e, "ur:envelope/tpsoykpyeetsba");
     run_cli_expect(&["format", &e], "true")?;
@@ -174,7 +176,7 @@ fn test_bool_subject() -> anyhow::Result<()> {
 }
 
 #[test]
-fn test_wrapped_envelope_subject() -> anyhow::Result<()> {
+fn test_wrapped_envelope_subject() -> Result<()> {
     let e = run_cli(&["subject", "type", "wrapped", HELLO_ENVELOPE_UR])?;
     assert_eq!(e, "ur:envelope/tpsptpsoiyfdihjzjzjldmdnjyfzse");
     assert_eq!(
@@ -186,13 +188,13 @@ fn test_wrapped_envelope_subject() -> anyhow::Result<()> {
         "#)
     );
     run_cli_expect(&["extract", "wrapped", &e], HELLO_ENVELOPE_UR)?;
-    run_cli_expect(&["extract", "cbor", &e], "d8c96648656c6c6f2e")?;
+    run_cli_expect(&["extract", "cbor", &e], "d8c8d8c96648656c6c6f2e")?;
     run_cli_expect(&["extract", "ur", &e], HELLO_ENVELOPE_UR)?;
     Ok(())
 }
 
 #[test]
-fn test_data_subject() -> anyhow::Result<()> {
+fn test_data_subject() -> Result<()> {
     let value = "cafebabe";
     let e = run_cli(&["subject", "type", "data", value])?;
     assert_eq!(e, "ur:envelope/tpsofysgzerdrnbklgpypd");
@@ -203,7 +205,7 @@ fn test_data_subject() -> anyhow::Result<()> {
 }
 
 #[test]
-fn test_date_subject() -> anyhow::Result<()> {
+fn test_date_subject() -> Result<()> {
     let e = run_cli(&["subject", "type", "date", DATE_EXAMPLE])?;
     assert_eq!(e, "ur:envelope/tpsosecyiabtrhfrrfztcase");
     run_cli_expect(&["format", &e], DATE_EXAMPLE)?;
@@ -213,7 +215,7 @@ fn test_date_subject() -> anyhow::Result<()> {
 }
 
 #[test]
-fn test_digest_subject() -> anyhow::Result<()> {
+fn test_digest_subject() -> Result<()> {
     let e = run_cli(&["subject", "type", "digest", DIGEST_EXAMPLE])?;
     assert_eq!(e, "ur:envelope/tpsotansfphdcxdplutstarkhelprdiefhadbetlbnreamoyzefxnnkonycpgdehmuwdhnfgrkltyltpwzdadn");
     run_cli_expect(&["format", &e], "Digest(2d8bd7d9)")?;
@@ -226,7 +228,7 @@ fn test_digest_subject() -> anyhow::Result<()> {
 }
 
 #[test]
-fn test_float_subject() -> anyhow::Result<()> {
+fn test_float_subject() -> Result<()> {
     let value = "42.5";
     let e = run_cli(&["subject", "type", "number", value])?;
     assert_eq!(e, "ur:envelope/tpsoytgygdamfnchrl");
@@ -237,7 +239,7 @@ fn test_float_subject() -> anyhow::Result<()> {
 }
 
 #[test]
-fn test_int_subject() -> anyhow::Result<()> {
+fn test_int_subject() -> Result<()> {
     let value = "42";
     let e = run_cli(&["subject", "type", "number", value])?;
     assert_eq!(e, "ur:envelope/tpsocsdrahknprdr");
@@ -248,7 +250,7 @@ fn test_int_subject() -> anyhow::Result<()> {
 }
 
 #[test]
-fn test_negative_int_subject() -> anyhow::Result<()> {
+fn test_negative_int_subject() -> Result<()> {
     // https://github.com/apple/swift-argument-parser/issues/31#issuecomment-593563022
     let value = "-42";
     let e = run_cli(&["subject", "type", "number", "--", value])?;
@@ -260,7 +262,7 @@ fn test_negative_int_subject() -> anyhow::Result<()> {
 }
 
 #[test]
-fn test_known_value_subject() -> anyhow::Result<()> {
+fn test_known_value_subject() -> Result<()> {
     let value = "note";
     let e = run_cli(&["subject", "type", "known", value])?;
     assert_eq!(e, "ur:envelope/aatljldnmw");
@@ -271,7 +273,7 @@ fn test_known_value_subject() -> anyhow::Result<()> {
 }
 
 #[test]
-fn test_string_subject() -> anyhow::Result<()> {
+fn test_string_subject() -> Result<()> {
     run_cli_expect(&["subject", "type", "string", HELLO_STR], HELLO_ENVELOPE_UR)?;
     run_cli_expect(&["extract", "string", HELLO_ENVELOPE_UR], HELLO_STR)?;
     run_cli_expect(&["extract", "cbor", HELLO_ENVELOPE_UR], "6648656c6c6f2e")?;
@@ -285,7 +287,7 @@ fn test_string_subject() -> anyhow::Result<()> {
 }
 
 #[test]
-fn test_envelope_ur_subject() -> anyhow::Result<()> {
+fn test_envelope_ur_subject() -> Result<()> {
     let e = run_cli(&["subject", "type", "ur", HELLO_ENVELOPE_UR])?;
     assert_eq!(e, "ur:envelope/tpsptpsoiyfdihjzjzjldmdnjyfzse");
     assert_eq!(
@@ -302,7 +304,7 @@ fn test_envelope_ur_subject() -> anyhow::Result<()> {
 }
 
 #[test]
-fn test_known_ur_subject() -> anyhow::Result<()> {
+fn test_known_ur_subject() -> Result<()> {
     let e = run_cli(&["subject", "type", "ur", SEED_UR_EXAMPLE])?;
     assert_eq!(
         e,
@@ -319,7 +321,7 @@ fn test_known_ur_subject() -> anyhow::Result<()> {
 }
 
 #[test]
-fn test_unknown_ur_subject() -> anyhow::Result<()> {
+fn test_unknown_ur_subject() -> Result<()> {
     let unknown_ur = "ur:unknown/oyadgdjlssmkcklgoskseodnyteofwwfylkiftjzamgrht";
     let e = run_cli(&["subject", "type", "ur", "--ur-tag", "555", unknown_ur])?;
     assert_eq!(
@@ -337,7 +339,7 @@ fn test_unknown_ur_subject() -> anyhow::Result<()> {
 }
 
 #[test]
-fn test_uuid_subject() -> anyhow::Result<()> {
+fn test_uuid_subject() -> Result<()> {
     let e = run_cli(&["subject", "type", "uuid", UUID_EXAMPLE])?;
     assert_eq!(
         e,

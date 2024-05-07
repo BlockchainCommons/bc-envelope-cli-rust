@@ -1,5 +1,6 @@
 use bc_envelope::prelude::*;
 use clap::Args;
+use anyhow::Result;
 
 use crate::{data_types::{DataType, parse_data_type_to_envelope}, subject_args::{SubjectArgsLike, SubjectArgs}};
 
@@ -26,7 +27,7 @@ impl SubjectArgsLike for CommandArgs {
 }
 
 impl crate::exec::Exec for CommandArgs {
-    fn exec(&self) -> anyhow::Result<String> {
+    fn exec(&self) -> Result<String> {
         Ok(parse_data_type_to_envelope(self.subject_type(), Some(self.read_subject_value()?).as_deref(), self.ur_tag())?.ur_string())
     }
 }

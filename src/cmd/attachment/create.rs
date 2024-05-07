@@ -1,5 +1,6 @@
 use clap::Args;
 use bc_envelope::prelude::*;
+use anyhow::Result;
 
 use crate::utils::read_envelope;
 
@@ -21,7 +22,7 @@ pub struct CommandArgs {
 }
 
 impl crate::exec::Exec for CommandArgs {
-    fn exec(&self) -> anyhow::Result<String> {
+    fn exec(&self) -> Result<String> {
         let payload = read_envelope(self.payload.as_deref())?;
         let assertion = Envelope::new_attachment(payload, self.vendor.as_str(), self.conforms_to.as_deref());
         Ok(assertion.ur_string())

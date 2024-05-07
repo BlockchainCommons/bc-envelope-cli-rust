@@ -1,10 +1,11 @@
 use indoc::indoc;
+use anyhow::Result;
 
 mod common;
 use common::*;
 
 #[test]
-fn test_sskr_1() -> anyhow::Result<()> {
+fn test_sskr_1() -> Result<()> {
     let result = run_cli(&["sskr", "split", ALICE_KNOWS_BOB_EXAMPLE])?;
     run_cli_expect(
         &["format", &result],
@@ -20,7 +21,7 @@ fn test_sskr_1() -> anyhow::Result<()> {
 }
 
 #[test]
-fn test_sskr_2() -> anyhow::Result<()> {
+fn test_sskr_2() -> Result<()> {
     let result = run_cli(&[
         "sskr",
         "split",

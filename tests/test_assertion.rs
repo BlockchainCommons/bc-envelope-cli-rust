@@ -1,10 +1,11 @@
 use indoc::indoc;
+use anyhow::Result;
 
 mod common;
 use common::*;
 
 #[test]
-fn test_assertion_add_pred_obj() -> anyhow::Result<()> {
+fn test_assertion_add_pred_obj() -> Result<()> {
     let subject = run_cli(&["subject", "type", "string", "Hello"])?;
     run_cli_expect(
         &["assertion", "add", "pred-obj", "known", "note", "string", "This is the note.", &subject],
@@ -18,7 +19,7 @@ fn test_assertion_add_pred_obj() -> anyhow::Result<()> {
 }
 
 #[test]
-fn test_assertion() -> anyhow::Result<()> {
+fn test_assertion() -> Result<()> {
     let e = run_cli(&["subject", "assertion", "string", "Alpha", "string", "Beta"])?;
     assert_eq!(e, "ur:envelope/oytpsoihfpjzjoishstpsoiefwihjyhsgavlfypl");
     run_cli_expect(&["format", &e], r#""Alpha": "Beta""#)?;
@@ -26,7 +27,7 @@ fn test_assertion() -> anyhow::Result<()> {
 }
 
 #[test]
-fn test_assertion_2() -> anyhow::Result<()> {
+fn test_assertion_2() -> Result<()> {
     let e = run_cli(&["subject", "assertion", "number", "1", "number", "2"])?;
     assert_eq!(e, "ur:envelope/oytpsoadtpsoaoptspcale");
     run_cli_expect(&["format", &e], "1: 2")?;
@@ -34,7 +35,7 @@ fn test_assertion_2() -> anyhow::Result<()> {
 }
 
 #[test]
-fn test_assertion_3() -> anyhow::Result<()> {
+fn test_assertion_3() -> Result<()> {
     let e = run_cli(&[
         "subject",
         "assertion",
@@ -49,7 +50,7 @@ fn test_assertion_3() -> anyhow::Result<()> {
 }
 
 #[test]
-fn test_assertion_add() -> anyhow::Result<()> {
+fn test_assertion_add() -> Result<()> {
     let subject = run_cli(&["subject", "type", "string", "Alice"])?;
     run_cli_expect(
         &[
@@ -76,7 +77,7 @@ fn test_assertion_add() -> anyhow::Result<()> {
 }
 
 #[test]
-fn test_assertion_add_2() -> anyhow::Result<()> {
+fn test_assertion_add_2() -> Result<()> {
     let subject = run_cli(&["subject", "type", "string", "Alice"])?;
     let predicate = run_cli(&["subject", "type", "string", "knows"])?;
     let object = run_cli(&["subject", "type", "string", "Bob"])?;
@@ -105,17 +106,17 @@ fn test_assertion_add_2() -> anyhow::Result<()> {
 }
 
 #[test]
-fn test_assertion_count() -> anyhow::Result<()> {
+fn test_assertion_count() -> Result<()> {
     run_cli_expect(&["assertion", "count", ALICE_KNOWS_BOB_EXAMPLE], "1")
 }
 
 #[test]
-fn test_assertion_count_2() -> anyhow::Result<()> {
+fn test_assertion_count_2() -> Result<()> {
     run_cli_expect(&["assertion", "count", CREDENTIAL_EXAMPLE], "2")
 }
 
 #[test]
-fn test_assertion_count_3() -> anyhow::Result<()> {
+fn test_assertion_count_3() -> Result<()> {
     run_cli_piped_expect_stdin(
         &[
             &["extract", "wrapped"],
@@ -127,7 +128,7 @@ fn test_assertion_count_3() -> anyhow::Result<()> {
 }
 
 #[test]
-fn test_assertion_at() -> anyhow::Result<()> {
+fn test_assertion_at() -> Result<()> {
     let e = run_cli(&["assertion", "at", "0", ALICE_KNOWS_BOB_EXAMPLE])?;
     assert_eq!(e, "ur:envelope/oytpsoihjejtjlktjktpsoiafwjlidgdvttdjn");
     run_cli_expect(&["format", &e], r#""knows": "Bob""#)?;
@@ -135,7 +136,7 @@ fn test_assertion_at() -> anyhow::Result<()> {
 }
 
 #[test]
-fn test_assertion_at_2() -> anyhow::Result<()> {
+fn test_assertion_at_2() -> Result<()> {
     run_cli_piped_expect_stdin(
         &[
             &["extract", "wrapped"],
@@ -148,7 +149,7 @@ fn test_assertion_at_2() -> anyhow::Result<()> {
 }
 
 #[test]
-fn test_assertion_at_3() -> anyhow::Result<()> {
+fn test_assertion_at_3() -> Result<()> {
     run_cli_piped_expect_stdin(
         &[
             &["extract", "wrapped"],
@@ -162,7 +163,7 @@ fn test_assertion_at_3() -> anyhow::Result<()> {
 }
 
 #[test]
-fn test_assertion_all() -> anyhow::Result<()> {
+fn test_assertion_all() -> Result<()> {
     run_cli_raw_piped_expect_stdin(
         &[
             &["extract", "wrapped"],
@@ -188,7 +189,7 @@ fn test_assertion_all() -> anyhow::Result<()> {
 }
 
 #[test]
-fn test_assertion_predicate_find_1() -> anyhow::Result<()> {
+fn test_assertion_predicate_find_1() -> Result<()> {
     run_cli_piped_expect_stdin(
         &[
             &["extract", "wrapped"],
@@ -201,7 +202,7 @@ fn test_assertion_predicate_find_1() -> anyhow::Result<()> {
 }
 
 #[test]
-fn test_assertion_predicate_find_2() -> anyhow::Result<()> {
+fn test_assertion_predicate_find_2() -> Result<()> {
     run_cli_piped_expect_stdin(
         &[
             &["extract", "wrapped"],
@@ -214,7 +215,7 @@ fn test_assertion_predicate_find_2() -> anyhow::Result<()> {
 }
 
 #[test]
-fn test_assertion_object_find_1() -> anyhow::Result<()> {
+fn test_assertion_object_find_1() -> Result<()> {
     run_cli_piped_expect_stdin(
         &[
             &["extract", "wrapped"],
@@ -227,7 +228,7 @@ fn test_assertion_object_find_1() -> anyhow::Result<()> {
 }
 
 #[test]
-fn test_assertion_create() -> anyhow::Result<()> {
+fn test_assertion_create() -> Result<()> {
     let assertion = run_cli(&[
         "assertion",
         "create",
@@ -252,7 +253,7 @@ fn test_assertion_create() -> anyhow::Result<()> {
 }
 
 #[test]
-fn test_assertion_remove_envelope() -> anyhow::Result<()> {
+fn test_assertion_remove_envelope() -> Result<()> {
     let assertion = run_cli(&[
         "assertion",
         "at",
@@ -278,7 +279,7 @@ fn test_assertion_remove_envelope() -> anyhow::Result<()> {
 }
 
 #[test]
-fn test_assertion_remove_pred_obj() -> anyhow::Result<()> {
+fn test_assertion_remove_pred_obj() -> Result<()> {
     let removed = run_cli(&[
         "assertion",
         "remove",

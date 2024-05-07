@@ -1,5 +1,6 @@
 use clap::{Args, ValueEnum};
 use dcbor::CBORTaggedEncodable;
+use anyhow::Result;
 
 use crate::envelope_args::{EnvelopeArgs, EnvelopeArgsLike};
 use bc_envelope::prelude::*;
@@ -41,7 +42,7 @@ enum FormatType {
 }
 
 impl crate::exec::Exec for CommandArgs {
-    fn exec(&self) -> anyhow::Result<String> {
+    fn exec(&self) -> Result<String> {
         let e = self.read_envelope()?;
         let output = match self.format_type {
             FormatType::Envelope => e.format(),

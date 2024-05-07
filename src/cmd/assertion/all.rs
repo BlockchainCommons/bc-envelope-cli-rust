@@ -1,6 +1,7 @@
 use bc_envelope::prelude::*;
 use crate::envelope_args::{EnvelopeArgs, EnvelopeArgsLike};
 use clap::Args;
+use anyhow::Result;
 
 /// Retrieve all the envelope's assertions.
 #[derive(Debug, Args)]
@@ -17,7 +18,7 @@ impl EnvelopeArgsLike for CommandArgs {
 }
 
 impl crate::exec::Exec for CommandArgs {
-    fn exec(&self) -> anyhow::Result<String> {
+    fn exec(&self) -> Result<String> {
         let envelope = self.read_envelope()?;
         let assertions = envelope.assertions();
         let output = assertions.iter().map(|a| a.ur_string()).collect::<Vec<String>>().join("\n");

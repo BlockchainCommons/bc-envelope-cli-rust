@@ -1,4 +1,5 @@
 use indoc::indoc;
+use anyhow::Result;
 
 mod common;
 use common::*;
@@ -10,31 +11,31 @@ static VENDOR: &str = "com.example";
 static CONFORMS_TO_V1: &str = "https://example.com/v1";
 static CONFORMS_TO_V2: &str = "https://example.com/v2";
 
-fn subject_envelope() -> anyhow::Result<String> {
+fn subject_envelope() -> Result<String> {
     run_cli(&["subject", "type", "string", SUBJECT])
 }
 
-fn payload_v1_envelope() -> anyhow::Result<String> {
+fn payload_v1_envelope() -> Result<String> {
     run_cli(&["subject", "type", "string", PAYLOAD_V1])
 }
 
-fn payload_v2_envelope() -> anyhow::Result<String> {
+fn payload_v2_envelope() -> Result<String> {
     run_cli(&["subject", "type", "string", PAYLOAD_V2])
 }
 
-fn attachment_v1() -> anyhow::Result<String> {
+fn attachment_v1() -> Result<String> {
     run_cli(&["attachment", "create", VENDOR, "--conforms-to", CONFORMS_TO_V1, &payload_v1_envelope()?])
 }
 
-fn attachment_v2() -> anyhow::Result<String> {
+fn attachment_v2() -> Result<String> {
     run_cli(&["attachment", "create", VENDOR, "--conforms-to", CONFORMS_TO_V2, &payload_v2_envelope()?])
 }
 
-fn attachment_v1_no_conformance() -> anyhow::Result<String> {
+fn attachment_v1_no_conformance() -> Result<String> {
     run_cli(&["attachment", "create", VENDOR, &payload_v1_envelope()?])
 }
 
-fn envelope_v1_v2() -> anyhow::Result<String> {
+fn envelope_v1_v2() -> Result<String> {
     run_cli_piped_stdin(&[
         &["attachment", "add", "envelope", &attachment_v1()?],
         &["attachment", "add", "envelope", &attachment_v2()?],
@@ -44,7 +45,7 @@ fn envelope_v1_v2() -> anyhow::Result<String> {
 }
 
 #[test]
-fn test_attachment_create() -> anyhow::Result<()> {
+fn test_attachment_create() -> Result<()> {
     let attachment = attachment_v1()?;
     run_cli_expect(
         &["format", &attachment],
@@ -61,7 +62,7 @@ fn test_attachment_create() -> anyhow::Result<()> {
 }
 
 #[test]
-fn test_attachment_create_no_conformance() -> anyhow::Result<()> {
+fn test_attachment_create_no_conformance() -> Result<()> {
     let attachment = attachment_v1_no_conformance()?;
     run_cli_expect(
         &["format", &attachment],
@@ -77,7 +78,7 @@ fn test_attachment_create_no_conformance() -> anyhow::Result<()> {
 }
 
 #[test]
-fn test_attachment_queries() -> anyhow::Result<()> {
+fn test_attachment_queries() -> Result<()> {
     let attachment = attachment_v1()?;
     let payload_env = run_cli(&["attachment", "payload", &attachment])?;
     assert_eq!(payload_env, payload_v1_envelope()?);
@@ -93,7 +94,7 @@ fn test_attachment_queries() -> anyhow::Result<()> {
 }
 
 #[test]
-fn test_attachment_add_components() -> anyhow::Result<()> {
+fn test_attachment_add_components() -> Result<()> {
     run_cli_raw_piped_expect_stdin(
         &[
             &["attachment", "add", "components", VENDOR, "--conforms-to", CONFORMS_TO_V1, &payload_v1_envelope()?],
@@ -123,7 +124,7 @@ fn test_attachment_add_components() -> anyhow::Result<()> {
 }
 
 #[test]
-fn test_attachment_add_envelope() -> anyhow::Result<()> {
+fn test_attachment_add_envelope() -> Result<()> {
     run_cli_expect_stdin(
         &["format", &envelope_v1_v2()?],
         indoc!(r#"
@@ -149,7 +150,7 @@ fn test_attachment_add_envelope() -> anyhow::Result<()> {
 }
 
 #[test]
-fn test_attachment_count() -> anyhow::Result<()> {
+fn test_attachment_count() -> Result<()> {
     run_cli_expect(
         &["attachment", "count", &envelope_v1_v2()?],
         "2"
@@ -171,7 +172,7 @@ impl IntoLines for String {
 }
 
 #[test]
-fn test_attachment_all() -> anyhow::Result<()> {
+fn test_attachment_all() -> Result<()> {
     let envelopes = run_cli(&["attachment", "all", &envelope_v1_v2()?])?.lines();
     assert_eq!(envelopes.len(), 2);
     assert_eq!(envelopes[0], attachment_v2()?);
@@ -180,7 +181,7 @@ fn test_attachment_all() -> anyhow::Result<()> {
 }
 
 #[test]
-fn test_attachment_at() -> anyhow::Result<()> {
+fn test_attachment_at() -> Result<()> {
     run_cli_expect(
         &["attachment", "at", "0", &envelope_v1_v2()?],
         &attachment_v2()?
@@ -194,7 +195,7 @@ fn test_attachment_at() -> anyhow::Result<()> {
 }
 
 #[test]
-fn test_attachment_find() -> anyhow::Result<()> {
+fn test_attachment_find() -> Result<()> {
     assert_eq!(run_cli(&["attachment", "find", &envelope_v1_v2()?])?.lines().len(), 2);
 
     assert_eq!(run_cli(&["attachment", "find", "--vendor", VENDOR, &envelope_v1_v2()?])?.lines().len(), 2);

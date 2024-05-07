@@ -2,7 +2,7 @@ use std::collections::HashSet;
 
 use bc_components::SymmetricKey;
 use clap::{ValueEnum, Args};
-
+use anyhow::Result;
 use bc_envelope::prelude::*;
 
 use crate::utils::parse_digests;
@@ -23,11 +23,11 @@ pub trait ElideArgsLike {
     fn key(&self) -> Option<&str>;
     fn target(&self) -> &String;
 
-    fn get_target_set(&self) -> anyhow::Result<HashSet<Digest>> {
+    fn get_target_set(&self) -> Result<HashSet<Digest>> {
         parse_digests(self.target())
     }
 
-    fn get_action(&self) -> anyhow::Result<ObscureAction> {
+    fn get_action(&self) -> Result<ObscureAction> {
         let action = match self.action() {
             Action::Elide => ObscureAction::Elide,
             Action::Encrypt => {
@@ -40,7 +40,7 @@ pub trait ElideArgsLike {
         Ok(action)
     }
 
-    fn run(&self, envelope: Envelope, revealing: bool) -> anyhow::Result<Envelope> {
+    fn run(&self, envelope: Envelope, revealing: bool) -> Result<Envelope> {
         let target = self.get_target_set()?;
         let action = self.get_action()?;
         let result = envelope.elide_set_with_action(&target, revealing, &action);

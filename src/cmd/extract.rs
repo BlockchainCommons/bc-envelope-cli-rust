@@ -1,4 +1,4 @@
-use anyhow::bail;
+use anyhow::{bail, Result};
 use bc_components::{ARID, URI, UUID, Digest, with_tags, tags::ENVELOPE};
 use bc_envelope::prelude::*;
 use clap::{Args, ValueEnum};
@@ -86,7 +86,7 @@ impl EnvelopeArgsLike for CommandArgs {
 }
 
 impl crate::exec::Exec for CommandArgs {
-    fn exec(&self) -> anyhow::Result<String> {
+    fn exec(&self) -> Result<String> {
         let envelope = self.read_envelope()?;
         let string = match self.subject_type {
             SubjectType::Assertion => extract_assertion(envelope)?,
@@ -96,12 +96,12 @@ impl crate::exec::Exec for CommandArgs {
             SubjectType::Arid => envelope.extract_subject::<ARID>()?.ur_string(),
             SubjectType::AridHex => envelope.extract_subject::<ARID>()?.hex(),
             SubjectType::Bool => envelope.extract_subject::<bool>()?.to_string(),
-            SubjectType::Cbor => extract_cbor(envelope)?,
-            SubjectType::Data => hex::encode(envelope.extract_subject::<CBOR>()?.expect_byte_string()?),
+            SubjectType::Cbor => extract_cbor_string(envelope)?,
+            SubjectType::Data => hex::encode(envelope.subject().try_leaf()?.to_cbor().try_into_byte_string()?),
             SubjectType::Date => envelope.extract_subject::<dcbor::Date>()?.to_string(),
             SubjectType::Digest => envelope.extract_subject::<Digest>()?.ur_string(),
             SubjectType::Envelope => envelope.subject().ur_string(),
-            SubjectType::Known => extract_known(envelope)?,
+            SubjectType::Known => extract_known_value_string(envelope)?,
             SubjectType::Number => envelope.extract_subject::<f64>()?.to_string(),
             SubjectType::String => envelope.extract_subject::<String>()?,
             SubjectType::Ur => self.extract_ur(envelope)?,
@@ -113,35 +113,35 @@ impl crate::exec::Exec for CommandArgs {
     }
 }
 
-fn extract_assertion(envelope: Envelope) -> anyhow::Result<String> {
-    if let Some(assertion) = envelope.assertion() {
-        let pred_obj = [assertion.clone().predicate().unwrap(), assertion.object().unwrap()];
+fn extract_assertion(envelope: Envelope) -> Result<String> {
+    if let Some(assertion) = envelope.as_assertion() {
+        let pred_obj = [assertion.clone().as_predicate().unwrap(), assertion.as_object().unwrap()];
         Ok(pred_obj.into_iter().map(|e| e.ur_string()).collect::<Vec<String>>().join("\n"))
     } else {
         bail!("Envelope is not an assertion.");
     }
 }
 
-fn extract_object(envelope: Envelope) -> anyhow::Result<String> {
-    if let Some(assertion) = envelope.assertion() {
-        Ok(assertion.object().unwrap().ur_string())
+fn extract_object(envelope: Envelope) -> Result<String> {
+    if let Some(assertion) = envelope.as_assertion() {
+        Ok(assertion.as_object().unwrap().ur_string())
     } else {
         bail!("Envelope is not an assertion.");
     }
 }
 
-fn extract_predicate(envelope: Envelope) -> anyhow::Result<String> {
-    if let Some(assertion) = envelope.assertion() {
-        Ok(assertion.predicate().unwrap().ur_string())
+fn extract_predicate(envelope: Envelope) -> Result<String> {
+    if let Some(assertion) = envelope.as_assertion() {
+        Ok(assertion.as_predicate().unwrap().ur_string())
     } else {
         bail!("Envelope is not an assertion.");
     }
 }
 
 impl CommandArgs {
-    fn extract_ur(&self, envelope: Envelope) -> anyhow::Result<String> {
-        Ok(if let Some(cbor) = envelope.clone().subject().leaf() {
-            if let CBORCase::Tagged(tag, untagged_cbor) = cbor.case() {
+    fn extract_ur(&self, envelope: Envelope) -> Result<String> {
+        Ok(if let Some(cbor) = envelope.clone().subject().as_leaf() {
+            if let CBORCase::Tagged(tag, untagged_cbor) = cbor.into_case() {
                 let known_tag = with_tags!(|tags: &dyn dcbor::TagsStoreTrait| {
                     tags.tag_for_value(tag.value())
                 });
@@ -177,19 +177,19 @@ impl CommandArgs {
     }
 }
 
-fn extract_known(envelope: Envelope) -> anyhow::Result<String> {
+fn extract_known_value_string(envelope: Envelope) -> Result<String> {
     let _k = envelope.extract_subject::<KnownValue>()?;
     Ok(envelope.subject().format())
 }
 
-fn extract_cbor(envelope: Envelope) -> anyhow::Result<String> {
+fn extract_cbor_string(envelope: Envelope) -> Result<String> {
     let subject = &envelope.subject();
-    Ok(if let Some(cbor) = subject.leaf() {
+    Ok(if let Some(cbor) = subject.as_leaf() {
         cbor.hex()
     } else if subject.is_wrapped() {
-        envelope.unwrap_envelope()?.cbor().hex()
-    } else if let Some(known_value) = subject.known_value() {
-        known_value.cbor().hex()
+        envelope.unwrap_envelope()?.to_cbor().hex()
+    } else if let Some(known_value) = subject.as_known_value() {
+        known_value.to_cbor().hex()
     } else {
         bail!("No CBOR data found in envelope subject");
     })

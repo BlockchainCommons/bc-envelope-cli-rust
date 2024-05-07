@@ -1,6 +1,7 @@
 use crate::data_types::{DataType, parse_data_type_to_envelope};
 use bc_envelope::prelude::*;
 use clap::Args;
+use anyhow::Result;
 
 pub trait PredObjArgsLike {
     fn pred_type(&self) -> DataType;
@@ -10,7 +11,7 @@ pub trait PredObjArgsLike {
     fn pred_tag(&self) -> Option<u64>;
     fn obj_tag(&self) -> Option<u64>;
 
-    fn assertion_envelope(&self) -> anyhow::Result<Envelope> {
+    fn assertion_envelope(&self) -> Result<Envelope> {
         let predicate = parse_data_type_to_envelope(self.pred_type(), Some(self.pred_value()), self.pred_tag())?;
         let object = parse_data_type_to_envelope(self.obj_type(), Some(self.obj_value()), self.obj_tag())?;
         Ok(Envelope::new_assertion(predicate, object))

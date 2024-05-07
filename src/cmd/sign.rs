@@ -1,4 +1,4 @@
-use anyhow::bail;
+use anyhow::{bail, Result};
 use clap::Args;
 
 use crate::envelope_args::{EnvelopeArgs, EnvelopeArgsLike};
@@ -30,7 +30,7 @@ impl EnvelopeArgsLike for CommandArgs {
 }
 
 impl crate::exec::Exec for CommandArgs {
-    fn exec(&self) -> anyhow::Result<String> {
+    fn exec(&self) -> Result<String> {
         let envelope = self.read_envelope()?;
         if self.prvkeys.is_empty() {
             bail!("at least one prvkey must be provided");
@@ -44,9 +44,9 @@ impl crate::exec::Exec for CommandArgs {
             if prvkeys.len() != 1 {
                 bail!("can only add a note on a single signature");
             }
-            Ok(envelope.sign_with_opt(&prvkeys[0], Some(note), []).ur_string())
+            Ok(envelope.add_signature_with_opt(&prvkeys[0], Some(note), []).ur_string())
         } else {
-            Ok(envelope.sign_with_keys(&prvkeys).ur_string())
+            Ok(envelope.add_signatures_with_keys(&prvkeys).ur_string())
         }
     }
 }

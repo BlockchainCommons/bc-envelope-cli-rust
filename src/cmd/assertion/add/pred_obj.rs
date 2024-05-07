@@ -1,5 +1,6 @@
 use bc_envelope::prelude::*;
 use clap::Args;
+use anyhow::Result;
 
 use crate::{pred_obj_args::{PredObjArgs, PredObjArgsLike}, data_types::DataType, envelope_args::{EnvelopeArgs, EnvelopeArgsLike}};
 
@@ -45,7 +46,7 @@ impl EnvelopeArgsLike for CommandArgs {
 }
 
 impl crate::exec::Exec for CommandArgs {
-    fn exec(&self) -> anyhow::Result<String> {
+    fn exec(&self) -> Result<String> {
         let envelope = self.read_envelope()?;
         let assertion = self.assertion_envelope()?;
         Ok(envelope.add_assertion_envelope_salted(assertion, self.salted)?.ur_string())

@@ -1,9 +1,9 @@
 use clap::Args;
+use bc_envelope::prelude::*;
+use anyhow::Result;
 
 use crate::envelope_args::{EnvelopeArgs, EnvelopeArgsLike};
-
 use super::elide_args::{ElideArgs, ElideArgsLike, Action};
-use bc_envelope::prelude::*;
 
 /// Elide all objects not in the target.
 #[derive(Debug, Args)]
@@ -37,7 +37,7 @@ impl EnvelopeArgsLike for CommandArgs {
 }
 
 impl crate::exec::Exec for CommandArgs {
-    fn exec(&self) -> anyhow::Result<String> {
+    fn exec(&self) -> Result<String> {
         let envelope = self.read_envelope()?;
         let result_envelope = self.run(envelope, true)?;
         Ok(result_envelope.ur_string())

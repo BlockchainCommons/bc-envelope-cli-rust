@@ -1,6 +1,7 @@
 use bc_components::ARID;
 use clap::Args;
 use bc_envelope::prelude::*;
+use anyhow::Result;
 
 /// Generate an Apparently Random Identifer (ARID).
 #[derive(Debug, Args)]
@@ -12,7 +13,7 @@ pub struct CommandArgs {
 }
 
 impl crate::exec::Exec for CommandArgs {
-    fn exec(&self) -> anyhow::Result<String> {
+    fn exec(&self) -> Result<String> {
         let arid = ARID::new();
         if self.hex {
             Ok(hex::encode(arid.data()))

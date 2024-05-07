@@ -2,6 +2,7 @@ use clap::Args;
 
 use crate::envelope_args::{EnvelopeArgs, EnvelopeArgsLike};
 use bc_envelope::prelude::*;
+use anyhow::Result;
 
 /// Uncompress the envelope or its subject.
 #[derive(Debug, Args)]
@@ -22,7 +23,7 @@ impl EnvelopeArgsLike for CommandArgs {
 }
 
 impl crate::exec::Exec for CommandArgs {
-    fn exec(&self) -> anyhow::Result<String> {
+    fn exec(&self) -> Result<String> {
         let envelope = self.read_envelope()?;
         Ok(if self.subject {
             envelope.uncompress_subject()

@@ -1,4 +1,5 @@
 use indoc::indoc;
+use anyhow::Result;
 
 use bc_envelope::prelude::*;
 
@@ -6,7 +7,7 @@ mod common;
 use common::*;
 
 #[test]
-fn test_encrypt() -> anyhow::Result<()> {
+fn test_encrypt() -> Result<()> {
     let encrypted = run_cli(&[
         "encrypt",
         "--key",
@@ -32,14 +33,14 @@ fn test_encrypt() -> anyhow::Result<()> {
 }
 
 #[test]
-fn test_generate_private_keys_1() -> anyhow::Result<()> {
+fn test_generate_private_key_1() -> Result<()> {
     let prvkeys = run_cli(&["generate", "prvkeys"])?;
-    assert_eq!(UR::from_ur_string(prvkeys)?.ur_type(), "crypto-prvkeys");
+    assert_eq!(UR::from_ur_string(prvkeys)?.ur_type_str(), "crypto-prvkeys");
     Ok(())
 }
 
 #[test]
-fn test_generate_private_keys_2() -> anyhow::Result<()> {
+fn test_generate_private_key_2() -> Result<()> {
     let seed = "ur:seed/oyadhdcxhsinuesrennenlhfaopycnrfrkdmfnsrvltowmtbmyfwdafxvwmthersktcpetdweocfztrd";
     let prvkeys1 = run_cli(&["generate", "prvkeys", "--seed", seed])?;
     assert_eq!(

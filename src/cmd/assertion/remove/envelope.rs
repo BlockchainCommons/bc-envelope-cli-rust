@@ -2,6 +2,7 @@ use clap::Args;
 
 use crate::envelope_args::{EnvelopeArgs, EnvelopeArgsLike};
 use bc_envelope::prelude::*;
+use anyhow::Result;
 
 /// Remove an assertion from the given envelope. The assertion must be a single envelope containing the entire assertion.
 #[derive(Debug, Args)]
@@ -23,7 +24,7 @@ impl EnvelopeArgsLike for CommandArgs {
 }
 
 impl crate::exec::Exec for CommandArgs {
-    fn exec(&self) -> anyhow::Result<String> {
+    fn exec(&self) -> Result<String> {
         let envelope = self.read_envelope()?;
         let assertion = Envelope::from_ur_string(&self.assertion)?;
         Ok(envelope.remove_assertion(assertion).ur_string())

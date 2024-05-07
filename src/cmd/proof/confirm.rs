@@ -1,3 +1,4 @@
+use anyhow::{bail, Result};
 use bc_envelope::prelude::*;
 use clap::Args;
 
@@ -32,12 +33,12 @@ impl EnvelopeArgsLike for CommandArgs {
 }
 
 impl crate::exec::Exec for CommandArgs {
-    fn exec(&self) -> anyhow::Result<String> {
+    fn exec(&self) -> Result<String> {
         let envelope = self.read_envelope()?;
         let proof = Envelope::from_ur_string(&self.proof)?;
         let digests = parse_digests(&self.target)?;
         if !envelope.clone().confirm_contains_set(&digests, &proof) {
-            anyhow::bail!("Proof does not confirm target");
+            bail!("Proof does not confirm target");
         }
         Ok(if self.silent { "".to_string() } else { envelope.ur_string() })
     }

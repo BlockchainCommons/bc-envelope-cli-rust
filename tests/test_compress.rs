@@ -1,10 +1,11 @@
 use indoc::indoc;
+use anyhow::Result;
 
 mod common;
 use common::*;
 
 #[test]
-fn test_compress_1() -> anyhow::Result<()> {
+fn test_compress_1() -> Result<()> {
     let compressed = run_cli(&["compress", "--subject", ALICE_KNOWS_BOB_EXAMPLE])?;
 
     run_cli_expect(
@@ -21,7 +22,7 @@ fn test_compress_1() -> anyhow::Result<()> {
 }
 
 #[test]
-fn test_compress_2() -> anyhow::Result<()> {
+fn test_compress_2() -> Result<()> {
     let compressed = run_cli(&["compress", CREDENTIAL_EXAMPLE])?;
 
     println!("{} {}", CREDENTIAL_EXAMPLE.len(), compressed.len());

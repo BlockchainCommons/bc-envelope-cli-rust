@@ -1,12 +1,13 @@
 use bc_envelope::prelude::*;
 use clap::Args;
+use anyhow::Result;
 
 use crate::utils::read_envelope;
 
 pub trait EnvelopeArgsLike {
     fn envelope(&self) -> Option<&str>;
 
-    fn read_envelope(&self) -> anyhow::Result<Envelope> {
+    fn read_envelope(&self) -> Result<Envelope> {
         read_envelope(self.envelope())
     }
 }

@@ -1,3 +1,4 @@
+use anyhow::{bail, Result};
 use bc_envelope::prelude::*;
 use clap::Args;
 
@@ -15,7 +16,7 @@ pub struct CommandArgs {
 }
 
 impl crate::exec::Exec for CommandArgs {
-    fn exec(&self) -> anyhow::Result<String> {
+    fn exec(&self) -> Result<String> {
         let seed;
         if let Some(hex) = &self.hex {
             let bytes = hex::decode(hex)?;
@@ -23,10 +24,10 @@ impl crate::exec::Exec for CommandArgs {
         } else {
             let count = self.count.unwrap();
             if count < bc_components::Seed::MIN_SEED_LENGTH {
-                anyhow::bail!("Seed length must be at least 16 bytes");
+                bail!("Seed length must be at least 16 bytes");
             }
             if count > 256 {
-                anyhow::bail!("Seed length must be at most 256 bytes");
+                bail!("Seed length must be at most 256 bytes");
             }
             seed = bc_components::Seed::new_with_len(count)?;
         }

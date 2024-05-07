@@ -1,10 +1,11 @@
 use indoc::indoc;
+use anyhow::Result;
 
 mod common;
 use common::*;
 
 #[test]
-fn test_elide_1() -> anyhow::Result<()> {
+fn test_elide_1() -> Result<()> {
     let mut target = vec![];
     // Top level
     target.push(run_cli(&["digest", ALICE_KNOWS_BOB_EXAMPLE])?);
@@ -34,10 +35,8 @@ fn test_elide_1() -> anyhow::Result<()> {
 }
 
 #[test]
-fn test_elide_2() -> anyhow::Result<()> {
-    let target = vec![
-        run_cli_piped(&[&["subject", "type", "string", "knows"], &["digest"]])?
-    ];
+fn test_elide_2() -> Result<()> {
+    let target = [run_cli_piped(&[&["subject", "type", "string", "knows"], &["digest"]])?];
     let digests = target.join(" ");
     let elided = run_cli(&["elide", "removing", &digests, ALICE_KNOWS_BOB_EXAMPLE])?;
     assert_eq!(

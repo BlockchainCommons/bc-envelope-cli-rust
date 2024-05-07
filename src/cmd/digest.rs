@@ -4,6 +4,7 @@ use clap::{Args, ValueEnum};
 
 use crate::envelope_args::{EnvelopeArgs, EnvelopeArgsLike};
 use bc_envelope::prelude::*;
+use anyhow::Result;
 
 #[derive(ValueEnum, Copy, Clone, Debug, PartialEq, Eq)]
 pub enum Depth {
@@ -36,7 +37,7 @@ impl EnvelopeArgsLike for CommandArgs {
 }
 
 impl crate::exec::Exec for CommandArgs {
-    fn exec(&self) -> anyhow::Result<String> {
+    fn exec(&self) -> Result<String> {
         let envelope = self.read_envelope()?;
         let digests: HashSet<Digest> = match self.depth {
             Depth::Top => vec![envelope.digest().into_owned()].into_iter().collect::<HashSet<_>>(),

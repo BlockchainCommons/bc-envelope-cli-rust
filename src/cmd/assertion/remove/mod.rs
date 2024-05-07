@@ -2,6 +2,7 @@ pub mod envelope;
 pub mod pred_obj;
 
 use clap::{Subcommand, Args};
+use anyhow::Result;
 
 /// Remove an assertion from the given envelope.
 #[derive(Debug, Args)]
@@ -18,7 +19,7 @@ enum SubCommands {
 }
 
 impl crate::exec::Exec for CommandArgs {
-    fn exec(&self) -> anyhow::Result<String> {
+    fn exec(&self) -> Result<String> {
         match &self.command {
             SubCommands::Envelope(args) => args.exec(),
             SubCommands::PredObj(args) => args.exec(),

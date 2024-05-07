@@ -2,6 +2,7 @@ use std::io::Read;
 
 use clap::Args;
 use bc_envelope::prelude::*;
+use anyhow::Result;
 
 /// Generate a digest from the input data.
 ///
@@ -16,7 +17,7 @@ pub struct CommandArgs {
 }
 
 impl crate::exec::Exec for CommandArgs {
-    fn exec(&self) -> anyhow::Result<String> {
+    fn exec(&self) -> Result<String> {
         let mut data = Vec::new();
         if let Some(ref d) = self.data {
             data.extend_from_slice(d.as_bytes());

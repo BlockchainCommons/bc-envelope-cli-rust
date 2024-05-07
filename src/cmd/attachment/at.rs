@@ -1,5 +1,6 @@
 use clap::Args;
 use bc_envelope::prelude::*;
+use anyhow::{anyhow, Result};
 
 use crate::utils::read_envelope;
 
@@ -12,10 +13,10 @@ pub struct CommandArgs {
 }
 
 impl crate::exec::Exec for CommandArgs {
-    fn exec(&self) -> anyhow::Result<String> {
+    fn exec(&self) -> Result<String> {
         let envelope = read_envelope(self.envelope.as_deref())?;
         let attachments = &envelope.attachments()?;
-        let attachment = attachments.get(self.index).ok_or_else(|| anyhow::anyhow!("No attachment at index {}", self.index))?;
+        let attachment = attachments.get(self.index).ok_or_else(|| anyhow!("No attachment at index {}", self.index))?;
         Ok(attachment.ur_string())
     }
 }

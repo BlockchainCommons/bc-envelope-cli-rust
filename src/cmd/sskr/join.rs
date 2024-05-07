@@ -1,3 +1,4 @@
+use anyhow::{bail, Result};
 use clap::Args;
 use bc_envelope::prelude::*;
 
@@ -10,7 +11,7 @@ pub struct CommandArgs {
 }
 
 impl crate::exec::Exec for CommandArgs {
-    fn exec(&self) -> anyhow::Result<String> {
+    fn exec(&self) -> Result<String> {
         // If envelopes is empty, read them from stdin, one per line.
         let mut shares = self.shares.clone();
         if shares.is_empty() {
@@ -28,7 +29,7 @@ impl crate::exec::Exec for CommandArgs {
 
         // Make sure we have at least one.
         if shares.is_empty() {
-            anyhow::bail!("No share envelopes provided");
+            bail!("No share envelopes provided");
         }
 
         let shares_refs: Vec<&Envelope> = shares.iter().collect();
