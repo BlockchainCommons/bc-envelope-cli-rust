@@ -517,7 +517,7 @@ envelope decrypt $ENVELOPE_TO --recipient $ALICE_PRVKEYS
 
 ```
 👈
-Error: no recipient matches the given key
+Error: unknown recipient
 ```
 
 ## Example 8: Signed Multi-Recipient Encryption

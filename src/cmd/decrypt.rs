@@ -35,7 +35,7 @@ impl crate::exec::Exec for CommandArgs {
             Ok(envelope.decrypt_subject(&key)?.ur_string())
         } else if let Some(recipient_ur) = &self.recipient {
             let recipient = PrivateKeyBase::from_ur_string(recipient_ur)?;
-            Ok(envelope.decrypt_to_recipient(&recipient)?.ur_string())
+            Ok(envelope.decrypt_subject_to_recipient(&recipient)?.ur_string())
         } else {
             bail!("missing key or recipient");
         }
