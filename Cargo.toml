@@ -1,6 +1,6 @@
 [package]
 name = "bc-envelope-cli"
-version = "0.8.0"
+version = "0.8.1"
 edition = "2021"
 description = "Gordian Envelope Command Line Tool."
 authors = ["Blockchain Commons"]
@@ -18,7 +18,7 @@ path = "src/main.rs"
 [dependencies]
 dcbor = "^0.14.0"
 bc-ur = "^0.4.0"
-bc-envelope = "^0.16.0"
+bc-envelope = "^0.17.0"
 bc-components = "^0.11.0"
 
 clap = { version = "^4.4.3", features = ["derive", "unstable-styles"] }
