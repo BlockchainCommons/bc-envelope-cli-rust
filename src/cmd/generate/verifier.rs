@@ -4,10 +4,10 @@ use clap::Args;
 
 use super::SignerType;
 
-/// Generate signing public key from a signing private key or private key base.
+/// Generate signing public key from a signing private key, public key base, or private key base.
 ///
 /// Note that a private key base will always produce a Schnorr signing public key.
-/// A signing private key will produce the corresponding public key.
+/// A signing private key or public key base will produce the corresponding signing public key.
 #[derive(Debug, Args)]
 #[group(skip)]
 pub struct CommandArgs {
@@ -37,6 +37,8 @@ impl crate::exec::Exec for CommandArgs {
         if let Ok(private_key_base) = bc_components::PrivateKeyBase::from_ur_string(&ur_string) {
             let public_key_base = SignerType::Schnorr.to_signing_private_key(&private_key_base, "")?;
             Ok(public_key_base.ur_string())
+        } else if let Ok(public_key_base) = bc_components::PublicKeyBase::from_ur_string(&ur_string) {
+            Ok(public_key_base.signing_public_key().ur_string())
         } else if let Ok(signing_private_key) = bc_components::SigningPrivateKey::from_ur_string(&ur_string) {
             let signing_public_key = signing_private_key.public_key();
             Ok(signing_public_key.ur_string())
