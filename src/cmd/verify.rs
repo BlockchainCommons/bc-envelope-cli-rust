@@ -2,7 +2,7 @@ use anyhow::{bail, Result};
 use clap::Args;
 
 use crate::envelope_args::{EnvelopeArgs, EnvelopeArgsLike};
-use bc_components::PublicKeyBase;
+use bc_components::{PublicKeyBase, Verifier};
 use bc_envelope::prelude::*;
 
 /// Verify a signature on the envelope using the provided public key base.
@@ -47,7 +47,8 @@ impl crate::exec::Exec for CommandArgs {
             .iter()
             .map(PublicKeyBase::from_ur_string)
             .collect::<Result<Vec<_>, _>>()?;
-        envelope.clone().verify_signatures_from_threshold(&pubkeys, Some(self.threshold))?;
+        let verifiers: Vec<_> = pubkeys.iter().map(|k| k as &dyn Verifier).collect();
+        envelope.clone().verify_signatures_from_threshold(&verifiers, Some(self.threshold))?;
         Ok(if self.silent { "".to_string() } else { envelope.ur_string() })
     }
 }
