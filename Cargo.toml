@@ -26,6 +26,7 @@ anyhow = "^1.0.0"
 anstyle = "^1.0.1"
 hex = "^0.4.3"
 regex = "^1.9.5"
+ssh-key = { version = "=0.6.6", default-features = false, features = ["dsa", "ecdsa", "rand_core", "std", "crypto"] }
 
 [dev-dependencies]
 assert_cmd = "^2.0.12"

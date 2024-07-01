@@ -5,6 +5,10 @@ pub mod nonce;
 pub mod prv_keys;
 pub mod pub_keys;
 pub mod seed;
+pub mod signer;
+pub mod verifier;
+pub mod signer_type;
+pub use signer_type::SignerType;
 
 use clap::{Subcommand, Args};
 use anyhow::Result;
@@ -27,6 +31,8 @@ enum GenerateCommands {
     PrvKeys(prv_keys::CommandArgs),
     #[command(id = "pubkeys")]
     PubKeys(pub_keys::CommandArgs),
+    Signer(signer::CommandArgs),
+    Verifier(verifier::CommandArgs),
     Seed(seed::CommandArgs),
 }
 
@@ -39,6 +45,8 @@ impl crate::exec::Exec for CommandArgs {
             GenerateCommands::Nonce(args) => args.exec(),
             GenerateCommands::PrvKeys(args) => args.exec(),
             GenerateCommands::PubKeys(args) => args.exec(),
+            GenerateCommands::Signer(args) => args.exec(),
+            GenerateCommands::Verifier(args) => args.exec(),
             GenerateCommands::Seed(args) => args.exec(),
         }
     }
