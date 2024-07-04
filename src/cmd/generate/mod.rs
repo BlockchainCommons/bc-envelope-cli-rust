@@ -9,6 +9,8 @@ pub mod signer;
 pub mod verifier;
 pub mod signer_type;
 pub use signer_type::SignerType;
+pub mod hash_type;
+pub use hash_type::HashType;
 
 use clap::{Subcommand, Args};
 use anyhow::Result;

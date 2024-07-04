@@ -2,10 +2,10 @@ use anyhow::{bail, Result};
 use clap::Args;
 
 use crate::envelope_args::{EnvelopeArgs, EnvelopeArgsLike};
-use bc_components::{PublicKeyBase, Verifier};
+use bc_components::{PublicKeyBase, SigningPublicKey, Verifier};
 use bc_envelope::prelude::*;
 
-/// Verify a signature on the envelope using the provided public key base.
+/// Verify a signature on the envelope using the provided verifiers.
 ///
 /// On success, print the original envelope so it can be piped to the next
 /// operation. On failure, exit with an error condition.
@@ -20,11 +20,12 @@ pub struct CommandArgs {
     #[arg(long, short, default_value = "1")]
     threshold: usize,
 
-    /// The public keys (ur:pubkeys) to verify the envelope's signatures with.
+    /// The verifier(s). May be a public key base (ur:pubkeys) or a signing
+    /// public key (ur:signing-public-key).
     ///
-    /// Can be provided multiple times to verify with multiple public keys.
+    /// Multiple verifiers may be provided.
     #[arg(long, short)]
-    pubkeys: Vec<String>,
+    verifier: Vec<String>,
 
     #[command(flatten)]
     envelope_args: EnvelopeArgs,
@@ -39,15 +40,27 @@ impl EnvelopeArgsLike for CommandArgs {
 impl crate::exec::Exec for CommandArgs {
     fn exec(&self) -> Result<String> {
         let envelope = self.read_envelope()?;
-        if self.pubkeys.is_empty() {
+        if self.verifier.is_empty() {
             bail!("at least one pubkey must be provided");
         }
-        let pubkeys: Vec<PublicKeyBase> = self
-            .pubkeys
-            .iter()
-            .map(PublicKeyBase::from_ur_string)
-            .collect::<Result<Vec<_>, _>>()?;
-        let verifiers: Vec<_> = pubkeys.iter().map(|k| k as &dyn Verifier).collect();
+        let mut public_key_bases: Vec<PublicKeyBase> = Vec::new();
+        let mut signing_public_keys: Vec<SigningPublicKey> = Vec::new();
+        for v in &self.verifier {
+            if let Ok(key) = PublicKeyBase::from_ur_string(v) {
+                public_key_bases.push(key);
+            } else if let Ok(key) = SigningPublicKey::from_ur_string(v) {
+                signing_public_keys.push(key);
+            } else {
+                bail!("invalid verifier: {}", v);
+            }
+        }
+        let mut verifiers: Vec<&dyn Verifier> = Vec::new();
+        for key in public_key_bases.iter() {
+            verifiers.push(key as &dyn Verifier);
+        }
+        for key in signing_public_keys.iter() {
+            verifiers.push(key as &dyn Verifier);
+        }
         envelope.clone().verify_signatures_from_threshold(&verifiers, Some(self.threshold))?;
         Ok(if self.silent { "".to_string() } else { envelope.ur_string() })
     }

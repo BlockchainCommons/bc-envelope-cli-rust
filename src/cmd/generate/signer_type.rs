@@ -29,8 +29,11 @@ pub enum SignerType {
     /// SSH-ECDSA NIST P-384
     SshEcdsaP384,
 
-    /// SSH-ECDSA NIST P-521
-    SshEcdsaP521,
+    // Disabled due to a bug in the ssh-key crate.
+    // See: https://github.com/RustCrypto/SSH/issues/232
+
+    // SSH-ECDSA NIST P-521
+    // SshEcdsaP521,
 }
 
 impl SignerType {
@@ -44,7 +47,7 @@ impl SignerType {
             Self::SshDsa => private_key_base.ssh_signing_private_key(SSHAlgorithm::Dsa, ssh_comment),
             Self::SshEcdsaP256 => private_key_base.ssh_signing_private_key(SSHAlgorithm::Ecdsa { curve: EcdsaCurve::NistP256 }, ssh_comment),
             Self::SshEcdsaP384 => private_key_base.ssh_signing_private_key(SSHAlgorithm::Ecdsa { curve: EcdsaCurve::NistP384 }, ssh_comment),
-            Self::SshEcdsaP521 => private_key_base.ssh_signing_private_key(SSHAlgorithm::Ecdsa { curve: EcdsaCurve::NistP521 }, ssh_comment),
+            // Self::SshEcdsaP521 => private_key_base.ssh_signing_private_key(SSHAlgorithm::Ecdsa { curve: EcdsaCurve::NistP521 }, ssh_comment),
         }
     }
 

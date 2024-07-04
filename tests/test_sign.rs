@@ -9,7 +9,7 @@ fn test_sign() -> Result<()> {
     let prvkeys = "ur:crypto-prvkeys/hdcxhsinuesrennenlhfaopycnrfrkdmfnsrvltowmtbmyfwdafxvwmthersktcpetdwfnbndeah";
     let signed = run_cli(&[
         "sign",
-        "--prvkeys",
+        "--signer",
         prvkeys,
         ALICE_KNOWS_BOB_EXAMPLE,
     ])?;
@@ -25,13 +25,13 @@ fn test_sign() -> Result<()> {
 
     let pubkeys = run_cli(&["generate", "pubkeys", prvkeys])?;
 
-    run_cli(&["verify", &signed, "--pubkeys", &pubkeys])?;
+    run_cli(&["verify", &signed, "--verifier", &pubkeys])?;
 
-    assert!(run_cli(&["verify", ALICE_KNOWS_BOB_EXAMPLE, "--pubkeys", &pubkeys]).is_err());
+    assert!(run_cli(&["verify", ALICE_KNOWS_BOB_EXAMPLE, "--verifier", &pubkeys]).is_err());
 
     let bad_prvkeys = run_cli(&["generate", "prvkeys"])?;
     let bad_pubkeys = run_cli(&["generate", "pubkeys", &bad_prvkeys])?;
-    assert!(run_cli(&["verify", &signed, "--pubkeys", &bad_pubkeys, &signed]).is_err());
+    assert!(run_cli(&["verify", &signed, "--verifier", &bad_pubkeys, &signed]).is_err());
 
     Ok(())
 }
@@ -41,7 +41,7 @@ fn test_sign_2() -> Result<()> {
     let prvkeys = "ur:crypto-prvkeys/hdcxhsinuesrennenlhfaopycnrfrkdmfnsrvltowmtbmyfwdafxvwmthersktcpetdwfnbndeah";
     let wrapped_signed = run_cli_piped(&[
         &["subject", "type", "wrapped", ALICE_KNOWS_BOB_EXAMPLE],
-        &["sign", "--prvkeys", prvkeys]
+        &["sign", "--signer", prvkeys]
     ])?;
     run_cli_expect(
         &["format", &wrapped_signed],
@@ -57,7 +57,7 @@ fn test_sign_2() -> Result<()> {
     )?;
 
     let pubkeys = run_cli(&["generate", "pubkeys", prvkeys])?;
-    run_cli(&["verify", &wrapped_signed, "--pubkeys", &pubkeys])?;
+    run_cli(&["verify", &wrapped_signed, "--verifier", &pubkeys])?;
     Ok(())
 }
 
@@ -65,7 +65,7 @@ fn test_sign_2() -> Result<()> {
 fn test_sign_3() -> Result<()> {
     let e = run_cli_piped(&[
         &["subject", "type", "string", "Hello."],
-        &["sign", "--prvkeys", ALICE_PRVKEYS, "--prvkeys", CAROL_PRVKEYS]
+        &["sign", "--signer", ALICE_PRVKEYS, "--signer", CAROL_PRVKEYS]
     ])?;
     run_cli_expect(
         &["format", &e],
