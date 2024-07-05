@@ -19,7 +19,7 @@ pub struct CommandArgs {
     signer: Vec<String>,
 
     /// An optional note to add to the envelope.
-    #[arg(long, short)]
+    #[arg(long)]
     note: Option<String>,
 
     /// Namespace, required for SSH signatures.

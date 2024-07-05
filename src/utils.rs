@@ -1,6 +1,27 @@
-use std::collections::HashSet;
-use anyhow::{bail, Result};
+use std::{collections::HashSet, io::Read};
+use anyhow::{ bail, Result };
 use bc_envelope::prelude::*;
+
+pub fn read_password(prompt: &str, password: Option<&str>) -> Result<String> {
+    if let Some(password) = password {
+        Ok(password.to_string())
+    } else {
+        rpassword::prompt_password(prompt).map_err(Into::into)
+    }
+}
+
+pub fn read_argument(argument: Option<&str>) -> Result<String> {
+    let mut string = String::new();
+    if argument.is_none() {
+        std::io::stdin().read_to_string(&mut string)?;
+    } else {
+        string = argument.as_ref().unwrap().to_string();
+    }
+    if string.is_empty() {
+        bail!("No argument provided");
+    }
+    Ok(string.to_string())
+}
 
 pub fn read_envelope(envelope: Option<&str>) -> Result<Envelope> {
     let mut ur_string = String::new();
@@ -18,12 +39,8 @@ pub fn read_envelope(envelope: Option<&str>) -> Result<Envelope> {
 pub fn parse_digest(target: &str) -> Result<Digest> {
     let ur = UR::from_ur_string(target)?;
     let digest = match ur.ur_type_str() {
-        "digest" => {
-            Digest::from_ur(&ur)?
-        },
-        "envelope" => {
-            Envelope::from_ur(&ur)?.digest().into_owned()
-        }
+        "digest" => { Digest::from_ur(&ur)? }
+        "envelope" => { Envelope::from_ur(&ur)?.digest().into_owned() }
         _ => {
             bail!("Invalid digest type: {}", ur.ur_type_str());
         }

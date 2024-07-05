@@ -20,13 +20,15 @@ dcbor = "^0.15.0"
 bc-ur = "^0.5.0"
 bc-envelope = "^0.18.0"
 bc-components = "^0.12.0"
+bc-rand = "^0.2.0"
 
 clap = { version = "^4.4.3", features = ["derive", "unstable-styles"] }
 anyhow = "^1.0.0"
 anstyle = "^1.0.1"
 hex = "^0.4.3"
 regex = "^1.9.5"
-ssh-key = { version = "=0.6.6", default-features = false, features = ["dsa", "ecdsa", "rand_core", "std", "crypto"] }
+ssh-key = { version = "=0.6.6", default-features = false, features = ["dsa", "ecdsa", "rand_core", "std", "crypto", "encryption"] }
+rpassword = "7.3.1"
 
 [dev-dependencies]
 assert_cmd = "^2.0.12"
