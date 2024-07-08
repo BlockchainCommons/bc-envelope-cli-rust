@@ -17,20 +17,25 @@ Usage: envelope <COMMAND>
 
 Commands:
   assertion   Work with the envelope's assertions
+  attachment  Work with the envelope's attachments
   compress    Compress the envelope or its subject
   decrypt     Decrypt the envelope's subject using the provided key
   digest      Print the envelope's digest
   elide       Elide a subset of elements
   encrypt     Encrypt the envelope's subject using the provided key
+  export      Import the given object to UR form
   extract     Extract the subject of the input envelope
   format      Print the envelope in textual format
   generate    Utilities to generate and convert various objects
+  import      Import the given object to UR form
+  info        Provide type and other information about the object
+  proof       Work with inclusion proofs
   salt        Add random salt to the envelope
-  sign        Sign the envelope subject with the provided private key base
+  sign        Sign the envelope subject with the provided signer(s)
   sskr        Sharded Secret Key Reconstruction (SSKR)
   subject     Create an envelope with the given subject
   uncompress  Uncompress the envelope or its subject
-  verify      Verify a signature on the envelope using the provided public key base
+  verify      Verify a signature on the envelope using the provided verifiers
   help        Print this message or the help of the given subcommand(s)
 
 Options:
@@ -625,7 +630,7 @@ Now we can sign our envelope:
 
 ```bash
 👉
-SIGNED=`envelope sign --prvkeys $PRVKEYS $ALICE_KNOWS_BOB`
+SIGNED=`envelope sign --signer $PRVKEYS $ALICE_KNOWS_BOB`
 ```
 
 Let's see what it looks like when formatted now:
@@ -649,7 +654,7 @@ Wrapping to the rescue again!
 
 ```bash
 👉
-WRAPPED_SIGNED=`envelope subject type wrapped $ALICE_KNOWS_BOB | envelope sign --prvkeys $PRVKEYS`
+WRAPPED_SIGNED=`envelope subject type wrapped $ALICE_KNOWS_BOB | envelope sign --signer $PRVKEYS`
 envelope format $WRAPPED_SIGNED
 ```
 
@@ -668,7 +673,7 @@ Now the entire contents of the envelope are signed, and if we send it to someone
 
 ```bash
 👉
-envelope verify --pubkeys $PUBKEYS $WRAPPED_SIGNED
+envelope verify --verifier $PUBKEYS $WRAPPED_SIGNED
 ```
 
 ```
@@ -681,7 +686,7 @@ To facilitate piping commands, the `verify` command prints the input envelope if
 ```bash
 👉
 BAD_PUBKEYS=`envelope generate prvkeys | envelope generate pubkeys`
-envelope verify --pubkeys $BAD_PUBKEYS $WRAPPED_SIGNED
+envelope verify --verifier $BAD_PUBKEYS $WRAPPED_SIGNED
 ```
 
 ```
@@ -689,7 +694,7 @@ envelope verify --pubkeys $BAD_PUBKEYS $WRAPPED_SIGNED
 Error: could not verify a signature
 ```
 
-Note that like encryption, signing uses randomness. So even if you sign the same envelope twice with the same private key, the two resulting envelopes will not be the same although both signatures will verify against the same public key.
+Note that like encryption, signing uses randomness. So even if you sign the same envelope twice with the same signer, the two resulting envelopes will not be the same although both signatures will verify against the same verifier.
 
 ## SSKR
 

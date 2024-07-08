@@ -10,6 +10,7 @@ pub mod extract;
 pub mod format;
 pub mod generate;
 pub mod import;
+pub mod info;
 pub mod proof;
 pub mod salt;
 pub mod sign;

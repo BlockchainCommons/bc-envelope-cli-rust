@@ -22,9 +22,9 @@ pub struct CommandArgs {
     #[arg(long)]
     note: Option<String>,
 
-    /// Namespace, required for SSH signatures.
-    #[arg(long)]
-    namespace: Option<String>,
+    /// Namespace for SSH signatures.
+    #[arg(long, default_value = "envelope")]
+    namespace: String,
 
     /// Hash algorithm for SSH signatures.
     #[arg(long, default_value = "sha256")]
@@ -54,10 +54,7 @@ impl crate::exec::Exec for CommandArgs {
                 private_key_bases.push(key);
             } else if let Ok(key) = SigningPrivateKey::from_ur_string(s) {
                 if key.is_ssh() {
-                    if self.namespace.is_none() {
-                        bail!("namespace is required for SSH signatures");
-                    }
-                    let namespace = self.namespace.clone().unwrap();
+                    let namespace = self.namespace.clone();
                     let hash_alg = self.hash_type.to_ssh_hash_alg();
                     signing_options.push(Some(SigningOptions::Ssh {
                         namespace,
