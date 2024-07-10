@@ -8,7 +8,7 @@
 
 **NOTE:** Preview version. Not ready for production use.
 
-![](images/envelope-rust-screen.jpg)
+<img src="images/envelope-rust-screen.jpg" width=960>
 
 ### Installation
 
