@@ -8,6 +8,8 @@
 
 **NOTE:** Preview version. Not ready for production use.
 
+![](images/envelope-rust-screen.jpg)
+
 ### Installation
 
 To install from crates.io, run:
