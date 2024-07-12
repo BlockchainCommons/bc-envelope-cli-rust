@@ -10,7 +10,7 @@
 
 <img src="images/envelope-rust-screen.jpg" width=960>
 
-### Installation
+## Installation
 
 To install from crates.io, run:
 
@@ -26,7 +26,7 @@ cargo install --path .
 
 Make sure your `~/.cargo/bin` directory is in your `PATH`.
 
-### Usage
+## Usage
 
 ```bash
 envelope --help
@@ -35,3 +35,9 @@ envelope --help
 See the [docs](docs/README.md) directory for more information.
 
 **NOTE:** The `envelope` tool does *not* have the same command line syntax as the Swift `envelope` tool.
+
+## Version History
+
+### 0.9.1: July 12, 2024
+
+- Fixed bug that would cause certain valid combinations of SSKR shares to be rejected.
