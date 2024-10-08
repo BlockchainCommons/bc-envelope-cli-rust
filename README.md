@@ -4,7 +4,7 @@
 
 <!--Guidelines: https://github.com/BlockchainCommons/secure-template/wiki -->
 
-### _by Wolf McNally_
+### _by Wolf McNally & Christopher Allen_
 
 **NOTE:** Preview version. Not ready for production use.
 
