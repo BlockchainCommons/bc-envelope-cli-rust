@@ -30,12 +30,13 @@ The `envelope` tool can sign and verify envelopes using several different algori
 
 ## Signing Algorithms
 
-Envelopes may be signed by several algorithms. The default is Schnorr, which is appropriate for most cases, but ECDSA and several SSH variants are also supported for special purposes.
+Envelopes may be signed by several algorithms. The default is Schnorr, which is appropriate for most cases, but ECDSA, Ed25519, and several SSH variants are also supported for special purposes.
 
 | Algorithm | Description |
 |-----------|-------------|
 | `schnorr` | Schnorr |
 | `ecdsa` | ECDSA |
+| `ed25519` | Ed25519 |
 | `ssh-ed25519` | SSH-Ed25519 |
 | `ssh-rsa-sha256` | SSH-RSA SHA-256 |
 | `ssh-rsa-sha512` | SSH-RSA SHA-512 |
@@ -52,8 +53,8 @@ Envelopes may be signed by several algorithms. The default is Schnorr, which is 
 | Seed | `ur:seed` | | | Used to derive other objects. |
 | Private key base | `ur:prvkeys` | ✅ | ✅ | Directly signs and verifies Schnorr only. |
 | Public key base | `ur:pubkeys` | | ✅ | Contains a signing public key and an agreement public key. |
-| Signing private key | `ur:signing-private-key` | ✅ | ✅ | Supports Schnorr, ECDSA, and SSH variants. |
-| Signing public key | `ur:signing-public-key` | | ✅ | Supports Schnorr, ECDSA, and SSH variants. |
+| Signing private key | `ur:signing-private-key` | ✅ | ✅ | Supports Schnorr, ECDSA, Ed25519, and SSH variants. |
+| Signing public key | `ur:signing-public-key` | | ✅ | Supports Schnorr, ECDSA, Ed25519, and SSH variants. |
 
 ### Derivations
 

@@ -14,6 +14,9 @@ pub enum SignerType {
     /// SSH-Ed25519
     SshEd25519,
 
+    /// Ed25519
+    Ed25519,
+
     /// SSH-RSA SHA-256
     SshRsaSha256,
 
@@ -41,6 +44,8 @@ impl SignerType {
         match self {
             Self::Schnorr => Ok(private_key_base.schnorr_signing_private_key()),
             Self::Ecdsa => Ok(private_key_base.ecdsa_signing_private_key()),
+            Self::Ed25519 => Ok(private_key_base.ed25519_signing_private_key()),
+            
             Self::SshEd25519 => private_key_base.ssh_signing_private_key(SSHAlgorithm::Ed25519, ssh_comment),
             Self::SshRsaSha256 => private_key_base.ssh_signing_private_key(SSHAlgorithm::Rsa { hash: Some(HashAlg::Sha256) }, ssh_comment),
             Self::SshRsaSha512 => private_key_base.ssh_signing_private_key(SSHAlgorithm::Rsa { hash: Some(HashAlg::Sha512) }, ssh_comment),
