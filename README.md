@@ -38,6 +38,10 @@ See the [docs](docs/README.md) directory for more information.
 
 ## Version History
 
+### 0.9.2: October 16, 2024
+
+- Schnorr signatures are now BIP-340 compliant.
+
 ### 0.9.1: July 12, 2024
 
 - Fixed bug that would cause certain valid combinations of SSKR shares to be rejected.
