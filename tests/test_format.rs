@@ -61,108 +61,108 @@ fn test_format_diag() -> Result<()> {
     assert_eq!(
         output,
         indoc! {r#"
-        200(   / envelope /
-           [
-              200(   / envelope /
-                 [
-                    201(   / leaf /
-                       40012(   / arid /
-                          h'174842eac3fb44d7f626e4d79b7e107fd293c55629f6d622b81ed407770302c8'
-                       )
-                    ),
-                    h'3cc7a442254e5d8ff2b1428e48feff7dca3fd93865d010912d9cdee8f0234fb1',
-                    {
-                       13:
-                       [
-                          201(   / leaf /
-                             40012(   / arid /
-                                h'04363d5ff99733bc0f1577baba440af1cf344ad9e454fad9d128c00fef6505e8'
-                             )
-                          ),
-                          {
-                             4:
-                             201(   / leaf /
-                                "Issued by the State of Example"
-                             )
-                          },
-                          {
-                             9:
-                             201(   / leaf /
-                                32(
-                                   "https://exampleledger.com/arid/04363d5ff99733bc0f1577baba440af1cf344ad9e454fad9d128c00fef6505e8"
-                                )
-                             )
-                          }
-                       ]
-                    },
-                    {
-                       14:
-                       [
-                          201(   / leaf /
-                             40012(   / arid /
-                                h'78bc30004776a3905bccb9b8a032cf722ceaf0bbfb1a49eaf3185fab5808cadc'
-                             )
-                          ),
-                          h'137169f416059f4897484d87752da80bf1485cf374a9e727931bbd1de69138c4',
-                          {
-                             201("familyName"):   / leaf /
-                             201("SMITH")   / leaf /
-                          },
-                          {
-                             201("givenName"):   / leaf /
-                             201("JOHN")   / leaf /
-                          },
-                          h'581d8efe3a41a8f2ad706fdbaf0c10aefea9fecc7b3fa6c4297be46aa599c9c1',
-                          h'71238ad07326c9cde3720a845b65b66e42daed198883a63e7e999ba79501fccb',
-                          {
-                             201("image"):   / leaf /
-                             [
-                                201("John Smith smiling"),   / leaf /
+        200(
+            [
+                200(
+                    [
+                        201(
+                            40012(
+                                h'174842eac3fb44d7f626e4d79b7e107fd293c55629f6d622b81ed407770302c8'
+                            )
+                        ),
+                        h'3cc7a442254e5d8ff2b1428e48feff7dca3fd93865d010912d9cdee8f0234fb1',
+                        {
+                            13:
+                            [
+                                201(
+                                    40012(
+                                        h'04363d5ff99733bc0f1577baba440af1cf344ad9e454fad9d128c00fef6505e8'
+                                    )
+                                ),
                                 {
-                                   9:
-                                   201(   / leaf /
-                                      "https://exampleledger.com/digest/36be30726befb65ca13b136ae29d8081f64792c2702415eb60ad1c56ed33c999"
-                                   )
+                                    4:
+                                    201(
+                                        "Issued by the State of Example"
+                                    )
                                 },
                                 {
-                                   4:
-                                   201(   / leaf /
-                                      "This is an image of John Smith."
-                                   )
+                                    9:
+                                    201(
+                                        32(
+                                            "https://exampleledger.com/arid/04363d5ff99733bc0f1577baba440af1cf344ad9e454fad9d128c00fef6505e8"
+                                        )
+                                    )
                                 }
-                             ]
-                          },
-                          h'9c98f7e03d344c55d906901cfe0b4f5e5cf773b9f3b4a77b33c92652ad57fd5c',
-                          h'a73e418543e440a10c19f24d45ea1dacb379dc8050d287e548d1e2bc881bfe49',
-                          h'd61948b6d8c7ff929577c4914a2ce735492926b5084d2742927d94022c11dcff',
-                          h'e1628804503892b0be138a6291673a41d9e086a9b2e26041961c50c1061ca3ee',
-                          h'fe701cb6da0317c6e2c41c099f594a44a9909bb5d254f0edab94a1b8169ed227'
-                       ]
-                    },
-                    {
-                       1:
-                       201("credential")   / leaf /
-                    },
-                    h'eb39a7138bac1967aed9371795ffd5844b0386b9f17e3e84e401c0880facad97'
-                 ]
-              ),
-              {
-                 3:
-                 [
-                    201(   / leaf /
-                       40020(   / signature /
-                          h'b3f08e5d4a518c0990e05304290fce61d37ea67509d5b521d9ca011bd56e99b9e335b68b44e6197ce622390a28ccb075a1a7f7f27fe2ccf729286d0d67b22ea4'
-                       )
-                    ),
-                    {
-                       4:
-                       201(   / leaf /
-                          "Made by the State of Example."
-                       )
-                    }
-                 ]
-              }
-           ]
+                            ]
+                        },
+                        {
+                            14:
+                            [
+                                201(
+                                    40012(
+                                        h'78bc30004776a3905bccb9b8a032cf722ceaf0bbfb1a49eaf3185fab5808cadc'
+                                    )
+                                ),
+                                h'137169f416059f4897484d87752da80bf1485cf374a9e727931bbd1de69138c4',
+                                {
+                                    201("familyName"):
+                                    201("SMITH")
+                                },
+                                {
+                                    201("givenName"):
+                                    201("JOHN")
+                                },
+                                h'581d8efe3a41a8f2ad706fdbaf0c10aefea9fecc7b3fa6c4297be46aa599c9c1',
+                                h'71238ad07326c9cde3720a845b65b66e42daed198883a63e7e999ba79501fccb',
+                                {
+                                    201("image"):
+                                    [
+                                        201("John Smith smiling"),
+                                        {
+                                            9:
+                                            201(
+                                                "https://exampleledger.com/digest/36be30726befb65ca13b136ae29d8081f64792c2702415eb60ad1c56ed33c999"
+                                            )
+                                        },
+                                        {
+                                            4:
+                                            201(
+                                                "This is an image of John Smith."
+                                            )
+                                        }
+                                    ]
+                                },
+                                h'9c98f7e03d344c55d906901cfe0b4f5e5cf773b9f3b4a77b33c92652ad57fd5c',
+                                h'a73e418543e440a10c19f24d45ea1dacb379dc8050d287e548d1e2bc881bfe49',
+                                h'd61948b6d8c7ff929577c4914a2ce735492926b5084d2742927d94022c11dcff',
+                                h'e1628804503892b0be138a6291673a41d9e086a9b2e26041961c50c1061ca3ee',
+                                h'fe701cb6da0317c6e2c41c099f594a44a9909bb5d254f0edab94a1b8169ed227'
+                            ]
+                        },
+                        {
+                            1:
+                            201("credential")
+                        },
+                        h'eb39a7138bac1967aed9371795ffd5844b0386b9f17e3e84e401c0880facad97'
+                    ]
+                ),
+                {
+                    3:
+                    [
+                        201(
+                            40020(
+                                h'b3f08e5d4a518c0990e05304290fce61d37ea67509d5b521d9ca011bd56e99b9e335b68b44e6197ce622390a28ccb075a1a7f7f27fe2ccf729286d0d67b22ea4'
+                            )
+                        ),
+                        {
+                            4:
+                            201(
+                                "Made by the State of Example."
+                            )
+                        }
+                    ]
+                }
+            ]
         )
         "#}
     );

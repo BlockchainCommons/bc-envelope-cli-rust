@@ -61,7 +61,7 @@ fn test_extract_date() -> Result<()> {
     )?;
     run_cli_expect(
         &["extract", "date", "ur:envelope/tpcssecyiabtguaeoxtdvdjp"],
-        "2022-08-30T00:00:00Z"
+        "2022-08-30"
     )
 }
 
@@ -144,6 +144,8 @@ fn test_extract_wrapped() -> Result<()> {
 
 #[test]
 fn test_extract_assertion_subject() -> Result<()> {
+    bc_envelope::register_tags();
+
     let e = Envelope::new_assertion(known_values::NOTE, "This is a note.");
     let ur = e.ur_string();
 

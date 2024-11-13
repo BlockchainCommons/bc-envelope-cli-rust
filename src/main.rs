@@ -60,6 +60,8 @@ enum MainCommands {
 
 #[doc(hidden)]
 fn main() -> Result<()> {
+    bc_envelope::register_tags();
+
     let cli = Cli::parse();
 
     let output = match cli.command {

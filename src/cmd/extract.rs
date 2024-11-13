@@ -1,5 +1,5 @@
 use anyhow::{bail, Result};
-use bc_components::{ARID, URI, UUID, Digest, with_tags, tags::ENVELOPE};
+use bc_components::{tags::TAG_ENVELOPE, Digest, ARID, URI, UUID};
 use bc_envelope::prelude::*;
 use clap::{Args, ValueEnum};
 
@@ -163,10 +163,13 @@ impl CommandArgs {
             }
         } else if envelope.is_wrapped() {
             if self.ur_tag.is_some() || self.ur_type.is_some() {
-                if self.ur_tag != Some(ENVELOPE.value()) {
+                if self.ur_tag != Some(TAG_ENVELOPE) {
                     bail!("UR tag mismatch");
                 }
-                if self.ur_type != Some(ENVELOPE.name().unwrap()) {
+                let envelope_name = with_format_context!(|context: &FormatContext| {
+                    context.tags().name_for_value(TAG_ENVELOPE)
+                });
+                if self.ur_type != Some(envelope_name) {
                     bail!("UR type mismatch");
                 }
             }

@@ -171,7 +171,7 @@ fn parse_ur(s: &str, cbor_tag_value: Option<u64>) -> Result<Envelope> {
             if let Some(tag) = store.tag_for_name(ur.ur_type_str()) {
                 Some(tag)
             } else {
-                cbor_tag_value.map(Tag::new)
+                cbor_tag_value.map(Tag::with_value)
             }
         });
         if let Some(cbor_tag) = cbor_tag {

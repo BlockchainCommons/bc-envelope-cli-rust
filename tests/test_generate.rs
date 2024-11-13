@@ -31,6 +31,8 @@ fn test_generate_digest_stdin() -> Result<()> {
 
 #[test]
 fn test_generate_key() -> Result<()> {
+    bc_envelope::register_tags();
+
     let output1 = run_cli(&["generate", "key"])?;
     let key1 = bc_components::SymmetricKey::from_ur_string(output1.trim())?;
     let output2 = run_cli(&["generate", "key"])?;
@@ -43,6 +45,8 @@ fn test_generate_key() -> Result<()> {
 
 #[test]
 fn test_generate_nonce() -> Result<()> {
+    bc_envelope::register_tags();
+
     let output1 = run_cli(&["generate", "nonce"])?;
     let nonce1 = bc_components::Nonce::from_ur_string(output1.trim())?;
     let output2 = run_cli(&["generate", "nonce"])?;
@@ -55,6 +59,8 @@ fn test_generate_nonce() -> Result<()> {
 
 #[test]
 fn test_generate_seed() -> Result<()> {
+    bc_envelope::register_tags();
+
     let output1 = run_cli(&["generate", "seed"])?;
     let seed1 = bc_components::Seed::from_ur_string(output1.trim())?;
     let output2 = run_cli(&["generate", "seed"])?;
@@ -67,6 +73,8 @@ fn test_generate_seed() -> Result<()> {
 
 #[test]
 fn test_generate_seed_with_count() -> Result<()> {
+    bc_envelope::register_tags();
+
     let output = run_cli(&["generate", "seed", "--count", "32"])?;
     let seed = bc_components::Seed::from_ur_string(output.trim())?;
     assert_eq!(seed.data().len(), 32);
@@ -83,6 +91,8 @@ fn test_generate_seed_with_bad_count() -> Result<()> {
 
 #[test]
 fn test_generate_seed_with_hex() -> Result<()> {
+    bc_envelope::register_tags();
+
     let output = run_cli(
         &["generate", "seed", "--hex", "7e31b2b14b895e75cdb82c22b013527c"]
     )?;
@@ -100,6 +110,8 @@ fn test_generate_seed_with_hex() -> Result<()> {
 
 #[test]
 fn test_generate_prvkeys() -> Result<()> {
+    bc_envelope::register_tags();
+
     let output1 = run_cli(&["generate", "prvkeys"])?;
     let key1 = bc_components::PrivateKeyBase::from_ur_string(output1.trim())?;
     let output2 = run_cli(&["generate", "prvkeys"])?;
