@@ -644,7 +644,7 @@ envelope format $SIGNED
 👈
 "Alice" [
     "knows": "Bob"
-    'verifiedBy': Signature
+    'signed': Signature
 ]
 ```
 
@@ -665,7 +665,7 @@ envelope format $WRAPPED_SIGNED
         "knows": "Bob"
     ]
 } [
-    'verifiedBy': Signature
+    'signed': Signature
 ]
 ```
 

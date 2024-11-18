@@ -38,7 +38,7 @@ fn test_format_envelope() -> Result<()> {
                 ELIDED (2)
             ]
         } [
-            'verifiedBy': Signature [
+            'signed': Signature [
                 'note': "Made by the State of Example."
             ]
         ]
@@ -223,7 +223,7 @@ fn test_format_tree() -> Result<()> {
                         c2e5cb01 obj "credential"
                     eb39a713 ELIDED
             34ceffc8 ASSERTION
-                d0e39e78 pred 'verifiedBy'
+                d0e39e78 pred 'signed'
                 a89b685b obj NODE
                     bf52495c subj Signature
                     f763da80 ASSERTION

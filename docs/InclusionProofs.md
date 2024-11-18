@@ -171,7 +171,7 @@ envelope format $CREDENTIAL
     ]
 } [
     note: "Signed by Example Electrical Engineering Board"
-    verifiedBy: Signature
+    signed: Signature
 ]
 ```
 

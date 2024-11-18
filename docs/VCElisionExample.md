@@ -74,7 +74,7 @@ envelope format $CREDENTIAL
     ]
 } [
     'note': "Signed by Example Electrical Engineering Board"
-    'verifiedBy': Signature
+    'signed': Signature
 ]```
 
 Every part of an envelope generates a digest, and these together form a Merkle tree. So when eliding a document, we can decide what to remove or reveal by identifying a subset of all the digests that make up the tree. This set is known as the *target*. Normally we would create the target and then perform the elision in a single operation, but in this example we are going to build up the target in increments, showing the result of each step.
@@ -136,7 +136,7 @@ REDACTED_CREDENTIAL=`envelope elide revealing "$TARGET" $CREDENTIAL`; envelope f
 👈
 ELIDED [
     'note': "Signed by Example Electrical Engineering Board"
-    'verifiedBy': Signature
+    'signed': Signature
 ]
 ```
 
@@ -169,7 +169,7 @@ REDACTED_CREDENTIAL=`envelope elide revealing "$TARGET" $CREDENTIAL`; envelope f
     ELIDED
 } [
     'note': "Signed by Example Electrical Engineering Board"
-    'verifiedBy': Signature
+    'signed': Signature
 ]
 ```
 
@@ -194,7 +194,7 @@ REDACTED_CREDENTIAL=`envelope elide revealing "$TARGET" $CREDENTIAL`; envelope f
     ]
 } [
     'note': "Signed by Example Electrical Engineering Board"
-    'verifiedBy': Signature
+    'signed': Signature
 ]
 ```
 
@@ -218,7 +218,7 @@ REDACTED_CREDENTIAL=`envelope elide revealing "$TARGET" $CREDENTIAL`; envelope f
     ]
 } [
     'note': "Signed by Example Electrical Engineering Board"
-    'verifiedBy': Signature
+    'signed': Signature
 ]
 ```
 
@@ -247,7 +247,7 @@ REDACTED_CREDENTIAL=`envelope elide revealing "$TARGET" $CREDENTIAL`; envelope f
     ]
 } [
     'note': "Signed by Example Electrical Engineering Board"
-    'verifiedBy': Signature
+    'signed': Signature
 ]
 ```
 
@@ -278,7 +278,7 @@ envelope format $WARRANTY
             ]
         } [
             'note': "Signed by Example Electrical Engineering Board"
-            'verifiedBy': Signature
+            'signed': Signature
         ]
     } [
         "employeeHiredDate": 2022-01-01
@@ -286,7 +286,7 @@ envelope format $WARRANTY
     ]
 } [
     'note': "Signed by Employer Corp."
-    'verifiedBy': Signature
+    'signed': Signature
 ]
 ```
 
@@ -340,7 +340,7 @@ envelope elide revealing --action compress "$TARGET" $CREDENTIAL | envelope form
     ]
 } [
     'note': "Signed by Example Electrical Engineering Board"
-    'verifiedBy': Signature
+    'signed': Signature
 ]
 ```
 
@@ -365,6 +365,6 @@ envelope elide revealing --action encrypt --key ur:crypto-key/hdcxcnqzoeuobzdksp
     ]
 } [
     'note': "Signed by Example Electrical Engineering Board"
-    'verifiedBy': Signature
+    'signed': Signature
 ]
 ```

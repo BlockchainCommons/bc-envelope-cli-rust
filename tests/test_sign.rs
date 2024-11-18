@@ -18,7 +18,7 @@ fn test_sign() -> Result<()> {
         indoc!(r#"
         "Alice" [
             "knows": "Bob"
-            'verifiedBy': Signature
+            'signed': Signature
         ]
         "#)
     )?;
@@ -51,7 +51,7 @@ fn test_sign_2() -> Result<()> {
                 "knows": "Bob"
             ]
         } [
-            'verifiedBy': Signature
+            'signed': Signature
         ]
         "#)
     )?;
@@ -71,8 +71,8 @@ fn test_sign_3() -> Result<()> {
         &["format", &e],
         indoc!(r#"
         "Hello." [
-            'verifiedBy': Signature
-            'verifiedBy': Signature
+            'signed': Signature
+            'signed': Signature
         ]
         "#)
     )?;

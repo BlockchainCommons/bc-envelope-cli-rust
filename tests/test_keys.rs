@@ -64,7 +64,7 @@ fn test_keys(
         indoc!(r#"
         "Alice" [
             "knows": "Bob"
-            'verifiedBy': Signature
+            'signed': Signature
         ]
         "#)
     ).unwrap();

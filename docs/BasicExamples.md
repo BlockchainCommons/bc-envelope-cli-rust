@@ -123,7 +123,7 @@ envelope format $SIGNED_ENVELOPE
 ```
 👈
 "Hello." [
-    'verifiedBy': Signature
+    'signed': Signature
 ]
 ```
 
@@ -205,8 +205,8 @@ envelope format $MULTISIGNED_ENVELOPE
 ```
 👈
 "Hello." [
-    'verifiedBy': Signature
-    'verifiedBy': Signature
+    'signed': Signature
+    'signed': Signature
 ]
 ```
 
@@ -353,7 +353,7 @@ envelope format $DECRYPTED
 👈
 {
     "Hello." [
-        'verifiedBy': Signature
+        'signed': Signature
     ]
 }
 ```
@@ -430,7 +430,7 @@ envelope format $ENCRYPTED_SIGNED
 ```
 👈
 ENCRYPTED [
-    'verifiedBy': Signature
+    'signed': Signature
 ]
 ```
 
@@ -552,7 +552,7 @@ envelope format $ENVELOPE_SIGNED_TO
 ENCRYPTED [
     'hasRecipient': SealedMessage
     'hasRecipient': SealedMessage
-    'verifiedBy': Signature
+    'signed': Signature
 ]
 ```
 

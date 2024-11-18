@@ -27,7 +27,7 @@ envelope format $ALICE_SIGNED_DOCUMENT
         'publicKeys': PublicKeyBase
     ]
 } [
-    'verifiedBy': Signature [
+    'signed': Signature [
         'note': "Made by Alice."
     ]
 ]
@@ -69,13 +69,13 @@ envelope format $ALICE_REGISTRATION
                 'publicKeys': PublicKeyBase
             ]
         } [
-            'verifiedBy': Signature [
+            'signed': Signature [
                 'note': "Made by Alice."
             ]
         ]
     ]
 } [
-    'verifiedBy': Signature [
+    'signed': Signature [
         'note': "Made by ExampleLedger."
     ]
 ]
@@ -147,7 +147,7 @@ envelope format $ALICE_RESPONSE
         'dereferenceVia': URI(https://exampleledger.com/arid/d44c5e0afd353f47b02f58a5a3a29d9a2efa6298692f896cd2923268599a0d0f)
     ]
 } [
-    'verifiedBy': Signature [
+    'signed': Signature [
         'note': "Made by Alice."
     ]
 ]

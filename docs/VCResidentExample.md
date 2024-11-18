@@ -98,7 +98,7 @@ envelope format $JOHN_RESIDENT_CARD
         'note': "The State of Example recognizes JOHN SMITH as a Permanent Resident."
     ]
 } [
-    'verifiedBy': Signature [
+    'signed': Signature [
         'note': "Made by the State of Example."
     ]
 ]
@@ -117,7 +117,7 @@ TARGET=()
 TARGET+=(`envelope digest $JOHN_RESIDENT_CARD`)
 
 # Reveal everything about the state's signature on the card
-TARGET+=(`envelope assertion find predicate known verifiedBy $JOHN_RESIDENT_CARD | envelope digest --depth deep`)
+TARGET+=(`envelope assertion find predicate known signed $JOHN_RESIDENT_CARD | envelope digest --depth deep`)
 
 # Reveal the top level of the card.
 TARGET+=(`envelope digest $JOHN_RESIDENT_CARD --depth shallow`)
@@ -167,7 +167,7 @@ envelope format $ELIDED_CARD
         ELIDED (2)
     ]
 } [
-    'verifiedBy': Signature [
+    'signed': Signature [
         'note': "Made by the State of Example."
     ]
 ]
