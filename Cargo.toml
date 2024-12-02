@@ -16,10 +16,10 @@ name = "envelope"
 path = "src/main.rs"
 
 [dependencies]
-dcbor = "^0.15.2"
-bc-ur = "^0.5.0"
-bc-envelope = "^0.18.2"
-bc-components = "^0.13.0"
+dcbor = "^0.16.0"
+bc-ur = "^0.6.0"
+bc-envelope = "^0.19.0"
+bc-components = "^0.14.0"
 bc-rand = "^0.2.1"
 
 clap = { version = "^4.4.3", features = ["derive", "unstable-styles"] }

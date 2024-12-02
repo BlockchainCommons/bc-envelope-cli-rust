@@ -1,5 +1,6 @@
 use anyhow::{bail, Result};
 use clap::Args;
+use known_values::NOTE;
 
 use crate::envelope_args::{EnvelopeArgs, EnvelopeArgsLike};
 use bc_components::{PrivateKeyBase, Signer, SigningOptions, SigningPrivateKey};
@@ -68,18 +69,19 @@ impl crate::exec::Exec for CommandArgs {
                 bail!("invalid signer: {}", s);
             }
         }
-        let mut signers: Vec<(&dyn Signer, Option<SigningOptions>)> = Vec::new();
+        let mut signers: Vec<(&dyn Signer, Option<SigningOptions>, Option<SignatureMetadata>)> = Vec::new();
         for key in private_key_bases.iter() {
-            signers.push((key as &dyn Signer, None));
+            signers.push((key as &dyn Signer, None, None));
         }
         for i in 0..signing_private_keys.len() {
-            signers.push((&signing_private_keys[i] as &dyn Signer, signing_options[i].clone()));
+            signers.push((&signing_private_keys[i] as &dyn Signer, signing_options[i].clone(), None));
         }
         if let Some(note) = &self.note {
             if signers.len() != 1 {
                 bail!("can only add a note on a single signature");
             }
-            Ok(envelope.add_signature_opt(signers[0].0, signers[0].1.clone(), Some(note)).ur_string())
+            let metadata = SignatureMetadata::new().with_assertion(NOTE, note.clone());
+            Ok(envelope.add_signature_opt(signers[0].0, signers[0].1.clone(), Some(metadata)).ur_string())
         } else {
             Ok(envelope.add_signatures_opt(&signers).ur_string())
         }
