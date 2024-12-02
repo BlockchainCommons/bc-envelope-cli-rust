@@ -38,6 +38,10 @@ See the [docs](docs/README.md) directory for more information.
 
 ## Version History
 
+### 0.9.3: December 1, 2024
+
+- Aligned to dependencies.
+
 ### 0.9.2: October 16, 2024
 
 - Schnorr signatures are now BIP-340 compliant.
