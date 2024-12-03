@@ -4,12 +4,12 @@ version = "0.9.3"
 edition = "2021"
 description = "Gordian Envelope Command Line Tool."
 authors = ["Blockchain Commons"]
-keywords = ["encoding", "cbor", "binary", "format", "serialization"]
 repository = "https://github.com/BlockchainCommons/bc-envelope-cli-rust"
 readme = "README.md"
 license = "BSD-2-Clause-Patent"
-categories = ["data-structures", "encoding", "command-line-utilities"]
 documentation = "https://docs.rs/bc-envelope-cli"
+keywords = ["encoding", "cbor", "binary", "format", "serialization"] # Up to five
+categories = ["data-structures", "encoding", "command-line-utilities"] # https://crates.io/category_slugs
 
 [[bin]]
 name = "envelope"
