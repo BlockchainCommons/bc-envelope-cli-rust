@@ -2,6 +2,8 @@ pub mod new;
 pub mod key;
 pub mod private_options;
 pub mod key_privilege;
+pub mod key_args;
+pub mod utils;
 
 use clap::{Subcommand, Args};
 use anyhow::Result;

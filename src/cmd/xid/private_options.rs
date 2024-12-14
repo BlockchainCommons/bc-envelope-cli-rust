@@ -3,12 +3,12 @@ use clap::ValueEnum;
 
 #[derive(ValueEnum, Copy, Clone, Debug, PartialEq, Eq, Default)]
 pub enum PrivateOptions {
-    /// Omit the private key
-    #[default]
-    Omit,
-
     /// Include the private key
+    #[default]
     Include,
+
+    /// Omit the private key
+    Omit,
 
     /// Elide the private key
     Elide,
