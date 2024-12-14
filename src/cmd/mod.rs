@@ -18,3 +18,4 @@ pub mod sskr;
 pub mod subject;
 pub mod uncompress;
 pub mod verify;
+pub mod xid;

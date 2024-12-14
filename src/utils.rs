@@ -1,6 +1,8 @@
 use std::{collections::HashSet, io::Read};
 use anyhow::{ bail, Result };
+use bc_components::XID;
 use bc_envelope::prelude::*;
+use bc_xid::XIDDocument;
 
 pub fn read_password(prompt: &str, password: Option<&str>) -> Result<String> {
     if let Some(password) = password {
@@ -33,7 +35,31 @@ pub fn read_envelope(envelope: Option<&str>) -> Result<Envelope> {
     if ur_string.is_empty() {
         bail!("No envelope provided");
     }
-    Envelope::from_ur_string(ur_string.trim())
+    // Just try to parse the envelope as a ur:envelope string first
+    if let Ok(envelope) = Envelope::from_ur_string(ur_string.trim()) {
+        Ok(envelope)
+    // If that fails, try to parse the envelope as a ur:<any> string
+    } else if let Ok(ur) = UR::from_ur_string(ur_string.trim()) {
+        let cbor = ur.cbor();
+        // Try to parse the CBOR into an envelope
+        if let Ok(envelope) = Envelope::from_tagged_cbor(cbor) {
+            Ok(envelope)
+        } else if ur.ur_type_str() == "xid" {
+            let xid = XID::from_untagged_cbor(ur.cbor())?;
+            let doc = XIDDocument::from(xid);
+            Ok(doc.into_envelope())
+        } else {
+            todo!();
+        }
+
+        // if ur.ur_type_str() == "xid" {
+        //     todo!();
+        // } else {
+        //     bail!("Invalid UR type");
+        // }
+    } else {
+        bail!("Invalid envelope");
+    }
 }
 
 pub fn parse_digest(target: &str) -> Result<Digest> {
