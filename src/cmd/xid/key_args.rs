@@ -1,8 +1,9 @@
 use bc_components::URI;
+use bc_envelope::PublicKeyBase;
 use clap::Args;
 use anyhow::Result;
 
-use super::{key_privilege::KeyPrivilege, private_options::PrivateOptions, utils::{read_key, InputKey}};
+use super::{key_privilege::KeyPrivilege, private_options::PrivateOptions, utils::{read_key, read_public_key, InputKey}};
 
 pub trait KeyArgsLike {
     fn name(&self) -> &str;
@@ -13,6 +14,10 @@ pub trait KeyArgsLike {
 
     fn read_key(&self) -> Result<InputKey> {
         read_key(self.keys())
+    }
+
+    fn read_public_key(&self) -> Result<PublicKeyBase> {
+        read_public_key(self.keys())
     }
 }
 
@@ -28,15 +33,15 @@ pub struct KeyArgs {
     #[arg(long = "private", default_value = "include")]
     private_opts: PrivateOptions,
 
-    /// Provide one or more endpoints for the key.
-    #[arg(long, name = "URI", num_args = 1..)]
-    endpoints: Vec<URI>,
+    /// Provide an endpoint for the key. May be repeated.
+    #[arg(long, name = "URI", num_args = 1)]
+    endpoint: Vec<URI>,
 
-    /// Grant specific permissions to the key.
-    #[arg(long, name = "PRIVILEGE", default_value = "all", num_args = 1..)]
-    permissions: Vec<KeyPrivilege>,
+    /// Grant a specific permission to the key. May be repeated.
+    #[arg(long, name = "PRIVILEGE", default_value = "all", num_args = 1)]
+    permission: Vec<KeyPrivilege>,
 
-    /// The public or private key base to convert, either ur:crypto-pubkeys or ur:crypto-prvkeys.
+    /// The key to process. If omitted, the key will be read from stdin.
     #[arg(name = "KEYS")]
     keys: Option<String>,
 }
@@ -51,11 +56,11 @@ impl KeyArgsLike for KeyArgs {
     }
 
     fn endpoints(&self) -> &[URI] {
-        &self.endpoints
+        &self.endpoint
     }
 
     fn permissions(&self) -> &[KeyPrivilege] {
-        &self.permissions
+        &self.permission
     }
 
     fn keys(&self) -> Option<&str> {

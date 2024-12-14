@@ -1,9 +1,11 @@
 use bc_components::URI;
-use bc_envelope::{PrivateKeyBase, PublicKeyBase};
+use bc_envelope::{ PrivateKeyBase, PublicKeyBase };
 use bc_ur::prelude::*;
 
-use anyhow::{Result, bail};
-use bc_xid::{HasPermissions, Key};
+use anyhow::{ Result, bail };
+use bc_xid::{ HasPermissions, Key, XIDDocument };
+
+use crate::envelope_args::EnvelopeArgsLike;
 
 use super::key_privilege::KeyPrivilege;
 
@@ -33,11 +35,19 @@ pub fn read_key(key: Option<&str>) -> Result<InputKey> {
     Ok(input_key)
 }
 
+pub fn read_public_key(key: Option<&str>) -> Result<PublicKeyBase> {
+    let key = read_key(key)?;
+    match key {
+        InputKey::Public(public_key_base) => Ok(public_key_base),
+        _ => bail!("Expected a public key, but found a private key."),
+    }
+}
+
 pub fn update_key(key: &mut Key, name: &str, endpoints: &[URI], permissions: &[KeyPrivilege]) {
     if !name.is_empty() {
         key.set_name(name);
     }
-    
+
     if !endpoints.is_empty() {
         for uri in endpoints {
             key.add_endpoint(uri.clone());
@@ -48,5 +58,12 @@ pub fn update_key(key: &mut Key, name: &str, endpoints: &[URI], permissions: &[K
         for privilege in permissions {
             key.add_permission((*privilege).into());
         }
+    }
+}
+
+pub trait XIDDocumentReadable: EnvelopeArgsLike {
+    fn read_xid_document(&self) -> Result<XIDDocument> {
+        let envelope = self.read_envelope()?;
+        XIDDocument::from_unsigned_envelope(&envelope)
     }
 }

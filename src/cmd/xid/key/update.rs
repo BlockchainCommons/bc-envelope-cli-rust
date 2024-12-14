@@ -1,20 +1,20 @@
 use bc_components::URI;
 use bc_ur::prelude::*;
-use bc_xid::{ Key, PrivateKeyOptions };
+use bc_xid::PrivateKeyOptions;
 use clap::Args;
-use anyhow::Result ;
+use anyhow::{ Result, anyhow };
 
 use crate::{
     cmd::xid::{
         key_args::{ KeyArgs, KeyArgsLike },
         key_privilege::KeyPrivilege,
         private_options::PrivateOptions,
-        utils::{update_key, InputKey, XIDDocumentReadable},
+        utils::{ update_key, XIDDocumentReadable},
     },
     envelope_args::{ EnvelopeArgs, EnvelopeArgsLike },
 };
 
-/// Create a new XID document from an inception key, either ur:crypto-pubkeys or ur:crypto-prvkeys.
+/// Updates the permissions, endpoints, or name of a key in a XID document.
 #[derive(Debug, Args)]
 #[group(skip)]
 pub struct CommandArgs {
@@ -57,21 +57,17 @@ impl XIDDocumentReadable for CommandArgs { }
 
 impl crate::exec::Exec for CommandArgs {
     fn exec(&self) -> Result<String> {
-        let keys = self.read_key()?;
+        let public_key_base = self.read_public_key()?;
 
         let mut xid_document = self.read_xid_document()?;
 
-        let mut key = match &keys {
-            InputKey::Private(private_key_base) => {
-                Key::new_with_private_key(private_key_base.clone())
-            }
-            InputKey::Public(public_key_base) => {
-                Key::new(public_key_base.clone())
-            }
-        };
+        let mut key = xid_document
+            .find_key_by_public_key_base(&public_key_base)
+            .cloned()
+            .ok_or_else(|| anyhow!("Key not found in XID document"))?;
 
+        xid_document.remove_key(&key);
         update_key(&mut key, self.name(), self.endpoints(), self.permissions());
-
         xid_document.add_key(key)?;
 
         let options = PrivateKeyOptions::from(self.private_opts());

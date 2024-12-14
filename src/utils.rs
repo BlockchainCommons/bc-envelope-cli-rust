@@ -51,12 +51,6 @@ pub fn read_envelope(envelope: Option<&str>) -> Result<Envelope> {
         } else {
             todo!();
         }
-
-        // if ur.ur_type_str() == "xid" {
-        //     todo!();
-        // } else {
-        //     bail!("Invalid UR type");
-        // }
     } else {
         bail!("Invalid envelope");
     }
