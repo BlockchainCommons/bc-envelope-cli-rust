@@ -4,7 +4,7 @@ use bc_xid::XIDDocument;
 use clap::Args;
 use anyhow::Result;
 
-use crate::{cmd::xid::utils::XIDDocumentReadable, envelope_args::{ EnvelopeArgs, EnvelopeArgsLike }};
+use crate::envelope_args::{ EnvelopeArgs, EnvelopeArgsLike };
 
 /// Retrieve all the XID document's resolution methods.
 #[derive(Debug, Args)]
@@ -19,8 +19,6 @@ impl EnvelopeArgsLike for CommandArgs {
         self.envelope_args.envelope()
     }
 }
-
-impl XIDDocumentReadable for CommandArgs { }
 
 impl crate::exec::Exec for CommandArgs {
     fn exec(&self) -> Result<String> {
