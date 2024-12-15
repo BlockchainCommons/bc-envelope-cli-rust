@@ -25,7 +25,6 @@ impl crate::exec::Exec for CommandArgs {
         let envelope = self.read_envelope()?;
         XIDDocument::from_unsigned_envelope(&envelope)?; // Validation only
         let key_assertions = envelope.assertions_with_predicate(known_values::KEY);
-        // Transform to an vector of UR strings, and join with newlines
         let keys = key_assertions.iter().map(|key| key.ur_string()).collect::<Vec<String>>().join("\n");
         Ok(keys)
     }

@@ -1,5 +1,5 @@
 use anyhow::{bail, Result};
-use bc_components::{tags::TAG_ENVELOPE, Digest, ARID, URI, UUID};
+use bc_components::{tags::TAG_ENVELOPE, Digest, ARID, URI, UUID, XID};
 use bc_envelope::prelude::*;
 use clap::{Args, ValueEnum};
 
@@ -57,6 +57,9 @@ pub enum SubjectType {
 
     /// Wrapped Envelope (ur:envelope)
     Wrapped,
+
+    /// XID
+    Xid,
 }
 
 /// Extract the subject of the input envelope.
@@ -108,6 +111,7 @@ impl crate::exec::Exec for CommandArgs {
             SubjectType::Uri => envelope.extract_subject::<URI>()?.to_string(),
             SubjectType::Uuid => envelope.extract_subject::<UUID>()?.to_string(),
             SubjectType::Wrapped => envelope.unwrap_envelope()?.ur_string(),
+            SubjectType::Xid => envelope.extract_subject::<XID>()?.ur_string(),
         };
         Ok(string)
     }

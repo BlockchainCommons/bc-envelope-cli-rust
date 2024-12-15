@@ -10,7 +10,7 @@ use crate::envelope_args::{ EnvelopeArgs, EnvelopeArgsLike };
 #[derive(Debug, Args)]
 #[group(skip)]
 pub struct CommandArgs {
-    /// The index of the key to retrieve.
+    /// The index of the key to retrieve
     index: usize,
 
     #[command(flatten)]
