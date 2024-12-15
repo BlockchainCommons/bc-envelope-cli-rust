@@ -34,12 +34,12 @@ pub struct KeyArgs {
     private_opts: PrivateOptions,
 
     /// Provide an endpoint for the key. May be repeated.
-    #[arg(long, name = "URI", num_args = 1)]
-    endpoint: Vec<URI>,
+    #[arg(long = "endpoint", name = "URI", num_args = 1)]
+    endpoints: Vec<URI>,
 
     /// Grant a specific permission to the key. May be repeated.
-    #[arg(long, name = "PRIVILEGE", default_value = "all", num_args = 1)]
-    permission: Vec<KeyPrivilege>,
+    #[arg(long = "allow", name = "PRIVILEGE", default_value = "all", num_args = 1)]
+    permissions: Vec<KeyPrivilege>,
 
     /// The key to process. If omitted, the key will be read from stdin.
     #[arg(name = "KEYS")]
@@ -56,11 +56,11 @@ impl KeyArgsLike for KeyArgs {
     }
 
     fn endpoints(&self) -> &[URI] {
-        &self.endpoint
+        &self.endpoints
     }
 
     fn permissions(&self) -> &[KeyPrivilege] {
-        &self.permission
+        &self.permissions
     }
 
     fn keys(&self) -> Option<&str> {
