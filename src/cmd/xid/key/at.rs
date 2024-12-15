@@ -6,7 +6,7 @@ use anyhow::{anyhow, Result};
 
 use crate::envelope_args::{ EnvelopeArgs, EnvelopeArgsLike };
 
-/// Retrieve the key at the given index
+/// Retrieve the XID Document's key at the given index
 #[derive(Debug, Args)]
 #[group(skip)]
 pub struct CommandArgs {

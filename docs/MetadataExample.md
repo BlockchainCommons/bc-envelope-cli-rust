@@ -12,7 +12,7 @@ Start by creating an envelope that represents the author and what is known about
 👉
 AUTHOR=`envelope subject type arid 9c747ace78a4c826392510dd6285551e7df4e5164729a1b36198e56e017666c8 | \
     envelope assertion add pred-obj known dereferenceVia string LibraryOfCongress | \
-    envelope assertion add pred-obj known hasName string "Ayn Rand"`
+    envelope assertion add pred-obj known name string "Ayn Rand"`
 envelope format $AUTHOR
 ```
 
@@ -20,7 +20,7 @@ envelope format $AUTHOR
 👈
 ARID(9c747ace) [
     'dereferenceVia': "LibraryOfCongress"
-    'hasName': "Ayn Rand"
+    'name': "Ayn Rand"
 ]
 ```
 
@@ -63,8 +63,8 @@ WORK=`envelope subject type arid 7fb90a9d96c07f39f75ea6acf392d79f241fac4ec0be212
     envelope assertion add pred-obj string isbn string "9780451191144" | \
     envelope assertion add pred-obj string author envelope $AUTHOR | \
     envelope assertion add pred-obj known dereferenceVia string "LibraryOfCongress" | \
-    envelope assertion add pred-obj known hasName envelope $NAME_EN | \
-    envelope assertion add pred-obj known hasName envelope $NAME_ES`
+    envelope assertion add pred-obj known name envelope $NAME_EN | \
+    envelope assertion add pred-obj known name envelope $NAME_ES`
 envelope format $WORK
 ```
 
@@ -74,14 +74,14 @@ ARID(7fb90a9d) [
     'isA': "Novel"
     "author": ARID(9c747ace) [
         'dereferenceVia': "LibraryOfCongress"
-        'hasName': "Ayn Rand"
+        'name': "Ayn Rand"
     ]
     "isbn": "9780451191144"
     'dereferenceVia': "LibraryOfCongress"
-    'hasName': "Atlas Shrugged" [
+    'name': "Atlas Shrugged" [
         'language': "en"
     ]
-    'hasName': "La rebelión de Atlas" [
+    'name': "La rebelión de Atlas" [
         'language': "es"
     ]
 ]
@@ -120,14 +120,14 @@ Digest(26d05af5) [
         'isA': "Novel"
         "author": ARID(9c747ace) [
             'dereferenceVia': "LibraryOfCongress"
-            'hasName': "Ayn Rand"
+            'name': "Ayn Rand"
         ]
         "isbn": "9780451191144"
         'dereferenceVia': "LibraryOfCongress"
-        'hasName': "Atlas Shrugged" [
+        'name': "Atlas Shrugged" [
             'language': "en"
         ]
-        'hasName': "La rebelión de Atlas" [
+        'name': "La rebelión de Atlas" [
             'language': "es"
         ]
     ]

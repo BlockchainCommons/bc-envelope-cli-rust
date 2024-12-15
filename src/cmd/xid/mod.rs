@@ -1,3 +1,4 @@
+pub mod delegate;
 pub mod id;
 pub mod key_args;
 pub mod key_privilege;
@@ -24,6 +25,7 @@ enum SubCommands {
     Id(id::CommandArgs),
     Key(key::CommandArgs),
     Method(method::CommandArgs),
+    Delegate(delegate::CommandArgs),
 }
 
 impl crate::exec::Exec for CommandArgs {
@@ -33,6 +35,7 @@ impl crate::exec::Exec for CommandArgs {
             SubCommands::Id(args) => args.exec(),
             SubCommands::Key(args) => args.exec(),
             SubCommands::Method(args) => args.exec(),
+            SubCommands::Delegate(args) => args.exec(),
         }
     }
 }

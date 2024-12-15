@@ -14,7 +14,7 @@ use crate::{
     envelope_args::{ EnvelopeArgs, EnvelopeArgsLike },
 };
 
-/// Create a new XID document from an inception key, either ur:crypto-pubkeys or ur:crypto-prvkeys.
+/// Add a key to the XID document.
 #[derive(Debug, Args)]
 #[group(skip)]
 pub struct CommandArgs {
