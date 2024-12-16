@@ -38,6 +38,11 @@ See the [docs](docs/README.md) directory for more information.
 
 ## Version History
 
+### 0.10.0: December 15 2024
+
+- Started adding support for [XID Documents](docs/XID.md).
+- Anywhere in `envelope` that accepts a `ur:envelope` can also accept any other UR types containing envelopes, including XID documents.
+
 ### 0.9.3: December 1, 2024
 
 - Aligned to dependencies.

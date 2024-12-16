@@ -11,5 +11,6 @@ The following docs exemplify the basic functionality of the `envelope` tool. The
 * [Verifiable Credential with Detailed Elision Example](VCElisionExample.md) — Eliding some of a credential.
 * [Attachments](Attachments.md) — Standardized third-party attachments for envelopes.
 * [Signing Envelopes](Signing.md) — Signing and verifying signatures on envelopes.
+* [XID Documents](XID.md) — Working with XIDs and XID documents.
 
 For more examples of `envelope-cli` usage, see the [envelope-cli videos](https://github.com/BlockchainCommons/envelope-cli-swift#videos) and their transcripts.
