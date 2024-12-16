@@ -22,6 +22,6 @@ impl XIDDocumentReadable for CommandArgs { }
 impl crate::exec::Exec for CommandArgs {
     fn exec(&self) -> Result<String> {
         let xid_document = self.read_xid_document()?;
-        Ok(xid_document.keys().len().to_string())
+        Ok(xid_document.delegates().len().to_string())
     }
 }

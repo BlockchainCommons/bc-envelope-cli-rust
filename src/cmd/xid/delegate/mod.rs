@@ -6,8 +6,12 @@ pub mod find;
 pub mod remove;
 pub mod update;
 
+use bc_ur::prelude::*;
+use bc_xid::{Delegate, HasPermissions, Privilege, XIDDocument};
 use clap::{Subcommand, Args};
 use anyhow::Result;
+
+use super::key_privilege::KeyPrivilege;
 
 /// Work with a XID document's keys.
 #[derive(Debug, Args)]
@@ -40,4 +44,21 @@ impl crate::exec::Exec for CommandArgs {
             SubCommands::Update(args) => args.exec(),
         }
     }
+}
+
+fn add_delegate_permissions(delegate: &mut Delegate, permissions: &[KeyPrivilege]) {
+    // If `All` is in the permissions, just add it.
+    if permissions.contains(&KeyPrivilege::All) {
+        delegate.add_allow(Privilege::All);
+    } else {
+        // Otherwise, add each permission.
+        for permission in permissions {
+            delegate.add_allow((*permission).into());
+        }
+    }
+}
+
+fn xid_document_to_unsigned_envelope_ur_string(xid_document: XIDDocument) -> String {
+    let unsigned_envelope = xid_document.to_unsigned_envelope();
+    UR::new("xid", unsigned_envelope.to_cbor()).unwrap().string()
 }

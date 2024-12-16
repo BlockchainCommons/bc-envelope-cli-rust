@@ -29,6 +29,7 @@ impl crate::exec::Exec for CommandArgs {
         XIDDocument::from_unsigned_envelope(&envelope)?; // Validation only
         let key_assertions = envelope.assertions_with_predicate(known_values::KEY);
         let key_assertion = key_assertions.get(self.index).ok_or_else(|| anyhow!("Index out of bounds"))?;
-        Ok(key_assertion.ur_string())
+        let key = key_assertion.try_object()?;
+        Ok(key.ur_string())
     }
 }
