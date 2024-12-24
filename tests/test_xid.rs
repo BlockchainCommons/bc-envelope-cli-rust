@@ -352,7 +352,7 @@ fn test_xid_key_update() {
         ]
     ).unwrap();
 
-    println!("{}", xid_doc_updated);
+    // println!("{}", xid_doc_updated);
 
     // $ envelope format $XID_DOC_UPDATED
 
