@@ -64,9 +64,9 @@ impl crate::exec::Exec for CommandArgs {
         let mut key = xid_document
             .find_key_by_public_key_base(&public_key_base)
             .cloned()
-            .ok_or_else(|| anyhow!("Key not found in XID document"))?;
+            .ok_or_else(|| anyhow!("Key not found"))?;
 
-        xid_document.remove_key(&key);
+        xid_document.take_key(&key);
         update_key(&mut key, self.name(), self.endpoints(), self.permissions());
         xid_document.add_key(key)?;
 

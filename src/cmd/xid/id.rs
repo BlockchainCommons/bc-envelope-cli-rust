@@ -1,6 +1,7 @@
-use bc_ur::UREncodable;
+use bc_ur::prelude::*;
 use clap::{Args, ValueEnum};
 use anyhow::Result;
+use bc_components::XIDProvider;
 
 use crate::{cmd::xid::utils::XIDDocumentReadable, envelope_args::{ EnvelopeArgs, EnvelopeArgsLike }};
 

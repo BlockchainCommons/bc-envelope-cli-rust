@@ -1,5 +1,6 @@
 use bc_envelope::EnvelopeEncodable;
 use bc_ur::prelude::*;
+use bc_xid::HasName;
 use clap::Args;
 use anyhow::Result;
 

@@ -36,20 +36,17 @@ impl XIDDocumentReadable for CommandArgs {}
 impl crate::exec::Exec for CommandArgs {
     fn exec(&self) -> Result<String> {
         let replacement_xid_document = XIDDocument::from_ur_string(self.delegate.as_str())?;
-        let target_xid = replacement_xid_document.xid().clone();
-        let mut delegate = Delegate::new(replacement_xid_document);
+        let mut delegate = Delegate::new(&replacement_xid_document);
 
         let mut xid_document = self.read_xid_document()?;
-        if xid_document.remove_delegate(&target_xid).is_none() {
-            bail!("Delegate not found.");
-        }
+        xid_document.take_delegate(&delegate);
         if self.permissions.is_empty() {
             bail!("At least one permission must be granted to the delegate.");
         }
 
         add_delegate_permissions(&mut delegate, &self.permissions);
-        xid_document.add_delegate(delegate);
-        
+        xid_document.add_delegate(delegate)?;
+
         Ok(xid_document_to_unsigned_envelope_ur_string(xid_document))
     }
 }

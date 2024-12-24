@@ -55,7 +55,7 @@ impl crate::exec::Exec for CommandArgs {
         };
 
         let mut key = xid_document.keys().iter().next().unwrap().clone();
-        xid_document.remove_key(&key);
+        xid_document.take_key(&key);
         update_key(&mut key, self.name(), self.endpoints(), self.permissions());
         xid_document.add_key(key)?;
 

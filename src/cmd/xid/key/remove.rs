@@ -1,7 +1,7 @@
 use bc_ur::prelude::*;
 use bc_xid::PrivateKeyOptions;
 use clap::Args;
-use anyhow::{Result, anyhow};
+use anyhow::Result;
 
 use crate::{cmd::xid::utils::{read_public_key, XIDDocumentReadable}, envelope_args::{ EnvelopeArgs, EnvelopeArgsLike }};
 
@@ -29,13 +29,7 @@ impl crate::exec::Exec for CommandArgs {
     fn exec(&self) -> Result<String> {
         let public_key_base = read_public_key(self.keys.as_deref())?;
         let mut xid_document = self.read_xid_document()?;
-
-        let key = xid_document
-            .find_key_by_public_key_base(&public_key_base)
-            .cloned()
-            .ok_or_else(|| anyhow!("Key not found in XID document"))?;
-
-        xid_document.remove_key(&key);
+        xid_document.remove_key(&public_key_base)?;
         let unsigned_envelope = xid_document.to_unsigned_envelope_opt(PrivateKeyOptions::Include);
         let ur = UR::new("xid", unsigned_envelope.to_cbor())?;
         Ok(ur.string())

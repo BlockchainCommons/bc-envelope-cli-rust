@@ -3,7 +3,7 @@ use bc_envelope::{ PrivateKeyBase, PublicKeyBase };
 use bc_ur::prelude::*;
 
 use anyhow::{ Result, bail };
-use bc_xid::{ HasPermissions, Key, XIDDocument };
+use bc_xid::{ HasName, HasPermissions, Key, XIDDocument };
 
 use crate::envelope_args::EnvelopeArgsLike;
 
@@ -53,6 +53,7 @@ pub fn update_key(key: &mut Key, name: &str, endpoints: &[URI], permissions: &[K
             key.add_endpoint(uri.clone());
         }
     }
+    
     if !permissions.is_empty() {
         key.clear_all_permissions();
         for privilege in permissions {
