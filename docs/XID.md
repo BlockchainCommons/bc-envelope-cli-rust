@@ -10,7 +10,7 @@ The `envelope` tool now includes basic support for working with [XID Documents](
 
 ## Import All Envelope URs
 
-Anywhere in `envelope` that accepts a `ur:envelope` can also accept any other UR type,  including XID documents.
+Anywhere in `envelope` that accepts a `ur:envelope` can also accept any other UR type, including XID documents.
 
 ```
 $ XID_DOC=ur:xid/tpsplftpsotanshdhdcxjsdigtwneocmnybadpdlzobysbstmekteypspeotcfldynlpsfolsbintyjkrhfnoyaylftpsotansgylftanshfhdcxhslkfzemaylrwttynsdlghrydpmdfzvdglndloimaahykorefddtsguogmvlahqztansgrhdcxetlewzvlwyfdtobeytidosbamkswaomwwfyabakssakggegychesmerkcatekpcxoycsfncsfggmplgshd
@@ -26,13 +26,17 @@ XID(71274df1) [
 Note that this does not validate the XID document (or any other envelope-containing UR), it just reads the UR’s envelope, meaning you can manipulate it like any other envelope.
 
 ```
-$ envelope assertion at 0 $XID_DOC | envelope format
+$ envelope assertion at 0 $XID_DOC | \
+    envelope format
 
 'key': PublicKeyBase(eb9b1cae) [
     'allow': 'All'
 ]
 
-$ envelope assertion at 0 $XID_DOC | envelope extract object | envelope assertion at 0 | envelope format
+$ envelope assertion at 0 $XID_DOC | \
+    envelope extract object | \
+    envelope assertion at 0 | \
+    envelope format
 
 'allow': 'All'
 ```
@@ -94,7 +98,12 @@ ur:xid/hdcxjsdigtwneocmnybadpdlzobysbstmekteypspeotcfldynlpsfolsbintyjkrhfnvsbyr
 Several output formats are supported. `ur` is the default and is machine-readable, while the others are human-readable.
 
 ```
-$ envelope xid id --format ur --format hex --format bytewords --format bytemoji $XID_DOC
+$ envelope xid id \
+    --format ur \
+    --format hex \
+    --format bytewords \
+    --format bytemoji \
+    $XID_DOC
 
 ur:xid/hdcxjsdigtwneocmnybadpdlzobysbstmekteypspeotcfldynlpsfolsbintyjkrhfnvsbyrdfw
 XID(71274df1)
