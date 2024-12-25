@@ -1163,3 +1163,294 @@ fn test_xid_delegate() {
         "#}.trim()
     ).unwrap();
 }
+
+#[test]
+fn test_xid_service() {
+    bc_envelope::register_tags();
+
+    // ### `xid service`: Work with Services
+    //
+    // ```
+    // $ envelope xid service --help
+    // ```
+    //
+    // Services are URI endpoints along with the keys, delegates, and permissions that are allowed to use them.
+    //
+    // The keys and delegates in a Service declaration are references to keys and delegates that must already exist in the XID document.
+    //
+    // ```
+    // $ ALICE_PRVKEYS=ur:crypto-prvkeys/gdlfwfdwlphlfsghcphfcsaybekkkbaejksfnynsct
+    // $ ALICE_PUBKEYS=`envelope generate pubkeys $ALICE_PRVKEYS`
+    // $ BOB_PRVKEYS=ur:crypto-prvkeys/gdcsknhkjkswgtecnslsjtrdfgimfyuykgbzbagdva
+    // $ BOB_PUBKEYS=`envelope generate pubkeys $BOB_PRVKEYS`
+    // $ CAROL_PRVKEYS="ur:crypto-prvkeys/gdlpjypepycsvodtihcecwvsyljlzevwcnamjzdnos"
+    // $ CAROL_PUBKEYS=`envelope generate pubkeys $CAROL_PRVKEYS`
+    // ```
+    //
+    // Alice creates a basic XID document.
+    //
+    // ```
+    // $ ALICE_XID_DOC=`envelope xid new --name 'Alice' $ALICE_PUBKEYS`
+    // $ envelope format $ALICE_XID_DOC
+    //
+    // XID(93a4d4e7) [
+    //     'key': PublicKeyBase(cab108a0) [
+    //         'allow': 'All'
+    //         'name': "Alice"
+    //     ]
+    // ]
+    // ```
+
+    let alice_xid_doc = run_cli(
+        &["xid", "new", "--name", "Alice", ALICE_PUBKEYS]
+    ).unwrap();
+
+    run_cli_expect(
+        &["format", &alice_xid_doc],
+        indoc! {r#"
+            XID(93a4d4e7) [
+                'key': PublicKeyBase(cab108a0) [
+                    'allow': 'All'
+                    'name': "Alice"
+                ]
+            ]
+        "#}.trim()
+    ).unwrap();
+
+    // Alice adds Bob as a delegate.
+    //
+    // ```
+    // $ BOB_XID_DOC=`envelope xid new --name 'Bob' $BOB_PUBKEYS`
+    // $ ALICE_XID_DOC=`envelope xid delegate add --allow 'sign' --allow 'encrypt' $BOB_XID_DOC $ALICE_XID_DOC`
+    // $ envelope format $ALICE_XID_DOC
+    //
+    // XID(93a4d4e7) [
+    //     'delegate': {
+    //         XID(f1199a75) [
+    //             'key': PublicKeyBase(e2c18423) [
+    //                 'allow': 'All'
+    //                 'name': "Bob"
+    //             ]
+    //         ]
+    //     } [
+    //         'allow': 'Encrypt'
+    //         'allow': 'Sign'
+    //     ]
+    //     'key': PublicKeyBase(cab108a0) [
+    //         'allow': 'All'
+    //         'name': "Alice"
+    //     ]
+    // ]
+    // ```
+
+    let bob_xid_doc = run_cli(
+        &["xid", "new", "--name", "Bob", BOB_PUBKEYS]
+    ).unwrap();
+
+    let alice_xid_doc = run_cli(
+        &["xid", "delegate", "add", "--allow", "sign", "--allow", "encrypt", &bob_xid_doc, &alice_xid_doc]
+    ).unwrap();
+
+    run_cli_expect(
+        &["format", &alice_xid_doc],
+        indoc! {r#"
+            XID(93a4d4e7) [
+                'delegate': {
+                    XID(f1199a75) [
+                        'key': PublicKeyBase(e2c18423) [
+                            'allow': 'All'
+                            'name': "Bob"
+                        ]
+                    ]
+                } [
+                    'allow': 'Encrypt'
+                    'allow': 'Sign'
+                ]
+                'key': PublicKeyBase(cab108a0) [
+                    'allow': 'All'
+                    'name': "Alice"
+                ]
+            ]
+        "#}.trim()
+    ).unwrap();
+
+    // Alice adds a secure messaging service.
+    //
+    // ```
+    // $ ALICE_XID_DOC_WITH_SERVICE=`envelope xid service add \
+    //     --name 'Messaging' \
+    //     --capability 'com.example.messaging' \
+    //     --allow 'sign' \
+    //     --allow 'encrypt' \
+    //     --key $ALICE_PUBKEYS \
+    //     --delegate $BOB_XID_DOC \
+    //     "https://messaging.example.com" \
+    //     $ALICE_XID_DOC`
+    // ```
+
+    let alice_xid_doc = run_cli(
+        &["xid", "service", "add",
+            "--name", "Messaging",
+            "--capability", "com.example.messaging",
+            "--allow", "sign",
+            "--allow", "encrypt",
+            "--key", ALICE_PUBKEYS,
+            "--delegate", &bob_xid_doc,
+            "https://messaging.example.com",
+            &alice_xid_doc
+        ]
+    ).unwrap();
+
+    // $ envelope format $ALICE_XID_DOC_WITH_SERVICE
+    //
+    // XID(93a4d4e7) [
+    //     'delegate': {
+    //         XID(f1199a75) [
+    //             'key': PublicKeyBase(e2c18423) [
+    //                 'allow': 'All'
+    //                 'name': "Bob"
+    //             ]
+    //         ]
+    //     } [
+    //         'allow': 'Encrypt'
+    //         'allow': 'Sign'
+    //     ]
+    //     'key': PublicKeyBase(cab108a0) [
+    //         'allow': 'All'
+    //         'name': "Alice"
+    //     ]
+    //     'service': URI(https://messaging.example.com) [
+    //         'allow': 'Encrypt'
+    //         'allow': 'Sign'
+    //         'capability': "com.example.messaging"
+    //         'delegate': Reference(f1199a75)
+    //         'key': Reference(cab108a0)
+    //         'name': "Messaging"
+    //     ]
+    // ]
+
+    run_cli_expect(
+        &["format", &alice_xid_doc],
+        indoc! {r#"
+            XID(93a4d4e7) [
+                'delegate': {
+                    XID(f1199a75) [
+                        'key': PublicKeyBase(e2c18423) [
+                            'allow': 'All'
+                            'name': "Bob"
+                        ]
+                    ]
+                } [
+                    'allow': 'Encrypt'
+                    'allow': 'Sign'
+                ]
+                'key': PublicKeyBase(cab108a0) [
+                    'allow': 'All'
+                    'name': "Alice"
+                ]
+                'service': URI(https://messaging.example.com) [
+                    'allow': 'Encrypt'
+                    'allow': 'Sign'
+                    'capability': "com.example.messaging"
+                    'delegate': Reference(f1199a75)
+                    'key': Reference(cab108a0)
+                    'name': "Messaging"
+                ]
+            ]
+        "#}.trim()
+    ).unwrap();
+
+    // Alice adds a second service for retrieving her status.
+    //
+    // ```
+    // $ ALICE_XID_DOC_WITH_SERVICE=`envelope xid service add \
+    //     --name 'Status' \
+    //     --capability 'com.example.status' \
+    //     --allow 'sign' \
+    //     --key $ALICE_PUBKEYS \
+    //     "https://status.example.com/alice" \
+    //     $ALICE_XID_DOC_WITH_SERVICE`
+    //
+    // $ envelope format $ALICE_XID_DOC_WITH_SERVICE
+    //
+    // XID(93a4d4e7) [
+    //     'delegate': {
+    //         XID(f1199a75) [
+    //             'key': PublicKeyBase(e2c18423) [
+    //                 'allow': 'All'
+    //                 'name': "Bob"
+    //             ]
+    //         ]
+    //     } [
+    //         'allow': 'Encrypt'
+    //         'allow': 'Sign'
+    //     ]
+    //     'key': PublicKeyBase(cab108a0) [
+    //         'allow': 'All'
+    //         'name': "Alice"
+    //     ]
+    //     'service': URI(https://messaging.example.com) [
+    //         'allow': 'Encrypt'
+    //         'allow': 'Sign'
+    //         'capability': "com.example.messaging"
+    //         'delegate': Reference(f1199a75)
+    //         'key': Reference(cab108a0)
+    //         'name': "Messaging"
+    //     ]
+    //     'service': URI(https://status.example.com/alice) [
+    //         'allow': 'Sign'
+    //         'capability': "com.example.status"
+    //         'key': Reference(cab108a0)
+    //         'name': "Status"
+    //     ]
+    // ]
+    // ```
+
+    let alice_xid_doc = run_cli(
+        &["xid", "service", "add",
+            "--name", "Status",
+            "--capability", "com.example.status",
+            "--allow", "sign",
+            "--key", ALICE_PUBKEYS,
+            "https://status.example.com/alice",
+            &alice_xid_doc
+        ]
+    ).unwrap();
+
+    run_cli_expect(
+        &["format", &alice_xid_doc],
+        indoc! {r#"
+            XID(93a4d4e7) [
+                'delegate': {
+                    XID(f1199a75) [
+                        'key': PublicKeyBase(e2c18423) [
+                            'allow': 'All'
+                            'name': "Bob"
+                        ]
+                    ]
+                } [
+                    'allow': 'Encrypt'
+                    'allow': 'Sign'
+                ]
+                'key': PublicKeyBase(cab108a0) [
+                    'allow': 'All'
+                    'name': "Alice"
+                ]
+                'service': URI(https://messaging.example.com) [
+                    'allow': 'Encrypt'
+                    'allow': 'Sign'
+                    'capability': "com.example.messaging"
+                    'delegate': Reference(f1199a75)
+                    'key': Reference(cab108a0)
+                    'name': "Messaging"
+                ]
+                'service': URI(https://status.example.com/alice) [
+                    'allow': 'Sign'
+                    'capability': "com.example.status"
+                    'key': Reference(cab108a0)
+                    'name': "Status"
+                ]
+            ]
+        "#}.trim()
+    ).unwrap();
+}

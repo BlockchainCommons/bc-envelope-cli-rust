@@ -28,11 +28,11 @@ impl ServiceArgsLike for CommandArgs {
         self.service_args.uri()
     }
 
-    fn name(&self) -> &str {
+    fn name(&self) -> Option<&str> {
         self.service_args.name()
     }
 
-    fn capability(&self) -> &str {
+    fn capability(&self) -> Option<&str> {
         self.service_args.capability()
     }
 
@@ -65,12 +65,16 @@ impl crate::exec::Exec for CommandArgs {
 
         let mut service = Service::new(uri);
 
-        if !self.name().is_empty() {
-            service.set_name(self.name());
+        if let Some(name) = self.name() {
+            if !name.is_empty() {
+                service.set_name(name);
+            }
         }
 
-        if !self.capability().is_empty() {
-            service.set_capability(self.capability());
+        if let Some(capability) = self.capability() {
+            if !capability.is_empty() {
+                service.set_capability(capability);
+            }
         }
 
         for privilege in self.permissions() {
@@ -87,6 +91,7 @@ impl crate::exec::Exec for CommandArgs {
             service.add_delegate(delegate)?;
         }
 
+        xid_document.check_service_consistency(&service)?;
         xid_document.add_service(service)?;
 
         Ok(xid_document_to_ur_string(&xid_document, PrivateOptions::Include))

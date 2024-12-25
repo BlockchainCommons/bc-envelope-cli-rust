@@ -24,12 +24,12 @@ impl crate::exec::Exec for CommandArgs {
     fn exec(&self) -> Result<String> {
         let envelope = self.read_envelope()?;
         XIDDocument::from_unsigned_envelope(&envelope)?; // Validation only
-        let key_assertions = envelope.assertions_with_predicate(known_values::KEY);
-        let keys = key_assertions
+        let service_assertions = envelope.assertions_with_predicate(known_values::SERVICE);
+        let services = service_assertions
             .iter()
             .map(|key| key.try_object().unwrap().ur_string())
             .collect::<Vec<String>>()
             .join("\n");
-        Ok(keys)
+        Ok(services)
     }
 }

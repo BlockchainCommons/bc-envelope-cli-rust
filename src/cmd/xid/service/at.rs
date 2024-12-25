@@ -27,9 +27,9 @@ impl crate::exec::Exec for CommandArgs {
     fn exec(&self) -> Result<String> {
         let envelope = self.read_envelope()?;
         XIDDocument::from_unsigned_envelope(&envelope)?; // Validation only
-        let key_assertions = envelope.assertions_with_predicate(known_values::KEY);
-        let key_assertion = key_assertions.get(self.index).ok_or_else(|| anyhow!("Index out of bounds"))?;
-        let key = key_assertion.try_object()?;
-        Ok(key.ur_string())
+        let service_assertions = envelope.assertions_with_predicate(known_values::SERVICE);
+        let service_assertion = service_assertions.get(self.index).ok_or_else(|| anyhow!("Index out of bounds"))?;
+        let service = service_assertion.try_object()?;
+        Ok(service.ur_string())
     }
 }

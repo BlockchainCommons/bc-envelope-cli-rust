@@ -9,8 +9,8 @@ use crate::cmd::xid::{utils::read_uri, xid_privilege::XIDPrivilege};
 
 pub trait ServiceArgsLike {
     fn uri(&self) -> Option<&URI>;
-    fn name(&self) -> &str;
-    fn capability(&self) -> &str;
+    fn name(&self) -> Option<&str>;
+    fn capability(&self) -> Option<&str>;
     fn permissions(&self) -> &[XIDPrivilege];
     fn keys(&self) -> &[PublicKeyBase];
     fn delegates(&self) -> &[XIDDocument];
@@ -32,12 +32,12 @@ fn parse_xid_document(s: &str) -> Result<XIDDocument, String> {
 #[group(skip)]
 pub struct ServiceArgs {
     /// A user-assigned name for the key.
-    #[arg(long, default_value = "")]
-    name: String,
+    #[arg(long)]
+    name: Option<String>,
 
     /// The capability identifier of the service.
-    #[arg(long, default_value = "")]
-    capability: String,
+    #[arg(long)]
+    capability: Option<String>,
 
     /// A specific key for use with the service. May be repeated.
     #[arg(long = "key", name = "PUBLIC_KEY_BASE", num_args = 1)]
@@ -58,12 +58,12 @@ pub struct ServiceArgs {
 }
 
 impl ServiceArgsLike for ServiceArgs {
-    fn name(&self) -> &str {
-        &self.name
+    fn name(&self) -> Option<&str> {
+        self.name.as_deref()
     }
 
-    fn capability(&self) -> &str {
-        &self.capability
+    fn capability(&self) -> Option<&str> {
+        self.capability.as_deref()
     }
 
     fn keys(&self) -> &[PublicKeyBase] {
