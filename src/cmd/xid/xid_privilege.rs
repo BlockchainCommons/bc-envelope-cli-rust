@@ -2,7 +2,7 @@ use bc_xid::Privilege;
 use clap::ValueEnum;
 
 #[derive(ValueEnum, Copy, Clone, Debug, PartialEq, Eq, Default)]
-pub enum KeyPrivilege {
+pub enum XIDPrivilege {
     /// Allow all applicable XID operations
     #[default]
     All,
@@ -55,23 +55,23 @@ pub enum KeyPrivilege {
     Revoke,
 }
 
-impl From<KeyPrivilege> for Privilege {
-    fn from(privilege: KeyPrivilege) -> Self {
+impl From<XIDPrivilege> for Privilege {
+    fn from(privilege: XIDPrivilege) -> Self {
         match privilege {
-            KeyPrivilege::All => Privilege::All,
-            KeyPrivilege::Auth => Privilege::Auth,
-            KeyPrivilege::Sign => Privilege::Sign,
-            KeyPrivilege::Encrypt => Privilege::Encrypt,
-            KeyPrivilege::Elide => Privilege::Elide,
-            KeyPrivilege::Issue => Privilege::Issue,
-            KeyPrivilege::Access => Privilege::Access,
-            KeyPrivilege::Delegate => Privilege::Delegate,
-            KeyPrivilege::Verify => Privilege::Verify,
-            KeyPrivilege::Update => Privilege::Update,
-            KeyPrivilege::Transfer => Privilege::Transfer,
-            KeyPrivilege::Elect => Privilege::Elect,
-            KeyPrivilege::Burn => Privilege::Burn,
-            KeyPrivilege::Revoke => Privilege::Revoke,
+            XIDPrivilege::All => Privilege::All,
+            XIDPrivilege::Auth => Privilege::Auth,
+            XIDPrivilege::Sign => Privilege::Sign,
+            XIDPrivilege::Encrypt => Privilege::Encrypt,
+            XIDPrivilege::Elide => Privilege::Elide,
+            XIDPrivilege::Issue => Privilege::Issue,
+            XIDPrivilege::Access => Privilege::Access,
+            XIDPrivilege::Delegate => Privilege::Delegate,
+            XIDPrivilege::Verify => Privilege::Verify,
+            XIDPrivilege::Update => Privilege::Update,
+            XIDPrivilege::Transfer => Privilege::Transfer,
+            XIDPrivilege::Elect => Privilege::Elect,
+            XIDPrivilege::Burn => Privilege::Burn,
+            XIDPrivilege::Revoke => Privilege::Revoke,
         }
     }
 }

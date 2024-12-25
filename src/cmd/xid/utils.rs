@@ -1,13 +1,13 @@
 use bc_components::URI;
-use bc_envelope::{ PrivateKeyBase, PublicKeyBase };
+use bc_envelope::{ Envelope, PrivateKeyBase, PublicKeyBase };
 use bc_ur::prelude::*;
 
 use anyhow::{ Result, bail };
-use bc_xid::{ HasName, HasPermissions, Key, XIDDocument };
+use bc_xid::{ HasName, HasPermissions, Key, PrivateKeyOptions, XIDDocument };
 
 use crate::envelope_args::EnvelopeArgsLike;
 
-use super::key_privilege::KeyPrivilege;
+use super::{private_options::PrivateOptions, xid_privilege::XIDPrivilege};
 
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub enum InputKey {
@@ -43,7 +43,7 @@ pub fn read_public_key(key: Option<&str>) -> Result<PublicKeyBase> {
     }
 }
 
-pub fn update_key(key: &mut Key, name: &str, endpoints: &[URI], permissions: &[KeyPrivilege]) {
+pub fn update_key(key: &mut Key, name: &str, endpoints: &[URI], permissions: &[XIDPrivilege]) {
     if !name.is_empty() {
         key.set_name(name);
     }
@@ -53,7 +53,7 @@ pub fn update_key(key: &mut Key, name: &str, endpoints: &[URI], permissions: &[K
             key.add_endpoint(uri.clone());
         }
     }
-    
+
     if !permissions.is_empty() {
         key.clear_all_permissions();
         for privilege in permissions {
@@ -67,4 +67,27 @@ pub trait XIDDocumentReadable: EnvelopeArgsLike {
         let envelope = self.read_envelope()?;
         XIDDocument::from_unsigned_envelope(&envelope)
     }
+}
+
+pub fn read_uri(uri: Option<&URI>) -> Result<URI> {
+    let mut uri_string = String::new();
+    if uri.is_none() {
+        std::io::stdin().read_line(&mut uri_string)?;
+    } else {
+        uri_string = uri.as_ref().unwrap().to_string();
+    }
+    if uri_string.is_empty() {
+        bail!("No URI provided");
+    }
+    URI::new(uri_string.trim())
+}
+
+pub fn envelope_to_xid_ur_string(envelope: &Envelope) -> String {
+    UR::new("xid", envelope.to_cbor()).unwrap().string()
+}
+
+pub fn xid_document_to_ur_string(xid_document: &XIDDocument, private_opts: PrivateOptions) -> String {
+    let options = PrivateKeyOptions::from(private_opts);
+    let unsigned_envelope = xid_document.to_unsigned_envelope_opt(options);
+    envelope_to_xid_ur_string(&unsigned_envelope)
 }

@@ -9,7 +9,7 @@ use crate::{
     envelope_args::{ EnvelopeArgs, EnvelopeArgsLike },
 };
 
-/// Updates the permissions, endpoints, or name of a key in a XID document.
+/// Updates the permissions, delegates, keys, capability identifer, or name of a service in a XID document.
 #[derive(Debug, Args)]
 #[group(skip)]
 pub struct CommandArgs {

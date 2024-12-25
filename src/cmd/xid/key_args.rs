@@ -3,13 +3,13 @@ use bc_envelope::PublicKeyBase;
 use clap::Args;
 use anyhow::Result;
 
-use super::{key_privilege::KeyPrivilege, private_options::PrivateOptions, utils::{read_key, read_public_key, InputKey}};
+use super::{xid_privilege::XIDPrivilege, private_options::PrivateOptions, utils::{read_key, read_public_key, InputKey}};
 
 pub trait KeyArgsLike {
     fn name(&self) -> &str;
     fn private_opts(&self) -> PrivateOptions;
     fn endpoints(&self) -> &[URI];
-    fn permissions(&self) -> &[KeyPrivilege];
+    fn permissions(&self) -> &[XIDPrivilege];
     fn keys(&self) -> Option<&str>;
 
     fn read_key(&self) -> Result<InputKey> {
@@ -20,7 +20,6 @@ pub trait KeyArgsLike {
         read_public_key(self.keys())
     }
 }
-
 
 #[derive(Debug, Args)]
 #[group(skip)]
@@ -39,7 +38,7 @@ pub struct KeyArgs {
 
     /// Grant a specific permission to the key. May be repeated.
     #[arg(long = "allow", name = "PRIVILEGE", default_value = "all", num_args = 1)]
-    permissions: Vec<KeyPrivilege>,
+    permissions: Vec<XIDPrivilege>,
 
     /// The key to process. If omitted, the key will be read from stdin.
     #[arg(name = "KEYS")]
@@ -59,7 +58,7 @@ impl KeyArgsLike for KeyArgs {
         &self.endpoints
     }
 
-    fn permissions(&self) -> &[KeyPrivilege] {
+    fn permissions(&self) -> &[XIDPrivilege] {
         &self.permissions
     }
 

@@ -3,11 +3,11 @@ use anyhow::Result;
 
 use crate::{cmd::xid::{private_options::PrivateOptions, utils::{read_public_key, xid_document_to_ur_string, XIDDocumentReadable}}, envelope_args::{ EnvelopeArgs, EnvelopeArgsLike }};
 
-/// Remove the given key from the XID document.
+/// Remove the given service from the XID document.
 #[derive(Debug, Args)]
 #[group(skip)]
 pub struct CommandArgs {
-    /// The key to remove. If omitted, the key will be will read from stdin.
+    /// The URI of the service to remove. If omitted, the URI will be will read from stdin.
     #[arg(name = "KEYS")]
     keys: Option<String>,
 

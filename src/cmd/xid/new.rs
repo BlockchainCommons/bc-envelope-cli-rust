@@ -1,14 +1,10 @@
 use bc_components::URI;
-use bc_ur::prelude::*;
-use bc_xid::{ PrivateKeyOptions, XIDDocument };
+use bc_xid::XIDDocument;
 use clap::Args;
 use anyhow::Result;
 
 use super::{
-    key_args::{ KeyArgs, KeyArgsLike },
-    key_privilege::KeyPrivilege,
-    private_options::PrivateOptions,
-    utils::{update_key, InputKey},
+    key_args::{ KeyArgs, KeyArgsLike }, private_options::PrivateOptions, utils::{update_key, xid_document_to_ur_string, InputKey}, xid_privilege::XIDPrivilege
 };
 
 /// Create a new XID document from an inception key
@@ -32,7 +28,7 @@ impl KeyArgsLike for CommandArgs {
         self.key_args.endpoints()
     }
 
-    fn permissions(&self) -> &[KeyPrivilege] {
+    fn permissions(&self) -> &[XIDPrivilege] {
         self.key_args.permissions()
     }
 
@@ -59,9 +55,6 @@ impl crate::exec::Exec for CommandArgs {
         update_key(&mut key, self.name(), self.endpoints(), self.permissions());
         xid_document.add_key(key)?;
 
-        let options = PrivateKeyOptions::from(self.private_opts());
-        let unsigned_envelope = xid_document.to_unsigned_envelope_opt(options);
-        let ur = UR::new("xid", unsigned_envelope.to_cbor())?;
-        Ok(ur.string())
+        Ok(xid_document_to_ur_string(&xid_document, self.private_opts()))
     }
 }

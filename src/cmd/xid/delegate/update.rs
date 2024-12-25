@@ -4,7 +4,7 @@ use anyhow::{Result, bail};
 use bc_ur::prelude::*;
 
 use crate::{
-    cmd::xid::{ key_privilege::KeyPrivilege, utils::XIDDocumentReadable },
+    cmd::xid::{ xid_privilege::XIDPrivilege, utils::XIDDocumentReadable },
     envelope_args::{ EnvelopeArgs, EnvelopeArgsLike },
 };
 
@@ -19,7 +19,7 @@ pub struct CommandArgs {
 
     /// Grant a specific permission to the delegate. May be repeated.
     #[arg(long = "allow", name = "PRIVILEGE", default_value = "all", num_args = 1)]
-    permissions: Vec<KeyPrivilege>,
+    permissions: Vec<XIDPrivilege>,
 
     #[command(flatten)]
     envelope_args: EnvelopeArgs,

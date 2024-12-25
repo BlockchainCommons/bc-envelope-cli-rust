@@ -1,15 +1,11 @@
 use bc_components::URI;
-use bc_ur::prelude::*;
 use bc_xid::{ Key, PrivateKeyOptions };
 use clap::Args;
 use anyhow::Result ;
 
 use crate::{
     cmd::xid::{
-        key_args::{ KeyArgs, KeyArgsLike },
-        key_privilege::KeyPrivilege,
-        private_options::PrivateOptions,
-        utils::{update_key, InputKey, XIDDocumentReadable},
+        key_args::{ KeyArgs, KeyArgsLike }, private_options::PrivateOptions, utils::{envelope_to_xid_ur_string, update_key, InputKey, XIDDocumentReadable}, xid_privilege::XIDPrivilege
     },
     envelope_args::{ EnvelopeArgs, EnvelopeArgsLike },
 };
@@ -38,7 +34,7 @@ impl KeyArgsLike for CommandArgs {
         self.key_args.endpoints()
     }
 
-    fn permissions(&self) -> &[KeyPrivilege] {
+    fn permissions(&self) -> &[XIDPrivilege] {
         self.key_args.permissions()
     }
 
@@ -76,7 +72,6 @@ impl crate::exec::Exec for CommandArgs {
 
         let options = PrivateKeyOptions::from(self.private_opts());
         let unsigned_envelope = xid_document.to_unsigned_envelope_opt(options);
-        let ur = UR::new("xid", unsigned_envelope.to_cbor())?;
-        Ok(ur.string())
+        Ok(envelope_to_xid_ur_string(&unsigned_envelope))
     }
 }

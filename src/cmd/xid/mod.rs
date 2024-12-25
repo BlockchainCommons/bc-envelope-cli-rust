@@ -1,12 +1,13 @@
 pub mod delegate;
 pub mod id;
 pub mod key_args;
-pub mod key_privilege;
+pub mod xid_privilege;
 pub mod key;
 pub mod method;
 pub mod new;
 pub mod private_options;
 pub mod utils;
+pub mod service;
 
 use clap::{Subcommand, Args};
 use anyhow::Result;
@@ -26,6 +27,7 @@ enum SubCommands {
     Key(key::CommandArgs),
     Method(method::CommandArgs),
     Delegate(delegate::CommandArgs),
+    Service(service::CommandArgs),
 }
 
 impl crate::exec::Exec for CommandArgs {
@@ -36,6 +38,7 @@ impl crate::exec::Exec for CommandArgs {
             SubCommands::Key(args) => args.exec(),
             SubCommands::Method(args) => args.exec(),
             SubCommands::Delegate(args) => args.exec(),
+            SubCommands::Service(args) => args.exec(),
         }
     }
 }
