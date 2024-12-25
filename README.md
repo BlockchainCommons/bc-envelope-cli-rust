@@ -38,6 +38,11 @@ See the [docs](docs/README.md) directory for more information.
 
 ## Version History
 
+### 0.11.0: December 24, 2024
+
+- Added support for [XID Document Services](docs/XID.md).
+- Endpoints in XID keys are now deprecated in favor of services.
+
 ### 0.10.0: December 15 2024
 
 - Started adding support for [XID Documents](docs/XID.md).
