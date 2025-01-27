@@ -59,6 +59,7 @@ impl crate::exec::Exec for CommandArgs {
                         SigningPrivateKey::Schnorr(_) => add(&mut result, "Description", "Schnorr Signing Private Key"),
                         SigningPrivateKey::ECDSA(_) => add(&mut result, "Description", "ECDSA Signing Private Key"),
                         SigningPrivateKey::Ed25519(_) => add(&mut result, "Description", "Ed25519 Signing Private Key"),
+                        SigningPrivateKey::Dilithium(dilithium_key) => add(&mut result, "Description", format!("{:?} Signing Private Key", dilithium_key.level())),
                         SigningPrivateKey::SSH(ssh_key) => {
                             add(&mut result, "Description", "SSH Signing Private Key");
                             add_public_key_info(&mut result, ssh_key.public_key().key_data());
@@ -71,6 +72,7 @@ impl crate::exec::Exec for CommandArgs {
                         SigningPublicKey::Schnorr(_) => add(&mut result, "Description", "Schnorr Signing Public Key"),
                         SigningPublicKey::ECDSA(_) => add(&mut result, "Description", "ECDSA Signing Public Key"),
                         SigningPublicKey::Ed25519(_) => add(&mut result, "Description", "Ed25519 Signing Public Key"),
+                        SigningPublicKey::Dilithium(dilithium_key) => add(&mut result, "Description", format!("{:?} Signing Public Key", dilithium_key.level())),
                         SigningPublicKey::SSH(ssh_key) => {
                             add(&mut result, "Description", "SSH Signing Public Key");
                             add_public_key_info(&mut result, ssh_key.key_data());
@@ -83,6 +85,7 @@ impl crate::exec::Exec for CommandArgs {
                         Signature::Schnorr { .. } => add(&mut result, "Description", "Schnorr Signature"),
                         Signature::ECDSA(_) => add(&mut result, "Description", "ECDSA Signature"),
                         Signature::Ed25519(_) => add(&mut result, "Description", "Ed25519 Signature"),
+                        Signature::Dilithium(_) => add(&mut result, "Description", "Dilithium Signature"),
                         Signature::SSH(ssh_sig) => {
                             add(&mut result, "Description", "SSH Signature");
                             add(&mut result, "Namespace", ssh_sig.namespace().to_string());

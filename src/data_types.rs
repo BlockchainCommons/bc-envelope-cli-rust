@@ -157,9 +157,9 @@ fn parse_string(s: &str) -> Result<Envelope> {
 ///
 /// - If the UR is a ur:envelope, acts like `type envelope`.
 /// - If the UR is another type, then it attempts to look up the CBOR tag for the type and
-/// encodes the envelope with the tagged CBOR content of the UR.
+///   encodes the envelope with the tagged CBOR content of the UR.
 /// - If the UR is of an unknown type, then a tag must be used to specify the CBOR tag
-/// to use.
+///   to use.
 fn parse_ur(s: &str, cbor_tag_value: Option<u64>) -> Result<Envelope> {
     let ur = UR::from_ur_string(s)?;
     if ur.ur_type_str() == "envelope" {

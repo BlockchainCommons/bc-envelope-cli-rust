@@ -10,7 +10,7 @@ The `envelope` tool can sign and verify envelopes using several different algori
   - [Signers and Verifiers](#signers-and-verifiers)
   - [Seed](#seed)
   - [Private Keybase](#private-keybase)
-  - [Agreement Keys](#agreement-keys)
+  - [X25519 Keys](#x25519-keys)
   - [Public Keybase](#public-keybase)
   - [Signing Private Key](#signing-private-key)
   - [Signing Public Key](#signing-public-key)
@@ -52,7 +52,7 @@ Envelopes may be signed by several algorithms. The default is Schnorr, which is 
 |------|---------|--------|----------|------|
 | Seed | `ur:seed` | | | Used to derive other objects. |
 | Private key base | `ur:prvkeys` | ✅ | ✅ | Directly signs and verifies Schnorr only. |
-| Public key base | `ur:pubkeys` | | ✅ | Contains a signing public key and an agreement public key. |
+| Public key base | `ur:pubkeys` | | ✅ | Contains a signing public key and an encapsulation public key. |
 | Signing private key | `ur:signing-private-key` | ✅ | ✅ | Supports Schnorr, ECDSA, Ed25519, and SSH variants. |
 | Signing public key | `ur:signing-public-key` | | ✅ | Supports Schnorr, ECDSA, Ed25519, and SSH variants. |
 
@@ -64,11 +64,11 @@ graph LR
     random([Random]) --> PrivateKeyBase
     PrivateKeyBase --> SigningPrivateKey
     PrivateKeyBase --> SigningPublicKey
-    PrivateKeyBase --> AgreementPrivateKey
-    AgreementPrivateKey --> AgreementPublicKey
+    PrivateKeyBase --> X25519PrivateKey
+    X25519PrivateKey --> X25519PublicKey
     PrivateKeyBase --> PublicKeyBase
     PublicKeyBase --> SigningPublicKey
-    PublicKeyBase --> AgreementPublicKey
+    PublicKeyBase --> X25519PublicKey
 ```
 
 ### Signers and Verifiers
@@ -89,13 +89,13 @@ A private key base (`ur:prvkeys`) is private key material from which other priva
 
 When used as a signer, the `envelope` tool dervives a Schnorr signing private key to make the actual signature. When used as a verifier, the `envelope` tool derives a Schnorr signing public key to verify the signature.
 
-### Agreement Keys
+### X25519 Keys
 
-*Agreement keys* (private and public) are not used for signing, but are mentioned here to distinguish them from *signing keys*. Agreement keys are used to perform key agreement for public key encryption. Like signing keys, they are derived from key material provided by a private key base.
+*X25519 keys* (private and public) are not used for signing, but are mentioned here to distinguish them from *signing keys*. X25519 keys are used to perform key agreement for public key encryption. Like signing keys, they are derived from key material provided by a private key base.
 
 ### Public Keybase
 
-A public key base (`ur:pubkeys`) contains a signing public key and an agreement public key. The signing public key is used to verify signatures from a sender, and the agreement public key is used to encrypt messages to the same entity as recipient. The signing public key may support any of the signing algorithms listed above. The purpose of a public key base is to provide a single structure for both signature verification and encryption to the owner of the public key.
+A public key base (`ur:pubkeys`) contains a signing public key and an encapsulation public key. The signing public key is used to verify signatures from a sender, and the encapsulation public key is used to encrypt messages to the same entity as recipient. The signing public key may support any of the signing algorithms listed above. The purpose of a public key base is to provide a single structure for both signature verification and encryption to the owner of the public key.
 
 ### Signing Private Key
 

@@ -35,12 +35,12 @@ impl crate::exec::Exec for CommandArgs {
     fn exec(&self) -> Result<String> {
         let ur_string = self.read_prv_key()?;
         if let Ok(private_key_base) = bc_components::PrivateKeyBase::from_ur_string(&ur_string) {
-            let public_key_base = SignerType::Schnorr.to_signing_private_key(&private_key_base, "")?;
-            Ok(public_key_base.ur_string())
+            let signing_private_key = SignerType::Schnorr.to_signing_private_key(&private_key_base, "")?;
+            Ok(signing_private_key.ur_string())
         } else if let Ok(public_key_base) = bc_components::PublicKeyBase::from_ur_string(&ur_string) {
             Ok(public_key_base.signing_public_key().ur_string())
         } else if let Ok(signing_private_key) = bc_components::SigningPrivateKey::from_ur_string(&ur_string) {
-            let signing_public_key = signing_private_key.public_key();
+            let signing_public_key = signing_private_key.public_key()?;
             Ok(signing_public_key.ur_string())
         } else {
             bail!("Invalid signing private key or private key base");
