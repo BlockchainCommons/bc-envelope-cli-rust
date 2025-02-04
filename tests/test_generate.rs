@@ -126,14 +126,14 @@ fn test_generate_prvkeys() -> Result<()> {
 fn test_generate_prvkeys_from_seed() -> Result<()> {
     run_cli_expect(
         &["generate", "prvkeys", "--seed", "ur:seed/oyadgdkbehprpagrldhykpsnrodwcppfbwgmkemtaolbdt"],
-        "ur:crypto-prvkeys/gdkbehprpagrldhykpsnrodwcppfbwgmkeadrturam"
+        "ur:crypto-prvkey-base/gdkbehprpagrldhykpsnrodwcppfbwgmkeadrturam"
     )
 }
 
 #[test]
 fn test_generate_pubkeys() -> Result<()> {
     run_cli_expect(
-        &["generate", "pubkeys", "ur:crypto-prvkeys/gdkbehprpagrldhykpsnrodwcppfbwgmkeadrturam"],
+        &["generate", "pubkeys", "ur:crypto-prvkey-base/gdkbehprpagrldhykpsnrodwcppfbwgmkeadrturam"],
         "ur:crypto-pubkeys/lftanshfhdcxfpfwzcparpckfhvlidynjepsltsgjlprostpcmgehsmedtlbcktajodispgsfroytansgrhdcxenrytyrlpknyosfnfwlrwkdwsknduogwlyhdrfdrftflnnksbzsaierhbdrnrfbbfdvlwsca"
     )
 }

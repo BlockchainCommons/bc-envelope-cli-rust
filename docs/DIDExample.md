@@ -15,7 +15,7 @@ ALICE_UNSIGNED_DOCUMENT=`envelope subject type ur $ALICE_ARID | \
     envelope assertion add pred-obj known controller ur $ALICE_ARID | \
     envelope assertion add pred-obj known publicKeys ur $ALICE_PUBKEYS`
 ALICE_SIGNED_DOCUMENT=`envelope subject type wrapped $ALICE_UNSIGNED_DOCUMENT | \
-    envelope sign --prvkeys $ALICE_PRVKEYS --note "Made by Alice."`
+    envelope sign --prvkeys $ALICE_PRVKEY_BASE --note "Made by Alice."`
 envelope format $ALICE_SIGNED_DOCUMENT
 ```
 
@@ -24,7 +24,7 @@ envelope format $ALICE_SIGNED_DOCUMENT
 {
     ARID(d44c5e0a) [
         'controller': ARID(d44c5e0a)
-        'publicKeys': PublicKeyBase
+        'publicKeys': PublicKeys
     ]
 } [
     'signed': Signature [
@@ -54,7 +54,7 @@ ALICE_REGISTRATION=`envelope subject type ur $ALICE_ARID_UR | \
     envelope assertion add pred-obj known entity envelope $ALICE_SIGNED_DOCUMENT | \
     envelope assertion add pred-obj known dereferenceVia uri $ALICE_URI | \
     envelope subject type wrapped | \
-    envelope sign --prvkeys $LEDGER_PRVKEYS --note "Made by ExampleLedger."`
+    envelope sign --prvkeys $LEDGER_PRVKEY_BASE --note "Made by ExampleLedger."`
 envelope format $ALICE_REGISTRATION
 ```
 
@@ -66,7 +66,7 @@ envelope format $ALICE_REGISTRATION
         'entity': {
             ARID(d44c5e0a) [
                 'controller': ARID(d44c5e0a)
-                'publicKeys': PublicKeyBase
+                'publicKeys': PublicKeys
             ]
         } [
             'signed': Signature [
@@ -132,7 +132,7 @@ Alice responds by adding her registered URI to the nonce, and signing it.
 ALICE_RESPONSE=`envelope subject type wrapped $ALICE_CHALLENGE | \
     envelope assertion add pred-obj known dereferenceVia uri $ALICE_URI | \
     envelope subject type wrapped | \
-    envelope sign --prvkeys $ALICE_PRVKEYS --note "Made by Alice."`
+    envelope sign --prvkeys $ALICE_PRVKEY_BASE --note "Made by Alice."`
 envelope format $ALICE_RESPONSE
 ```
 

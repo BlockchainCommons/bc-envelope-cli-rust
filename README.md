@@ -38,6 +38,10 @@ See the [docs](docs/README.md) directory for more information.
 
 ## Version History
 
+### 0.12.0: February 4, 2025
+
+- Maintenance release.
+
 ### 0.11.0: December 24, 2024
 
 - Added support for [XID Document Services](docs/XID.md).

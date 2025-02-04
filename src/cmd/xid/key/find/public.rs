@@ -27,12 +27,12 @@ impl XIDDocumentReadable for CommandArgs { }
 
 impl crate::exec::Exec for CommandArgs {
     fn exec(&self) -> Result<String> {
-        let public_key_base = read_public_key(self.keys.as_deref())?;
+        let public_keys = read_public_key(self.keys.as_deref())?;
         let xid_document = self.read_xid_document()?;
 
         let keys = xid_document.keys();
         let result = keys.iter().filter_map(|key| {
-            if key.public_key_base() == &public_key_base {
+            if key.public_keys() == &public_keys {
                 Some(key.to_envelope().ur_string())
             } else {
                 None

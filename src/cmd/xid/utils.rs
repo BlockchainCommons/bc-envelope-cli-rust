@@ -1,5 +1,5 @@
 use bc_components::URI;
-use bc_envelope::{ Envelope, PrivateKeyBase, PublicKeyBase };
+use bc_envelope::{ Envelope, PrivateKeyBase, PublicKeys };
 use bc_ur::prelude::*;
 
 use anyhow::{ Result, bail };
@@ -11,7 +11,7 @@ use super::{private_options::PrivateOptions, xid_privilege::XIDPrivilege};
 
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub enum InputKey {
-    Public(PublicKeyBase),
+    Public(PublicKeys),
     Private(PrivateKeyBase),
 }
 
@@ -25,8 +25,8 @@ pub fn read_key(key: Option<&str>) -> Result<InputKey> {
     if key_string.is_empty() {
         bail!("No key provided");
     }
-    let input_key = if let Ok(public_key_base) = PublicKeyBase::from_ur_string(&key_string) {
-        InputKey::Public(public_key_base)
+    let input_key = if let Ok(public_keys) = PublicKeys::from_ur_string(&key_string) {
+        InputKey::Public(public_keys)
     } else if let Ok(private_key_base) = PrivateKeyBase::from_ur_string(&key_string) {
         InputKey::Private(private_key_base)
     } else {
@@ -35,10 +35,10 @@ pub fn read_key(key: Option<&str>) -> Result<InputKey> {
     Ok(input_key)
 }
 
-pub fn read_public_key(key: Option<&str>) -> Result<PublicKeyBase> {
+pub fn read_public_key(key: Option<&str>) -> Result<PublicKeys> {
     let key = read_key(key)?;
     match key {
-        InputKey::Public(public_key_base) => Ok(public_key_base),
+        InputKey::Public(public_keys) => Ok(public_keys),
         _ => bail!("Expected a public key, but found a private key."),
     }
 }

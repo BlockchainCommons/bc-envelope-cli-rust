@@ -12,10 +12,10 @@ First we need keys that represent the Example Electrical Engineering Board.
 
 ```bash
 👉
-BOARD_PRVKEYS="ur:crypto-prvkeys/hdcxynlntpsbfrbgjkcetpzorohgsafsihcnhyrtoebzwegtvyzolbgtdaskcsldfgadtldmrkld"
+BOARD_PRVKEY_BASE="ur:crypto-prvkey-base/hdcxynlntpsbfrbgjkcetpzorohgsafsihcnhyrtoebzwegtvyzolbgtdaskcsldfgadtldmrkld"
 BOARD_PUBKEYS="ur:crypto-pubkeys/lftanshfhdcxzcjpcycfstoyengahyzecppefwvtghmstkyklsoeiovtfzasbdbakepdseaehsiatansgrhdcxkelsaetygrwtdtwzytkoielytschleptdsmwahwtvlwlwdpmadoydwltmsasidfrhnasptgm"
 
-EMPLOYER_PRVKEYS="ur:crypto-prvkeys/hdcxpkyneedreyhyvshfmygwplrfrhclfwenkoetwnvagyescezsnnsobyfhtkghgypsrhdmjnko"
+EMPLOYER_PRVKEY_BASE="ur:crypto-prvkey-base/hdcxpkyneedreyhyvshfmygwplrfrhclfwenkoetwnvagyescezsnnsobyfhtkghgypsrhdmjnko"
 EMPLOYER_PUBKEYS="ur:crypto-pubkeys/lftanshfhdcxdnknjkmsmstypasfonchmyrktpgdesdasarlpyselbhnfenesofmplkopsntnnmotansgrhdcxbwwtrpwfvdjnhlrhlejolgwfhykpndknswdwlflgotiofdtpcsgmdljnihsgbwksathtplcp"
 ```
 
@@ -49,7 +49,7 @@ CREDENTIAL=`envelope subject type arid 4676635a6e6068c2ef3ffd8ff726dd401fd341036
     envelope assertion add pred-obj string "professionalDevelopmentHours" number 15 |
     envelope assertion add pred-obj string "topics" cbor "82695375626a6563742031695375626a6563742032" |
     envelope subject type wrapped |
-    envelope sign --prvkeys $BOARD_PRVKEYS |
+    envelope sign --prvkeys $BOARD_PRVKEY_BASE |
     envelope assertion add pred-obj known note string "Signed by Example Electrical Engineering Board"`
 envelope format $CREDENTIAL
 ```
@@ -260,7 +260,7 @@ WARRANTY=`envelope subject type wrapped $REDACTED_CREDENTIAL |
     envelope assertion add pred-obj string "employeeStatus" string "active" |
     envelope subject type wrapped |
     envelope assertion add pred-obj known note string "Signed by Employer Corp." |
-    envelope sign --prvkeys $EMPLOYER_PRVKEYS`
+    envelope sign --prvkeys $EMPLOYER_PRVKEY_BASE`
 envelope format $WARRANTY
 ```
 
@@ -314,7 +314,7 @@ WARRANTY=`envelope subject type wrapped $REDACTED_CREDENTIAL |
     envelope assertion add pred-obj string "employeeStatus" string "active" |
     envelope subject type wrapped |
     envelope assertion add pred-obj known note string "Signed by Employer Corp." |
-    envelope sign --prvkeys $EMPLOYER_PRVKEYS`
+    envelope sign --prvkeys $EMPLOYER_PRVKEY_BASE`
 ```
 
 ## Compression and Encryption

@@ -17,20 +17,20 @@ pub const KEY_EXAMPLE: &str = "ur:crypto-key/hdcxmszmjlfsgssrbzehsslphdlgtbwesof
 
 pub const ALICE_ARID: &str = "ur:arid/hdcxtygshybkzcecfhflpfdlhdonotoentnydmzsidmkindlldjztdmoeyishknybtbswtgwwpdi";
 pub const ALICE_SEED: &str = "ur:seed/oyadgdlfwfdwlphlfsghcphfcsaybekkkbaejkhphdfndy";
-pub const ALICE_PRVKEYS: &str = "ur:crypto-prvkeys/gdlfwfdwlphlfsghcphfcsaybekkkbaejksfnynsct";
+pub const ALICE_PRVKEY_BASE: &str = "ur:crypto-prvkey-base/gdlfwfdwlphlfsghcphfcsaybekkkbaejksfnynsct";
 pub const ALICE_PUBKEYS: &str = "ur:crypto-pubkeys/lftanshfhdcxrdhgfsfsfsosrloebgwmfrfhsnlskegsjydecawybniadyzovehncacnlbmdbesstansgrhdcxytgefrmnbzftltcmcnaspaimhftbjehlatjklkhktidrpmjobslewkfretcaetbnwksorlbd";
 
 pub const BOB_ARID: &str = "ur:arid/hdcxdkreprfslewefgdwhtfnaosfgajpehhyrlcyjzheurrtamfsvolnaxwkioplgansesiabtdr";
 pub const BOB_SEED: &str = "ur:seed/oyadgdcsknhkjkswgtecnslsjtrdfgimfyuykglfsfwtso";
-pub const BOB_PRVKEYS: &str = "ur:crypto-prvkeys/gdcsknhkjkswgtecnslsjtrdfgimfyuykgbzbagdva";
+pub const BOB_PRVKEY_BASE: &str = "ur:crypto-prvkey-base/gdcsknhkjkswgtecnslsjtrdfgimfyuykgbzbagdva";
 pub const BOB_PUBKEYS: &str = "ur:crypto-pubkeys/lftanshfhdcxndctnnflynethhhnwdkbhtehhdosmhgoclvefhjpehtaethkltsrmssnwfctfggdtansgrhdcxtipdbagmoertsklaflfhfewsptrlmhjpdeemkbdyktmtfwnninfrbnmwonetwphejzwnmhhf";
 
 pub const CAROL_ARID: &str = "ur:arid/hdcxamstktdsdlplurgaoxfxdijyjysertlpehwstkwkskmnnsqdpfgwlbsertvatbbtcaryrdta";
 pub const CAROL_SEED: &str = "ur:seed/oyadgdlpjypepycsvodtihcecwvsyljlzevwcnmepllulo";
-pub const CAROL_PRVKEYS: &str = "ur:crypto-prvkeys/gdlpjypepycsvodtihcecwvsyljlzevwcnamjzdnos";
+pub const CAROL_PRVKEY_BASE: &str = "ur:crypto-prvkey-base/gdlpjypepycsvodtihcecwvsyljlzevwcnamjzdnos";
 pub const CAROL_PUBKEYS: &str = "ur:crypto-pubkeys/lftanshfhdcxeckpgwvyasletilffeeekbtyjlzeimmtkslkpadrtnnytontpyfyeocnecstktkttansgrhdcxoyndtbndhspebgtewmgrgrgriygmvwckkkaysfzozclbgendfmhfjliorteenlbwsbkbotbs";
 
-pub const DAVE_PRVKEYS: &str = "ur:crypto-prvkeys/hdcxjtgrwefxlpihpmvtzoprdpfrbaghgmfmdyjsiafzaewlenmktesweocpluwepekgdyutaejy";
+pub const DAVE_PRVKEY_BASE: &str = "ur:crypto-prvkey-base/hdcxjtgrwefxlpihpmvtzoprdpfrbaghgmfmdyjsiafzaewlenmktesweocpluwepekgdyutaejy";
 pub const DAVE_PUBKEYS: &str = "ur:crypto-pubkeys/lftanshfhdcxbwbdwmehecntwdwdfgeyotrhplcejyglaacpotqzbtjslfoybdpyhpdpbasrytpatansgrhdcxptsnuebzqzwdhtlanbhyweprpytkpfntvyfpmomykkasfeltwyceuoieaysngrjtjndrescf";
 
 pub fn run_cli_raw_stdin(args: &[&str], stdin: &str) -> Result<String> {

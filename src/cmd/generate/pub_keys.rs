@@ -4,7 +4,7 @@ use clap::Args;
 
 use super::SignerType;
 
-/// Generate a public key base from a private key base.
+/// Generate a `PublicKeys` from a private key base.
 #[derive(Debug, Args)]
 #[group(skip)]
 pub struct CommandArgs {
@@ -39,8 +39,8 @@ impl CommandArgs {
 impl crate::exec::Exec for CommandArgs {
     fn exec(&self) -> Result<String> {
         if let Ok(private_key_base) = bc_components::PrivateKeyBase::from_ur_string(self.read_prv_keys()?) {
-            let public_key_base = self.signer_type.to_public_key_base(&private_key_base, &self.comment)?;
-            Ok(public_key_base.ur_string())
+            let public_keys = self.signer_type.to_public_keys(&private_key_base, &self.comment)?;
+            Ok(public_keys.ur_string())
         } else {
             bail!("Invalid private key base");
         }

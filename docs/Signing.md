@@ -4,29 +4,31 @@ The `envelope` tool can sign and verify envelopes using several different algori
 
 ## Table of Contents
 
-- [Signing Algorithms](#signing-algorithms)
-- [Signing Primitives](#signing-primitives)
-  - [Derivations](#derivations)
-  - [Signers and Verifiers](#signers-and-verifiers)
-  - [Seed](#seed)
-  - [Private Keybase](#private-keybase)
-  - [X25519 Keys](#x25519-keys)
-  - [Public Keybase](#public-keybase)
-  - [Signing Private Key](#signing-private-key)
-  - [Signing Public Key](#signing-public-key)
-  - [Signature](#signature)
-- [Basic Signing](#basic-signing)
-- [Signing with SSH](#signing-with-ssh)
-  - [Generating an SSH Signing Key from a Private Key Base](#generating-an-ssh-signing-key-from-a-private-key-base)
-  - [Importing an SSH Signing Key from an Existing Key File](#importing-an-ssh-signing-key-from-an-existing-key-file)
-  - [Signing with the SSH Key](#signing-with-the-ssh-key)
-  - [Generating an SSH Verifier from an SSH Signing Key](#generating-an-ssh-verifier-from-an-ssh-signing-key)
-  - [Verifying the SSH Signature](#verifying-the-ssh-signature)
-- [Exporting SSH Keys](#exporting-ssh-keys)
+- [`envelope` - Signing Envelopes](#envelope---signing-envelopes)
+  - [Table of Contents](#table-of-contents)
+  - [Signing Algorithms](#signing-algorithms)
+  - [Signing Primitives](#signing-primitives)
+    - [Derivations](#derivations)
+    - [Signers and Verifiers](#signers-and-verifiers)
+    - [Seed](#seed)
+    - [Private Key Base](#private-key-base)
+    - [X25519 Keys](#x25519-keys)
+    - [PublicKeys](#publickeys)
+    - [Signing Private Key](#signing-private-key)
+    - [Signing Public Key](#signing-public-key)
+    - [Signature](#signature)
+  - [Basic Signing](#basic-signing)
+  - [Signing with SSH](#signing-with-ssh)
+    - [Generating an SSH Signing Key from a Private Key Base](#generating-an-ssh-signing-key-from-a-private-key-base)
+    - [Importing an SSH Signing Key from an Existing Key File](#importing-an-ssh-signing-key-from-an-existing-key-file)
+    - [Signing with the SSH Key](#signing-with-the-ssh-key)
+    - [Generating an SSH Verifier from an SSH Signing Key](#generating-an-ssh-verifier-from-an-ssh-signing-key)
+    - [Verifying the SSH Signature](#verifying-the-ssh-signature)
+  - [Exporting SSH Keys](#exporting-ssh-keys)
     - [Exporting an SSH Private Key](#exporting-an-ssh-private-key)
     - [Exporting an SSH Public Key](#exporting-an-ssh-public-key)
     - [Exporting an SSH Signature](#exporting-an-ssh-signature)
-- [Getting Information about SSH Keys](#getting-information-about-ssh-keys)
+  - [Getting Information about SSH Keys](#getting-information-about-ssh-keys)
 
 ## Signing Algorithms
 
@@ -52,7 +54,7 @@ Envelopes may be signed by several algorithms. The default is Schnorr, which is 
 |------|---------|--------|----------|------|
 | Seed | `ur:seed` | | | Used to derive other objects. |
 | Private key base | `ur:prvkeys` | ✅ | ✅ | Directly signs and verifies Schnorr only. |
-| Public key base | `ur:pubkeys` | | ✅ | Contains a signing public key and an encapsulation public key. |
+| `PublicKeys` | `ur:pubkeys` | | ✅ | Contains a signing public key and an encapsulation public key. |
 | Signing private key | `ur:signing-private-key` | ✅ | ✅ | Supports Schnorr, ECDSA, Ed25519, and SSH variants. |
 | Signing public key | `ur:signing-public-key` | | ✅ | Supports Schnorr, ECDSA, Ed25519, and SSH variants. |
 
@@ -66,16 +68,16 @@ graph LR
     PrivateKeyBase --> SigningPublicKey
     PrivateKeyBase --> X25519PrivateKey
     X25519PrivateKey --> X25519PublicKey
-    PrivateKeyBase --> PublicKeyBase
-    PublicKeyBase --> SigningPublicKey
-    PublicKeyBase --> X25519PublicKey
+    PrivateKeyBase --> PublicKeys
+    PublicKeys --> SigningPublicKey
+    PublicKeys --> X25519PublicKey
 ```
 
 ### Signers and Verifiers
 
 A *signer* is any cryptographic object that can be combined with a message to produce a signature. Signers include private key bases and signing private keys.
 
-A *verifier* is any cryptographic object that can be combined with a message and a signature to confirm that the signature was made by a particular verifier. Verifiers include private key bases, public key bases, signing private keys, and signing public keys.
+A *verifier* is any cryptographic object that can be combined with a message and a signature to confirm that the signature was made by a particular verifier. Verifiers include private key bases, `PublicKeys`, signing private keys, and signing public keys.
 
 ### Seed
 
@@ -83,19 +85,19 @@ A cryptographic seed (`ur:seed`) is a sequence of random numbers from which othe
 
 A seed is neither a signer nor a verifier. It is used solely for the purpose of deriving other objects. The `envelope` tool can derive a private key base from a seed or generate a random private key base.
 
-### Private Keybase
+### Private Key Base
 
-A private key base (`ur:prvkeys`) is private key material from which other private keys may be derived. A private keybase may be generated randomly or derived from a seed.
+A private key base (`ur:prvkeys`) is private key material from which other private keys may be derived. A private key base may be generated randomly or derived from a seed.
 
-When used as a signer, the `envelope` tool dervives a Schnorr signing private key to make the actual signature. When used as a verifier, the `envelope` tool derives a Schnorr signing public key to verify the signature.
+When used as a signer, the `envelope` tool derives a Schnorr signing private key to make the actual signature. When used as a verifier, the `envelope` tool derives a Schnorr signing public key to verify the signature.
 
 ### X25519 Keys
 
 *X25519 keys* (private and public) are not used for signing, but are mentioned here to distinguish them from *signing keys*. X25519 keys are used to perform key agreement for public key encryption. Like signing keys, they are derived from key material provided by a private key base.
 
-### Public Keybase
+### PublicKeys
 
-A public key base (`ur:pubkeys`) contains a signing public key and an encapsulation public key. The signing public key is used to verify signatures from a sender, and the encapsulation public key is used to encrypt messages to the same entity as recipient. The signing public key may support any of the signing algorithms listed above. The purpose of a public key base is to provide a single structure for both signature verification and encryption to the owner of the public key.
+A `PublicKeys` (`ur:pubkeys`) contains a signing public key and an encapsulation public key. The signing public key is used to verify signatures from a sender, and the encapsulation public key is used to encrypt messages to the same entity as recipient. The signing public key may support any of the signing algorithms listed above. The purpose of `PublicKeys` is to provide a single structure for both signature verification and encryption to the owner of the public key.
 
 ### Signing Private Key
 
@@ -103,7 +105,7 @@ A signing private key (`ur:signing-private-key`) is a private key used to sign m
 
 ### Signing Public Key
 
-A signing public key (`ur:signing-public-key`) is a public key used to verify signatures. It is derived from a signing private key or a public key base. A signing public key supports a single signing algorithm.
+A signing public key (`ur:signing-public-key`) is a public key used to verify signatures. It is derived from a signing private key or a `PublicKeys`. A signing public key supports a single signing algorithm.
 
 ### Signature
 
@@ -135,7 +137,7 @@ envelope generate prvkeys
 
 ```
 👈
-ur:crypto-prvkeys/hdcxhdvsaelylaaesfqdwzghfmsswfrlzsfgytbbnecpkshekstbhdwzrkktasknztkecycaotda
+ur:crypto-prvkey-base/hdcxhdvsaelylaaesfqdwzghfmsswfrlzsfgytbbnecpkshekstbhdwzrkktasknztkecycaotda
 ```
 
 Cryptographic seeds can also be used as a starting point. For more about seeds, see the [Gordian Seed Tool iOS app](https://apps.apple.com/us/app/gordian-seed-tool/id1545088229) or the [`seedtool` command line tool](https://github.com/BlockchainCommons/seedtool-cli-rust).
@@ -151,7 +153,7 @@ echo $PRVKEYS
 
 ```
 👈
-ur:crypto-prvkeys/gdmdeefejoaonnatcycefxjedrfyaspkiawdioolhs
+ur:crypto-prvkey-base/gdmdeefejoaonnatcycefxjedrfyaspkiawdioolhs
 ```
 
 We can use the private key base as-is to sign an envelope using Schnorr. We can also use it to derive the actual Schnorr signing private key:
@@ -169,7 +171,7 @@ ur:signing-private-key/hdcxasfymwaxcpktaowpatotolckatgrhnceveasueskwereprcyfrmst
 
 Later we'll see how to derive signing private keys of other types, like SSH.
 
-Of course, we'll also want to distribute the public key base, so the signature can be verified:
+Of course, we'll also want to distribute the `PublicKeys`, so the signature can be verified:
 
 ```bash
 👉
@@ -182,7 +184,7 @@ echo $PUBKEYS
 ur:crypto-pubkeys/lftanshfhdcxweplrnkpsruepkaeahnetppsteaojtdlgudetlyksrlbzoiduoglpemujydnsrattansgrhdcximbgoskbjpgtluwededpjywdlkfwksjpglsrfdcaurdahycfasmtylihpfrsfgkblomttisr
 ```
 
-Recall that a public key base actually contains two public keys: one for verifying signatures and one for encryption to a recipient. The signing public key can be extracted from the public key base:
+Recall that a `PublicKeys` actually contains two public keys: one for verifying signatures and one for encryption to a recipient. The signing public key can be extracted from the `PublicKeys`:
 
 ```bash
 👉

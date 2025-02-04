@@ -25,9 +25,9 @@ impl XIDDocumentReadable for CommandArgs { }
 
 impl crate::exec::Exec for CommandArgs {
     fn exec(&self) -> Result<String> {
-        let public_key_base = read_public_key(self.keys.as_deref())?;
+        let public_keys = read_public_key(self.keys.as_deref())?;
         let mut xid_document = self.read_xid_document()?;
-        xid_document.remove_key(&public_key_base)?;
+        xid_document.remove_key(&public_keys)?;
 
         Ok(xid_document_to_ur_string(&xid_document, PrivateOptions::Include))
     }

@@ -596,7 +596,7 @@ envelope generate prvkeys
 
 ```
 👈
-ur:crypto-prvkeys/hdcxhdvsaelylaaesfqdwzghfmsswfrlzsfgytbbnecpkshekstbhdwzrkktasknztkecycaotda
+ur:crypto-prvkey-base/hdcxhdvsaelylaaesfqdwzghfmsswfrlzsfgytbbnecpkshekstbhdwzrkktasknztkecycaotda
 ```
 
 The above generation is random. If you wish to use a `seed` as your starting point:
@@ -610,7 +610,7 @@ echo $PRVKEYS
 
 ```
 👈
-ur:crypto-prvkeys/gdmdeefejoaonnatcycefxjedrfyaspkiawdioolhs
+ur:crypto-prvkey-base/gdmdeefejoaonnatcycefxjedrfyaspkiawdioolhs
 ```
 
 Of course, we'll also want to distribute the public key, so the signature can be verified:

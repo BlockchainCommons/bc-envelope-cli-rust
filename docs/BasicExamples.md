@@ -31,7 +31,7 @@ Alice ➡️ ☁️ ➡️ Bob
 
 ## Common structures used by the examples
 
-These examples define a common plaintext, and `ARID`s and `PrivateKeyBase` objects for *Alice*, *Bob*, *Carol*, *ExampleLedger*, and *The State of Example*, each with a corresponding `PublicKeyBase`.
+These examples define a common plaintext, and `ARID`s and `PrivateKeyBase` objects for *Alice*, *Bob*, *Carol*, *ExampleLedger*, and *The State of Example*, each with a corresponding `PublicKeys`.
 
 ```bash
 👉
@@ -39,27 +39,27 @@ PLAINTEXT_HELLO="Hello."
 
 ALICE_ARID="ur:arid/hdcxtygshybkzcecfhflpfdlhdonotoentnydmzsidmkindlldjztdmoeyishknybtbswtgwwpdi"
 ALICE_SEED="ur:seed/oyadgdlfwfdwlphlfsghcphfcsaybekkkbaejkhphdfndy"
-ALICE_PRVKEYS="ur:crypto-prvkeys/gdlfwfdwlphlfsghcphfcsaybekkkbaejksfnynsct"
+ALICE_PRVKEY_BASE="ur:crypto-prvkey-base/gdlfwfdwlphlfsghcphfcsaybekkkbaejksfnynsct"
 ALICE_PUBKEYS="ur:crypto-pubkeys/lftanshfhdcxrdhgfsfsfsosrloebgwmfrfhsnlskegsjydecawybniadyzovehncacnlbmdbesstansgrhdcxytgefrmnbzftltcmcnaspaimhftbjehlatjklkhktidrpmjobslewkfretcaetbnwksorlbd"
 
 BOB_ARID="ur:arid/hdcxdkreprfslewefgdwhtfnaosfgajpehhyrlcyjzheurrtamfsvolnaxwkioplgansesiabtdr"
 BOB_SEED="ur:seed/oyadgdcsknhkjkswgtecnslsjtrdfgimfyuykglfsfwtso"
-BOB_PRVKEYS="ur:crypto-prvkeys/gdcsknhkjkswgtecnslsjtrdfgimfyuykgbzbagdva"
+BOB_PRVKEY_BASE="ur:crypto-prvkey-base/gdcsknhkjkswgtecnslsjtrdfgimfyuykgbzbagdva"
 BOB_PUBKEYS="ur:crypto-pubkeys/lftanshfhdcxndctnnflynethhhnwdkbhtehhdosmhgoclvefhjpehtaethkltsrmssnwfctfggdtansgrhdcxtipdbagmoertsklaflfhfewsptrlmhjpdeemkbdyktmtfwnninfrbnmwonetwphejzwnmhhf"
 
 CAROL_ARID="ur:arid/hdcxamstktdsdlplurgaoxfxdijyjysertlpehwstkwkskmnnsqdpfgwlbsertvatbbtcaryrdta"
 CAROL_SEED="ur:seed/oyadgdlpjypepycsvodtihcecwvsyljlzevwcnmepllulo"
-CAROL_PRVKEYS="ur:crypto-prvkeys/gdlpjypepycsvodtihcecwvsyljlzevwcnamjzdnos"
+CAROL_PRVKEY_BASE="ur:crypto-prvkey-base/gdlpjypepycsvodtihcecwvsyljlzevwcnamjzdnos"
 CAROL_PUBKEYS="ur:crypto-pubkeys/lftanshfhdcxeckpgwvyasletilffeeekbtyjlzeimmtkslkpadrtnnytontpyfyeocnecstktkttansgrhdcxoyndtbndhspebgtewmgrgrgriygmvwckkkaysfzozclbgendfmhfjliorteenlbwsbkbotbs"
 
 LEDGER_ARID="ur:arid/hdcxbatnhhvdnydnhfcfvlltwkmhlncydmjpbygomhdtqdqdintkmkzojyndterdnyhlvdnbenft"
 LEDGER_SEED="ur:seed/oyadgdtbjkknqdglgllupfhpimrtecytzopdcyjeoediae"
-LEDGER_PRVKEYS="ur:crypto-prvkeys/gdtbjkknqdglgllupfhpimrtecytzopdcyzthnltdl"
+LEDGER_PRVKEY_BASE="ur:crypto-prvkey-base/gdtbjkknqdglgllupfhpimrtecytzopdcyzthnltdl"
 LEDGER_PUBKEYS="ur:crypto-pubkeys/lftanshfhdcxmdoyskbbkshtkbgdmtqdmwtadiecmysksrfyoegdcfhnrkctrehfemwdtswdmugstansgrhdcxssdwgwtipdgazmaeftgeaddaiyectikbjebtckfzsbzoqdolrhwfwmihprgdecdtemryfdnt"
 
 STATE_ARID="ur:arid/hdcxaaenfsheytmseorfbsbzktrdrdfybkwntkeegetaveghzstattdertbswsihahvspllbghcp"
 STATE_SEED="ur:seed/oyadgdfmmojswkjzuylpotrelrvdcpbdmsincssfolqdpk"
-STATE_PRVKEYS="ur:crypto-prvkeys/gdfmmojswkjzuylpotrelrvdcpbdmsincshpiebwlp"
+STATE_PRVKEY_BASE="ur:crypto-prvkey-base/gdfmmojswkjzuylpotrelrvdcpbdmsincshpiebwlp"
 STATE_PUBKEYS="ur:crypto-pubkeys/lftanshfhdcxsegystjeisrshnyattgsswclpdmnsfzsgwcphgskdyuyahhecfrlhyvddsonbbsatansgrhdcxrfretiztzsoectchdsdizslpwyticsleonoxwliywfvsmhclrdplcplsfrnnptishywnpfdt"
 ```
 
@@ -102,7 +102,7 @@ Alice sends a signed plaintext message to Bob.
 
 ```bash
 👉
-SIGNED_ENVELOPE=`envelope subject type string $PLAINTEXT_HELLO | envelope sign --prvkeys $ALICE_PRVKEYS`
+SIGNED_ENVELOPE=`envelope subject type string $PLAINTEXT_HELLO | envelope sign --prvkeys $ALICE_PRVKEY_BASE`
 echo $SIGNED_ENVELOPE
 ```
 
@@ -177,7 +177,7 @@ envelope verify $SIGNED_ENVELOPE --threshold 2 --pubkeys $ALICE_PUBKEYS --pubkey
 Error: could not verify a signature
 ```
 
-## Example 3: Multisigned Plaintext
+## Example 3: Multi-signed Plaintext
 
 This example demonstrates a plaintext message signed by more than one party.
 
@@ -185,7 +185,7 @@ Alice and Carol jointly send a signed plaintext message to Bob.
 
 ```bash
 👉
-MULTISIGNED_ENVELOPE=`envelope subject type string $PLAINTEXT_HELLO | envelope sign --prvkeys $ALICE_PRVKEYS --prvkeys $CAROL_PRVKEYS`
+MULTISIGNED_ENVELOPE=`envelope subject type string $PLAINTEXT_HELLO | envelope sign --prvkeys $ALICE_PRVKEY_BASE --prvkeys $CAROL_PRVKEY_BASE`
 echo $MULTISIGNED_ENVELOPE
 ```
 
@@ -197,6 +197,7 @@ ur:envelope/lstpsoiyfdihjzjzjldmoyaxtpsotansghhdfzbgqdbglkfhjlrpimaawndiiortahti
 Alice & Carol ➡️ ☁️ ➡️ Bob
 
 Bob receives the envelope and examines its contents.
+
 ```bash
 👉
 envelope format $MULTISIGNED_ENVELOPE
@@ -303,6 +304,7 @@ Error: decrypt failed
 This example combines the previous ones, first signing, then encrypting a message with a symmetric key.
 
 Alice and Bob have agreed to use this key.
+
 ```bash
 👉
 KEY=`envelope generate key`
@@ -318,7 +320,7 @@ Alice signs a plaintext message, wraps it so her signature will also be encrypte
 
 ```bash
 👉
-SIGNED_ENCRYPTED=`envelope subject type string $PLAINTEXT_HELLO | envelope sign --prvkeys $ALICE_PRVKEYS | envelope subject type wrapped | envelope encrypt --key $KEY`
+SIGNED_ENCRYPTED=`envelope subject type string $PLAINTEXT_HELLO | envelope sign --prvkeys $ALICE_PRVKEY_BASE | envelope subject type wrapped | envelope encrypt --key $KEY`
 echo $SIGNED_ENCRYPTED
 ```
 
@@ -409,7 +411,7 @@ Alice encrypts a plaintext message, then signs it.
 
 ```bash
 👉
-ENCRYPTED_SIGNED=`envelope subject type string $PLAINTEXT_HELLO | envelope encrypt --key $KEY | envelope sign --prvkeys $ALICE_PRVKEYS`
+ENCRYPTED_SIGNED=`envelope subject type string $PLAINTEXT_HELLO | envelope encrypt --key $KEY | envelope sign --prvkeys $ALICE_PRVKEY_BASE`
 echo $ENCRYPTED_SIGNED
 ```
 
@@ -488,7 +490,7 @@ Bob decrypts and reads the message.
 
 ```bash
 👉
-envelope decrypt $ENVELOPE_TO --recipient $BOB_PRVKEYS | envelope extract string
+envelope decrypt $ENVELOPE_TO --recipient $BOB_PRVKEY_BASE | envelope extract string
 ```
 
 ```
@@ -500,7 +502,7 @@ Carol decrypts and reads the message.
 
 ```bash
 👉
-envelope decrypt $ENVELOPE_TO --recipient $CAROL_PRVKEYS | envelope extract string
+envelope decrypt $ENVELOPE_TO --recipient $CAROL_PRVKEY_BASE | envelope extract string
 ```
 
 ```
@@ -512,7 +514,7 @@ Alice didn't encrypt it to herself, so she can't read it.
 
 ```bash
 👉
-envelope decrypt $ENVELOPE_TO --recipient $ALICE_PRVKEYS
+envelope decrypt $ENVELOPE_TO --recipient $ALICE_PRVKEY_BASE
 ```
 
 ```
@@ -525,9 +527,10 @@ Error: unknown recipient
 This example demonstrates a signed, then encrypted message, sent to multiple parties.
 
 Alice signs a message, and then encrypts it so that it can only be decrypted by Bob or Carol.
+
 ```bash
 👉
-ENVELOPE_SIGNED_TO=`envelope subject type string $PLAINTEXT_HELLO | envelope sign --prvkeys $ALICE_PRVKEYS | envelope encrypt --recipient $BOB_PUBKEYS --recipient $CAROL_PUBKEYS`
+ENVELOPE_SIGNED_TO=`envelope subject type string $PLAINTEXT_HELLO | envelope sign --prvkeys $ALICE_PRVKEY_BASE | envelope encrypt --recipient $BOB_PUBKEYS --recipient $CAROL_PUBKEYS`
 echo $ENVELOPE_SIGNED_TO
 ```
 
@@ -560,7 +563,7 @@ Bob verifies Alice's signature, then decrypts and reads the message
 
 ```bash
 👉
-envelope verify $ENVELOPE_SIGNED_TO --pubkeys $ALICE_PUBKEYS | envelope decrypt --recipient $BOB_PRVKEYS | envelope extract string
+envelope verify $ENVELOPE_SIGNED_TO --pubkeys $ALICE_PUBKEYS | envelope decrypt --recipient $BOB_PRVKEY_BASE | envelope extract string
 ```
 
 ```

@@ -40,7 +40,7 @@ impl ServiceArgsLike for CommandArgs {
         self.service_args.permissions()
     }
 
-    fn keys(&self) -> &[bc_envelope::PublicKeyBase] {
+    fn keys(&self) -> &[bc_envelope::PublicKeys] {
         self.service_args.keys()
     }
 

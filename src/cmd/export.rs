@@ -2,7 +2,7 @@ use anyhow::{bail, Result};
 use clap::Args;
 
 use crate::utils::{read_argument, read_password};
-use bc_components::{PublicKeyBase, Signature, SigningPrivateKey, SigningPublicKey};
+use bc_components::{PublicKeys, Signature, SigningPrivateKey, SigningPublicKey};
 use bc_envelope::prelude::*;
 use ssh_key::LineEnding;
 
@@ -18,7 +18,7 @@ pub struct CommandArgs {
     ///
     /// - An SSH `ur:signing-public-key` (exported to single-line text),
     ///
-    /// - A `ur:pubkeys` (public key base) with an SSH public key (exported to single-line text),
+    /// - A `ur:pubkeys` (`PublicKeys`) with an SSH public key (exported to single-line text),
     ///
     /// - An SSH `ur:signature` signature (exported to PEM).
     ///
@@ -59,11 +59,11 @@ impl crate::exec::Exec for CommandArgs {
             } else {
                 bail!("UR is not an SSH public key.");
             }
-        } else if let Ok(public_key_base) = PublicKeyBase::from_ur_string(&object) {
-            if let Some(ssh_public_key) = public_key_base.signing_public_key().to_ssh() {
+        } else if let Ok(public_keys) = PublicKeys::from_ur_string(&object) {
+            if let Some(ssh_public_key) = public_keys.signing_public_key().to_ssh() {
                 Ok(ssh_public_key.to_openssh()?.to_string())
             } else {
-                bail!("UR is not a public key base with an SSH public key.");
+                bail!("UR is not a PublicKeys with an SSH public key.");
             }
         } else if let Ok(signature) = Signature::from_ur_string(&object) {
             if let Some(ssh_signature) = signature.to_ssh() {

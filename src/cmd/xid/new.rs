@@ -43,10 +43,10 @@ impl crate::exec::Exec for CommandArgs {
 
         let mut xid_document = match &keys {
             InputKey::Private(private_key_base) => {
-                XIDDocument::new_with_private_key(private_key_base.clone())
+                XIDDocument::new_with_private_key_base(private_key_base.clone())
             }
-            InputKey::Public(public_key_base) => {
-                XIDDocument::new(public_key_base.clone())
+            InputKey::Public(public_keys) => {
+                XIDDocument::new(public_keys.clone())
             }
         };
 

@@ -63,7 +63,7 @@ JOHN_RESIDENT_CARD=`envelope subject type ur $JOHN_ARID | \
     envelope assertion add pred-obj known holder envelope $HOLDER | \
     envelope assertion add pred-obj known note string "The State of Example recognizes JOHN SMITH as a Permanent Resident." | \
     envelope subject type wrapped | \
-    envelope sign --prvkeys $STATE_PRVKEYS --note "Made by the State of Example."`
+    envelope sign --prvkeys $STATE_PRVKEY_BASE --note "Made by the State of Example."`
 
 envelope format $JOHN_RESIDENT_CARD
 ```

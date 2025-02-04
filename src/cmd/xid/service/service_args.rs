@@ -1,5 +1,5 @@
 use bc_components::URI;
-use bc_envelope::PublicKeyBase;
+use bc_envelope::PublicKeys;
 use bc_ur::URDecodable;
 use bc_xid::XIDDocument;
 use anyhow::Result;
@@ -12,7 +12,7 @@ pub trait ServiceArgsLike {
     fn name(&self) -> Option<&str>;
     fn capability(&self) -> Option<&str>;
     fn permissions(&self) -> &[XIDPrivilege];
-    fn keys(&self) -> &[PublicKeyBase];
+    fn keys(&self) -> &[PublicKeys];
     fn delegates(&self) -> &[XIDDocument];
 
     fn read_uri(&self) -> Result<URI> {
@@ -20,8 +20,8 @@ pub trait ServiceArgsLike {
     }
 }
 
-fn parse_public_key_base(s: &str) -> Result<PublicKeyBase, String> {
-    PublicKeyBase::from_ur_string(s).map_err(|e| e.to_string())
+fn parse_public_keys(s: &str) -> Result<PublicKeys, String> {
+    PublicKeys::from_ur_string(s).map_err(|e| e.to_string())
 }
 
 fn parse_xid_document(s: &str) -> Result<XIDDocument, String> {
@@ -40,9 +40,9 @@ pub struct ServiceArgs {
     capability: Option<String>,
 
     /// A specific key for use with the service. May be repeated.
-    #[arg(long = "key", name = "PUBLIC_KEY_BASE", num_args = 1)]
-    #[clap(value_parser = parse_public_key_base)]
-    keys: Vec<PublicKeyBase>,
+    #[arg(long = "key", name = "PUBLIC_KEYS", num_args = 1)]
+    #[clap(value_parser = parse_public_keys)]
+    keys: Vec<PublicKeys>,
 
     /// A delegate for the service. May be repeated.
     #[arg(long = "delegate", name = "XID", num_args = 1)]
@@ -66,7 +66,7 @@ impl ServiceArgsLike for ServiceArgs {
         self.capability.as_deref()
     }
 
-    fn keys(&self) -> &[PublicKeyBase] {
+    fn keys(&self) -> &[PublicKeys] {
         &self.keys
     }
 

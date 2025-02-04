@@ -15,7 +15,7 @@ fn test_xid_format() {
         &["format", XID_DOC],
         indoc! {r#"
             XID(71274df1) [
-                'key': PublicKeyBase(eb9b1cae) [
+                'key': PublicKeys(eb9b1cae) [
                     'allow': 'All'
                 ]
             ]
@@ -35,7 +35,7 @@ fn test_xid_format() {
             &["format"]
         ],
         indoc! {r#"
-            'key': PublicKeyBase(eb9b1cae) [
+            'key': PublicKeys(eb9b1cae) [
                 'allow': 'All'
             ]
         "#}.trim()
@@ -122,7 +122,7 @@ fn test_xid_id() {
 
 #[test]
 fn test_xid_new() {
-    // The `xid new` subcommand converts a `PrivateKeyBase` or `PublicKeyBase`
+    // The `xid new` subcommand converts a `PrivateKeyBase` or `PublicKeys`
     // into a XID Document with the provided key as the inception key.
 
     run_cli_piped_expect(
@@ -132,7 +132,7 @@ fn test_xid_new() {
         ],
         indoc! {r#"
             XID(93a4d4e7) [
-                'key': PublicKeyBase(cab108a0) [
+                'key': PublicKeys(cab108a0) [
                     'allow': 'All'
                 ]
             ]
@@ -152,14 +152,14 @@ fn test_xid_new() {
 
     run_cli_piped_expect(
         &[
-            &["xid", "new", ALICE_PRVKEYS],
+            &["xid", "new", ALICE_PRVKEY_BASE],
             &["format"]
         ],
         indoc! {r#"
             XID(93a4d4e7) [
-                'key': PublicKeyBase(cab108a0) [
+                'key': PublicKeys(cab108a0) [
                     {
-                        'privateKey': PrivateKeyBase
+                        'privateKey': PrivateKeys(8624d38b)
                     } [
                         'salt': Salt
                     ]
@@ -174,28 +174,28 @@ fn test_xid_new() {
 
     run_cli_piped_expect(
         &[
-            &["xid", "new", ALICE_PRVKEYS, "--private", "omit"],
+            &["xid", "new", ALICE_PRVKEY_BASE, "--private", "omit"],
             &["format"]
         ],
         indoc! {r#"
             XID(93a4d4e7) [
-                'key': PublicKeyBase(cab108a0) [
+                'key': PublicKeys(cab108a0) [
                     'allow': 'All'
                 ]
             ]
         "#}.trim()
     ).unwrap();
 
-    // $ envelope xid new $ALICE_PRVKEYS --private elide | envelope format
+    // $ envelope xid new $ALICE_PRVKEY_BASE --private elide | envelope format
 
     run_cli_piped_expect(
         &[
-            &["xid", "new", ALICE_PRVKEYS, "--private", "elide"],
+            &["xid", "new", ALICE_PRVKEY_BASE, "--private", "elide"],
             &["format"]
         ],
         indoc! {r#"
             XID(93a4d4e7) [
-                'key': PublicKeyBase(cab108a0) [
+                'key': PublicKeys(cab108a0) [
                     'allow': 'All'
                     ELIDED
                 ]
@@ -214,7 +214,7 @@ fn test_xid_new() {
         ],
         indoc! {r#"
             XID(93a4d4e7) [
-                'key': PublicKeyBase(cab108a0) [
+                'key': PublicKeys(cab108a0) [
                     'allow': 'All'
                     'endpoint': URI(btc:5e54156cfe0e62d9a56c72b84a5c40b84e2fd7dfe786c7d5c667e11ab85c45c6)
                     'endpoint': URI(https://endpoint.example.com/)
@@ -235,7 +235,7 @@ fn test_xid_new() {
         ],
         indoc! {r#"
             XID(93a4d4e7) [
-                'key': PublicKeyBase(cab108a0) [
+                'key': PublicKeys(cab108a0) [
                     'allow': 'Encrypt'
                     'allow': 'Sign'
                 ]
@@ -254,7 +254,7 @@ fn test_xid_new() {
         ],
         indoc! {r#"
             XID(93a4d4e7) [
-                'key': PublicKeyBase(cab108a0) [
+                'key': PublicKeys(cab108a0) [
                     'allow': 'All'
                     'name': "Alice's Key"
                 ]
@@ -282,11 +282,11 @@ fn test_xid_key_add() {
         ],
         indoc! {r#"
             XID(93a4d4e7) [
-                'key': PublicKeyBase(cab108a0) [
+                'key': PublicKeys(cab108a0) [
                     'allow': 'All'
                     'name': "Alice"
                 ]
-                'key': PublicKeyBase(e2c18423) [
+                'key': PublicKeys(e2c18423) [
                     'allow': 'All'
                     'name': "Bob"
                 ]
@@ -303,11 +303,11 @@ fn test_xid_key_update() {
     // $ envelope format $XID_DOC
 
     // XID(93a4d4e7) [
-    //     'key': PublicKeyBase(cab108a0) [
+    //     'key': PublicKeys(cab108a0) [
     //         'allow': 'All'
     //         'name': "Alice"
     //     ]
-    //     'key': PublicKeyBase(e2c18423) [
+    //     'key': PublicKeys(e2c18423) [
     //         'allow': 'All'
     //         'name': "Bob"
     //     ]
@@ -327,11 +327,11 @@ fn test_xid_key_update() {
         &["format", &xid_doc],
         indoc! {r#"
             XID(93a4d4e7) [
-                'key': PublicKeyBase(cab108a0) [
+                'key': PublicKeys(cab108a0) [
                     'allow': 'All'
                     'name': "Alice"
                 ]
-                'key': PublicKeyBase(e2c18423) [
+                'key': PublicKeys(e2c18423) [
                     'allow': 'All'
                     'name': "Bob"
                 ]
@@ -360,11 +360,11 @@ fn test_xid_key_update() {
         &["format", &xid_doc_updated],
         indoc! {r#"
             XID(93a4d4e7) [
-                'key': PublicKeyBase(cab108a0) [
+                'key': PublicKeys(cab108a0) [
                     'allow': 'All'
                     'name': "Alice"
                 ]
-                'key': PublicKeyBase(e2c18423) [
+                'key': PublicKeys(e2c18423) [
                     'allow': 'Encrypt'
                     'allow': 'Sign'
                     'name': "Bob"
@@ -393,14 +393,14 @@ fn test_xid_key_update() {
     // ```
     // $ envelope xid key at 0 $XID_DOC_UPDATED | envelope format
 
-    // PublicKeyBase(cab108a0) [
+    // PublicKeys(cab108a0) [
     //     'allow': 'All'
     //     'name': "Alice"
     // ]
 
     // $ envelope xid key at 1 $XID_DOC_UPDATED | envelope format
 
-    // PublicKeyBase(e2c18423) [
+    // PublicKeys(e2c18423) [
     //     'allow': 'Encrypt'
     //     'allow': 'Sign'
     //     'name': "Bob"
@@ -413,7 +413,7 @@ fn test_xid_key_update() {
             &["format"]
         ],
         indoc! {r#"
-            PublicKeyBase(cab108a0) [
+            PublicKeys(cab108a0) [
                 'allow': 'All'
                 'name': "Alice"
             ]
@@ -426,7 +426,7 @@ fn test_xid_key_update() {
             &["format"]
         ],
         indoc! {r#"
-            PublicKeyBase(e2c18423) [
+            PublicKeys(e2c18423) [
                 'allow': 'Encrypt'
                 'allow': 'Sign'
                 'name': "Bob"
@@ -465,7 +465,7 @@ fn test_xid_key_find() {
     // ```
     // $ envelope xid key find name 'Alice' $XID_DOC_UPDATED | envelope format
     //
-    // PublicKeyBase(cab108a0) [
+    // PublicKeys(cab108a0) [
     //     'allow': 'All'
     //     'name': "Alice"
     // ]
@@ -476,7 +476,7 @@ fn test_xid_key_find() {
             &["format"]
         ],
         indoc! {r#"
-            PublicKeyBase(cab108a0) [
+            PublicKeys(cab108a0) [
                 'allow': 'All'
                 'name': "Alice"
             ]
@@ -500,7 +500,7 @@ fn test_xid_key_find() {
     // ```
     // $ envelope xid key find inception $XID_DOC_UPDATED | envelope format
     //
-    // PublicKeyBase(cab108a0) [
+    // PublicKeys(cab108a0) [
     //     'allow': 'All'
     //     'name': "Alice"
     // ]
@@ -512,7 +512,7 @@ fn test_xid_key_find() {
             &["format"]
         ],
         indoc! {r#"
-            PublicKeyBase(cab108a0) [
+            PublicKeys(cab108a0) [
                 'allow': 'All'
                 'name': "Alice"
             ]
@@ -529,7 +529,7 @@ fn test_xid_key_remove() {
     // $ envelope format $XID_DOC_REMOVED
     //
     // XID(93a4d4e7) [
-    //     'key': PublicKeyBase(e2c18423) [
+    //     'key': PublicKeys(e2c18423) [
     //         'allow': 'Encrypt'
     //         'allow': 'Sign'
     //         'name': "Bob"
@@ -544,7 +544,7 @@ fn test_xid_key_remove() {
         &["format", &xid_doc_removed],
         indoc! {r#"
             XID(93a4d4e7) [
-                'key': PublicKeyBase(e2c18423) [
+                'key': PublicKeys(e2c18423) [
                     'allow': 'Encrypt'
                     'allow': 'Sign'
                     'name': "Bob"
@@ -599,7 +599,7 @@ fn test_xid_method() {
     // XID(93a4d4e7) [
     //     'dereferenceVia': URI(btc:5e54156cfe0e62d9a56c72b84a5c40b84e2fd7dfe786c7d5c667e11ab85c45c6)
     //     'dereferenceVia': URI(https://resolver.example.com/)
-    //     'key': PublicKeyBase(cab108a0) [
+    //     'key': PublicKeys(cab108a0) [
     //         'allow': 'All'
     //         'name': "Alice"
     //     ]
@@ -612,7 +612,7 @@ fn test_xid_method() {
             XID(93a4d4e7) [
                 'dereferenceVia': URI(btc:5e54156cfe0e62d9a56c72b84a5c40b84e2fd7dfe786c7d5c667e11ab85c45c6)
                 'dereferenceVia': URI(https://resolver.example.com/)
-                'key': PublicKeyBase(cab108a0) [
+                'key': PublicKeys(cab108a0) [
                     'allow': 'All'
                     'name': "Alice"
                 ]
@@ -686,7 +686,7 @@ fn test_xid_method() {
     //
     // XID(93a4d4e7) [
     //     'dereferenceVia': URI(btc:5e54156cfe0e62d9a56c72b84a5c40b84e2fd7dfe786c7d5c667e11ab85c45c6)
-    //     'key': PublicKeyBase(cab108a0) [
+    //     'key': PublicKeys(cab108a0) [
     //         'allow': 'All'
     //         'name': "Alice"
     //     ]
@@ -701,7 +701,7 @@ fn test_xid_method() {
         indoc! {r#"
             XID(93a4d4e7) [
                 'dereferenceVia': URI(btc:5e54156cfe0e62d9a56c72b84a5c40b84e2fd7dfe786c7d5c667e11ab85c45c6)
-                'key': PublicKeyBase(cab108a0) [
+                'key': PublicKeys(cab108a0) [
                     'allow': 'All'
                     'name': "Alice"
                 ]
@@ -790,7 +790,7 @@ fn test_xid_delegate() {
     //     ]
     //     'delegate': {
     //         XID(61b1f3c7) [
-    //             'key': PublicKeyBase(eebd4add) [
+    //             'key': PublicKeys(eebd4add) [
     //                 'allow': 'All'
     //                 'name': "Carol"
     //             ]
@@ -800,7 +800,7 @@ fn test_xid_delegate() {
     //     ]
     //     'delegate': {
     //         XID(f1199a75) [
-    //             'key': PublicKeyBase(e2c18423) [
+    //             'key': PublicKeys(e2c18423) [
     //                 'allow': 'All'
     //                 'name': "Bob"
     //             ]
@@ -809,7 +809,7 @@ fn test_xid_delegate() {
     //         'allow': 'Encrypt'
     //         'allow': 'Sign'
     //     ]
-    //     'key': PublicKeyBase(cab108a0) [
+    //     'key': PublicKeys(cab108a0) [
     //         'allow': 'All'
     //         'name': "Alice"
     //     ]
@@ -827,7 +827,7 @@ fn test_xid_delegate() {
                 ]
                 'delegate': {
                     XID(61b1f3c7) [
-                        'key': PublicKeyBase(eebd4add) [
+                        'key': PublicKeys(eebd4add) [
                             'allow': 'All'
                             'name': "Carol"
                         ]
@@ -837,7 +837,7 @@ fn test_xid_delegate() {
                 ]
                 'delegate': {
                     XID(f1199a75) [
-                        'key': PublicKeyBase(e2c18423) [
+                        'key': PublicKeys(e2c18423) [
                             'allow': 'All'
                             'name': "Bob"
                         ]
@@ -846,7 +846,7 @@ fn test_xid_delegate() {
                     'allow': 'Encrypt'
                     'allow': 'Sign'
                 ]
-                'key': PublicKeyBase(cab108a0) [
+                'key': PublicKeys(cab108a0) [
                     'allow': 'All'
                     'name': "Alice"
                 ]
@@ -876,7 +876,7 @@ fn test_xid_delegate() {
     //
     // {
     //     XID(f1199a75) [
-    //         'key': PublicKeyBase(e2c18423) [
+    //         'key': PublicKeys(e2c18423) [
     //             'allow': 'All'
     //             'name': "Bob"
     //         ]
@@ -894,7 +894,7 @@ fn test_xid_delegate() {
         indoc! {r#"
             {
                 XID(f1199a75) [
-                    'key': PublicKeyBase(e2c18423) [
+                    'key': PublicKeys(e2c18423) [
                         'allow': 'All'
                         'name': "Bob"
                     ]
@@ -910,7 +910,7 @@ fn test_xid_delegate() {
     //
     // {
     //     XID(61b1f3c7) [
-    //         'key': PublicKeyBase(eebd4add) [
+    //         'key': PublicKeys(eebd4add) [
     //             'allow': 'All'
     //             'name': "Carol"
     //         ]
@@ -927,7 +927,7 @@ fn test_xid_delegate() {
         indoc! {r#"
             {
                 XID(61b1f3c7) [
-                    'key': PublicKeyBase(eebd4add) [
+                    'key': PublicKeys(eebd4add) [
                         'allow': 'All'
                         'name': "Carol"
                     ]
@@ -1051,7 +1051,7 @@ fn test_xid_delegate() {
     //     ]
     //     'delegate': {
     //         XID(f1199a75) [
-    //             'key': PublicKeyBase(e2c18423) [
+    //             'key': PublicKeys(e2c18423) [
     //                 'allow': 'All'
     //                 'name': "Bob"
     //             ]
@@ -1060,7 +1060,7 @@ fn test_xid_delegate() {
     //         'allow': 'Encrypt'
     //         'allow': 'Sign'
     //     ]
-    //     'key': PublicKeyBase(cab108a0) [
+    //     'key': PublicKeys(cab108a0) [
     //         'allow': 'All'
     //         'name': "Alice"
     //     ]
@@ -1085,7 +1085,7 @@ fn test_xid_delegate() {
                 ]
                 'delegate': {
                     XID(f1199a75) [
-                        'key': PublicKeyBase(e2c18423) [
+                        'key': PublicKeys(e2c18423) [
                             'allow': 'All'
                             'name': "Bob"
                         ]
@@ -1094,7 +1094,7 @@ fn test_xid_delegate() {
                     'allow': 'Encrypt'
                     'allow': 'Sign'
                 ]
-                'key': PublicKeyBase(cab108a0) [
+                'key': PublicKeys(cab108a0) [
                     'allow': 'All'
                     'name': "Alice"
                 ]
@@ -1132,7 +1132,7 @@ fn test_xid_delegate() {
     //         'allow': 'Encrypt'
     //         'allow': 'Sign'
     //     ]
-    //     'key': PublicKeyBase(cab108a0) [
+    //     'key': PublicKeys(cab108a0) [
     //         'allow': 'All'
     //         'name': "Alice"
     //     ]
@@ -1155,7 +1155,7 @@ fn test_xid_delegate() {
                     'allow': 'Encrypt'
                     'allow': 'Sign'
                 ]
-                'key': PublicKeyBase(cab108a0) [
+                'key': PublicKeys(cab108a0) [
                     'allow': 'All'
                     'name': "Alice"
                 ]
@@ -1179,12 +1179,12 @@ fn test_xid_service() {
     // The keys and delegates in a Service declaration are references to keys and delegates that must already exist in the XID document.
     //
     // ```
-    // $ ALICE_PRVKEYS=ur:crypto-prvkeys/gdlfwfdwlphlfsghcphfcsaybekkkbaejksfnynsct
-    // $ ALICE_PUBKEYS=`envelope generate pubkeys $ALICE_PRVKEYS`
-    // $ BOB_PRVKEYS=ur:crypto-prvkeys/gdcsknhkjkswgtecnslsjtrdfgimfyuykgbzbagdva
-    // $ BOB_PUBKEYS=`envelope generate pubkeys $BOB_PRVKEYS`
-    // $ CAROL_PRVKEYS="ur:crypto-prvkeys/gdlpjypepycsvodtihcecwvsyljlzevwcnamjzdnos"
-    // $ CAROL_PUBKEYS=`envelope generate pubkeys $CAROL_PRVKEYS`
+    // $ ALICE_PRVKEY_BASE=ur:crypto-prvkey-base/gdlfwfdwlphlfsghcphfcsaybekkkbaejksfnynsct
+    // $ ALICE_PUBKEYS=`envelope generate pubkeys $ALICE_PRVKEY_BASE`
+    // $ BOB_PRVKEY_BASE=ur:crypto-prvkey-base/gdcsknhkjkswgtecnslsjtrdfgimfyuykgbzbagdva
+    // $ BOB_PUBKEYS=`envelope generate pubkeys $BOB_PRVKEY_BASE`
+    // $ CAROL_PRVKEY_BASE="ur:crypto-prvkey-base/gdlpjypepycsvodtihcecwvsyljlzevwcnamjzdnos"
+    // $ CAROL_PUBKEYS=`envelope generate pubkeys $CAROL_PRVKEY_BASE`
     // ```
     //
     // Alice creates a basic XID document.
@@ -1194,7 +1194,7 @@ fn test_xid_service() {
     // $ envelope format $ALICE_XID_DOC
     //
     // XID(93a4d4e7) [
-    //     'key': PublicKeyBase(cab108a0) [
+    //     'key': PublicKeys(cab108a0) [
     //         'allow': 'All'
     //         'name': "Alice"
     //     ]
@@ -1209,7 +1209,7 @@ fn test_xid_service() {
         &["format", &alice_xid_doc],
         indoc! {r#"
             XID(93a4d4e7) [
-                'key': PublicKeyBase(cab108a0) [
+                'key': PublicKeys(cab108a0) [
                     'allow': 'All'
                     'name': "Alice"
                 ]
@@ -1227,7 +1227,7 @@ fn test_xid_service() {
     // XID(93a4d4e7) [
     //     'delegate': {
     //         XID(f1199a75) [
-    //             'key': PublicKeyBase(e2c18423) [
+    //             'key': PublicKeys(e2c18423) [
     //                 'allow': 'All'
     //                 'name': "Bob"
     //             ]
@@ -1236,7 +1236,7 @@ fn test_xid_service() {
     //         'allow': 'Encrypt'
     //         'allow': 'Sign'
     //     ]
-    //     'key': PublicKeyBase(cab108a0) [
+    //     'key': PublicKeys(cab108a0) [
     //         'allow': 'All'
     //         'name': "Alice"
     //     ]
@@ -1257,7 +1257,7 @@ fn test_xid_service() {
             XID(93a4d4e7) [
                 'delegate': {
                     XID(f1199a75) [
-                        'key': PublicKeyBase(e2c18423) [
+                        'key': PublicKeys(e2c18423) [
                             'allow': 'All'
                             'name': "Bob"
                         ]
@@ -1266,7 +1266,7 @@ fn test_xid_service() {
                     'allow': 'Encrypt'
                     'allow': 'Sign'
                 ]
-                'key': PublicKeyBase(cab108a0) [
+                'key': PublicKeys(cab108a0) [
                     'allow': 'All'
                     'name': "Alice"
                 ]
@@ -1306,7 +1306,7 @@ fn test_xid_service() {
     // XID(93a4d4e7) [
     //     'delegate': {
     //         XID(f1199a75) [
-    //             'key': PublicKeyBase(e2c18423) [
+    //             'key': PublicKeys(e2c18423) [
     //                 'allow': 'All'
     //                 'name': "Bob"
     //             ]
@@ -1315,7 +1315,7 @@ fn test_xid_service() {
     //         'allow': 'Encrypt'
     //         'allow': 'Sign'
     //     ]
-    //     'key': PublicKeyBase(cab108a0) [
+    //     'key': PublicKeys(cab108a0) [
     //         'allow': 'All'
     //         'name': "Alice"
     //     ]
@@ -1335,7 +1335,7 @@ fn test_xid_service() {
             XID(93a4d4e7) [
                 'delegate': {
                     XID(f1199a75) [
-                        'key': PublicKeyBase(e2c18423) [
+                        'key': PublicKeys(e2c18423) [
                             'allow': 'All'
                             'name': "Bob"
                         ]
@@ -1344,7 +1344,7 @@ fn test_xid_service() {
                     'allow': 'Encrypt'
                     'allow': 'Sign'
                 ]
-                'key': PublicKeyBase(cab108a0) [
+                'key': PublicKeys(cab108a0) [
                     'allow': 'All'
                     'name': "Alice"
                 ]
@@ -1376,7 +1376,7 @@ fn test_xid_service() {
     // XID(93a4d4e7) [
     //     'delegate': {
     //         XID(f1199a75) [
-    //             'key': PublicKeyBase(e2c18423) [
+    //             'key': PublicKeys(e2c18423) [
     //                 'allow': 'All'
     //                 'name': "Bob"
     //             ]
@@ -1385,7 +1385,7 @@ fn test_xid_service() {
     //         'allow': 'Encrypt'
     //         'allow': 'Sign'
     //     ]
-    //     'key': PublicKeyBase(cab108a0) [
+    //     'key': PublicKeys(cab108a0) [
     //         'allow': 'All'
     //         'name': "Alice"
     //     ]
@@ -1423,7 +1423,7 @@ fn test_xid_service() {
             XID(93a4d4e7) [
                 'delegate': {
                     XID(f1199a75) [
-                        'key': PublicKeyBase(e2c18423) [
+                        'key': PublicKeys(e2c18423) [
                             'allow': 'All'
                             'name': "Bob"
                         ]
@@ -1432,7 +1432,7 @@ fn test_xid_service() {
                     'allow': 'Encrypt'
                     'allow': 'Sign'
                 ]
-                'key': PublicKeyBase(cab108a0) [
+                'key': PublicKeys(cab108a0) [
                     'allow': 'All'
                     'name': "Alice"
                 ]

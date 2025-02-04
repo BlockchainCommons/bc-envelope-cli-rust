@@ -2,7 +2,7 @@ use anyhow::{bail, Result};
 use clap::Args;
 
 use crate::envelope_args::{EnvelopeArgs, EnvelopeArgsLike};
-use bc_components::{SymmetricKey, PublicKeyBase};
+use bc_components::{SymmetricKey, PublicKeys};
 use bc_envelope::prelude::*;
 
 /// Encrypt the envelope's subject using the provided key.
@@ -37,8 +37,8 @@ impl crate::exec::Exec for CommandArgs {
     fn exec(&self) -> Result<String> {
         let envelope = self.read_envelope()?;
 
-        // Convert recipients to public key bases.
-        let recipients = self.recipient.iter().map(PublicKeyBase::from_ur_string).collect::<Result<Vec<PublicKeyBase>>>()?;
+        // Convert recipients to `PublicKeys`.
+        let recipients = self.recipient.iter().map(PublicKeys::from_ur_string).collect::<Result<Vec<PublicKeys>>>()?;
 
         // Get the key
         let key = match self.key {

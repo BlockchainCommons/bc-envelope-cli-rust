@@ -1,5 +1,5 @@
 use anyhow::bail;
-use bc_components::{SymmetricKey, SSKRSpec, SSKRGroupSpec, SSKRError, PublicKeyBase};
+use bc_components::{SymmetricKey, SSKRSpec, SSKRGroupSpec, SSKRError, PublicKeys};
 use clap::Args;
 pub use anyhow::Result;
 
@@ -86,10 +86,10 @@ impl crate::exec::Exec for CommandArgs {
         let flattened_shares = if self.recipients.is_empty() {
             flattened_shares
         } else {
-            let recipients: Vec<PublicKeyBase> = self
+            let recipients: Vec<PublicKeys> = self
                 .recipients
                 .iter()
-                .map(PublicKeyBase::from_ur_string)
+                .map(PublicKeys::from_ur_string)
                 .collect::<Result<_>>()?;
             flattened_shares
                 .into_iter()

@@ -59,10 +59,10 @@ impl crate::exec::Exec for CommandArgs {
 
         let mut key = match &keys {
             InputKey::Private(private_key_base) => {
-                Key::new_with_private_key(private_key_base.clone())
+                Key::new_with_private_key_base(private_key_base.clone())
             }
-            InputKey::Public(public_key_base) => {
-                Key::new(public_key_base.clone())
+            InputKey::Public(public_keys) => {
+                Key::new(public_keys.clone())
             }
         };
 

@@ -6,7 +6,7 @@ use common::*;
 
 #[test]
 fn test_sign() -> Result<()> {
-    let prvkeys = "ur:crypto-prvkeys/hdcxhsinuesrennenlhfaopycnrfrkdmfnsrvltowmtbmyfwdafxvwmthersktcpetdwfnbndeah";
+    let prvkeys = "ur:crypto-prvkey-base/hdcxhsinuesrennenlhfaopycnrfrkdmfnsrvltowmtbmyfwdafxvwmthersktcpetdwfnbndeah";
     let signed = run_cli(&[
         "sign",
         "--signer",
@@ -38,7 +38,7 @@ fn test_sign() -> Result<()> {
 
 #[test]
 fn test_sign_2() -> Result<()> {
-    let prvkeys = "ur:crypto-prvkeys/hdcxhsinuesrennenlhfaopycnrfrkdmfnsrvltowmtbmyfwdafxvwmthersktcpetdwfnbndeah";
+    let prvkeys = "ur:crypto-prvkey-base/hdcxhsinuesrennenlhfaopycnrfrkdmfnsrvltowmtbmyfwdafxvwmthersktcpetdwfnbndeah";
     let wrapped_signed = run_cli_piped(&[
         &["subject", "type", "wrapped", ALICE_KNOWS_BOB_EXAMPLE],
         &["sign", "--signer", prvkeys]
@@ -65,7 +65,7 @@ fn test_sign_2() -> Result<()> {
 fn test_sign_3() -> Result<()> {
     let e = run_cli_piped(&[
         &["subject", "type", "string", "Hello."],
-        &["sign", "--signer", ALICE_PRVKEYS, "--signer", CAROL_PRVKEYS]
+        &["sign", "--signer", ALICE_PRVKEY_BASE, "--signer", CAROL_PRVKEY_BASE]
     ])?;
     run_cli_expect(
         &["format", &e],

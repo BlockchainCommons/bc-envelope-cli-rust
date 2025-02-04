@@ -52,12 +52,12 @@ impl XIDDocumentReadable for CommandArgs { }
 
 impl crate::exec::Exec for CommandArgs {
     fn exec(&self) -> Result<String> {
-        let public_key_base = self.read_public_key()?;
+        let public_keys = self.read_public_key()?;
 
         let mut xid_document = self.read_xid_document()?;
 
         let mut key = xid_document
-            .find_key_by_public_key_base(&public_key_base)
+            .find_key_by_public_keys(&public_keys)
             .cloned()
             .ok_or_else(|| anyhow!("Key not found"))?;
 

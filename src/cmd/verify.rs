@@ -2,7 +2,7 @@ use anyhow::{bail, Result};
 use clap::Args;
 
 use crate::envelope_args::{EnvelopeArgs, EnvelopeArgsLike};
-use bc_components::{PrivateKeyBase, PublicKeyBase, SigningPrivateKey, SigningPublicKey, Verifier};
+use bc_components::{PrivateKeyBase, PublicKeys, SigningPrivateKey, SigningPublicKey, Verifier};
 use bc_envelope::prelude::*;
 
 /// Verify a signature on the envelope using the provided verifiers.
@@ -20,7 +20,7 @@ pub struct CommandArgs {
     #[arg(long, short, default_value = "1")]
     threshold: usize,
 
-    /// The verifier(s). May be a private key base (ur:prvkeys), public key base
+    /// The verifier(s). May be a private key base (ur:prvkeys), `PublicKeys`
     /// (ur:pubkeys) signing private key (ur:signing-private-key), or a signing
     /// public key (ur:signing-public-key).
     ///
@@ -45,14 +45,14 @@ impl crate::exec::Exec for CommandArgs {
             bail!("at least one verifier must be provided");
         }
         let mut private_key_bases: Vec<PrivateKeyBase> = Vec::new();
-        let mut public_key_bases: Vec<PublicKeyBase> = Vec::new();
+        let mut public_keys_vec: Vec<PublicKeys> = Vec::new();
         let mut signing_private_keys: Vec<SigningPrivateKey> = Vec::new();
         let mut signing_public_keys: Vec<SigningPublicKey> = Vec::new();
         for v in &self.verifier {
             if let Ok(key) = PrivateKeyBase::from_ur_string(v) {
                 private_key_bases.push(key);
-            } else if let Ok(key) = PublicKeyBase::from_ur_string(v) {
-                public_key_bases.push(key);
+            } else if let Ok(key) = PublicKeys::from_ur_string(v) {
+                public_keys_vec.push(key);
             } else if let Ok(key) = SigningPrivateKey::from_ur_string(v) {
                 signing_private_keys.push(key);
             } else if let Ok(key) = SigningPublicKey::from_ur_string(v) {
@@ -65,7 +65,7 @@ impl crate::exec::Exec for CommandArgs {
         for key in private_key_bases.iter() {
             verifiers.push(key as &dyn Verifier);
         }
-        for key in public_key_bases.iter() {
+        for key in public_keys_vec.iter() {
             verifiers.push(key as &dyn Verifier);
         }
         for key in signing_private_keys.iter() {

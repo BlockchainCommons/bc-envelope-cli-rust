@@ -13,7 +13,7 @@ pub struct CommandArgs {
     #[arg(long, short, conflicts_with = "recipient")]
     key: Option<String>,
 
-    /// The recipient to whom the envelope's subject should be decrypted. (ur:crypto-prvkeys)
+    /// The recipient to whom the envelope's subject should be decrypted. (ur:crypto-prvkey-base)
     #[arg(long, short)]
     recipient: Option<String>,
 

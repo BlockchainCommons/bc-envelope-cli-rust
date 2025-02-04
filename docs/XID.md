@@ -17,7 +17,7 @@ $ XID_DOC=ur:xid/tpsplftpsotanshdhdcxjsdigtwneocmnybadpdlzobysbstmekteypspeotcfl
 $ envelope format $XID_DOC
 
 XID(71274df1) [
-    'key': PublicKeyBase(eb9b1cae) [
+    'key': PublicKeys(eb9b1cae) [
         'allow': 'All'
     ]
 ]
@@ -29,7 +29,7 @@ Note that this does not validate the XID document (or any other envelope-contain
 $ envelope assertion at 0 $XID_DOC | \
     envelope format
 
-'key': PublicKeyBase(eb9b1cae) [
+'key': PublicKeys(eb9b1cae) [
     'allow': 'All'
 ]
 
@@ -41,7 +41,7 @@ $ envelope assertion at 0 $XID_DOC | \
 'allow': 'All'
 ```
 
-XID Documents always have the XID CBOR object as their subject. So you can extract the baer XID of a XID document using the `extract xid` subcommand.
+XID Documents always have the XID CBOR object as their subject. So you can extract the bare XID of a XID document using the `extract xid` subcommand.
 
 ```
 $ BARE_XID=`envelope extract xid $XID_DOC`
@@ -113,16 +113,16 @@ XID(71274df1)
 
 ### `xid new`: Create New XID Documents From Public or Private Keys
 
-The `xid new` subcommand converts a `PrivateKeyBase` or `PublicKeyBase` into a XID Document with the provided key as the inception key.
+The `xid new` subcommand converts a `PrivateKeyBase` or `PublicKeys` into a XID Document with the provided key as the inception key.
 
 ```
-$ ALICE_PRVKEYS=ur:crypto-prvkeys/gdlfwfdwlphlfsghcphfcsaybekkkbaejksfnynsct
-$ ALICE_PUBKEYS=`envelope generate pubkeys $ALICE_PRVKEYS`
+$ ALICE_PRVKEY_BASE=ur:crypto-prvkey-base/gdlfwfdwlphlfsghcphfcsaybekkkbaejksfnynsct
+$ ALICE_PUBKEYS=`envelope generate pubkeys $ALICE_PRVKEY_BASE`
 
 $ envelope xid new $ALICE_PUBKEYS | envelope format
 
 XID(93a4d4e7) [
-    'key': PublicKeyBase(cab108a0) [
+    'key': PublicKeys(cab108a0) [
         'allow': 'All'
     ]
 ]
@@ -139,10 +139,10 @@ ur:xid/tpsplftpsotanshdhdcxmuoxtyvddifztyryhymkgolbmefhssmejsgaykcljtjnfmaelrrkv
 If a `PrivateKeyBase` is provided, by default the salted private key itself will be included.
 
 ```
-$ envelope xid new $ALICE_PRVKEYS | envelope format
+$ envelope xid new $ALICE_PRVKEY_BASE | envelope format
 
 XID(93a4d4e7) [
-    'key': PublicKeyBase(cab108a0) [
+    'key': PublicKeys(cab108a0) [
         {
             'privateKey': PrivateKeyBase
         } [
@@ -156,18 +156,18 @@ XID(93a4d4e7) [
 The private key can be omitted using the `--private omit` option, or elided using `--private elide`.
 
 ```
-$ envelope xid new $ALICE_PRVKEYS --private omit | envelope format
+$ envelope xid new $ALICE_PRVKEY_BASE --private omit | envelope format
 
 XID(93a4d4e7) [
-    'key': PublicKeyBase(cab108a0) [
+    'key': PublicKeys(cab108a0) [
         'allow': 'All'
     ]
 ]
 
-$ envelope xid new $ALICE_PRVKEYS --private elide | envelope format
+$ envelope xid new $ALICE_PRVKEY_BASE --private elide | envelope format
 
 XID(93a4d4e7) [
-    'key': PublicKeyBase(cab108a0) [
+    'key': PublicKeys(cab108a0) [
         'allow': 'All'
         ELIDED
     ]
@@ -183,7 +183,7 @@ $ envelope xid new $ALICE_PUBKEYS \
     | envelope format
 
 XID(93a4d4e7) [
-    'key': PublicKeyBase(cab108a0) [
+    'key': PublicKeys(cab108a0) [
         'allow': 'All'
         'endpoint': URI(btc:5e54156cfe0e62d9a56c72b84a5c40b84e2fd7dfe786c7d5c667e11ab85c45c6)
         'endpoint': URI(https://endpoint.example.com/)
@@ -200,7 +200,7 @@ $ envelope xid new $ALICE_PUBKEYS \
     | envelope format
 
 XID(93a4d4e7) [
-    'key': PublicKeyBase(cab108a0) [
+    'key': PublicKeys(cab108a0) [
         'allow': 'Encrypt'
         'allow': 'Sign'
     ]
@@ -215,7 +215,7 @@ $ envelope xid new $ALICE_PUBKEYS \
     | envelope format
 
 XID(93a4d4e7) [
-    'key': PublicKeyBase(cab108a0) [
+    'key': PublicKeys(cab108a0) [
         'allow': 'All'
         'name': "Alice's Key"
     ]
@@ -235,17 +235,17 @@ All the same options as `xid new` are available. The same key may not be added t
 ```
 $ XID_DOC=`envelope xid new --name 'Alice' $ALICE_PUBKEYS`
 
-$ BOB_PRVKEYS=ur:crypto-prvkeys/gdcsknhkjkswgtecnslsjtrdfgimfyuykgbzbagdva
-$ BOB_PUBKEYS=`envelope generate pubkeys $BOB_PRVKEYS`
+$ BOB_PRVKEY_BASE=ur:crypto-prvkey-base/gdcsknhkjkswgtecnslsjtrdfgimfyuykgbzbagdva
+$ BOB_PUBKEYS=`envelope generate pubkeys $BOB_PRVKEY_BASE`
 
 $ envelope xid key add --name 'Bob' $BOB_PUBKEYS $XID_DOC | envelope format
 
 XID(93a4d4e7) [
-    'key': PublicKeyBase(cab108a0) [
+    'key': PublicKeys(cab108a0) [
         'allow': 'All'
         'name': "Alice"
     ]
-    'key': PublicKeyBase(e2c18423) [
+    'key': PublicKeys(e2c18423) [
         'allow': 'All'
         'name': "Bob"
     ]
@@ -261,11 +261,11 @@ $ XID_DOC=`envelope xid new --name 'Alice' $ALICE_PUBKEYS | envelope xid key add
 $ envelope format $XID_DOC
 
 XID(93a4d4e7) [
-    'key': PublicKeyBase(cab108a0) [
+    'key': PublicKeys(cab108a0) [
         'allow': 'All'
         'name': "Alice"
     ]
-    'key': PublicKeyBase(e2c18423) [
+    'key': PublicKeys(e2c18423) [
         'allow': 'All'
         'name': "Bob"
     ]
@@ -278,11 +278,11 @@ $ XID_DOC_UPDATED=`envelope xid key update $BOB_PUBKEYS \
 $ envelope format $XID_DOC_UPDATED
 
 XID(93a4d4e7) [
-    'key': PublicKeyBase(cab108a0) [
+    'key': PublicKeys(cab108a0) [
         'allow': 'All'
         'name': "Alice"
     ]
-    'key': PublicKeyBase(e2c18423) [
+    'key': PublicKeys(e2c18423) [
         'allow': 'Encrypt'
         'allow': 'Sign'
         'name': "Bob"
@@ -305,14 +305,14 @@ The indexes are zero-based, and in the order the key assertions appear in the XI
 ```
 $ envelope xid key at 0 $XID_DOC_UPDATED | envelope format
 
-PublicKeyBase(cab108a0) [
+PublicKeys(cab108a0) [
     'allow': 'All'
     'name': "Alice"
 ]
 
 $ envelope xid key at 1 $XID_DOC_UPDATED | envelope format
 
-PublicKeyBase(e2c18423) [
+PublicKeys(e2c18423) [
     'allow': 'Encrypt'
     'allow': 'Sign'
     'name': "Bob"
@@ -337,14 +337,14 @@ $ XID_KEYS=($(envelope xid key all $XID_DOC_UPDATED))
 
 $ envelope format ${XID_KEYS[1]}
 
-PublicKeyBase(cab108a0) [
+PublicKeys(cab108a0) [
     'allow': 'All'
     'name': "Alice"
 ]
 
 $ envelope format ${XID_KEYS[2]}
 
-PublicKeyBase(e2c18423) [
+PublicKeys(e2c18423) [
     'allow': 'Encrypt'
     'allow': 'Sign'
     'name': "Bob"
@@ -360,7 +360,7 @@ Returns at most one key envelope.
 ```
 $ envelope xid key find public $BOB_PUBKEYS $XID_DOC_UPDATED | envelope format
 
-PublicKeyBase(e2c18423) [
+PublicKeys(e2c18423) [
     'allow': 'Encrypt'
     'allow': 'Sign'
     'name': "Bob"
@@ -374,7 +374,7 @@ May return multiple key envelopes.
 ```
 $ envelope xid key find name 'Alice' $XID_DOC_UPDATED | envelope format
 
-PublicKeyBase(cab108a0) [
+PublicKeys(cab108a0) [
     'allow': 'All'
     'name': "Alice"
 ]
@@ -391,7 +391,7 @@ Returns at most one key envelope.
 ```
 $ envelope xid key find inception $XID_DOC_UPDATED | envelope format
 
-PublicKeyBase(cab108a0) [
+PublicKeys(cab108a0) [
     'allow': 'All'
     'name': "Alice"
 ]
@@ -404,7 +404,7 @@ $ XID_DOC_REMOVED=`envelope xid key remove $ALICE_PUBKEYS $XID_DOC_UPDATED`
 $ envelope format $XID_DOC_REMOVED
 
 XID(93a4d4e7) [
-    'key': PublicKeyBase(e2c18423) [
+    'key': PublicKeys(e2c18423) [
         'allow': 'Encrypt'
         'allow': 'Sign'
         'name': "Bob"
@@ -435,7 +435,7 @@ $ envelope format $XID_DOC_WITH_RESOLVERS
 XID(93a4d4e7) [
     'dereferenceVia': URI(btc:5e54156cfe0e62d9a56c72b84a5c40b84e2fd7dfe786c7d5c667e11ab85c45c6)
     'dereferenceVia': URI(https://resolver.example.com/)
-    'key': PublicKeyBase(cab108a0) [
+    'key': PublicKeys(cab108a0) [
         'allow': 'All'
         'name': "Alice"
     ]
@@ -480,7 +480,7 @@ $ envelope xid method remove 'https://resolver.example.com/' $XID_DOC_WITH_RESOL
 
 XID(93a4d4e7) [
     'dereferenceVia': URI(btc:5e54156cfe0e62d9a56c72b84a5c40b84e2fd7dfe786c7d5c667e11ab85c45c6)
-    'key': PublicKeyBase(cab108a0) [
+    'key': PublicKeys(cab108a0) [
         'allow': 'All'
         'name': "Alice"
     ]
@@ -506,14 +506,14 @@ This example:
     - but only add's Dave's XID identifier to the XID document, which means it will have to be resolved to be used.
 
 ```
-$ ALICE_PRVKEYS="ur:crypto-prvkeys/gdlfwfdwlphlfsghcphfcsaybekkkbaejksfnynsct"
-$ ALICE_PUBKEYS=`envelope generate pubkeys $ALICE_PRVKEYS`
-$ BOB_PRVKEYS="ur:crypto-prvkeys/gdcsknhkjkswgtecnslsjtrdfgimfyuykgbzbagdva"
-$ BOB_PUBKEYS=`envelope generate pubkeys $BOB_PRVKEYS`
-$ CAROL_PRVKEYS="ur:crypto-prvkeys/gdlpjypepycsvodtihcecwvsyljlzevwcnamjzdnos"
-$ CAROL_PUBKEYS=`envelope generate pubkeys $CAROL_PRVKEYS`
-$ DAVE_PRVKEYS="ur:crypto-prvkeys/hdcxjtgrwefxlpihpmvtzoprdpfrbaghgmfmdyjsiafzaewlenmktesweocpluwepekgdyutaejy"
-$ DAVE_PUBKEYS=`envelope generate pubkeys $DAVE_PRVKEYS`
+$ ALICE_PRVKEY_BASE="ur:crypto-prvkey-base/gdlfwfdwlphlfsghcphfcsaybekkkbaejksfnynsct"
+$ ALICE_PUBKEYS=`envelope generate pubkeys $ALICE_PRVKEY_BASE`
+$ BOB_PRVKEY_BASE="ur:crypto-prvkey-base/gdcsknhkjkswgtecnslsjtrdfgimfyuykgbzbagdva"
+$ BOB_PUBKEYS=`envelope generate pubkeys $BOB_PRVKEY_BASE`
+$ CAROL_PRVKEY_BASE="ur:crypto-prvkey-base/gdlpjypepycsvodtihcecwvsyljlzevwcnamjzdnos"
+$ CAROL_PUBKEYS=`envelope generate pubkeys $CAROL_PRVKEY_BASE`
+$ DAVE_PRVKEY_BASE="ur:crypto-prvkey-base/hdcxjtgrwefxlpihpmvtzoprdpfrbaghgmfmdyjsiafzaewlenmktesweocpluwepekgdyutaejy"
+$ DAVE_PUBKEYS=`envelope generate pubkeys $DAVE_PRVKEY_BASE`
 
 $ ALICE_XID_DOC=`envelope xid new --name 'Alice' $ALICE_PUBKEYS`
 $ BOB_XID_DOC=`envelope xid new --name 'Bob' $BOB_PUBKEYS`
@@ -534,7 +534,7 @@ XID(93a4d4e7) [
     ]
     'delegate': {
         XID(61b1f3c7) [
-            'key': PublicKeyBase(eebd4add) [
+            'key': PublicKeys(eebd4add) [
                 'allow': 'All'
                 'name': "Carol"
             ]
@@ -544,7 +544,7 @@ XID(93a4d4e7) [
     ]
     'delegate': {
         XID(f1199a75) [
-            'key': PublicKeyBase(e2c18423) [
+            'key': PublicKeys(e2c18423) [
                 'allow': 'All'
                 'name': "Bob"
             ]
@@ -553,7 +553,7 @@ XID(93a4d4e7) [
         'allow': 'Encrypt'
         'allow': 'Sign'
     ]
-    'key': PublicKeyBase(cab108a0) [
+    'key': PublicKeys(cab108a0) [
         'allow': 'All'
         'name': "Alice"
     ]
@@ -577,7 +577,7 @@ $ envelope xid delegate at 0 $ALICE_XID_DOC | envelope format
 
 {
     XID(f1199a75) [
-        'key': PublicKeyBase(e2c18423) [
+        'key': PublicKeys(e2c18423) [
             'allow': 'All'
             'name': "Bob"
         ]
@@ -591,7 +591,7 @@ $ envelope xid delegate at 1 $ALICE_XID_DOC | envelope format
 
 {
     XID(61b1f3c7) [
-        'key': PublicKeyBase(eebd4add) [
+        'key': PublicKeys(eebd4add) [
             'allow': 'All'
             'name': "Carol"
         ]
@@ -627,7 +627,7 @@ $ envelope format ${XID_DELEGATES[1]}
 
 {
     XID(f1199a75) [
-        'key': PublicKeyBase(e2c18423) [
+        'key': PublicKeys(e2c18423) [
             'allow': 'All'
             'name': "Bob"
         ]
@@ -641,7 +641,7 @@ $ envelope format ${XID_DELEGATES[2]}
 
 {
     XID(61b1f3c7) [
-        'key': PublicKeyBase(eebd4add) [
+        'key': PublicKeys(eebd4add) [
             'allow': 'All'
             'name': "Carol"
         ]
@@ -700,7 +700,7 @@ XID(93a4d4e7) [
     ]
     'delegate': {
         XID(f1199a75) [
-            'key': PublicKeyBase(e2c18423) [
+            'key': PublicKeys(e2c18423) [
                 'allow': 'All'
                 'name': "Bob"
             ]
@@ -709,7 +709,7 @@ XID(93a4d4e7) [
         'allow': 'Encrypt'
         'allow': 'Sign'
     ]
-    'key': PublicKeyBase(cab108a0) [
+    'key': PublicKeys(cab108a0) [
         'allow': 'All'
         'name': "Alice"
     ]
@@ -736,7 +736,7 @@ XID(93a4d4e7) [
         'allow': 'Encrypt'
         'allow': 'Sign'
     ]
-    'key': PublicKeyBase(cab108a0) [
+    'key': PublicKeys(cab108a0) [
         'allow': 'All'
         'name': "Alice"
     ]
@@ -754,12 +754,12 @@ Services are URI endpoints along with the keys, delegates, and permissions that 
 The keys and delegates in a Service declaration are references to keys and delegates that must already exist in the XID document.
 
 ```
-$ ALICE_PRVKEYS=ur:crypto-prvkeys/gdlfwfdwlphlfsghcphfcsaybekkkbaejksfnynsct
-$ ALICE_PUBKEYS=`envelope generate pubkeys $ALICE_PRVKEYS`
-$ BOB_PRVKEYS=ur:crypto-prvkeys/gdcsknhkjkswgtecnslsjtrdfgimfyuykgbzbagdva
-$ BOB_PUBKEYS=`envelope generate pubkeys $BOB_PRVKEYS`
-$ CAROL_PRVKEYS="ur:crypto-prvkeys/gdlpjypepycsvodtihcecwvsyljlzevwcnamjzdnos"
-$ CAROL_PUBKEYS=`envelope generate pubkeys $CAROL_PRVKEYS`
+$ ALICE_PRVKEY_BASE=ur:crypto-prvkey-base/gdlfwfdwlphlfsghcphfcsaybekkkbaejksfnynsct
+$ ALICE_PUBKEYS=`envelope generate pubkeys $ALICE_PRVKEY_BASE`
+$ BOB_PRVKEY_BASE=ur:crypto-prvkey-base/gdcsknhkjkswgtecnslsjtrdfgimfyuykgbzbagdva
+$ BOB_PUBKEYS=`envelope generate pubkeys $BOB_PRVKEY_BASE`
+$ CAROL_PRVKEY_BASE="ur:crypto-prvkey-base/gdlpjypepycsvodtihcecwvsyljlzevwcnamjzdnos"
+$ CAROL_PUBKEYS=`envelope generate pubkeys $CAROL_PRVKEY_BASE`
 ```
 
 #### `xid service add`: Add a Service to a XID Document
@@ -771,7 +771,7 @@ $ ALICE_XID_DOC=`envelope xid new --name 'Alice' $ALICE_PUBKEYS`
 $ envelope format $ALICE_XID_DOC
 
 XID(93a4d4e7) [
-    'key': PublicKeyBase(cab108a0) [
+    'key': PublicKeys(cab108a0) [
         'allow': 'All'
         'name': "Alice"
     ]
@@ -788,7 +788,7 @@ $ envelope format $ALICE_XID_DOC
 XID(93a4d4e7) [
     'delegate': {
         XID(f1199a75) [
-            'key': PublicKeyBase(e2c18423) [
+            'key': PublicKeys(e2c18423) [
                 'allow': 'All'
                 'name': "Bob"
             ]
@@ -797,7 +797,7 @@ XID(93a4d4e7) [
         'allow': 'Encrypt'
         'allow': 'Sign'
     ]
-    'key': PublicKeyBase(cab108a0) [
+    'key': PublicKeys(cab108a0) [
         'allow': 'All'
         'name': "Alice"
     ]
@@ -829,7 +829,7 @@ $ envelope format $ALICE_XID_DOC_WITH_SERVICE
 XID(93a4d4e7) [
     'delegate': {
         XID(f1199a75) [
-            'key': PublicKeyBase(e2c18423) [
+            'key': PublicKeys(e2c18423) [
                 'allow': 'All'
                 'name': "Bob"
             ]
@@ -838,7 +838,7 @@ XID(93a4d4e7) [
         'allow': 'Encrypt'
         'allow': 'Sign'
     ]
-    'key': PublicKeyBase(cab108a0) [
+    'key': PublicKeys(cab108a0) [
         'allow': 'All'
         'name': "Alice"
     ]
@@ -875,7 +875,7 @@ $ envelope format $ALICE_XID_DOC_WITH_SERVICE
 XID(93a4d4e7) [
     'delegate': {
         XID(f1199a75) [
-            'key': PublicKeyBase(e2c18423) [
+            'key': PublicKeys(e2c18423) [
                 'allow': 'All'
                 'name': "Bob"
             ]
@@ -884,7 +884,7 @@ XID(93a4d4e7) [
         'allow': 'Encrypt'
         'allow': 'Sign'
     ]
-    'key': PublicKeyBase(cab108a0) [
+    'key': PublicKeys(cab108a0) [
         'allow': 'All'
         'name': "Alice"
     ]
@@ -1020,7 +1020,7 @@ $ envelope format $ALICE_XID_DOC_WITH_SERVICE_REMOVED
 XID(93a4d4e7) [
     'delegate': {
         XID(f1199a75) [
-            'key': PublicKeyBase(e2c18423) [
+            'key': PublicKeys(e2c18423) [
                 'allow': 'All'
                 'name': "Bob"
             ]
@@ -1029,7 +1029,7 @@ XID(93a4d4e7) [
         'allow': 'Encrypt'
         'allow': 'Sign'
     ]
-    'key': PublicKeyBase(cab108a0) [
+    'key': PublicKeys(cab108a0) [
         'allow': 'All'
         'name': "Alice"
     ]
@@ -1063,7 +1063,7 @@ $ envelope format $ALICE_XID_DOC_WITH_SERVICE_UPDATED
 XID(93a4d4e7) [
     'delegate': {
         XID(f1199a75) [
-            'key': PublicKeyBase(e2c18423) [
+            'key': PublicKeys(e2c18423) [
                 'allow': 'All'
                 'name': "Bob"
             ]
@@ -1072,7 +1072,7 @@ XID(93a4d4e7) [
         'allow': 'Encrypt'
         'allow': 'Sign'
     ]
-    'key': PublicKeyBase(cab108a0) [
+    'key': PublicKeys(cab108a0) [
         'allow': 'All'
         'name': "Alice"
     ]

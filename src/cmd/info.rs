@@ -3,7 +3,7 @@ use clap::Args;
 use ssh_key::{public::KeyData, HashAlg};
 
 use crate::utils::read_argument;
-use bc_components::{PrivateKeyBase, PublicKeyBase, Seed, Signature, SigningPrivateKey, SigningPublicKey};
+use bc_components::{PrivateKeyBase, PublicKeys, Seed, Signature, SigningPrivateKey, SigningPublicKey};
 use bc_envelope::prelude::*;
 
 /// Provide type and other information about the object.
@@ -50,8 +50,8 @@ impl crate::exec::Exec for CommandArgs {
                     add(&mut result, "Description", "Private Key Base");
                 }
                 "pubkeys" => {
-                    let _public_key_base = PublicKeyBase::from_ur(&ur)?;
-                    add(&mut result, "Description", "Public Key Base");
+                    let _public_keys = PublicKeys::from_ur(&ur)?;
+                    add(&mut result, "Description", "Public Keys");
                 }
                 "signing-private-key" => {
                     let signing_private_key = SigningPrivateKey::from_ur(&ur)?;

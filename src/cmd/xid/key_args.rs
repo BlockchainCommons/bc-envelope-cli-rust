@@ -1,5 +1,5 @@
 use bc_components::URI;
-use bc_envelope::PublicKeyBase;
+use bc_envelope::PublicKeys;
 use clap::Args;
 use anyhow::Result;
 
@@ -16,7 +16,7 @@ pub trait KeyArgsLike {
         read_key(self.keys())
     }
 
-    fn read_public_key(&self) -> Result<PublicKeyBase> {
+    fn read_public_key(&self) -> Result<PublicKeys> {
         read_public_key(self.keys())
     }
 }
