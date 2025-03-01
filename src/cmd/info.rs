@@ -3,7 +3,9 @@ use clap::Args;
 use ssh_key::{public::KeyData, HashAlg};
 
 use crate::utils::read_argument;
-use bc_components::{PrivateKeyBase, PublicKeys, Seed, Signature, SigningPrivateKey, SigningPublicKey};
+use bc_components::{
+    PrivateKeyBase, PublicKeys, Seed, Signature, SigningPrivateKey, SigningPublicKey,
+};
 use bc_envelope::prelude::*;
 
 /// Provide type and other information about the object.
@@ -28,7 +30,9 @@ impl crate::exec::Exec for CommandArgs {
             add(result, "Fingerprint", format!("{}", &fingerprint));
             let algorithm_str = public_key.algorithm().to_string();
             let algorithm_formatted = algorithm_str.strip_prefix("ssh-").unwrap_or(&algorithm_str);
-            result.push(fingerprint.to_randomart(&format!("[{}]", algorithm_formatted).to_uppercase()));
+            result.push(
+                fingerprint.to_randomart(&format!("[{}]", algorithm_formatted).to_uppercase()),
+            );
         }
 
         let object = read_argument(self.object.as_deref())?;
@@ -56,10 +60,20 @@ impl crate::exec::Exec for CommandArgs {
                 "signing-private-key" => {
                     let signing_private_key = SigningPrivateKey::from_ur(&ur)?;
                     match signing_private_key {
-                        SigningPrivateKey::Schnorr(_) => add(&mut result, "Description", "Schnorr Signing Private Key"),
-                        SigningPrivateKey::ECDSA(_) => add(&mut result, "Description", "ECDSA Signing Private Key"),
-                        SigningPrivateKey::Ed25519(_) => add(&mut result, "Description", "Ed25519 Signing Private Key"),
-                        SigningPrivateKey::Dilithium(dilithium_key) => add(&mut result, "Description", format!("{:?} Signing Private Key", dilithium_key.level())),
+                        SigningPrivateKey::Schnorr(_) => {
+                            add(&mut result, "Description", "Schnorr Signing Private Key")
+                        }
+                        SigningPrivateKey::ECDSA(_) => {
+                            add(&mut result, "Description", "ECDSA Signing Private Key")
+                        }
+                        SigningPrivateKey::Ed25519(_) => {
+                            add(&mut result, "Description", "Ed25519 Signing Private Key")
+                        }
+                        SigningPrivateKey::MLDSA(mldsa_key) => add(
+                            &mut result,
+                            "Description",
+                            format!("{:?} Signing Private Key", mldsa_key.level()),
+                        ),
                         SigningPrivateKey::SSH(ssh_key) => {
                             add(&mut result, "Description", "SSH Signing Private Key");
                             add_public_key_info(&mut result, ssh_key.public_key().key_data());
@@ -69,10 +83,20 @@ impl crate::exec::Exec for CommandArgs {
                 "signing-public-key" => {
                     let signing_public_key = SigningPublicKey::from_ur(&ur)?;
                     match signing_public_key {
-                        SigningPublicKey::Schnorr(_) => add(&mut result, "Description", "Schnorr Signing Public Key"),
-                        SigningPublicKey::ECDSA(_) => add(&mut result, "Description", "ECDSA Signing Public Key"),
-                        SigningPublicKey::Ed25519(_) => add(&mut result, "Description", "Ed25519 Signing Public Key"),
-                        SigningPublicKey::Dilithium(dilithium_key) => add(&mut result, "Description", format!("{:?} Signing Public Key", dilithium_key.level())),
+                        SigningPublicKey::Schnorr(_) => {
+                            add(&mut result, "Description", "Schnorr Signing Public Key")
+                        }
+                        SigningPublicKey::ECDSA(_) => {
+                            add(&mut result, "Description", "ECDSA Signing Public Key")
+                        }
+                        SigningPublicKey::Ed25519(_) => {
+                            add(&mut result, "Description", "Ed25519 Signing Public Key")
+                        }
+                        SigningPublicKey::MLDSA(mldsa_key) => add(
+                            &mut result,
+                            "Description",
+                            format!("{:?} Signing Public Key", mldsa_key.level()),
+                        ),
                         SigningPublicKey::SSH(ssh_key) => {
                             add(&mut result, "Description", "SSH Signing Public Key");
                             add_public_key_info(&mut result, ssh_key.key_data());
@@ -82,15 +106,21 @@ impl crate::exec::Exec for CommandArgs {
                 "signature" => {
                     let signature = Signature::from_ur(&ur)?;
                     match signature {
-                        Signature::Schnorr { .. } => add(&mut result, "Description", "Schnorr Signature"),
+                        Signature::Schnorr { .. } => {
+                            add(&mut result, "Description", "Schnorr Signature")
+                        }
                         Signature::ECDSA(_) => add(&mut result, "Description", "ECDSA Signature"),
-                        Signature::Ed25519(_) => add(&mut result, "Description", "Ed25519 Signature"),
-                        Signature::Dilithium(_) => add(&mut result, "Description", "Dilithium Signature"),
+                        Signature::Ed25519(_) => {
+                            add(&mut result, "Description", "Ed25519 Signature")
+                        }
+                        Signature::MLDSA(_) => {
+                            add(&mut result, "Description", "MLDSA Signature")
+                        }
                         Signature::SSH(ssh_sig) => {
                             add(&mut result, "Description", "SSH Signature");
                             add(&mut result, "Namespace", ssh_sig.namespace().to_string());
                             add_public_key_info(&mut result, ssh_sig.public_key());
-                        },
+                        }
                     };
                 }
                 _ => {

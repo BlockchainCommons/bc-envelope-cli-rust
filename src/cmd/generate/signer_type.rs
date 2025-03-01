@@ -17,14 +17,14 @@ pub enum SignerType {
     /// SSH-Ed25519
     SshEd25519,
 
-    /// Dilithium2
-    Dilithium2,
+    /// MLDSA44
+    MLDSA44,
 
-    /// Dilithium3
-    Dilithium3,
+    /// MLDSA65
+    MLDSA65,
 
-    /// Dilithium5
-    Dilithium5,
+    /// MLDSA87
+    MLDSA87,
 
     /// SSH-RSA SHA-256
     SshRsaSha256,
@@ -55,9 +55,9 @@ impl SignerType {
             Self::Ecdsa => Ok(private_key_base.ecdsa_signing_private_key()),
             Self::Ed25519 => Ok(private_key_base.ed25519_signing_private_key()),
 
-            Self::Dilithium2 => bail!("Dilithium conversion not supported"),
-            Self::Dilithium3 => bail!("Dilithium conversion not supported"),
-            Self::Dilithium5 => bail!("Dilithium conversion not supported"),
+            Self::MLDSA44 => bail!("MLDSA conversion not supported"),
+            Self::MLDSA65 => bail!("MLDSA conversion not supported"),
+            Self::MLDSA87 => bail!("MLDSA conversion not supported"),
 
             Self::SshEd25519 => private_key_base.ssh_signing_private_key(SSHAlgorithm::Ed25519, ssh_comment),
             Self::SshRsaSha256 => private_key_base.ssh_signing_private_key(SSHAlgorithm::Rsa { hash: Some(HashAlg::Sha256) }, ssh_comment),
