@@ -12,19 +12,64 @@
 
 ## Installation
 
-To install from crates.io, run:
+### From crates.io (Recommended)
+
+To install the latest stable version from crates.io, run:
 
 ```bash
 cargo install bc-envelope-cli
 ```
 
-To install from source, clone this repo, change to its root directory and run:
+To install a specific version:
 
 ```bash
+cargo install bc-envelope-cli --version 0.12.0
+```
+
+### From Source
+
+When building from source, we **strongly recommend** building from a tagged release rather than the tip of the main branch, which may contain unstable code or breaking changes:
+
+```bash
+# Clone the repository
+git clone https://github.com/BlockchainCommons/bc-envelope-cli-rust.git
+cd bc-envelope-cli-rust
+
+# List available tags
+git tag -l
+
+# Checkout the most recent tag
+git checkout $(git describe --tags --abbrev=0)
+
+# Install the tool
+cargo install --path .
+```
+
+If you must build from the main branch, be aware that it may have dependency mismatches or other issues:
+
+```bash
+# Build without installing (debug build)
+cargo build
+
+# Test before installing
+cargo test
+
+# If all tests pass, you can install
 cargo install --path .
 ```
 
 Make sure your `~/.cargo/bin` directory is in your `PATH`.
+
+### Troubleshooting Build Issues
+
+If you encounter build problems:
+
+1. **Try debug build first**: `cargo build` instead of `cargo build --release`
+2. **Check dependency versions**: The main branch might require specific versions of dependencies
+3. **Verify compatible Rust version**: Run `rustc --version` to check your Rust version
+4. **Build from a release tag**: Tagged releases have been tested and should build properly
+
+For serious build issues, please open an issue on the GitHub repository with details about your environment and the errors you're seeing.
 
 ## Usage
 
