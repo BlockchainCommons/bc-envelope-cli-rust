@@ -13,13 +13,14 @@ fn test_sign() -> Result<()> {
         prvkeys,
         ALICE_KNOWS_BOB_EXAMPLE,
     ])?;
+    #[rustfmt::skip]
     run_cli_expect(
         &["format", &signed],
         indoc!(r#"
-        "Alice" [
-            "knows": "Bob"
-            'signed': Signature
-        ]
+            "Alice" [
+                "knows": "Bob"
+                'signed': Signature
+            ]
         "#)
     )?;
 
@@ -43,16 +44,17 @@ fn test_sign_2() -> Result<()> {
         &["subject", "type", "wrapped", ALICE_KNOWS_BOB_EXAMPLE],
         &["sign", "--signer", prvkeys]
     ])?;
+    #[rustfmt::skip]
     run_cli_expect(
         &["format", &wrapped_signed],
         indoc!(r#"
-        {
-            "Alice" [
-                "knows": "Bob"
+            {
+                "Alice" [
+                    "knows": "Bob"
+                ]
+            } [
+                'signed': Signature
             ]
-        } [
-            'signed': Signature
-        ]
         "#)
     )?;
 
@@ -67,13 +69,14 @@ fn test_sign_3() -> Result<()> {
         &["subject", "type", "string", "Hello."],
         &["sign", "--signer", ALICE_PRVKEY_BASE, "--signer", CAROL_PRVKEY_BASE]
     ])?;
+    #[rustfmt::skip]
     run_cli_expect(
         &["format", &e],
         indoc!(r#"
-        "Hello." [
-            'signed': Signature
-            'signed': Signature
-        ]
+            "Hello." [
+                'signed': Signature
+                'signed': Signature
+            ]
         "#)
     )?;
     Ok(())

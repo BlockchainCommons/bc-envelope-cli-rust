@@ -36,14 +36,7 @@ fn test_assertion_2() -> Result<()> {
 
 #[test]
 fn test_assertion_3() -> Result<()> {
-    let e = run_cli(&[
-        "subject",
-        "assertion",
-        "known",
-        "note",
-        "string",
-        "ThisIsANote.",
-    ])?;
+    let e = run_cli(&["subject", "assertion", "known", "note", "string", "ThisIsANote."])?;
     assert_eq!(e, "ur:envelope/oyaatpsojzghisinjkgajkfpgljljyihdmwktslkgm");
     run_cli_expect(&["format", &e], r#"'note': "ThisIsANote.""#)?;
     Ok(())
@@ -53,24 +46,16 @@ fn test_assertion_3() -> Result<()> {
 fn test_assertion_add() -> Result<()> {
     let subject = run_cli(&["subject", "type", "string", "Alice"])?;
     run_cli_expect(
-        &[
-            "assertion",
-            "add",
-            "pred-obj",
-            "string",
-            "knows",
-            "string",
-            "Bob",
-            &subject,
-        ],
-        ALICE_KNOWS_BOB_EXAMPLE,
+        &["assertion", "add", "pred-obj", "string", "knows", "string", "Bob", &subject],
+        ALICE_KNOWS_BOB_EXAMPLE
     )?;
+    #[rustfmt::skip]
     run_cli_expect(
         &["format", ALICE_KNOWS_BOB_EXAMPLE],
         indoc!(r#"
-        "Alice" [
-            "knows": "Bob"
-        ]
+            "Alice" [
+                "knows": "Bob"
+            ]
         "#),
     )?;
     Ok(())
@@ -82,24 +67,16 @@ fn test_assertion_add_2() -> Result<()> {
     let predicate = run_cli(&["subject", "type", "string", "knows"])?;
     let object = run_cli(&["subject", "type", "string", "Bob"])?;
     run_cli_expect(
-        &[
-            "assertion",
-            "add",
-            "pred-obj",
-            "envelope",
-            &predicate,
-            "envelope",
-            &object,
-            &subject,
-        ],
-        ALICE_KNOWS_BOB_EXAMPLE,
+        &["assertion", "add", "pred-obj", "envelope", &predicate, "envelope", &object, &subject],
+        ALICE_KNOWS_BOB_EXAMPLE
     )?;
+    #[rustfmt::skip]
     run_cli_expect(
         &["format", ALICE_KNOWS_BOB_EXAMPLE],
         indoc!(r#"
-        "Alice" [
-            "knows": "Bob"
-        ]
+            "Alice" [
+                "knows": "Bob"
+            ]
         "#),
     )?;
     Ok(())
@@ -118,12 +95,9 @@ fn test_assertion_count_2() -> Result<()> {
 #[test]
 fn test_assertion_count_3() -> Result<()> {
     run_cli_piped_expect_stdin(
-        &[
-            &["extract", "wrapped"],
-            &["assertion", "count"]
-        ],
+        &[&["extract", "wrapped"], &["assertion", "count"]],
         "13",
-        CREDENTIAL_EXAMPLE,
+        CREDENTIAL_EXAMPLE
     )
 }
 
@@ -138,13 +112,9 @@ fn test_assertion_at() -> Result<()> {
 #[test]
 fn test_assertion_at_2() -> Result<()> {
     run_cli_piped_expect_stdin(
-        &[
-            &["extract", "wrapped"],
-            &["assertion", "at", "12"],
-            &["format"],
-        ],
+        &[&["extract", "wrapped"], &["assertion", "at", "12"], &["format"]],
         r#"'issuer': "Example Electrical Engineering Board""#,
-        CREDENTIAL_EXAMPLE,
+        CREDENTIAL_EXAMPLE
     )
 }
 
@@ -158,11 +128,12 @@ fn test_assertion_at_3() -> Result<()> {
             &["extract", "string"],
         ],
         "Example Electrical Engineering Board",
-        CREDENTIAL_EXAMPLE,
+        CREDENTIAL_EXAMPLE
     )
 }
 
 #[test]
+#[rustfmt::skip]
 fn test_assertion_all() -> Result<()> {
     run_cli_raw_piped_expect_stdin(
         &[
@@ -170,19 +141,19 @@ fn test_assertion_all() -> Result<()> {
             &["assertion", "all"],
         ],
         indoc!(r#"
-        ur:envelope/oytpsojsiaihjpjyiniyiniahsjyihglkpjnidihjptpsojeeheyeodpeeecendpemetesoxptasse
-        ur:envelope/oytpsojtihksjoinjphsjyinjljtfyhsjyihtpsosecyjncscxaebdeejtdy
-        ur:envelope/oytpsoisjzhsjkjyglhsjnihtpsoiogthsksktihjzjzemlubnve
-        ur:envelope/oytpsoininjkjkkpihfyhsjyihtpsosecyhybdvyaemszcgleo
-        ur:envelope/oyadtpsokscffxihjpjyiniyiniahsjyihcxjliycxfxjljnjojzihjyinjljtflbturee
-        ur:envelope/oytpsoihjoisjljyjltpsoksckghisinjkcxinjkcxgehsjnihjkcxgthsksktihjzjzdijkcxjoisjljyjldmwtatehnt
-        ur:envelope/oytpsokscejojpjliyihjkjkinjljthsjzfyihkoihjzjljojnihjtjyfdjlkpjpjktpsobswzkndabs
-        ur:envelope/oytpsoiniyinjpjkjyglhsjnihtpsoihgehsjnihjkmonbwdld
-        ur:envelope/oytpsoiyjyjljoiniajktpsolfingukpidimihiajycxehingukpidimihiajycxeypkgmdlbt
-        ur:envelope/oytpsokscsiajljtjyinjtkpinjtiofeiekpiahsjyinjljtgojtinjyjktpsoadwpoyzsgy
-        ur:envelope/oyattpsoksdkfekshsjnjojzihcxfejzihiajyjpiniahsjzcxfejtioinjtihihjpinjtiocxfwjlhsjpietnqzoets
-        ur:envelope/oytpsoiojkkpidimihiajytpsokscegmfgcxhsjtiecxgtiniajpjlkthskoihcxfejtioinjtihihjpinjtionswfrlyn
-        ur:envelope/oybttpsoksdkfekshsjnjojzihcxfejzihiajyjpiniahsjzcxfejtioinjtihihjpinjtiocxfwjlhsjpieztmocftp
+            ur:envelope/oytpsojsiaihjpjyiniyiniahsjyihglkpjnidihjptpsojeeheyeodpeeecendpemetesoxptasse
+            ur:envelope/oytpsojtihksjoinjphsjyinjljtfyhsjyihtpsosecyjncscxaebdeejtdy
+            ur:envelope/oytpsoisjzhsjkjyglhsjnihtpsoiogthsksktihjzjzemlubnve
+            ur:envelope/oytpsoininjkjkkpihfyhsjyihtpsosecyhybdvyaemszcgleo
+            ur:envelope/oyadtpsokscffxihjpjyiniyiniahsjyihcxjliycxfxjljnjojzihjyinjljtflbturee
+            ur:envelope/oytpsoihjoisjljyjltpsoksckghisinjkcxinjkcxgehsjnihjkcxgthsksktihjzjzdijkcxjoisjljyjldmwtatehnt
+            ur:envelope/oytpsokscejojpjliyihjkjkinjljthsjzfyihkoihjzjljojnihjtjyfdjlkpjpjktpsobswzkndabs
+            ur:envelope/oytpsoiniyinjpjkjyglhsjnihtpsoihgehsjnihjkmonbwdld
+            ur:envelope/oytpsoiyjyjljoiniajktpsolfingukpidimihiajycxehingukpidimihiajycxeypkgmdlbt
+            ur:envelope/oytpsokscsiajljtjyinjtkpinjtiofeiekpiahsjyinjljtgojtinjyjktpsoadwpoyzsgy
+            ur:envelope/oyattpsoksdkfekshsjnjojzihcxfejzihiajyjpiniahsjzcxfejtioinjtihihjpinjtiocxfwjlhsjpietnqzoets
+            ur:envelope/oytpsoiojkkpidimihiajytpsokscegmfgcxhsjtiecxgtiniajpjlkthskoihcxfejtioinjtihihjpinjtionswfrlyn
+            ur:envelope/oybttpsoksdkfekshsjnjojzihcxfejzihiajyjpiniahsjzcxfejtioinjtihihjpinjtiocxfwjlhsjpieztmocftp
         "#),
         CREDENTIAL_EXAMPLE,
     )
@@ -194,10 +165,10 @@ fn test_assertion_predicate_find_1() -> Result<()> {
         &[
             &["extract", "wrapped"],
             &["assertion", "find", "predicate", "string", "photo"],
-            &["format"]
+            &["format"],
         ],
         r#""photo": "This is James Maxwell's photo.""#,
-        CREDENTIAL_EXAMPLE,
+        CREDENTIAL_EXAMPLE
     )
 }
 
@@ -207,10 +178,10 @@ fn test_assertion_predicate_find_2() -> Result<()> {
         &[
             &["extract", "wrapped"],
             &["assertion", "find", "predicate", "known", "isA"],
-            &["format"]
+            &["format"],
         ],
         r#"'isA': "Certificate of Completion""#,
-        CREDENTIAL_EXAMPLE,
+        CREDENTIAL_EXAMPLE
     )
 }
 
@@ -220,33 +191,28 @@ fn test_assertion_object_find_1() -> Result<()> {
         &[
             &["extract", "wrapped"],
             &["assertion", "find", "object", "string", "Maxwell"],
-            &["format"]
+            &["format"],
         ],
         r#""lastName": "Maxwell""#,
-        CREDENTIAL_EXAMPLE,
+        CREDENTIAL_EXAMPLE
     )
 }
 
 #[test]
 fn test_assertion_create() -> Result<()> {
-    let assertion = run_cli(&[
-        "assertion",
-        "create",
-        "--salted",
-        "string",
-        "knows",
-        "string",
-        "Bob",
-    ])?;
+    let assertion = run_cli(
+        &["assertion", "create", "--salted", "string", "knows", "string", "Bob"]
+    )?;
 
+    #[rustfmt::skip]
     run_cli_expect(
         &["format", &assertion],
         indoc!(r#"
-        {
-            "knows": "Bob"
-        } [
-            'salt': Salt
-        ]
+            {
+                "knows": "Bob"
+            } [
+                'salt': Salt
+            ]
         "#)
     )?;
     Ok(())
@@ -254,25 +220,17 @@ fn test_assertion_create() -> Result<()> {
 
 #[test]
 fn test_assertion_remove_envelope() -> Result<()> {
-    let assertion = run_cli(&[
-        "assertion",
-        "at",
-        "0",
-        ALICE_KNOWS_BOB_EXAMPLE,
-    ])?;
+    let assertion = run_cli(&["assertion", "at", "0", ALICE_KNOWS_BOB_EXAMPLE])?;
 
-    let removed = run_cli(&[
-        "assertion",
-        "remove",
-        "envelope",
-        &assertion,
-        ALICE_KNOWS_BOB_EXAMPLE,
-    ])?;
+    let removed = run_cli(
+        &["assertion", "remove", "envelope", &assertion, ALICE_KNOWS_BOB_EXAMPLE]
+    )?;
 
+    #[rustfmt::skip]
     run_cli_expect(
         &["format", &removed],
         indoc!(r#"
-        "Alice"
+            "Alice"
         "#)
     )?;
     Ok(())
@@ -280,21 +238,24 @@ fn test_assertion_remove_envelope() -> Result<()> {
 
 #[test]
 fn test_assertion_remove_pred_obj() -> Result<()> {
-    let removed = run_cli(&[
-        "assertion",
-        "remove",
-        "pred-obj",
-        "string",
-        "knows",
-        "string",
-        "Bob",
-        ALICE_KNOWS_BOB_EXAMPLE,
-    ])?;
+    let removed = run_cli(
+        &[
+            "assertion",
+            "remove",
+            "pred-obj",
+            "string",
+            "knows",
+            "string",
+            "Bob",
+            ALICE_KNOWS_BOB_EXAMPLE,
+        ]
+    )?;
 
+    #[rustfmt::skip]
     run_cli_expect(
         &["format", &removed],
         indoc!(r#"
-        "Alice"
+            "Alice"
         "#)
     )?;
     Ok(())

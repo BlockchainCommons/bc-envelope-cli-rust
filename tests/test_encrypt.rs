@@ -11,12 +11,13 @@ fn test_encrypt() {
         KEY_EXAMPLE,
         ALICE_KNOWS_BOB_EXAMPLE
     ]).unwrap();
+    #[rustfmt::skip]
     run_cli_expect(
         &["format", &encrypted],
         indoc!(r#"
-        ENCRYPTED [
-            "knows": "Bob"
-        ]
+            ENCRYPTED [
+                "knows": "Bob"
+            ]
         "#)
     ).unwrap();
     let decrypted = run_cli(&[

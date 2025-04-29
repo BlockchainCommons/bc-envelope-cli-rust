@@ -23,7 +23,7 @@ cargo install bc-envelope-cli
 To install a specific version:
 
 ```bash
-cargo install bc-envelope-cli --version 0.12.0
+cargo install bc-envelope-cli --version 0.13.0
 ```
 
 ### From Source
@@ -82,6 +82,10 @@ See the [docs](docs/README.md) directory for more information.
 **NOTE:** The `envelope` tool does *not* have the same command line syntax as the Swift `envelope` tool.
 
 ## Version History
+
+### 0.13.0: April 28, 2025
+
+- Maintenance release.
 
 ### 0.12.0: February 4, 2025
 

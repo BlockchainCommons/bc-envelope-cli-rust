@@ -89,7 +89,7 @@ impl crate::exec::Exec for CommandArgs {
             let recipients: Vec<PublicKeys> = self
                 .recipients
                 .iter()
-                .map(PublicKeys::from_ur_string)
+                .map(|r| PublicKeys::from_ur_string(r).map_err(anyhow::Error::from))
                 .collect::<Result<_>>()?;
             flattened_shares
                 .into_iter()

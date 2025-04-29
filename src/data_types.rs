@@ -121,7 +121,7 @@ fn parse_digest(s: &str) -> Result<Envelope> {
 
 /// Parse an Envelope from a string.
 fn parse_envelope(s: &str) -> Result<Envelope> {
-    Envelope::from_ur_string(s)
+    Ok(Envelope::from_ur_string(s)?)
 }
 
 /// Parse a KnownValue from a string.

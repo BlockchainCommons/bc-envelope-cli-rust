@@ -60,11 +60,12 @@ fn test_keys(
         ALICE_KNOWS_BOB_EXAMPLE,
     ]).unwrap();
 
+    #[rustfmt::skip]
     let expected_format = indoc!(r#"
-    "Alice" [
-        "knows": "Bob"
-        'signed': {}
-    ]
+        "Alice" [
+            "knows": "Bob"
+            'signed': {}
+        ]
     "#);
     let expected_format = expected_format.replace("{}", expected_signature_summary);
     run_cli_expect(&["format", &signed], &expected_format).unwrap();

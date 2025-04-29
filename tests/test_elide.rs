@@ -23,12 +23,13 @@ fn test_elide_1() -> Result<()> {
         elided,
         "ur:envelope/lftpsoihfpjziniaihoyhdcxuykitdcegyinqzlrlgdrcwsbbkihcemtchsntabdpldtbzjepkwsrkdrlernykrdtpsoiafwjlidgraehkfp"
     );
+    #[rustfmt::skip]
     run_cli_expect(
         &["format", &elided],
         indoc!(r#"
-        "Alice" [
-            ELIDED: "Bob"
-        ]
+            "Alice" [
+                ELIDED: "Bob"
+            ]
         "#)
     )?;
     Ok(())
@@ -43,12 +44,13 @@ fn test_elide_2() -> Result<()> {
         elided,
         "ur:envelope/lftpsoihfpjziniaihoyhdcxuykitdcegyinqzlrlgdrcwsbbkihcemtchsntabdpldtbzjepkwsrkdrlernykrdtpsoiafwjlidgraehkfp"
     );
+    #[rustfmt::skip]
     run_cli_expect(
         &["format", &elided],
         indoc!(r#"
-        "Alice" [
-            ELIDED: "Bob"
-        ]
+            "Alice" [
+                ELIDED: "Bob"
+            ]
         "#)
     )?;
     Ok(())

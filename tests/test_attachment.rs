@@ -47,15 +47,16 @@ fn envelope_v1_v2() -> Result<String> {
 #[test]
 fn test_attachment_create() -> Result<()> {
     let attachment = attachment_v1()?;
+    #[rustfmt::skip]
     run_cli_expect(
         &["format", &attachment],
         indoc!(r#"
-        'attachment': {
-            "this-is-the-v1-payload"
-        } [
-            'conformsTo': "https://example.com/v1"
-            'vendor': "com.example"
-        ]
+            'attachment': {
+                "this-is-the-v1-payload"
+            } [
+                'conformsTo': "https://example.com/v1"
+                'vendor': "com.example"
+            ]
         "#)
     )?;
     Ok(())
@@ -64,14 +65,15 @@ fn test_attachment_create() -> Result<()> {
 #[test]
 fn test_attachment_create_no_conformance() -> Result<()> {
     let attachment = attachment_v1_no_conformance()?;
+    #[rustfmt::skip]
     run_cli_expect(
         &["format", &attachment],
         indoc!(r#"
-        'attachment': {
-            "this-is-the-v1-payload"
-        } [
-            'vendor': "com.example"
-        ]
+            'attachment': {
+                "this-is-the-v1-payload"
+            } [
+                'vendor': "com.example"
+            ]
         "#)
     )?;
     Ok(())
@@ -95,6 +97,7 @@ fn test_attachment_queries() -> Result<()> {
 
 #[test]
 fn test_attachment_add_components() -> Result<()> {
+    #[rustfmt::skip]
     run_cli_raw_piped_expect_stdin(
         &[
             &["attachment", "add", "components", VENDOR, "--conforms-to", CONFORMS_TO_V1, &payload_v1_envelope()?],
@@ -102,20 +105,20 @@ fn test_attachment_add_components() -> Result<()> {
             &["format"]
         ],
         indoc!(r#"
-        "this-is-the-subject" [
-            'attachment': {
-                "this-is-the-v1-payload"
-            } [
-                'conformsTo': "https://example.com/v1"
-                'vendor': "com.example"
+            "this-is-the-subject" [
+                'attachment': {
+                    "this-is-the-v1-payload"
+                } [
+                    'conformsTo': "https://example.com/v1"
+                    'vendor': "com.example"
+                ]
+                'attachment': {
+                    "this-is-the-v2-payload"
+                } [
+                    'conformsTo': "https://example.com/v2"
+                    'vendor': "com.example"
+                ]
             ]
-            'attachment': {
-                "this-is-the-v2-payload"
-            } [
-                'conformsTo': "https://example.com/v2"
-                'vendor': "com.example"
-            ]
-        ]
         "#),
         &subject_envelope()?,
     )?;
@@ -125,23 +128,24 @@ fn test_attachment_add_components() -> Result<()> {
 
 #[test]
 fn test_attachment_add_envelope() -> Result<()> {
+    #[rustfmt::skip]
     run_cli_expect_stdin(
         &["format", &envelope_v1_v2()?],
         indoc!(r#"
-        "this-is-the-subject" [
-            'attachment': {
-                "this-is-the-v1-payload"
-            } [
-                'conformsTo': "https://example.com/v1"
-                'vendor': "com.example"
+            "this-is-the-subject" [
+                'attachment': {
+                    "this-is-the-v1-payload"
+                } [
+                    'conformsTo': "https://example.com/v1"
+                    'vendor': "com.example"
+                ]
+                'attachment': {
+                    "this-is-the-v2-payload"
+                } [
+                    'conformsTo': "https://example.com/v2"
+                    'vendor': "com.example"
+                ]
             ]
-            'attachment': {
-                "this-is-the-v2-payload"
-            } [
-                'conformsTo': "https://example.com/v2"
-                'vendor': "com.example"
-            ]
-        ]
         "#),
         &subject_envelope()?,
     )?;

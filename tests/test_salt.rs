@@ -8,13 +8,14 @@ use common::*;
 fn test_salt() -> Result<()> {
     let salted = run_cli(&["salt", ALICE_KNOWS_BOB_EXAMPLE])?;
 
+    #[rustfmt::skip]
     run_cli_expect(
         &["format", &salted],
         indoc!(r#"
-        "Alice" [
-            "knows": "Bob"
-            'salt': Salt
-        ]
+            "Alice" [
+                "knows": "Bob"
+                'salt': Salt
+            ]
         "#)
     )?;
     Ok(())

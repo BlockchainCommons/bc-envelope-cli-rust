@@ -175,12 +175,13 @@ fn test_bool_subject() -> Result<()> {
 fn test_wrapped_envelope_subject() -> Result<()> {
     let e = run_cli(&["subject", "type", "wrapped", HELLO_ENVELOPE_UR])?;
     assert_eq!(e, "ur:envelope/tpsptpsoiyfdihjzjzjldmdnjyfzse");
+    #[rustfmt::skip]
     assert_eq!(
         run_cli_raw(&["format", &e])?,
         indoc!(r#"
-        {
-            "Hello."
-        }
+            {
+                "Hello."
+            }
         "#)
     );
     run_cli_expect(&["extract", "wrapped", &e], HELLO_ENVELOPE_UR)?;
@@ -286,12 +287,13 @@ fn test_string_subject() -> Result<()> {
 fn test_envelope_ur_subject() -> Result<()> {
     let e = run_cli(&["subject", "type", "ur", HELLO_ENVELOPE_UR])?;
     assert_eq!(e, "ur:envelope/tpsptpsoiyfdihjzjzjldmdnjyfzse");
+    #[rustfmt::skip]
     assert_eq!(
         run_cli_raw(&["format", &e])?,
-        indoc!(r#"
-        {
-            "Hello."
-        }
+            indoc!(r#"
+            {
+                "Hello."
+            }
         "#)
     );
     run_cli_expect(&["extract", "ur", &e], HELLO_ENVELOPE_UR)?;

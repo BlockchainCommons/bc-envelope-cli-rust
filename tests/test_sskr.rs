@@ -7,12 +7,13 @@ use common::*;
 #[test]
 fn test_sskr_1() -> Result<()> {
     let result = run_cli(&["sskr", "split", ALICE_KNOWS_BOB_EXAMPLE])?;
+    #[rustfmt::skip]
     run_cli_expect(
         &["format", &result],
         indoc!(r#"
-        ENCRYPTED [
-            'sskrShare': SSKRShare
-        ]
+            ENCRYPTED [
+                'sskrShare': SSKRShare
+            ]
         "#)
     )?;
     let restored = run_cli(&["sskr", "join", &result])?;

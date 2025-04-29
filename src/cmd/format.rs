@@ -1,5 +1,5 @@
 use clap::{Args, ValueEnum};
-use dcbor::CBORTaggedEncodable;
+use dcbor::prelude::*;
 use anyhow::Result;
 
 use crate::envelope_args::{EnvelopeArgs, EnvelopeArgsLike};
