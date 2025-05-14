@@ -47,6 +47,7 @@ ssh-key = { version = "=0.6.6", default-features = false, features = [
     "encryption",
 ] }
 rpassword = "7.3.1"
+which = "7.0.3"
 
 [dev-dependencies]
 assert_cmd = "^2.0.12"

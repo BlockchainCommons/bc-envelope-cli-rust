@@ -299,7 +299,53 @@ envelope decrypt $ENCRYPTED_ENVELOPE --key `envelope generate key`
 Error: decrypt failed
 ```
 
-## Example 5: Sign-Then-Encrypt
+## Example 5: Password Encryption
+
+Alice encrypts a message using a password she chooses.
+
+```bash
+👉
+ENCRYPTED_ENVELOPE=`envelope subject type string $PLAINTEXT_HELLO | envelope encrypt --password`
+```
+
+```
+👈
+Encryption password: <Alice enters 'test'>
+```
+
+```bash
+👉
+echo $ENCRYPTED_ENVELOPE
+```
+
+```
+👈
+ur:envelope/lftansfwlrgrlbhykttnrnluldfemointygsbkaorolupsehetkoytbtkslsgdrnolwmfyuednmocmmhwzbkytgldrlurdhddatansfphdcxlksojzuyktbykovsecbygebsldeninbdfptkwebtwzdpadglwetbgltnwdmwhlhkoybwtpsotanshptansfwlrhdcxfxpdnshtpresbdskveremkmdqdvyzmftckdyhtuocsjtlrtopfyljoykgensbemwgsluskplhsbzaewnryjteedmolgdqzlovdsssgknclrogtnyiolnmhdthfnthflfaxtansgmgdbsdimwlegesbvduymsutkbrdghdnghrsvotsndda
+```
+
+Later, Alice decrypts the message using the same password.
+
+```bash
+👉
+DECRYPTED=`envelope decrypt $ENCRYPTED_ENVELOPE --password`
+```
+
+```
+👈
+Decryption password: <Alice enters 'test' again>
+```
+
+```bash
+👉
+envelope extract string $DECRYPTED
+```
+
+```
+👈
+Hello.
+```
+
+## Example 6: Sign-Then-Encrypt
 
 This example combines the previous ones, first signing, then encrypting a message with a symmetric key.
 
@@ -384,7 +430,7 @@ envelope extract wrapped $DECRYPTED | envelope verify --pubkeys $CAROL_PUBKEYS
 Error: could not verify a signature
 ```
 
-## Example 6: Encrypt-Then-Sign
+## Example 7: Encrypt-Then-Sign
 
 It doesn't actually matter whether the `encrypt` or `sign` command comes first, as the `encrypt` command transforms the subject into its encrypted form, which carries a digest of the plaintext subject, while the `sign` command only adds an assertion with the signature of the hash as the object of the assertion.
 
@@ -450,7 +496,7 @@ envelope verify $ENCRYPTED_SIGNED --pubkeys $ALICE_PUBKEYS | \
 Hello.
 ```
 
-## Example 7: Multi-Recipient Encryption
+## Example 8: Multi-Recipient Encryption
 
 This example demonstrates an encrypted message sent to multiple parties.
 
@@ -522,7 +568,7 @@ envelope decrypt $ENVELOPE_TO --recipient $ALICE_PRVKEY_BASE
 Error: unknown recipient
 ```
 
-## Example 8: Signed Multi-Recipient Encryption
+## Example 9: Signed Multi-Recipient Encryption
 
 This example demonstrates a signed, then encrypted message, sent to multiple parties.
 

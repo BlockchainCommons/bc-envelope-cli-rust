@@ -19,3 +19,10 @@ pub mod subject;
 pub mod uncompress;
 pub mod verify;
 pub mod xid;
+
+pub const ASKPASS_HELP: &str = "Prompt for the password using an external program.";
+pub const ASKPASS_LONG_HELP: &str = "If set, the password will be obtained by executing the program \
+referenced by the SSH_ASKPASS environment variable. Attempts to fall \
+back to common locations for askpass helpers if the variable is not set. \
+If the program is not found, the password will be read from the \
+terminal.";

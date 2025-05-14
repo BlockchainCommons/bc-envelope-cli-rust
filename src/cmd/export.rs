@@ -6,6 +6,8 @@ use bc_components::{PublicKeys, Signature, SigningPrivateKey, SigningPublicKey};
 use bc_envelope::prelude::*;
 use ssh_key::LineEnding;
 
+use super::{ASKPASS_HELP, ASKPASS_LONG_HELP};
+
 /// Import the given object to UR form.
 #[derive(Debug, Args)]
 #[group(skip)]
@@ -35,6 +37,9 @@ pub struct CommandArgs {
     /// the password will be read interactively from the terminal if possible.
     #[arg(long)]
     password: Option<String>,
+
+    #[arg(long, requires = "encrypt", help = ASKPASS_HELP, long_help = ASKPASS_LONG_HELP)]
+    askpass: bool,
 }
 
 impl crate::exec::Exec for CommandArgs {
@@ -44,7 +49,7 @@ impl crate::exec::Exec for CommandArgs {
             if let Some(ssh_private_key) = signing_private_key.to_ssh() {
                 if self.encrypt {
                     let mut rng = bc_rand::SecureRandomNumberGenerator;
-                    let password = read_password("Key encryption password: ", self.password.as_deref())?;
+                    let password = read_password("Key encryption password: ", self.password.as_deref(), self.askpass)?;
                     let openssh = ssh_private_key.encrypt(&mut rng, password)?.to_openssh(LineEnding::LF)?;
                     Ok(openssh.trim().to_string())
                 } else {

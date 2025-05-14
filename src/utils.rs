@@ -1,15 +1,99 @@
-use std::{collections::HashSet, io::Read};
+use std::{ collections::HashSet, io::Read, process::Command, str };
 use anyhow::{ bail, Result };
 use bc_components::XID;
 use bc_envelope::prelude::*;
 use bc_xid::XIDDocument;
+use std::{
+    env,
+    path::{Path, PathBuf},
+};
 
-pub fn read_password(prompt: &str, password: Option<&str>) -> Result<String> {
-    if let Some(password) = password {
-        Ok(password.to_string())
-    } else {
-        rpassword::prompt_password(prompt).map_err(Into::into)
+/// Reads a password either from the provided argument, via the system's askpass tool when enabled,
+/// or interactively via rpassword.
+///
+/// # Arguments
+///
+/// * `prompt` - The prompt to show the user.
+/// * `password` - An optional password string.
+/// * `use_askpass` - Boolean flag to indicate if the system's askpass should be used.
+///
+/// # Returns
+///
+/// A Result wrapping the password string.
+/// Ask the user for a password, honoring explicit overrides, graphical helpers,
+/// and finally falling back to a plain TTY prompt.
+pub fn read_password(
+    prompt: &str,
+    password_override: Option<&str>,
+    use_askpass: bool,
+) -> anyhow::Result<String> {
+    // 1.  If the caller already supplied a password, trust it and return.
+    if let Some(p) = password_override {
+        return Ok(p.to_owned());
     }
+
+    // 2.  If the caller wants a GUI prompt, try to discover and invoke one.
+    let password = if use_askpass {
+        if let Some(cmd) = resolve_askpass() {
+            let out = Command::new(cmd).arg(prompt).output()?;
+
+            if out.status.success() {
+                let pass = str::from_utf8(&out.stdout)
+                    .map_err(|e| anyhow::anyhow!("askpass produced invalid UTF‑8: {e}"))?
+                    .trim_end_matches(&['\n', '\r'][..])
+                    .to_owned();
+                Some(pass)
+            } else {
+                // A non‑zero exit from askpass is treated as a soft failure;
+                // we fall through to the TTY prompt instead of aborting.
+                eprintln!("askpass exited with {}", out.status);
+                None
+            }
+        } else {
+            None
+        }
+    } else {
+        None
+    }.unwrap_or_else(|| {
+        // 3.  Last resort: prompt on the terminal.
+        rpassword::prompt_password(prompt).unwrap_or_default()
+    });
+
+    // 4.  If the password is empty, return an error.
+    if password.is_empty() {
+        bail!("Password cannot be empty");
+    }
+    Ok(password)
+}
+
+/// Locate a suitable askpass helper.
+///
+/// The search order is:
+///   •  `$SSH_ASKPASS` or `$ASKPASS` if either is set.
+///   •  Well‑known install locations on macOS and Linux.
+///   •  The first `askpass`‑named binary found in `$PATH`.
+fn resolve_askpass() -> Option<PathBuf> {
+    // Explicit environment overrides take precedence.
+    if let Ok(path) = env::var("SSH_ASKPASS").or_else(|_| env::var("ASKPASS")) {
+        return Some(PathBuf::from(path));
+    }
+
+    // Common absolute paths used by package managers and system installs.
+    const CANDIDATES: &[&str] = &[
+        "/usr/libexec/ssh-askpass",
+        "/usr/lib/ssh/ssh-askpass",
+        "/usr/local/bin/ssh-askpass",
+        "/opt/homebrew/bin/ssh-askpass",
+    ];
+    for cand in CANDIDATES {
+        let p = Path::new(cand);
+        if p.exists() && p.is_file() {
+            return Some(p.to_path_buf());
+        }
+    }
+
+    // Finally, fall back to whatever “askpass” the user might have on $PATH.
+    which::which("askpass").ok()
 }
 
 pub fn read_argument(argument: Option<&str>) -> Result<String> {
@@ -38,7 +122,7 @@ pub fn read_envelope(envelope: Option<&str>) -> Result<Envelope> {
     // Just try to parse the envelope as a ur:envelope string first
     if let Ok(envelope) = Envelope::from_ur_string(ur_string.trim()) {
         Ok(envelope)
-    // If that fails, try to parse the envelope as a ur:<any> string
+        // If that fails, try to parse the envelope as a ur:<any> string
     } else if let Ok(ur) = UR::from_ur_string(ur_string.trim()) {
         let cbor = ur.cbor();
         // Try to parse the CBOR into an envelope
