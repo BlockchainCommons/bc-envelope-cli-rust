@@ -4,7 +4,10 @@ use anyhow::{ Result, anyhow };
 
 use crate::{
     cmd::xid::{
-        key_args::{ KeyArgs, KeyArgsLike }, private_options::PrivateOptions, utils::{ update_key, xid_document_to_ur_string, XIDDocumentReadable}, xid_privilege::XIDPrivilege
+        key_args::{ KeyArgs, KeyArgsLike },
+        private_options::PrivateOptions,
+        utils::{ update_key, xid_document_to_ur_string, XIDDocumentReadable },
+        xid_privilege::XIDPrivilege,
     },
     envelope_args::{ EnvelopeArgs, EnvelopeArgsLike },
 };
@@ -21,8 +24,8 @@ pub struct CommandArgs {
 }
 
 impl KeyArgsLike for CommandArgs {
-    fn name(&self) -> &str {
-        self.key_args.name()
+    fn nickname(&self) -> &str {
+        self.key_args.nickname()
     }
 
     fn private_opts(&self) -> PrivateOptions {
@@ -48,7 +51,7 @@ impl EnvelopeArgsLike for CommandArgs {
     }
 }
 
-impl XIDDocumentReadable for CommandArgs { }
+impl XIDDocumentReadable for CommandArgs {}
 
 impl crate::exec::Exec for CommandArgs {
     fn exec(&self) -> Result<String> {
@@ -62,7 +65,7 @@ impl crate::exec::Exec for CommandArgs {
             .ok_or_else(|| anyhow!("Key not found"))?;
 
         xid_document.take_key(&key);
-        update_key(&mut key, self.name(), self.endpoints(), self.permissions());
+        update_key(&mut key, self.nickname(), self.endpoints(), self.permissions());
         xid_document.add_key(key)?;
 
         Ok(xid_document_to_ur_string(&xid_document, self.private_opts()))

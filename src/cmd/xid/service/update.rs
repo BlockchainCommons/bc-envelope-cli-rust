@@ -1,16 +1,18 @@
 use bc_components::URI;
-use bc_xid::{HasName, HasPermissions};
+use bc_xid::HasPermissions;
 use clap::Args;
 use anyhow::{ Result, anyhow };
 
 use crate::{
     cmd::xid::{
-        private_options::PrivateOptions, utils::{ xid_document_to_ur_string, XIDDocumentReadable}, xid_privilege::XIDPrivilege
+        private_options::PrivateOptions,
+        utils::{ xid_document_to_ur_string, XIDDocumentReadable },
+        xid_privilege::XIDPrivilege,
     },
     envelope_args::{ EnvelopeArgs, EnvelopeArgsLike },
 };
 
-use super::service_args::{ServiceArgs, ServiceArgsLike};
+use super::service_args::{ ServiceArgs, ServiceArgsLike };
 
 /// Updates the permissions, delegates, keys, capability identifer, or name of a service in a XID document.
 #[derive(Debug, Args)]
@@ -55,7 +57,7 @@ impl EnvelopeArgsLike for CommandArgs {
     }
 }
 
-impl XIDDocumentReadable for CommandArgs { }
+impl XIDDocumentReadable for CommandArgs {}
 
 impl crate::exec::Exec for CommandArgs {
     fn exec(&self) -> Result<String> {
@@ -72,7 +74,7 @@ impl crate::exec::Exec for CommandArgs {
 
         if let Some(name) = self.name() {
             if !name.is_empty() {
-                service.set_name(name);
+                service.set_name(name)?;
             }
         }
 

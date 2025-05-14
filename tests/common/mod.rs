@@ -52,6 +52,9 @@ pub fn run_cli_raw(args: &[&str]) -> Result<String> {
 
 pub fn run_cli_raw_expect(args: &[&str], expected: &str) -> Result<()> {
     let output = run_cli_raw(args)?;
+    if !(output == expected.trim()) {
+        bail!("\n\n=== Expected ===\n{}\n\n=== Got ===\n{}", expected, output);
+    }
     assert_eq!(expected.trim(), output);
     Ok(())
 }
@@ -66,6 +69,9 @@ pub fn run_cli(args: &[&str]) -> Result<String> {
 
 pub fn run_cli_expect_stdin(args: &[&str], expected: &str, stdin: &str) -> Result<()> {
     let output = run_cli_stdin(args, stdin)?;
+    if !(output == expected.trim()) {
+        bail!("\n\n=== Expected ===\n{}\n\n=== Got ===\n{}", expected, output);
+    }
     assert_eq!(expected.trim(), output);
     Ok(())
 }
@@ -90,12 +96,23 @@ pub fn run_cli_piped_stdin(cmds: &[&[&str]], stdin: &str) -> Result<String> {
 
 /// Run each command in sequence, piping the output of the previous command to the next command.
 pub fn run_cli_raw_piped_expect_stdin(cmds: &[&[&str]], expected: &str, stdin: &str) -> Result<()> {
-    run_cli_raw_piped_stdin(cmds, stdin).map(|s| assert_eq!(expected, s))
+    let output = run_cli_raw_piped_stdin(cmds, stdin)?;
+    if !(output.trim() == expected.trim()) {
+        bail!("\n\n=== Expected ===\n{}\n\n=== Got ===\n{}", expected, output);
+    }
+    assert_eq!(expected.trim(), output.trim());
+    Ok(())
 }
 
 /// Run each command in sequence, piping the output of the previous command to the next command.
 pub fn run_cli_piped_expect_stdin(cmds: &[&[&str]], expected: &str, stdin: &str) -> Result<()> {
-    run_cli_piped_stdin(cmds, stdin).map(|s| assert_eq!(expected, s))
+    // run_cli_piped_stdin(cmds, stdin).map(|s| assert_eq!(expected, s))
+    let output = run_cli_piped_stdin(cmds, stdin)?;
+    if !(output == expected.trim()) {
+        bail!("\n\n=== Expected ===\n{}\n\n=== Got ===\n{}", expected, output);
+    }
+    assert_eq!(expected.trim(), output.trim());
+    Ok(())
 }
 
 /// Run each command in sequence, piping the output of the previous command to the next command.

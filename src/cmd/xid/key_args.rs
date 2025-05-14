@@ -3,10 +3,14 @@ use bc_envelope::PublicKeys;
 use clap::Args;
 use anyhow::Result;
 
-use super::{xid_privilege::XIDPrivilege, private_options::PrivateOptions, utils::{read_key, read_public_key, InputKey}};
+use super::{
+    xid_privilege::XIDPrivilege,
+    private_options::PrivateOptions,
+    utils::{ read_key, read_public_key, InputKey },
+};
 
 pub trait KeyArgsLike {
-    fn name(&self) -> &str;
+    fn nickname(&self) -> &str;
     fn private_opts(&self) -> PrivateOptions;
     fn endpoints(&self) -> &[URI];
     fn permissions(&self) -> &[XIDPrivilege];
@@ -26,7 +30,7 @@ pub trait KeyArgsLike {
 pub struct KeyArgs {
     /// A user-assigned name for the key.
     #[arg(long, default_value = "")]
-    name: String,
+    nickname: String,
 
     /// Whether to include, omit, or elide private keys.
     #[arg(long = "private", default_value = "include")]
@@ -46,8 +50,8 @@ pub struct KeyArgs {
 }
 
 impl KeyArgsLike for KeyArgs {
-    fn name(&self) -> &str {
-        &self.name
+    fn nickname(&self) -> &str {
+        &self.nickname
     }
 
     fn private_opts(&self) -> PrivateOptions {

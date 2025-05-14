@@ -1,10 +1,12 @@
 use bc_envelope::EnvelopeEncodable;
 use bc_ur::prelude::*;
-use bc_xid::HasName;
 use clap::Args;
 use anyhow::Result;
 
-use crate::{cmd::xid::utils::XIDDocumentReadable, envelope_args::{ EnvelopeArgs, EnvelopeArgsLike }};
+use crate::{
+    cmd::xid::utils::XIDDocumentReadable,
+    envelope_args::{ EnvelopeArgs, EnvelopeArgsLike },
+};
 
 /// Find the XID document's services by assigned name. May return multiple services.
 #[derive(Debug, Args)]
@@ -22,20 +24,24 @@ impl EnvelopeArgsLike for CommandArgs {
     }
 }
 
-impl XIDDocumentReadable for CommandArgs { }
+impl XIDDocumentReadable for CommandArgs {}
 
 impl crate::exec::Exec for CommandArgs {
     fn exec(&self) -> Result<String> {
         let xid_document = self.read_xid_document()?;
 
         let services = xid_document.services();
-        let result = services.iter().filter_map(|service| {
-            if service.name() == self.name {
-                Some(service.to_envelope().ur_string())
-            } else {
-                None
-            }
-        }).collect::<Vec<String>>().join("\n");
+        let result = services
+            .iter()
+            .filter_map(|service| {
+                if service.name() == self.name {
+                    Some(service.to_envelope().ur_string())
+                } else {
+                    None
+                }
+            })
+            .collect::<Vec<String>>()
+            .join("\n");
         Ok(result)
     }
 }

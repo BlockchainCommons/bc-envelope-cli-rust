@@ -245,21 +245,21 @@ fn test_xid_new() {
         "#}.trim()
     ).unwrap();
 
-    // The key may be given a user-assigned name ("pet name") using the `--name`
+    // The key may be given a user-assigned name ("nickname") using the `--nickname`
     // option.
 
     #[rustfmt::skip]
     run_cli_piped_expect(
         &[
             &["xid", "new", ALICE_PUBKEYS,
-                "--name", "Alice's Key"],
+                "--nickname", "Alice's Key"],
             &["format"]
         ],
         indoc! {r#"
             XID(93a4d4e7) [
                 'key': PublicKeys(cab108a0) [
                     'allow': 'All'
-                    'name': "Alice's Key"
+                    'nickname': "Alice's Key"
                 ]
             ]
         "#}.trim()
@@ -270,27 +270,27 @@ fn test_xid_new() {
 fn test_xid_key_add() {
     // All the same options as `xid new` are available. The same key may not be added twice.
 
-    // $ XID_DOC=`envelope xid new --name 'Alice' $ALICE_PUBKEYS`
+    // $ XID_DOC=`envelope xid new --nickname 'Alice' $ALICE_PUBKEYS`
 
-    let xid_doc = run_cli(&["xid", "new", "--name", "Alice", ALICE_PUBKEYS]).unwrap();
+    let xid_doc = run_cli(&["xid", "new", "--nickname", "Alice", ALICE_PUBKEYS]).unwrap();
 
-    // $ envelope xid key add --name 'Bob' $BOB_PUBKEYS $XID_DOC | envelope format
+    // $ envelope xid key add --nickname 'Bob' $BOB_PUBKEYS $XID_DOC | envelope format
 
     #[rustfmt::skip]
     run_cli_piped_expect(
         &[
-            &["xid", "key", "add", "--name", "Bob", BOB_PUBKEYS, &xid_doc],
+            &["xid", "key", "add", "--nickname", "Bob", BOB_PUBKEYS, &xid_doc],
             &["format"]
         ],
         indoc! {r#"
             XID(93a4d4e7) [
                 'key': PublicKeys(cab108a0) [
                     'allow': 'All'
-                    'name': "Alice"
+                    'nickname': "Alice"
                 ]
                 'key': PublicKeys(e2c18423) [
                     'allow': 'All'
-                    'name': "Bob"
+                    'nickname': "Bob"
                 ]
             ]
         "#}.trim()
@@ -301,17 +301,17 @@ fn test_xid_key_add() {
 fn test_xid_key_update() {
     // All the same options as `xid new` are available. The key must already exist in the XID document.
 
-    // $ XID_DOC=`envelope xid new --name 'Alice' $ALICE_PUBKEYS | envelope xid key add --name 'Bob' $BOB_PUBKEYS`
+    // $ XID_DOC=`envelope xid new --nickname 'Alice' $ALICE_PUBKEYS | envelope xid key add --nickname 'Bob' $BOB_PUBKEYS`
     // $ envelope format $XID_DOC
 
     // XID(93a4d4e7) [
     //     'key': PublicKeys(cab108a0) [
     //         'allow': 'All'
-    //         'name': "Alice"
+    //         'nickname': "Alice"
     //     ]
     //     'key': PublicKeys(e2c18423) [
     //         'allow': 'All'
-    //         'name': "Bob"
+    //         'nickname': "Bob"
     //     ]
     // ]
 
@@ -320,8 +320,8 @@ fn test_xid_key_update() {
 
     let xid_doc = run_cli_piped(
         &[
-            &["xid", "new", "--name", "Alice", ALICE_PUBKEYS],
-            &["xid", "key", "add", "--name", "Bob", BOB_PUBKEYS],
+            &["xid", "new", "--nickname", "Alice", ALICE_PUBKEYS],
+            &["xid", "key", "add", "--nickname", "Bob", BOB_PUBKEYS],
         ]
     ).unwrap();
 
@@ -332,11 +332,11 @@ fn test_xid_key_update() {
             XID(93a4d4e7) [
                 'key': PublicKeys(cab108a0) [
                     'allow': 'All'
-                    'name': "Alice"
+                    'nickname': "Alice"
                 ]
                 'key': PublicKeys(e2c18423) [
                     'allow': 'All'
-                    'name': "Bob"
+                    'nickname': "Bob"
                 ]
             ]
         "#}.trim()
@@ -351,9 +351,8 @@ fn test_xid_key_update() {
         &["xid", "key", "update", BOB_PUBKEYS, "--allow", "encrypt", "--allow", "sign", &xid_doc]
     ).unwrap();
 
-    // println!("{}", xid_doc_updated);
-
     // $ envelope format $XID_DOC_UPDATED
+    // println!("xid_doc_updated: {}", xid_doc_updated);
 
     #[rustfmt::skip]
     run_cli_expect(
@@ -362,12 +361,12 @@ fn test_xid_key_update() {
             XID(93a4d4e7) [
                 'key': PublicKeys(cab108a0) [
                     'allow': 'All'
-                    'name': "Alice"
+                    'nickname': "Alice"
                 ]
                 'key': PublicKeys(e2c18423) [
                     'allow': 'Encrypt'
                     'allow': 'Sign'
-                    'name': "Bob"
+                    'nickname': "Bob"
                 ]
             ]
         "#}.trim()
@@ -392,7 +391,7 @@ fn test_xid_key_update() {
 
     // PublicKeys(cab108a0) [
     //     'allow': 'All'
-    //     'name': "Alice"
+    //     'nickname': "Alice"
     // ]
 
     // $ envelope xid key at 1 $XID_DOC_UPDATED | envelope format
@@ -400,7 +399,7 @@ fn test_xid_key_update() {
     // PublicKeys(e2c18423) [
     //     'allow': 'Encrypt'
     //     'allow': 'Sign'
-    //     'name': "Bob"
+    //     'nickname': "Bob"
     // ]
     // ```
 
@@ -413,7 +412,7 @@ fn test_xid_key_update() {
         indoc! {r#"
             PublicKeys(cab108a0) [
                 'allow': 'All'
-                'name': "Alice"
+                'nickname': "Alice"
             ]
         "#}.trim()
     ).unwrap();
@@ -428,7 +427,7 @@ fn test_xid_key_update() {
             PublicKeys(e2c18423) [
                 'allow': 'Encrypt'
                 'allow': 'Sign'
-                'name': "Bob"
+                'nickname': "Bob"
             ]
         "#}.trim()
     ).unwrap();
@@ -440,22 +439,22 @@ fn test_xid_key_update() {
     // ```
     // $ envelope xid key all $XID_DOC_UPDATED
     //
-    // ur:envelope/lstpsotansgylftanshfhdcxrdhgfsfsfsosrloebgwmfrfhsnlskegsjydecawybniadyzovehncacnlbmdbesstansgrhdcxytgefrmnbzftltcmcnaspaimhftbjehlatjklkhktidrpmjobslewkfretcaetbnoybdtpsoihfpjziniaihoycsfncsfgrnkedtns
-    // ur:envelope/lrtpsotansgylftanshfhdcxndctnnflynethhhnwdkbhtehhdosmhgoclvefhjpehtaethkltsrmssnwfctfggdtansgrhdcxtipdbagmoertsklaflfhfewsptrlmhjpdeemkbdyktmtfwnninfrbnmwonetwpheoybdtpsoiafwjlidoycsfncsfdoycsfncsgafpmnvszt
+    // ur:envelope/lstpsotansgylftanshfhdcxrdhgfsfsfsosrloebgwmfrfhsnlskegsjydecawybniadyzovehncacnlbmdbesstansgrhdcxytgefrmnbzftltcmcnaspaimhftbjehlatjklkhktidrpmjobslewkfretcaetbnoycsfncsfgoycscstpsoihfpjziniaihqdkobsbw
+    // ur:envelope/lrtpsotansgylftanshfhdcxndctnnflynethhhnwdkbhtehhdosmhgoclvefhjpehtaethkltsrmssnwfctfggdtansgrhdcxtipdbagmoertsklaflfhfewsptrlmhjpdeemkbdyktmtfwnninfrbnmwonetwpheoycsfncsfdoycsfncsgaoycscstpsoiafwjlidkpjkotey
     // ```
 
     #[rustfmt::skip]
     run_cli_expect(
         &["xid", "key", "all", &xid_doc_updated],
         indoc! {r#"
-            ur:envelope/lstpsotansgylftanshfhdcxrdhgfsfsfsosrloebgwmfrfhsnlskegsjydecawybniadyzovehncacnlbmdbesstansgrhdcxytgefrmnbzftltcmcnaspaimhftbjehlatjklkhktidrpmjobslewkfretcaetbnoybdtpsoihfpjziniaihoycsfncsfgrnkedtns
-            ur:envelope/lrtpsotansgylftanshfhdcxndctnnflynethhhnwdkbhtehhdosmhgoclvefhjpehtaethkltsrmssnwfctfggdtansgrhdcxtipdbagmoertsklaflfhfewsptrlmhjpdeemkbdyktmtfwnninfrbnmwonetwpheoybdtpsoiafwjlidoycsfncsfdoycsfncsgafpmnvszt
+            ur:envelope/lstpsotansgylftanshfhdcxrdhgfsfsfsosrloebgwmfrfhsnlskegsjydecawybniadyzovehncacnlbmdbesstansgrhdcxytgefrmnbzftltcmcnaspaimhftbjehlatjklkhktidrpmjobslewkfretcaetbnoycsfncsfgoycscstpsoihfpjziniaihqdkobsbw
+            ur:envelope/lrtpsotansgylftanshfhdcxndctnnflynethhhnwdkbhtehhdosmhgoclvefhjpehtaethkltsrmssnwfctfggdtansgrhdcxtipdbagmoertsklaflfhfewsptrlmhjpdeemkbdyktmtfwnninfrbnmwonetwpheoycsfncsfdoycsfncsgaoycscstpsoiafwjlidkpjkotey
         "#}.trim()
     ).unwrap();
 }
 
 const XID_DOC_UPDATED: &str =
-    "ur:xid/tpsplstpsotanshdhdcxmuoxtyvddifztyryhymkgolbmefhssmejsgaykcljtjnfmaelrrkvwayehbzfessoyaylstpsotansgylftanshfhdcxrdhgfsfsfsosrloebgwmfrfhsnlskegsjydecawybniadyzovehncacnlbmdbesstansgrhdcxytgefrmnbzftltcmcnaspaimhftbjehlatjklkhktidrpmjobslewkfretcaetbnoybdtpsoihfpjziniaihoycsfncsfgoyaylrtpsotansgylftanshfhdcxndctnnflynethhhnwdkbhtehhdosmhgoclvefhjpehtaethkltsrmssnwfctfggdtansgrhdcxtipdbagmoertsklaflfhfewsptrlmhjpdeemkbdyktmtfwnninfrbnmwonetwpheoybdtpsoiafwjlidoycsfncsfdoycsfncsgaftgtvyut";
+    "ur:xid/tpsplstpsotanshdhdcxmuoxtyvddifztyryhymkgolbmefhssmejsgaykcljtjnfmaelrrkvwayehbzfessoyaylstpsotansgylftanshfhdcxrdhgfsfsfsosrloebgwmfrfhsnlskegsjydecawybniadyzovehncacnlbmdbesstansgrhdcxytgefrmnbzftltcmcnaspaimhftbjehlatjklkhktidrpmjobslewkfretcaetbnoycsfncsfgoycscstpsoihfpjziniaihoyaylrtpsotansgylftanshfhdcxndctnnflynethhhnwdkbhtehhdosmhgoclvefhjpehtaethkltsrmssnwfctfggdtansgrhdcxtipdbagmoertsklaflfhfewsptrlmhjpdeemkbdyktmtfwnninfrbnmwonetwpheoycsfncsfdoycsfncsgaoycscstpsoiafwjlidbeglldte";
 
 #[test]
 fn test_xid_key_find() {
@@ -468,7 +467,7 @@ fn test_xid_key_find() {
     //
     // PublicKeys(cab108a0) [
     //     'allow': 'All'
-    //     'name': "Alice"
+    //     'nickname': "Alice"
     // ]
 
     #[rustfmt::skip]
@@ -480,7 +479,7 @@ fn test_xid_key_find() {
         indoc! {r#"
             PublicKeys(cab108a0) [
                 'allow': 'All'
-                'name': "Alice"
+                'nickname': "Alice"
             ]
         "#}.trim()
     ).unwrap();
@@ -501,7 +500,7 @@ fn test_xid_key_find() {
     //
     // PublicKeys(cab108a0) [
     //     'allow': 'All'
-    //     'name': "Alice"
+    //     'nickname': "Alice"
     // ]
     // ```
 
@@ -514,7 +513,7 @@ fn test_xid_key_find() {
         indoc! {r#"
             PublicKeys(cab108a0) [
                 'allow': 'All'
-                'name': "Alice"
+                'nickname': "Alice"
             ]
         "#}.trim()
     ).unwrap();
@@ -532,7 +531,7 @@ fn test_xid_key_remove() {
     //     'key': PublicKeys(e2c18423) [
     //         'allow': 'Encrypt'
     //         'allow': 'Sign'
-    //         'name': "Bob"
+    //         'nickname': "Bob"
     //     ]
     // ]
 
@@ -548,7 +547,7 @@ fn test_xid_key_remove() {
                 'key': PublicKeys(e2c18423) [
                     'allow': 'Encrypt'
                     'allow': 'Sign'
-                    'name': "Bob"
+                    'nickname': "Bob"
                 ]
             ]
         "#}.trim()
@@ -576,9 +575,9 @@ fn test_xid_method() {
     // #### `xid method add`: Add a Resolution Method to a XID Document
     //
     // ```
-    // $ XID_DOC=`envelope xid new --name 'Alice' $ALICE_PUBKEYS`
+    // $ XID_DOC=`envelope xid new --nickname 'Alice' $ALICE_PUBKEYS`
 
-    let xid_doc = run_cli(&["xid", "new", "--name", "Alice", ALICE_PUBKEYS]).unwrap();
+    let xid_doc = run_cli(&["xid", "new", "--nickname", "Alice", ALICE_PUBKEYS]).unwrap();
 
     // $ XID_DOC_WITH_RESOLVERS=`envelope xid method add 'https://resolver.example.com/' $XID_DOC | \
     //     envelope xid method add 'btc:5e54156cfe0e62d9a56c72b84a5c40b84e2fd7dfe786c7d5c667e11ab85c45c6'`
@@ -602,7 +601,7 @@ fn test_xid_method() {
     //     'dereferenceVia': URI(https://resolver.example.com/)
     //     'key': PublicKeys(cab108a0) [
     //         'allow': 'All'
-    //         'name': "Alice"
+    //         'nickname': "Alice"
     //     ]
     // ]
     // ```
@@ -616,7 +615,7 @@ fn test_xid_method() {
                 'dereferenceVia': URI(https://resolver.example.com/)
                 'key': PublicKeys(cab108a0) [
                     'allow': 'All'
-                    'name': "Alice"
+                    'nickname': "Alice"
                 ]
             ]
         "#}.trim()
@@ -688,7 +687,7 @@ fn test_xid_method() {
     //     'dereferenceVia': URI(btc:5e54156cfe0e62d9a56c72b84a5c40b84e2fd7dfe786c7d5c667e11ab85c45c6)
     //     'key': PublicKeys(cab108a0) [
     //         'allow': 'All'
-    //         'name': "Alice"
+    //         'nickname': "Alice"
     //     ]
     // ]
     // ```
@@ -704,7 +703,7 @@ fn test_xid_method() {
                 'dereferenceVia': URI(btc:5e54156cfe0e62d9a56c72b84a5c40b84e2fd7dfe786c7d5c667e11ab85c45c6)
                 'key': PublicKeys(cab108a0) [
                     'allow': 'All'
-                    'name': "Alice"
+                    'nickname': "Alice"
                 ]
             ]
         "#}.trim()
@@ -733,21 +732,21 @@ fn test_xid_delegate() {
     //
     // ```
     //
-    // $ ALICE_XID_DOC=`envelope xid new --name 'Alice' $ALICE_PUBKEYS`
+    // $ ALICE_XID_DOC=`envelope xid new --nickname 'Alice' $ALICE_PUBKEYS`
 
-    let alice_xid_doc = run_cli(&["xid", "new", "--name", "Alice", ALICE_PUBKEYS]).unwrap();
+    let alice_xid_doc = run_cli(&["xid", "new", "--nickname", "Alice", ALICE_PUBKEYS]).unwrap();
 
-    // $ BOB_XID_DOC=`envelope xid new --name 'Bob' $BOB_PUBKEYS`
+    // $ BOB_XID_DOC=`envelope xid new --nickname 'Bob' $BOB_PUBKEYS`
 
-    let bob_xid_doc = run_cli(&["xid", "new", "--name", "Bob", BOB_PUBKEYS]).unwrap();
+    let bob_xid_doc = run_cli(&["xid", "new", "--nickname", "Bob", BOB_PUBKEYS]).unwrap();
 
-    // $ CAROL_XID_DOC=`envelope xid new --name 'Carol' $CAROL_PUBKEYS`
+    // $ CAROL_XID_DOC=`envelope xid new --nickname 'Carol' $CAROL_PUBKEYS`
 
-    let carol_xid_doc = run_cli(&["xid", "new", "--name", "Carol", CAROL_PUBKEYS]).unwrap();
+    let carol_xid_doc = run_cli(&["xid", "new", "--nickname", "Carol", CAROL_PUBKEYS]).unwrap();
 
-    // $ DAVE_XID_DOC=`envelope xid new --name 'Dave' $DAVE_PUBKEYS`
+    // $ DAVE_XID_DOC=`envelope xid new --nickname 'Dave' $DAVE_PUBKEYS`
 
-    let dave_xid_doc = run_cli(&["xid", "new", "--name", "Dave", DAVE_PUBKEYS]).unwrap();
+    let dave_xid_doc = run_cli(&["xid", "new", "--nickname", "Dave", DAVE_PUBKEYS]).unwrap();
 
     // $ DAVE_XID=`envelope xid id $DAVE_XID_DOC`
 
@@ -793,7 +792,7 @@ fn test_xid_delegate() {
     //         XID(61b1f3c7) [
     //             'key': PublicKeys(eebd4add) [
     //                 'allow': 'All'
-    //                 'name': "Carol"
+    //                 'nickname': "Carol"
     //             ]
     //         ]
     //     } [
@@ -803,7 +802,7 @@ fn test_xid_delegate() {
     //         XID(f1199a75) [
     //             'key': PublicKeys(e2c18423) [
     //                 'allow': 'All'
-    //                 'name': "Bob"
+    //                 'nickname': "Bob"
     //             ]
     //         ]
     //     } [
@@ -812,7 +811,7 @@ fn test_xid_delegate() {
     //     ]
     //     'key': PublicKeys(cab108a0) [
     //         'allow': 'All'
-    //         'name': "Alice"
+    //         'nickname': "Alice"
     //     ]
     // ]
     // ```
@@ -831,7 +830,7 @@ fn test_xid_delegate() {
                     XID(61b1f3c7) [
                         'key': PublicKeys(eebd4add) [
                             'allow': 'All'
-                            'name': "Carol"
+                            'nickname': "Carol"
                         ]
                     ]
                 } [
@@ -841,7 +840,7 @@ fn test_xid_delegate() {
                     XID(f1199a75) [
                         'key': PublicKeys(e2c18423) [
                             'allow': 'All'
-                            'name': "Bob"
+                            'nickname': "Bob"
                         ]
                     ]
                 } [
@@ -850,7 +849,7 @@ fn test_xid_delegate() {
                 ]
                 'key': PublicKeys(cab108a0) [
                     'allow': 'All'
-                    'name': "Alice"
+                    'nickname': "Alice"
                 ]
             ]
         "#}.trim()
@@ -871,13 +870,13 @@ fn test_xid_delegate() {
     // The indexes are zero-based, and in the order the delegate assertions appear in the XID document's Gordian Envelope, which is not necessarily the order they appear via `envelope format`.
     //
     // ```
-    // $ envelope xid delegate at 0 $ALICE_XID_DOC | envelope format
+    // $ envelope xid delegate at 1 $ALICE_XID_DOC | envelope format
     //
     // {
     //     XID(f1199a75) [
     //         'key': PublicKeys(e2c18423) [
     //             'allow': 'All'
-    //             'name': "Bob"
+    //             'nickname': "Bob"
     //         ]
     //     ]
     // } [
@@ -888,7 +887,7 @@ fn test_xid_delegate() {
     #[rustfmt::skip]
     run_cli_piped_expect(
         &[
-            &["xid", "delegate", "at", "0", &alice_xid_doc],
+            &["xid", "delegate", "at", "1", &alice_xid_doc],
             &["format"]
         ],
         indoc! {r#"
@@ -896,7 +895,7 @@ fn test_xid_delegate() {
                 XID(f1199a75) [
                     'key': PublicKeys(e2c18423) [
                         'allow': 'All'
-                        'name': "Bob"
+                        'nickname': "Bob"
                     ]
                 ]
             } [
@@ -906,13 +905,13 @@ fn test_xid_delegate() {
         "#}.trim()
     ).unwrap();
 
-    // $ envelope xid delegate at 1 $ALICE_XID_DOC | envelope format
+    // $ envelope xid delegate at 0 $ALICE_XID_DOC | envelope format
     //
     // {
     //     XID(61b1f3c7) [
     //         'key': PublicKeys(eebd4add) [
     //             'allow': 'All'
-    //             'name': "Carol"
+    //             'nickname': "Carol"
     //         ]
     //     ]
     // } [
@@ -922,7 +921,7 @@ fn test_xid_delegate() {
     #[rustfmt::skip]
     run_cli_piped_expect(
         &[
-            &["xid", "delegate", "at", "1", &alice_xid_doc],
+            &["xid", "delegate", "at", "0", &alice_xid_doc],
             &["format"]
         ],
         indoc! {r#"
@@ -930,7 +929,7 @@ fn test_xid_delegate() {
                 XID(61b1f3c7) [
                     'key': PublicKeys(eebd4add) [
                         'allow': 'All'
-                        'name': "Carol"
+                        'nickname': "Carol"
                     ]
                 ]
             } [
@@ -977,8 +976,8 @@ fn test_xid_delegate() {
     run_cli_expect(
         &["xid", "delegate", "all", &alice_xid_doc],
         indoc! {r#"
-            ur:envelope/lstpsplftpsotanshdhdcxwncfnykphhsekedagdsfqdihoysadpzmimrpgtrnlesansjtdshtkedyhlwdmngloyaylstpsotansgylftanshfhdcxndctnnflynethhhnwdkbhtehhdosmhgoclvefhjpehtaethkltsrmssnwfctfggdtansgrhdcxtipdbagmoertsklaflfhfewsptrlmhjpdeemkbdyktmtfwnninfrbnmwonetwpheoybdtpsoiafwjlidoycsfncsfgoycsfncsfdoycsfncsgauyzsurla
-            ur:envelope/lftpsplftpsotanshdhdcxhspawfstecswotwpbsweiowlsrmyfpwpskmeonrtjsrhetsrhnaxfwylvtvsuorkoyaylstpsotansgylftanshfhdcxeckpgwvyasletilffeeekbtyjlzeimmtkslkpadrtnnytontpyfyeocnecstktkttansgrhdcxoyndtbndhspebgtewmgrgrgriygmvwckkkaysfzozclbgendfmhfjliorteenlbwoycsfncsfgoybdtpsoihfxhsjpjljzoycsfncsfgzsiddlec
+            ur:envelope/lftpsplftpsotanshdhdcxhspawfstecswotwpbsweiowlsrmyfpwpskmeonrtjsrhetsrhnaxfwylvtvsuorkoyaylstpsotansgylftanshfhdcxeckpgwvyasletilffeeekbtyjlzeimmtkslkpadrtnnytontpyfyeocnecstktkttansgrhdcxoyndtbndhspebgtewmgrgrgriygmvwckkkaysfzozclbgendfmhfjliorteenlbwoycsfncsfgoycscstpsoihfxhsjpjljzoycsfncsfgknhpttwe
+            ur:envelope/lstpsplftpsotanshdhdcxwncfnykphhsekedagdsfqdihoysadpzmimrpgtrnlesansjtdshtkedyhlwdmngloyaylstpsotansgylftanshfhdcxndctnnflynethhhnwdkbhtehhdosmhgoclvefhjpehtaethkltsrmssnwfctfggdtansgrhdcxtipdbagmoertsklaflfhfewsptrlmhjpdeemkbdyktmtfwnninfrbnmwonetwpheoycsfncsfgoycscstpsoiafwjlidoycsfncsfdoycsfncsgawnftoeoy
             ur:envelope/lftpsptpsotanshdhdcxenenaefmosgecksalokgmnrhgrsemhhfnlfssroxbytkvllrvsrhgtgscpvswfveoycsfncsgegtgtyljt
         "#}.trim()
     ).unwrap();
@@ -1061,7 +1060,7 @@ fn test_xid_delegate() {
     //         XID(f1199a75) [
     //             'key': PublicKeys(e2c18423) [
     //                 'allow': 'All'
-    //                 'name': "Bob"
+    //                 'nickname': "Bob"
     //             ]
     //         ]
     //     } [
@@ -1070,7 +1069,7 @@ fn test_xid_delegate() {
     //     ]
     //     'key': PublicKeys(cab108a0) [
     //         'allow': 'All'
-    //         'name': "Alice"
+    //         'nickname': "Alice"
     //     ]
     // ]
     // ```
@@ -1096,7 +1095,7 @@ fn test_xid_delegate() {
                     XID(f1199a75) [
                         'key': PublicKeys(e2c18423) [
                             'allow': 'All'
-                            'name': "Bob"
+                            'nickname': "Bob"
                         ]
                     ]
                 } [
@@ -1105,7 +1104,7 @@ fn test_xid_delegate() {
                 ]
                 'key': PublicKeys(cab108a0) [
                     'allow': 'All'
-                    'name': "Alice"
+                    'nickname': "Alice"
                 ]
             ]
         "#}.trim()
@@ -1141,7 +1140,7 @@ fn test_xid_delegate() {
     //     ]
     //     'key': PublicKeys(cab108a0) [
     //         'allow': 'All'
-    //         'name': "Alice"
+    //         'nickname': "Alice"
     //     ]
     // ]
     // ```
@@ -1165,7 +1164,7 @@ fn test_xid_delegate() {
                 ]
                 'key': PublicKeys(cab108a0) [
                     'allow': 'All'
-                    'name': "Alice"
+                    'nickname': "Alice"
                 ]
             ]
         "#}.trim()
@@ -1198,18 +1197,18 @@ fn test_xid_service() {
     // Alice creates a basic XID document.
     //
     // ```
-    // $ ALICE_XID_DOC=`envelope xid new --name 'Alice' $ALICE_PUBKEYS`
+    // $ ALICE_XID_DOC=`envelope xid new --nickname 'Alice' $ALICE_PUBKEYS`
     // $ envelope format $ALICE_XID_DOC
     //
     // XID(93a4d4e7) [
     //     'key': PublicKeys(cab108a0) [
     //         'allow': 'All'
-    //         'name': "Alice"
+    //         'nickname': "Alice"
     //     ]
     // ]
     // ```
 
-    let alice_xid_doc = run_cli(&["xid", "new", "--name", "Alice", ALICE_PUBKEYS]).unwrap();
+    let alice_xid_doc = run_cli(&["xid", "new", "--nickname", "Alice", ALICE_PUBKEYS]).unwrap();
 
     #[rustfmt::skip]
     run_cli_expect(
@@ -1218,7 +1217,7 @@ fn test_xid_service() {
             XID(93a4d4e7) [
                 'key': PublicKeys(cab108a0) [
                     'allow': 'All'
-                    'name': "Alice"
+                    'nickname': "Alice"
                 ]
             ]
         "#}.trim()
@@ -1227,7 +1226,7 @@ fn test_xid_service() {
     // Alice adds Bob as a delegate.
     //
     // ```
-    // $ BOB_XID_DOC=`envelope xid new --name 'Bob' $BOB_PUBKEYS`
+    // $ BOB_XID_DOC=`envelope xid new --nickname 'Bob' $BOB_PUBKEYS`
     // $ ALICE_XID_DOC=`envelope xid delegate add --allow 'sign' --allow 'encrypt' $BOB_XID_DOC $ALICE_XID_DOC`
     // $ envelope format $ALICE_XID_DOC
     //
@@ -1236,7 +1235,7 @@ fn test_xid_service() {
     //         XID(f1199a75) [
     //             'key': PublicKeys(e2c18423) [
     //                 'allow': 'All'
-    //                 'name': "Bob"
+    //                 'nickname': "Bob"
     //             ]
     //         ]
     //     } [
@@ -1245,12 +1244,12 @@ fn test_xid_service() {
     //     ]
     //     'key': PublicKeys(cab108a0) [
     //         'allow': 'All'
-    //         'name': "Alice"
+    //         'nickname': "Alice"
     //     ]
     // ]
     // ```
 
-    let bob_xid_doc = run_cli(&["xid", "new", "--name", "Bob", BOB_PUBKEYS]).unwrap();
+    let bob_xid_doc = run_cli(&["xid", "new", "--nickname", "Bob", BOB_PUBKEYS]).unwrap();
 
     let alice_xid_doc = run_cli(
         &[
@@ -1275,7 +1274,7 @@ fn test_xid_service() {
                     XID(f1199a75) [
                         'key': PublicKeys(e2c18423) [
                             'allow': 'All'
-                            'name': "Bob"
+                            'nickname': "Bob"
                         ]
                     ]
                 } [
@@ -1284,7 +1283,7 @@ fn test_xid_service() {
                 ]
                 'key': PublicKeys(cab108a0) [
                     'allow': 'All'
-                    'name': "Alice"
+                    'nickname': "Alice"
                 ]
             ]
         "#}.trim()
@@ -1333,7 +1332,7 @@ fn test_xid_service() {
     //         XID(f1199a75) [
     //             'key': PublicKeys(e2c18423) [
     //                 'allow': 'All'
-    //                 'name': "Bob"
+    //                 'nickname': "Bob"
     //             ]
     //         ]
     //     } [
@@ -1342,7 +1341,7 @@ fn test_xid_service() {
     //     ]
     //     'key': PublicKeys(cab108a0) [
     //         'allow': 'All'
-    //         'name': "Alice"
+    //         'nickname': "Alice"
     //     ]
     //     'service': URI(https://messaging.example.com) [
     //         'allow': 'Encrypt'
@@ -1363,7 +1362,7 @@ fn test_xid_service() {
                     XID(f1199a75) [
                         'key': PublicKeys(e2c18423) [
                             'allow': 'All'
-                            'name': "Bob"
+                            'nickname': "Bob"
                         ]
                     ]
                 } [
@@ -1372,7 +1371,7 @@ fn test_xid_service() {
                 ]
                 'key': PublicKeys(cab108a0) [
                     'allow': 'All'
-                    'name': "Alice"
+                    'nickname': "Alice"
                 ]
                 'service': URI(https://messaging.example.com) [
                     'allow': 'Encrypt'
@@ -1404,7 +1403,7 @@ fn test_xid_service() {
     //         XID(f1199a75) [
     //             'key': PublicKeys(e2c18423) [
     //                 'allow': 'All'
-    //                 'name': "Bob"
+    //                 'nickname': "Bob"
     //             ]
     //         ]
     //     } [
@@ -1413,7 +1412,7 @@ fn test_xid_service() {
     //     ]
     //     'key': PublicKeys(cab108a0) [
     //         'allow': 'All'
-    //         'name': "Alice"
+    //         'nickname': "Alice"
     //     ]
     //     'service': URI(https://messaging.example.com) [
     //         'allow': 'Encrypt'
@@ -1459,7 +1458,7 @@ fn test_xid_service() {
                     XID(f1199a75) [
                         'key': PublicKeys(e2c18423) [
                             'allow': 'All'
-                            'name': "Bob"
+                            'nickname': "Bob"
                         ]
                     ]
                 } [
@@ -1468,7 +1467,7 @@ fn test_xid_service() {
                 ]
                 'key': PublicKeys(cab108a0) [
                     'allow': 'All'
-                    'name': "Alice"
+                    'nickname': "Alice"
                 ]
                 'service': URI(https://messaging.example.com) [
                     'allow': 'Encrypt'

@@ -3,11 +3,11 @@ use bc_envelope::{ Envelope, PrivateKeyBase, PublicKeys };
 use bc_ur::prelude::*;
 
 use anyhow::{ Result, bail };
-use bc_xid::{ HasName, HasPermissions, Key, PrivateKeyOptions, XIDDocument };
+use bc_xid::{ HasNickname, HasPermissions, Key, PrivateKeyOptions, XIDDocument };
 
 use crate::envelope_args::EnvelopeArgsLike;
 
-use super::{private_options::PrivateOptions, xid_privilege::XIDPrivilege};
+use super::{ private_options::PrivateOptions, xid_privilege::XIDPrivilege };
 
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub enum InputKey {
@@ -43,9 +43,9 @@ pub fn read_public_key(key: Option<&str>) -> Result<PublicKeys> {
     }
 }
 
-pub fn update_key(key: &mut Key, name: &str, endpoints: &[URI], permissions: &[XIDPrivilege]) {
-    if !name.is_empty() {
-        key.set_name(name);
+pub fn update_key(key: &mut Key, nickname: &str, endpoints: &[URI], permissions: &[XIDPrivilege]) {
+    if !nickname.is_empty() {
+        key.set_nickname(nickname);
     }
 
     if !endpoints.is_empty() {
@@ -86,7 +86,10 @@ pub fn envelope_to_xid_ur_string(envelope: &Envelope) -> String {
     UR::new("xid", envelope.to_cbor()).unwrap().string()
 }
 
-pub fn xid_document_to_ur_string(xid_document: &XIDDocument, private_opts: PrivateOptions) -> String {
+pub fn xid_document_to_ur_string(
+    xid_document: &XIDDocument,
+    private_opts: PrivateOptions
+) -> String {
     let options = PrivateKeyOptions::from(private_opts);
     let unsigned_envelope = xid_document.to_unsigned_envelope_opt(options);
     envelope_to_xid_ur_string(&unsigned_envelope)
