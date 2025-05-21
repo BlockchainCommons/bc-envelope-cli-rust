@@ -118,7 +118,7 @@ CREDENTIAL=`envelope subject type arid 4676635a6e6068c2ef3ffd8ff726dd401fd341036
     envelope assertion add pred-obj string "professionalDevelopmentHours" number 15 |
     envelope assertion add pred-obj string "topics" cbor 82695375626a6563742031695375626a6563742032 |
     envelope subject type wrapped |
-    envelope sign --prvkeys $BOARD_PRVKEY_BASE |
+    envelope sign -s $BOARD_PRVKEY_BASE |
     envelope assertion add pred-obj known note string "Signed by Example Electrical Engineering Board"`
 envelope format $CREDENTIAL
 ```
