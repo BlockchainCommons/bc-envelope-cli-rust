@@ -345,7 +345,101 @@ envelope extract string $DECRYPTED
 Hello.
 ```
 
-## Example 6: Sign-Then-Encrypt
+## Example 6: SSH Agent Encryption
+
+Alice generates an Ed25519 key pair and adds it to her SSH agent.
+
+```bash
+👉
+ssh-keygen -t ed25519 -f ~/.ssh/alice_ed25519 -C "alice@localhost"
+```
+
+```
+👈
+Generating public/private ed25519 key pair.
+Enter passphrase for "/Users/alice/.ssh/alice_ed25519" (empty for no passphrase):
+Enter same passphrase again:
+Your identification has been saved in /Users/alice/.ssh/alice_ed25519
+Your public key has been saved in /Users/alice/.ssh/alice_ed25519.pub
+The key fingerprint is:
+SHA256:yufAfhk0j/2Z20IhlBr1ujmB6Otys43V1DBEMRbEk8M alice@localhost
+The key's randomart image is:
++--[ED25519 256]--+
+|         *X=     |
+|        .oEo     |
+|         +oo.    |
+|       .+..=.    |
+|      ..S=+...   |
+|     + .ooo+.    |
+|      * oo=o o   |
+|    ..oOo  .=.   |
+|     +*+o   .o.  |
++----[SHA256]-----+
+```
+
+Alice adds her private key to the SSH agent.
+
+```bash
+👉
+ssh-add ~/.ssh/alice_ed25519
+```
+
+```
+👈
+Identity added: /Users/alice/.ssh/alice_ed25519 (alice@localhost)
+```
+
+Alice lists the keys in her SSH agent to confirm it was added.
+
+```bash
+👉
+ssh-add -L
+```
+
+```
+👈
+ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAILvLgo1Ep8md2MTAxLCM+e9MLFw0vDdfa5N4BGwvk893 alice@localhost
+```
+
+Alice encrypts a message using her SSH agent.
+
+```bash
+👉
+ENCRYPTED=`envelope subject type string $PLAINTEXT_HELLO | envelope encrypt --ssh-id alice@localhost`
+echo $ENCRYPTED
+```
+
+```
+👈
+ur:envelope/lftansfwlrgrzotttdghayfyfsdpnbiymtgsgartdytlptsntpielerenshfgdhyvowkcaatfmehrdfyweiebbieeekkgwhddatansfphdcxlksojzuyktbykovsecbygebsldeninbdfptkwebtwzdpadglwetbgltnwdmwhlhkoybwtpsotanshptansfwlrhdcxtirdvoqdberhinrewklahemotspkonuyzeytnebewpemjkrtylbndleoinynsppagslboeahutvtdlplynylwkbtingdnykofmmuhphnhsgacfihzobkgoaxwnkghddslsaatansgmgdmnceetcajllfrnkkotverohlpelrlrltjlhsjziniaihfzjzjliahsjzisjljkjydatkhenl
+```
+
+```bash
+👉
+envelope format $ENCRYPTED
+```
+
+```
+👈
+ENCRYPTED [
+    'hasSecret': EncryptedKey(SSHAgent("alice@localhost"))
+]
+```
+
+Later, Alice decrypts the message using her SSH agent.
+
+```bash
+👉
+DECRYPTED=`envelope decrypt $ENCRYPTED --ssh-id alice@localhost`
+envelope extract string $DECRYPTED
+```
+
+```
+👈
+Hello.
+```
+
+## Example 7: Sign-Then-Encrypt
 
 This example combines the previous ones, first signing, then encrypting a message with a symmetric key.
 
@@ -430,7 +524,7 @@ envelope extract wrapped $DECRYPTED | envelope verify --pubkeys $CAROL_PUBKEYS
 Error: could not verify a signature
 ```
 
-## Example 7: Encrypt-Then-Sign
+## Example 8: Encrypt-Then-Sign
 
 It doesn't actually matter whether the `encrypt` or `sign` command comes first, as the `encrypt` command transforms the subject into its encrypted form, which carries a digest of the plaintext subject, while the `sign` command only adds an assertion with the signature of the hash as the object of the assertion.
 
@@ -496,7 +590,7 @@ envelope verify $ENCRYPTED_SIGNED --pubkeys $ALICE_PUBKEYS | \
 Hello.
 ```
 
-## Example 8: Multi-Recipient Encryption
+## Example 9: Multi-Recipient Encryption
 
 This example demonstrates an encrypted message sent to multiple parties.
 
@@ -568,7 +662,7 @@ envelope decrypt $ENVELOPE_TO --recipient $ALICE_PRVKEY_BASE
 Error: unknown recipient
 ```
 
-## Example 9: Signed Multi-Recipient Encryption
+## Example 10: Signed Multi-Recipient Encryption
 
 This example demonstrates a signed, then encrypted message, sent to multiple parties.
 
