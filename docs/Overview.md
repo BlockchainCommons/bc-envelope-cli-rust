@@ -122,7 +122,54 @@ envelope format --type tree $ALICE_KNOWS_BOB
         13b74194 obj "Bob"
 ```
 
-Note that internally, envelope uses 256-bit SHA-256 digests, but the tree format only shows the first 32 bits of the digest.
+Note that internally, envelope uses 256-bit SHA-256 digests, but by default the tree format only shows the first 32 bits of the digest.
+
+If you want to see the full digest in hexadecimal, you can use the `--digest-format full` option:
+
+```bash
+👉
+envelope format --type tree --digest-format full $ALICE_KNOWS_BOB
+```
+
+```
+👈
+8955db5e016affb133df56c11fe6c5c82fa3036263d651286d134c7e56c0e9f2 NODE
+    13941b487c1ddebce827b6ec3f46d982938acdc7e3b6a140db36062d9519dd2f subj "Alice"
+    78d666eb8f4c0977a0425ab6aa21ea16934a6bc97c6f0c3abaefac951c1714a2 ASSERTION
+        db7dd21c5169b4848d2a1bcb0a651c9617cdd90bae29156baaefbb2a8abef5ba pred "knows"
+        13b741949c37b8e09cc3daa3194c58e4fd6b2f14d4b1d0f035a46d6d5a1d3f11 obj "Bob"
+```
+
+Alternatively, you can display the full digests as URs, which is useful for identifying elements you want to elide or encrypt:
+
+```bash
+👉
+envelope format --type tree --digest-format ur $ALICE_KNOWS_BOB
+```
+
+```
+👈
+ur:digest/hdcxldgouyhyadimzmpaeourhfsectvaskspdlotaxidiatbgydejnbwgskbhfrtwlwzneroatds NODE
+    ur:digest/hdcxbwmwcwfdkecauerfvsdirpwpfhfgtalfmulesnstvlrpoyfzuyenamdpmdcfutdlstyaqzrk subj "Alice"
+    ur:digest/hdcxkstbiywmmygsasktnbfwhtrppkclwdcmmugejesokejlbnftrdwspsmdcechbboerhzebtws ASSERTION
+        ur:digest/hdcxuykitdcegyinqzlrlgdrcwsbbkihcemtchsntabdpldtbzjepkwsrkdrlernykrddpjtgdfh pred "knows"
+        ur:digest/hdcxbwrlfpmwnsemrovtnssrtnotcfgshdvezcjedlbbtypatiwtecoxjnjnhtcafhbysptsnsnl obj "Bob"
+```
+
+Here we copy the digest of the assertion to a variable so we can use it for elision:
+
+```bash
+👉
+KNOWS_BOB_ASSERTION=ur:digest/hdcxkstbiywmmygsasktnbfwhtrppkclwdcmmugejesokejlbnftrdwspsmdcechbboerhzebtws
+envelope elide removing $KNOWS_BOB_ASSERTION $ALICE_KNOWS_BOB | envelope format --type tree --digest-format ur
+```
+
+```
+👈
+ur:digest/hdcxldgouyhyadimzmpaeourhfsectvaskspdlotaxidiatbgydejnbwgskbhfrtwlwzneroatds NODE
+    ur:digest/hdcxbwmwcwfdkecauerfvsdirpwpfhfgtalfmulesnstvlrpoyfzuyenamdpmdcfutdlstyaqzrk subj "Alice"
+    ur:digest/hdcxkstbiywmmygsasktnbfwhtrppkclwdcmmugejesokejlbnftrdwspsmdcechbboerhzebtws ELIDED
+```
 
 With the `--hide-nodes` option, the structure of the envelope is shown without digests and without the `NODE` element. This is useful for understanding the semantic structure of the envelope:
 

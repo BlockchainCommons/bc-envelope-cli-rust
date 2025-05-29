@@ -23,7 +23,7 @@ cargo install bc-envelope-cli
 To install a specific version:
 
 ```bash
-cargo install bc-envelope-cli --version 0.15.0
+cargo install bc-envelope-cli --version 0.16.0
 ```
 
 ### From Source
