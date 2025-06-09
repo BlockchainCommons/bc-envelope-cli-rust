@@ -12,14 +12,26 @@ pub struct CommandArgs {
     #[arg(long = "type", id = "TYPE", default_value = "envelope")]
     format_type: FormatType,
 
-    /// For `--type tree` hides the NODE case and digests, which provides a
+    /// For `tree` and `mermaid`, hides the NODE case and digests, which provides a
     /// more semantically readable tree output.
-    #[arg(long)]
+    #[arg(long, short)]
     hide_nodes: bool,
 
-    /// For `--type tree`, specifies the format for displaying digests.
+    /// For `tree`, specifies the format for displaying digests.
     #[arg(long, short, default_value = "short")]
     digest_format: DigestFormatType,
+
+    /// For `mermaid`, specifies the color theme of the diagram.
+    #[arg(long, short, default_value = "default")]
+    theme: MermaidThemeType,
+
+    /// For `mermaid`, specifies the orientation of the diagram.
+    #[arg(long, short, default_value = "left-to-right")]
+    orientation: MermaidOrientationType,
+
+    /// For `mermaid`, do not color the nodes or edges.
+    #[arg(long, short)]
+    monochrome: bool,
 
     #[command(flatten)]
     envelope_args: EnvelopeArgs,
@@ -35,6 +47,8 @@ enum FormatType {
     Envelope,
     /// Envelope tree.
     Tree,
+    /// Mermaid format.
+    Mermaid,
     /// CBOR diagnostic notation.
     Diag,
     /// CBOR hex.
@@ -63,15 +77,62 @@ impl From<DigestFormatType> for DigestDisplayFormat {
     }
 }
 
+#[derive(ValueEnum, Clone, Copy, Debug, Eq, Hash, PartialEq)]
+pub enum MermaidOrientationType {
+    LeftToRight,
+    TopToBottom,
+    RightToLeft,
+    BottomToTop,
+}
+
+impl From<MermaidOrientationType> for MermaidOrientation {
+    fn from(value: MermaidOrientationType) -> Self {
+        match value {
+            MermaidOrientationType::LeftToRight => MermaidOrientation::LeftToRight,
+            MermaidOrientationType::TopToBottom => MermaidOrientation::TopToBottom,
+            MermaidOrientationType::RightToLeft => MermaidOrientation::RightToLeft,
+            MermaidOrientationType::BottomToTop => MermaidOrientation::BottomToTop,
+        }
+    }
+}
+
+#[derive(ValueEnum, Clone, Copy, Debug, Eq, Hash, PartialEq)]
+pub enum MermaidThemeType {
+    Default,
+    Neutral,
+    Dark,
+    Forest,
+    Base,
+}
+
+impl From<MermaidThemeType> for MermaidTheme {
+    fn from(value: MermaidThemeType) -> Self {
+        match value {
+            MermaidThemeType::Default => MermaidTheme::Default,
+            MermaidThemeType::Neutral => MermaidTheme::Neutral,
+            MermaidThemeType::Dark => MermaidTheme::Dark,
+            MermaidThemeType::Forest => MermaidTheme::Forest,
+            MermaidThemeType::Base => MermaidTheme::Base,
+        }
+    }
+}
+
 impl crate::exec::Exec for CommandArgs {
     fn exec(&self) -> Result<String> {
         let e = self.read_envelope()?;
         let output = match self.format_type {
             FormatType::Envelope => e.format(),
             FormatType::Tree => e.tree_format_opt(
-                TreeFormatOpts::default()
+                &TreeFormatOpts::default()
                     .hide_nodes(self.hide_nodes)
                     .digest_display(self.digest_format.into()),
+            ),
+            FormatType::Mermaid => e.mermaid_format_opt(
+                &MermaidFormatOpts::default()
+                    .hide_nodes(self.hide_nodes)
+                    .theme(self.theme.into())
+                    .monochrome(self.monochrome)
+                    .orientation(self.orientation.into())
             ),
             FormatType::Diag => e.diagnostic(),
             FormatType::Cbor => hex::encode(e.tagged_cbor_data()),

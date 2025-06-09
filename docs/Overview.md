@@ -186,6 +186,137 @@ envelope format --type tree --hide-nodes $ALICE_KNOWS_BOB
         "Bob"
 ```
 
+## Mermaid Output
+
+The `format` command can also produce a Mermaid diagram of the envelope structure. This is useful for visualizing the relationships between elements in the envelope:
+
+```bash
+👉
+envelope format --type mermaid $ALICE_KNOWS_BOB
+```
+
+```
+👈
+%%{ init: { 'theme': 'default', 'flowchart': { 'curve': 'basis' } } }%%
+graph LR
+0(("NODE<br>8955db5e"))
+    0 -- subj --> 1["&quot;Alice&quot;<br>13941b48"]
+    0 --> 2(["ASSERTION<br>78d666eb"])
+        2 -- pred --> 3["&quot;knows&quot;<br>db7dd21c"]
+        2 -- obj --> 4["&quot;Bob&quot;<br>13b74194"]
+style 0 stroke:red,stroke-width:4px
+style 1 stroke:teal,stroke-width:4px
+style 2 stroke:green,stroke-width:4px
+style 3 stroke:teal,stroke-width:4px
+style 4 stroke:teal,stroke-width:4px
+linkStyle 0 stroke:red,stroke-width:2px
+linkStyle 1 stroke-width:2px
+linkStyle 2 stroke:green,stroke-width:2px
+linkStyle 3 stroke:blue,stroke-width:2px
+```
+
+When passed to a Mermaid renderer, this will produce a diagram that looks like this:
+
+```mermaid
+%%{ init: { 'theme': 'default', 'flowchart': { 'curve': 'basis' } } }%%
+graph LR
+0(("NODE<br>8955db5e"))
+    0 -- subj --> 1["&quot;Alice&quot;<br>13941b48"]
+    0 --> 2(["ASSERTION<br>78d666eb"])
+        2 -- pred --> 3["&quot;knows&quot;<br>db7dd21c"]
+        2 -- obj --> 4["&quot;Bob&quot;<br>13b74194"]
+style 0 stroke:red,stroke-width:4px
+style 1 stroke:teal,stroke-width:4px
+style 2 stroke:green,stroke-width:4px
+style 3 stroke:teal,stroke-width:4px
+style 4 stroke:teal,stroke-width:4px
+linkStyle 0 stroke:red,stroke-width:2px
+linkStyle 1 stroke-width:2px
+linkStyle 2 stroke:green,stroke-width:2px
+linkStyle 3 stroke:blue,stroke-width:2px
+```
+
+Mermaid output has several options, including the `--theme` option to specify the color theme of the diagram. For example, to use a dark theme, you can run:
+
+```bash
+👉
+envelope format --type mermaid --theme dark $ALICE_KNOWS_BOB
+```
+
+👈
+
+```mermaid
+%%{ init: { 'theme': 'dark', 'flowchart': { 'curve': 'basis' } } }%%
+graph LR
+0(("NODE<br>8955db5e"))
+    0 -- subj --> 1["&quot;Alice&quot;<br>13941b48"]
+    0 --> 2(["ASSERTION<br>78d666eb"])
+        2 -- pred --> 3["&quot;knows&quot;<br>db7dd21c"]
+        2 -- obj --> 4["&quot;Bob&quot;<br>13b74194"]
+style 0 stroke:red,stroke-width:4px
+style 1 stroke:teal,stroke-width:4px
+style 2 stroke:green,stroke-width:4px
+style 3 stroke:teal,stroke-width:4px
+style 4 stroke:teal,stroke-width:4px
+linkStyle 0 stroke:red,stroke-width:2px
+linkStyle 1 stroke-width:2px
+linkStyle 2 stroke:green,stroke-width:2px
+linkStyle 3 stroke:blue,stroke-width:2px
+```
+
+You can also specify the orientation of the diagram using the `--orientation` option. For example, to display the diagram from top to bottom, you can run:
+
+```bash
+👉
+envelope format --type mermaid --theme dark --orientation top-to-bottom $ALICE_KNOWS_BOB
+```
+
+👈
+
+```mermaid
+%%{ init: { 'theme': 'dark', 'flowchart': { 'curve': 'basis' } } }%%
+graph TB
+0(("NODE<br>8955db5e"))
+    0 -- subj --> 1["&quot;Alice&quot;<br>13941b48"]
+    0 --> 2(["ASSERTION<br>78d666eb"])
+        2 -- pred --> 3["&quot;knows&quot;<br>db7dd21c"]
+        2 -- obj --> 4["&quot;Bob&quot;<br>13b74194"]
+style 0 stroke:red,stroke-width:4px
+style 1 stroke:teal,stroke-width:4px
+style 2 stroke:green,stroke-width:4px
+style 3 stroke:teal,stroke-width:4px
+style 4 stroke:teal,stroke-width:4px
+linkStyle 0 stroke:red,stroke-width:2px
+linkStyle 1 stroke-width:2px
+linkStyle 2 stroke:green,stroke-width:2px
+linkStyle 3 stroke:blue,stroke-width:2px
+```
+
+Like tree output, the Mermaid output can also be configured to hide the `NODE` element and its digests using the `--hide-nodes` option. We'll also demonstrate the `--monochrome` option, which produces a diagram with a single color for all elements. You can combine `--monochrone` and `--theme`.
+
+```bash
+👉
+envelope format --type mermaid --monochrome --theme forest --hide-nodes $ALICE_KNOWS_BOB
+```
+
+👈
+
+```mermaid
+%%{ init: { 'theme': 'forest', 'flowchart': { 'curve': 'basis' } } }%%
+graph LR
+0["&quot;Alice&quot;"]
+    0 --> 1(["ASSERTION"])
+        1 -- pred --> 2["&quot;knows&quot;"]
+        1 -- obj --> 3["&quot;Bob&quot;"]
+style 0 stroke-width:4px
+style 1 stroke-width:4px
+style 2 stroke-width:4px
+style 3 stroke-width:4px
+linkStyle 0 stroke-width:2px
+linkStyle 1 stroke-width:2px
+linkStyle 2 stroke-width:2px
+```
+
 ## Subject
 
 The `subject type` subcommand creates a new envelope with a subject of the given type. You specify the data type of the subject, then the subject value itself.
