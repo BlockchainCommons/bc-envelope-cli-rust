@@ -14,7 +14,7 @@ pub struct CommandArgs {
 
     /// For `tree` and `mermaid`, hides the NODE case and digests, which provides a
     /// more semantically readable tree output.
-    #[arg(long, short)]
+    #[arg(long)] // No short because it conflicts with `-h` for help.
     hide_nodes: bool,
 
     /// For `tree`, specifies the format for displaying digests.
