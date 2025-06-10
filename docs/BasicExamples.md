@@ -102,7 +102,7 @@ Alice sends a signed plaintext message to Bob.
 
 ```bash
 👉
-SIGNED_ENVELOPE=`envelope subject type string $PLAINTEXT_HELLO | envelope sign --prvkeys $ALICE_PRVKEY_BASE`
+SIGNED_ENVELOPE=`envelope subject type string $PLAINTEXT_HELLO | envelope sign -s $ALICE_PRVKEY_BASE`
 echo $SIGNED_ENVELOPE
 ```
 
@@ -185,7 +185,7 @@ Alice and Carol jointly send a signed plaintext message to Bob.
 
 ```bash
 👉
-MULTISIGNED_ENVELOPE=`envelope subject type string $PLAINTEXT_HELLO | envelope sign --prvkeys $ALICE_PRVKEY_BASE --prvkeys $CAROL_PRVKEY_BASE`
+MULTISIGNED_ENVELOPE=`envelope subject type string $PLAINTEXT_HELLO | envelope sign -s $ALICE_PRVKEY_BASE --prvkeys $CAROL_PRVKEY_BASE`
 echo $MULTISIGNED_ENVELOPE
 ```
 
@@ -460,7 +460,7 @@ Alice signs a plaintext message, wraps it so her signature will also be encrypte
 
 ```bash
 👉
-SIGNED_ENCRYPTED=`envelope subject type string $PLAINTEXT_HELLO | envelope sign --prvkeys $ALICE_PRVKEY_BASE | envelope subject type wrapped | envelope encrypt --key $KEY`
+SIGNED_ENCRYPTED=`envelope subject type string $PLAINTEXT_HELLO | envelope sign -s $ALICE_PRVKEY_BASE | envelope subject type wrapped | envelope encrypt --key $KEY`
 echo $SIGNED_ENCRYPTED
 ```
 
@@ -551,7 +551,7 @@ Alice encrypts a plaintext message, then signs it.
 
 ```bash
 👉
-ENCRYPTED_SIGNED=`envelope subject type string $PLAINTEXT_HELLO | envelope encrypt --key $KEY | envelope sign --prvkeys $ALICE_PRVKEY_BASE`
+ENCRYPTED_SIGNED=`envelope subject type string $PLAINTEXT_HELLO | envelope encrypt --key $KEY | envelope sign -s $ALICE_PRVKEY_BASE`
 echo $ENCRYPTED_SIGNED
 ```
 
@@ -670,7 +670,7 @@ Alice signs a message, and then encrypts it so that it can only be decrypted by 
 
 ```bash
 👉
-ENVELOPE_SIGNED_TO=`envelope subject type string $PLAINTEXT_HELLO | envelope sign --prvkeys $ALICE_PRVKEY_BASE | envelope encrypt --recipient $BOB_PUBKEYS --recipient $CAROL_PUBKEYS`
+ENVELOPE_SIGNED_TO=`envelope subject type string $PLAINTEXT_HELLO | envelope sign -s $ALICE_PRVKEY_BASE | envelope encrypt --recipient $BOB_PUBKEYS --recipient $CAROL_PUBKEYS`
 echo $ENVELOPE_SIGNED_TO
 ```
 
