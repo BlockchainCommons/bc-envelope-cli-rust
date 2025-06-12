@@ -1,8 +1,8 @@
-pub mod predicate;
 pub mod object;
+pub mod predicate;
 
-use clap::{Subcommand, Args};
 use anyhow::Result;
+use clap::{Args, Subcommand};
 
 /// Find all assertions matching the given criteria.
 #[derive(Debug, Args)]

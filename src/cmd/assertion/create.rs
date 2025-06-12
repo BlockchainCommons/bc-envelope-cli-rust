@@ -1,8 +1,11 @@
+use anyhow::Result;
+use bc_envelope::prelude::*;
 use clap::Args;
 
-use crate::{pred_obj_args::{PredObjArgsLike, PredObjArgs}, data_types::DataType};
-use bc_envelope::prelude::*;
-use anyhow::Result;
+use crate::{
+    data_types::DataType,
+    pred_obj_args::{PredObjArgs, PredObjArgsLike},
+};
 
 /// Create a bare assertion with the given predicate and object.
 #[derive(Debug, Args)]
@@ -16,24 +19,12 @@ pub struct CommandArgs {
 }
 
 impl PredObjArgsLike for CommandArgs {
-    fn pred_type(&self) -> DataType {
-        self.pred_obj_args.pred_type()
-    }
-    fn pred_value(&self) -> &str {
-        self.pred_obj_args.pred_value()
-    }
-    fn obj_type(&self) -> DataType {
-        self.pred_obj_args.obj_type()
-    }
-    fn obj_value(&self) -> &str {
-        self.pred_obj_args.obj_value()
-    }
-    fn pred_tag(&self) -> Option<u64> {
-        self.pred_obj_args.pred_tag()
-    }
-    fn obj_tag(&self) -> Option<u64> {
-        self.pred_obj_args.obj_tag()
-    }
+    fn pred_type(&self) -> DataType { self.pred_obj_args.pred_type() }
+    fn pred_value(&self) -> &str { self.pred_obj_args.pred_value() }
+    fn obj_type(&self) -> DataType { self.pred_obj_args.obj_type() }
+    fn obj_value(&self) -> &str { self.pred_obj_args.obj_value() }
+    fn pred_tag(&self) -> Option<u64> { self.pred_obj_args.pred_tag() }
+    fn obj_tag(&self) -> Option<u64> { self.pred_obj_args.obj_tag() }
 }
 
 impl crate::exec::Exec for CommandArgs {

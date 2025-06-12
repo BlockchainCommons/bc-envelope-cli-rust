@@ -2,8 +2,7 @@ use indoc::indoc;
 mod common;
 use common::*;
 
-const XID_DOC: &str =
-    "ur:xid/tpsplftpsotanshdhdcxjsdigtwneocmnybadpdlzobysbstmekteypspeotcfldynlpsfolsbintyjkrhfnoyaylftpsotansgylftanshfhdcxhslkfzemaylrwttynsdlghrydpmdfzvdglndloimaahykorefddtsguogmvlahqztansgrhdcxetlewzvlwyfdtobeytidosbamkswaomwwfyabakssakggegychesmerkcatekpcxoycsfncsfggmplgshd";
+const XID_DOC: &str = "ur:xid/tpsplftpsotanshdhdcxjsdigtwneocmnybadpdlzobysbstmekteypspeotcfldynlpsfolsbintyjkrhfnoyaylftpsotansgylftanshfhdcxhslkfzemaylrwttynsdlghrydpmdfzvdglndloimaahykorefddtsguogmvlahqztansgrhdcxetlewzvlwyfdtobeytidosbamkswaomwwfyabakssakggegychesmerkcatekpcxoycsfncsfggmplgshd";
 
 #[test]
 fn test_xid_format() {
@@ -84,7 +83,8 @@ fn test_xid_format() {
 
 #[test]
 fn test_xid_id() {
-    // Unlike the technique of simply extracting the subject above, this subcommand validates the entire XID document.
+    // Unlike the technique of simply extracting the subject above, this
+    // subcommand validates the entire XID document.
 
     let xid_id = run_cli(&["xid", "id", XID_DOC]).unwrap();
     assert_eq!(
@@ -245,8 +245,8 @@ fn test_xid_new() {
         "#}.trim()
     ).unwrap();
 
-    // The key may be given a user-assigned name ("nickname") using the `--nickname`
-    // option.
+    // The key may be given a user-assigned name ("nickname") using the
+    // `--nickname` option.
 
     #[rustfmt::skip]
     run_cli_piped_expect(
@@ -268,13 +268,16 @@ fn test_xid_new() {
 
 #[test]
 fn test_xid_key_add() {
-    // All the same options as `xid new` are available. The same key may not be added twice.
+    // All the same options as `xid new` are available. The same key may not be
+    // added twice.
 
     // $ XID_DOC=`envelope xid new --nickname 'Alice' $ALICE_PUBKEYS`
 
-    let xid_doc = run_cli(&["xid", "new", "--nickname", "Alice", ALICE_PUBKEYS]).unwrap();
+    let xid_doc =
+        run_cli(&["xid", "new", "--nickname", "Alice", ALICE_PUBKEYS]).unwrap();
 
-    // $ envelope xid key add --nickname 'Bob' $BOB_PUBKEYS $XID_DOC | envelope format
+    // $ envelope xid key add --nickname 'Bob' $BOB_PUBKEYS $XID_DOC | envelope
+    // format
 
     #[rustfmt::skip]
     run_cli_piped_expect(
@@ -299,10 +302,11 @@ fn test_xid_key_add() {
 
 #[test]
 fn test_xid_key_update() {
-    // All the same options as `xid new` are available. The key must already exist in the XID document.
+    // All the same options as `xid new` are available. The key must already
+    // exist in the XID document.
 
-    // $ XID_DOC=`envelope xid new --nickname 'Alice' $ALICE_PUBKEYS | envelope xid key add --nickname 'Bob' $BOB_PUBKEYS`
-    // $ envelope format $XID_DOC
+    // $ XID_DOC=`envelope xid new --nickname 'Alice' $ALICE_PUBKEYS | envelope
+    // xid key add --nickname 'Bob' $BOB_PUBKEYS` $ envelope format $XID_DOC
 
     // XID(93a4d4e7) [
     //     'key': PublicKeys(cab108a0) [
@@ -318,12 +322,11 @@ fn test_xid_key_update() {
     // All the same options as `xid new` are available. The key must already
     // exist in the XID document.
 
-    let xid_doc = run_cli_piped(
-        &[
-            &["xid", "new", "--nickname", "Alice", ALICE_PUBKEYS],
-            &["xid", "key", "add", "--nickname", "Bob", BOB_PUBKEYS],
-        ]
-    ).unwrap();
+    let xid_doc = run_cli_piped(&[
+        &["xid", "new", "--nickname", "Alice", ALICE_PUBKEYS],
+        &["xid", "key", "add", "--nickname", "Bob", BOB_PUBKEYS],
+    ])
+    .unwrap();
 
     #[rustfmt::skip]
     run_cli_expect(
@@ -347,9 +350,18 @@ fn test_xid_key_update() {
     //     --allow 'sign' \
     //     $XID_DOC`
 
-    let xid_doc_updated = run_cli(
-        &["xid", "key", "update", BOB_PUBKEYS, "--allow", "encrypt", "--allow", "sign", &xid_doc]
-    ).unwrap();
+    let xid_doc_updated = run_cli(&[
+        "xid",
+        "key",
+        "update",
+        BOB_PUBKEYS,
+        "--allow",
+        "encrypt",
+        "--allow",
+        "sign",
+        &xid_doc,
+    ])
+    .unwrap();
 
     // $ envelope format $XID_DOC_UPDATED
     // println!("xid_doc_updated: {}", xid_doc_updated);
@@ -384,7 +396,9 @@ fn test_xid_key_update() {
 
     // #### `xid key at`: Returns the Key at the Specified Index
 
-    // The indexes are zero-based, and in the order the key assertions appear in the XID document's Gordian Envelope, which is not necessarily the order they appear via `envelope format`.
+    // The indexes are zero-based, and in the order the key assertions appear in
+    // the XID document's Gordian Envelope, which is not necessarily the order
+    // they appear via `envelope format`.
 
     // ```
     // $ envelope xid key at 0 $XID_DOC_UPDATED | envelope format
@@ -453,8 +467,7 @@ fn test_xid_key_update() {
     ).unwrap();
 }
 
-const XID_DOC_UPDATED: &str =
-    "ur:xid/tpsplstpsotanshdhdcxmuoxtyvddifztyryhymkgolbmefhssmejsgaykcljtjnfmaelrrkvwayehbzfessoyaylstpsotansgylftanshfhdcxrdhgfsfsfsosrloebgwmfrfhsnlskegsjydecawybniadyzovehncacnlbmdbesstansgrhdcxytgefrmnbzftltcmcnaspaimhftbjehlatjklkhktidrpmjobslewkfretcaetbnoycsfncsfgoycscstpsoihfpjziniaihoyaylrtpsotansgylftanshfhdcxndctnnflynethhhnwdkbhtehhdosmhgoclvefhjpehtaethkltsrmssnwfctfggdtansgrhdcxtipdbagmoertsklaflfhfewsptrlmhjpdeemkbdyktmtfwnninfrbnmwonetwpheoycsfncsfdoycsfncsgaoycscstpsoiafwjlidbeglldte";
+const XID_DOC_UPDATED: &str = "ur:xid/tpsplstpsotanshdhdcxmuoxtyvddifztyryhymkgolbmefhssmejsgaykcljtjnfmaelrrkvwayehbzfessoyaylstpsotansgylftanshfhdcxrdhgfsfsfsosrloebgwmfrfhsnlskegsjydecawybniadyzovehncacnlbmdbesstansgrhdcxytgefrmnbzftltcmcnaspaimhftbjehlatjklkhktidrpmjobslewkfretcaetbnoycsfncsfgoycscstpsoihfpjziniaihoyaylrtpsotansgylftanshfhdcxndctnnflynethhhnwdkbhtehhdosmhgoclvefhjpehtaethkltsrmssnwfctfggdtansgrhdcxtipdbagmoertsklaflfhfewsptrlmhjpdeemkbdyktmtfwnninfrbnmwonetwpheoycsfncsfdoycsfncsgaoycscstpsoiafwjlidbeglldte";
 
 #[test]
 fn test_xid_key_find() {
@@ -489,7 +502,11 @@ fn test_xid_key_find() {
     // (nothing returned)
     // ```
 
-    run_cli_expect(&["xid", "key", "find", "name", "Wolf", XID_DOC_UPDATED], "").unwrap();
+    run_cli_expect(
+        &["xid", "key", "find", "name", "Wolf", XID_DOC_UPDATED],
+        "",
+    )
+    .unwrap();
 
     // ##### `xid key find inception`: Find the Document's Inception Key
     //
@@ -535,9 +552,9 @@ fn test_xid_key_remove() {
     //     ]
     // ]
 
-    let xid_doc_removed = run_cli(
-        &["xid", "key", "remove", ALICE_PUBKEYS, XID_DOC_UPDATED]
-    ).unwrap();
+    let xid_doc_removed =
+        run_cli(&["xid", "key", "remove", ALICE_PUBKEYS, XID_DOC_UPDATED])
+            .unwrap();
 
     #[rustfmt::skip]
     run_cli_expect(
@@ -559,14 +576,16 @@ fn test_xid_key_remove() {
     // (nothing returned)
     // ```
 
-    run_cli_expect(&["xid", "key", "find", "inception", &xid_doc_removed], "").unwrap();
+    run_cli_expect(&["xid", "key", "find", "inception", &xid_doc_removed], "")
+        .unwrap();
 }
 
 #[test]
 fn test_xid_method() {
     // ### `xid method`: Work with Resolution Methods
     //
-    // Resolution methods are URIs that describe how to resolve a XID. They are used to find the complete, most up-to-date version of a XID document.
+    // Resolution methods are URIs that describe how to resolve a XID. They are
+    // used to find the complete, most up-to-date version of a XID document.
     //
     // ```
     // $ envelope xid method --help
@@ -577,10 +596,12 @@ fn test_xid_method() {
     // ```
     // $ XID_DOC=`envelope xid new --nickname 'Alice' $ALICE_PUBKEYS`
 
-    let xid_doc = run_cli(&["xid", "new", "--nickname", "Alice", ALICE_PUBKEYS]).unwrap();
+    let xid_doc =
+        run_cli(&["xid", "new", "--nickname", "Alice", ALICE_PUBKEYS]).unwrap();
 
     // $ XID_DOC_WITH_RESOLVERS=`envelope xid method add 'https://resolver.example.com/' $XID_DOC | \
-    //     envelope xid method add 'btc:5e54156cfe0e62d9a56c72b84a5c40b84e2fd7dfe786c7d5c667e11ab85c45c6'`
+    //     envelope xid method add
+    // 'btc:5e54156cfe0e62d9a56c72b84a5c40b84e2fd7dfe786c7d5c667e11ab85c45c6'`
 
     let xid_doc_with_resolvers = run_cli_piped(
         &[
@@ -597,8 +618,8 @@ fn test_xid_method() {
     // $ envelope format $XID_DOC_WITH_RESOLVERS
     //
     // XID(93a4d4e7) [
-    //     'dereferenceVia': URI(btc:5e54156cfe0e62d9a56c72b84a5c40b84e2fd7dfe786c7d5c667e11ab85c45c6)
-    //     'dereferenceVia': URI(https://resolver.example.com/)
+    //     'dereferenceVia':
+    // URI(btc:5e54156cfe0e62d9a56c72b84a5c40b84e2fd7dfe786c7d5c667e11ab85c45c6)     'dereferenceVia': URI(https://resolver.example.com/)
     //     'key': PublicKeys(cab108a0) [
     //         'allow': 'All'
     //         'nickname': "Alice"
@@ -622,7 +643,8 @@ fn test_xid_method() {
     ).unwrap();
 
     //
-    // #### `xid method count`: Count the Number of Resolution Methods in a XID Document
+    // #### `xid method count`: Count the Number of Resolution Methods in a XID
+    // Document
     //
     // ```
     // $ envelope xid method count $XID_DOC_WITH_RESOLVERS
@@ -630,12 +652,15 @@ fn test_xid_method() {
     // 2
     // ```
 
-    run_cli_expect(&["xid", "method", "count", &xid_doc_with_resolvers], "2").unwrap();
+    run_cli_expect(&["xid", "method", "count", &xid_doc_with_resolvers], "2")
+        .unwrap();
 
     //
     // #### `xid method at`: Return the Resolution Method at the Specified Index
     //
-    // The indexes are zero-based, and in the order the resolution methods appear in the XID document's Gordian Envelope, which is not necessarily the order they appear via `envelope format`.
+    // The indexes are zero-based, and in the order the resolution methods
+    // appear in the XID document's Gordian Envelope, which is not necessarily
+    // the order they appear via `envelope format`.
     //
     // ```
     // $ envelope xid method at 0 $XID_DOC_WITH_RESOLVERS
@@ -644,8 +669,9 @@ fn test_xid_method() {
 
     run_cli_expect(
         &["xid", "method", "at", "0", &xid_doc_with_resolvers],
-        "https://resolver.example.com/"
-    ).unwrap();
+        "https://resolver.example.com/",
+    )
+    .unwrap();
 
     //
     // $ envelope xid method at 1 $XID_DOC_WITH_RESOLVERS
@@ -655,8 +681,9 @@ fn test_xid_method() {
 
     run_cli_expect(
         &["xid", "method", "at", "1", &xid_doc_with_resolvers],
-        "btc:5e54156cfe0e62d9a56c72b84a5c40b84e2fd7dfe786c7d5c667e11ab85c45c6"
-    ).unwrap();
+        "btc:5e54156cfe0e62d9a56c72b84a5c40b84e2fd7dfe786c7d5c667e11ab85c45c6",
+    )
+    .unwrap();
 
     //
     // #### `xid method all`: List All Resolution Methods in a XID Document
@@ -714,7 +741,10 @@ fn test_xid_method() {
 fn test_xid_delegate() {
     // ### `xid delegate`: Work with Delegates
     //
-    // A *delegate* is XID document that is authorized to act on behalf of the *principal* XID document. A delegate can be granted any permissions, but its *effective* permissions will be a subset of the permissions of the principal XID document.
+    // A *delegate* is XID document that is authorized to act on behalf of the
+    // *principal* XID document. A delegate can be granted any permissions, but
+    // its *effective* permissions will be a subset of the permissions of the
+    // principal XID document.
     //
     // ```
     // $ envelope xid delegate --help
@@ -728,57 +758,78 @@ fn test_xid_delegate() {
     // - grants Carol all permissions on behalf of Alice,
     // - grants Bob the ability to sign and encrypt on behalf of Alice,
     // - grants Dave the ability to elide data on behalf of Alice,
-    //     - but only add's Dave's XID identifier to the XID document, which means it will have to be resolved to be used.
+    //     - but only add's Dave's XID identifier to the XID document, which
+    //       means it will have to be resolved to be used.
     //
     // ```
-    //
+    // 
     // $ ALICE_XID_DOC=`envelope xid new --nickname 'Alice' $ALICE_PUBKEYS`
 
-    let alice_xid_doc = run_cli(&["xid", "new", "--nickname", "Alice", ALICE_PUBKEYS]).unwrap();
+    let alice_xid_doc =
+        run_cli(&["xid", "new", "--nickname", "Alice", ALICE_PUBKEYS]).unwrap();
 
     // $ BOB_XID_DOC=`envelope xid new --nickname 'Bob' $BOB_PUBKEYS`
 
-    let bob_xid_doc = run_cli(&["xid", "new", "--nickname", "Bob", BOB_PUBKEYS]).unwrap();
+    let bob_xid_doc =
+        run_cli(&["xid", "new", "--nickname", "Bob", BOB_PUBKEYS]).unwrap();
 
     // $ CAROL_XID_DOC=`envelope xid new --nickname 'Carol' $CAROL_PUBKEYS`
 
-    let carol_xid_doc = run_cli(&["xid", "new", "--nickname", "Carol", CAROL_PUBKEYS]).unwrap();
+    let carol_xid_doc =
+        run_cli(&["xid", "new", "--nickname", "Carol", CAROL_PUBKEYS]).unwrap();
 
     // $ DAVE_XID_DOC=`envelope xid new --nickname 'Dave' $DAVE_PUBKEYS`
 
-    let dave_xid_doc = run_cli(&["xid", "new", "--nickname", "Dave", DAVE_PUBKEYS]).unwrap();
+    let dave_xid_doc =
+        run_cli(&["xid", "new", "--nickname", "Dave", DAVE_PUBKEYS]).unwrap();
 
     // $ DAVE_XID=`envelope xid id $DAVE_XID_DOC`
 
     let dave_xid = run_cli(&["xid", "id", &dave_xid_doc]).unwrap();
 
-    // $ ALICE_XID_DOC=`envelope xid delegate add --allow 'all' $CAROL_XID_DOC $ALICE_XID_DOC`
+    // $ ALICE_XID_DOC=`envelope xid delegate add --allow 'all' $CAROL_XID_DOC
+    // $ALICE_XID_DOC`
 
-    let alice_xid_doc = run_cli(
-        &["xid", "delegate", "add", "--allow", "all", &carol_xid_doc, &alice_xid_doc]
-    ).unwrap();
+    let alice_xid_doc = run_cli(&[
+        "xid",
+        "delegate",
+        "add",
+        "--allow",
+        "all",
+        &carol_xid_doc,
+        &alice_xid_doc,
+    ])
+    .unwrap();
 
-    // $ ALICE_XID_DOC=`envelope xid delegate add --allow 'sign' --allow 'encrypt' $BOB_XID_DOC $ALICE_XID_DOC`
+    // $ ALICE_XID_DOC=`envelope xid delegate add --allow 'sign' --allow
+    // 'encrypt' $BOB_XID_DOC $ALICE_XID_DOC`
 
-    let alice_xid_doc = run_cli(
-        &[
-            "xid",
-            "delegate",
-            "add",
-            "--allow",
-            "sign",
-            "--allow",
-            "encrypt",
-            &bob_xid_doc,
-            &alice_xid_doc,
-        ]
-    ).unwrap();
+    let alice_xid_doc = run_cli(&[
+        "xid",
+        "delegate",
+        "add",
+        "--allow",
+        "sign",
+        "--allow",
+        "encrypt",
+        &bob_xid_doc,
+        &alice_xid_doc,
+    ])
+    .unwrap();
 
-    // $ ALICE_XID_DOC=`envelope xid delegate add --allow 'elide' $DAVE_XID $ALICE_XID_DOC`
+    // $ ALICE_XID_DOC=`envelope xid delegate add --allow 'elide' $DAVE_XID
+    // $ALICE_XID_DOC`
 
-    let alice_xid_doc = run_cli(
-        &["xid", "delegate", "add", "--allow", "elide", &dave_xid, &alice_xid_doc]
-    ).unwrap();
+    let alice_xid_doc = run_cli(&[
+        "xid",
+        "delegate",
+        "add",
+        "--allow",
+        "elide",
+        &dave_xid,
+        &alice_xid_doc,
+    ])
+    .unwrap();
 
     // $ envelope format $ALICE_XID_DOC
     //
@@ -855,7 +906,8 @@ fn test_xid_delegate() {
         "#}.trim()
     ).unwrap();
 
-    // #### `xid delegate count`: Count the Number of Delegates in a XID Document
+    // #### `xid delegate count`: Count the Number of Delegates in a XID
+    // Document
     //
     // ```
     // $ envelope xid delegate count $ALICE_XID_DOC
@@ -867,7 +919,9 @@ fn test_xid_delegate() {
 
     // #### `xid delegate at`: Return the Delegate at the Specified Index
     //
-    // The indexes are zero-based, and in the order the delegate assertions appear in the XID document's Gordian Envelope, which is not necessarily the order they appear via `envelope format`.
+    // The indexes are zero-based, and in the order the delegate assertions
+    // appear in the XID document's Gordian Envelope, which is not necessarily
+    // the order they appear via `envelope format`.
     //
     // ```
     // $ envelope xid delegate at 1 $ALICE_XID_DOC | envelope format
@@ -1009,10 +1063,13 @@ fn test_xid_delegate() {
         "#}.trim()
     ).unwrap();
 
-    // #### `xid delegate update`: Update an Existing Delegate in an Existing XID Document
+    // #### `xid delegate update`: Update an Existing Delegate in an Existing
+    // XID Document
     //
-    // - Replaces the existing delegate with the one provided, which must already exist in the XID document.
-    // - Replaces the permissions of the existing delegate with the ones provided.
+    // - Replaces the existing delegate with the one provided, which must
+    //   already exist in the XID document.
+    // - Replaces the permissions of the existing delegate with the ones
+    //   provided.
     //
     // In this example:
     // - Carol's XID document is replaced with her bare XID, and
@@ -1023,23 +1080,23 @@ fn test_xid_delegate() {
 
     let carol_xid = run_cli(&["xid", "id", &carol_xid_doc]).unwrap();
 
-    // $ ALICE_XID_DOC_UPDATED=`envelope xid delegate update --allow 'auth' --allow 'encrypt' --allow 'sign' $CAROL_XID $ALICE_XID_DOC`
+    // $ ALICE_XID_DOC_UPDATED=`envelope xid delegate update --allow 'auth'
+    // --allow 'encrypt' --allow 'sign' $CAROL_XID $ALICE_XID_DOC`
 
-    let alice_xid_doc_updated = run_cli(
-        &[
-            "xid",
-            "delegate",
-            "update",
-            "--allow",
-            "auth",
-            "--allow",
-            "encrypt",
-            "--allow",
-            "sign",
-            &carol_xid,
-            &alice_xid_doc,
-        ]
-    ).unwrap();
+    let alice_xid_doc_updated = run_cli(&[
+        "xid",
+        "delegate",
+        "update",
+        "--allow",
+        "auth",
+        "--allow",
+        "encrypt",
+        "--allow",
+        "sign",
+        &carol_xid,
+        &alice_xid_doc,
+    ])
+    .unwrap();
 
     // $ envelope format $ALICE_XID_DOC_UPDATED
     //
@@ -1117,11 +1174,17 @@ fn test_xid_delegate() {
 
     let bob_xid = run_cli(&["xid", "id", &bob_xid_doc]).unwrap();
 
-    // $ ALICE_XID_DOC_UPDATED=`envelope xid delegate remove $BOB_XID $ALICE_XID_DOC_UPDATED`
+    // $ ALICE_XID_DOC_UPDATED=`envelope xid delegate remove $BOB_XID
+    // $ALICE_XID_DOC_UPDATED`
 
-    let alice_xid_doc_updated = run_cli(
-        &["xid", "delegate", "remove", &bob_xid, &alice_xid_doc_updated]
-    ).unwrap();
+    let alice_xid_doc_updated = run_cli(&[
+        "xid",
+        "delegate",
+        "remove",
+        &bob_xid,
+        &alice_xid_doc_updated,
+    ])
+    .unwrap();
 
     // $ envelope format $ALICE_XID_DOC_UPDATED
     //
@@ -1181,9 +1244,11 @@ fn test_xid_service() {
     // $ envelope xid service --help
     // ```
     //
-    // Services are URI endpoints along with the keys, delegates, and permissions that are allowed to use them.
+    // Services are URI endpoints along with the keys, delegates, and
+    // permissions that are allowed to use them.
     //
-    // The keys and delegates in a Service declaration are references to keys and delegates that must already exist in the XID document.
+    // The keys and delegates in a Service declaration are references to keys
+    // and delegates that must already exist in the XID document.
     //
     // ```
     // $ ALICE_PRVKEY_BASE=ur:crypto-prvkey-base/gdlfwfdwlphlfsghcphfcsaybekkkbaejksfnynsct
@@ -1208,7 +1273,8 @@ fn test_xid_service() {
     // ]
     // ```
 
-    let alice_xid_doc = run_cli(&["xid", "new", "--nickname", "Alice", ALICE_PUBKEYS]).unwrap();
+    let alice_xid_doc =
+        run_cli(&["xid", "new", "--nickname", "Alice", ALICE_PUBKEYS]).unwrap();
 
     #[rustfmt::skip]
     run_cli_expect(
@@ -1249,21 +1315,21 @@ fn test_xid_service() {
     // ]
     // ```
 
-    let bob_xid_doc = run_cli(&["xid", "new", "--nickname", "Bob", BOB_PUBKEYS]).unwrap();
+    let bob_xid_doc =
+        run_cli(&["xid", "new", "--nickname", "Bob", BOB_PUBKEYS]).unwrap();
 
-    let alice_xid_doc = run_cli(
-        &[
-            "xid",
-            "delegate",
-            "add",
-            "--allow",
-            "sign",
-            "--allow",
-            "encrypt",
-            &bob_xid_doc,
-            &alice_xid_doc,
-        ]
-    ).unwrap();
+    let alice_xid_doc = run_cli(&[
+        "xid",
+        "delegate",
+        "add",
+        "--allow",
+        "sign",
+        "--allow",
+        "encrypt",
+        &bob_xid_doc,
+        &alice_xid_doc,
+    ])
+    .unwrap();
 
     #[rustfmt::skip]
     run_cli_expect(
@@ -1303,27 +1369,26 @@ fn test_xid_service() {
     //     $ALICE_XID_DOC`
     // ```
 
-    let alice_xid_doc = run_cli(
-        &[
-            "xid",
-            "service",
-            "add",
-            "--name",
-            "Messaging",
-            "--capability",
-            "com.example.messaging",
-            "--allow",
-            "sign",
-            "--allow",
-            "encrypt",
-            "--key",
-            ALICE_PUBKEYS,
-            "--delegate",
-            &bob_xid_doc,
-            "https://messaging.example.com",
-            &alice_xid_doc,
-        ]
-    ).unwrap();
+    let alice_xid_doc = run_cli(&[
+        "xid",
+        "service",
+        "add",
+        "--name",
+        "Messaging",
+        "--capability",
+        "com.example.messaging",
+        "--allow",
+        "sign",
+        "--allow",
+        "encrypt",
+        "--key",
+        ALICE_PUBKEYS,
+        "--delegate",
+        &bob_xid_doc,
+        "https://messaging.example.com",
+        &alice_xid_doc,
+    ])
+    .unwrap();
 
     // $ envelope format $ALICE_XID_DOC_WITH_SERVICE
     //
@@ -1431,23 +1496,22 @@ fn test_xid_service() {
     // ]
     // ```
 
-    let alice_xid_doc = run_cli(
-        &[
-            "xid",
-            "service",
-            "add",
-            "--name",
-            "Status",
-            "--capability",
-            "com.example.status",
-            "--allow",
-            "sign",
-            "--key",
-            ALICE_PUBKEYS,
-            "https://status.example.com/alice",
-            &alice_xid_doc,
-        ]
-    ).unwrap();
+    let alice_xid_doc = run_cli(&[
+        "xid",
+        "service",
+        "add",
+        "--name",
+        "Status",
+        "--capability",
+        "com.example.status",
+        "--allow",
+        "sign",
+        "--key",
+        ALICE_PUBKEYS,
+        "https://status.example.com/alice",
+        &alice_xid_doc,
+    ])
+    .unwrap();
 
     #[rustfmt::skip]
     run_cli_expect(

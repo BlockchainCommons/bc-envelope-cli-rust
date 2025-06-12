@@ -1,10 +1,10 @@
+use anyhow::{Result, anyhow};
 use bc_envelope::known_values;
 use bc_ur::prelude::*;
 use bc_xid::XIDDocument;
 use clap::Args;
-use anyhow::{anyhow, Result};
 
-use crate::envelope_args::{ EnvelopeArgs, EnvelopeArgsLike };
+use crate::envelope_args::{EnvelopeArgs, EnvelopeArgsLike};
 
 /// Retrieve the XID Document's service at the given index
 #[derive(Debug, Args)]
@@ -18,17 +18,18 @@ pub struct CommandArgs {
 }
 
 impl EnvelopeArgsLike for CommandArgs {
-    fn envelope(&self) -> Option<&str> {
-        self.envelope_args.envelope()
-    }
+    fn envelope(&self) -> Option<&str> { self.envelope_args.envelope() }
 }
 
 impl crate::exec::Exec for CommandArgs {
     fn exec(&self) -> Result<String> {
         let envelope = self.read_envelope()?;
         XIDDocument::from_unsigned_envelope(&envelope)?; // Validation only
-        let service_assertions = envelope.assertions_with_predicate(known_values::SERVICE);
-        let service_assertion = service_assertions.get(self.index).ok_or_else(|| anyhow!("Index out of bounds"))?;
+        let service_assertions =
+            envelope.assertions_with_predicate(known_values::SERVICE);
+        let service_assertion = service_assertions
+            .get(self.index)
+            .ok_or_else(|| anyhow!("Index out of bounds"))?;
         let service = service_assertion.try_object()?;
         Ok(service.ur_string())
     }

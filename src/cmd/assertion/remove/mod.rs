@@ -1,8 +1,8 @@
 pub mod envelope;
 pub mod pred_obj;
 
-use clap::{Subcommand, Args};
 use anyhow::Result;
+use clap::{Args, Subcommand};
 
 /// Remove an assertion from the given envelope.
 #[derive(Debug, Args)]

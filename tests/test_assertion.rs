@@ -1,5 +1,5 @@
-use indoc::indoc;
 use anyhow::Result;
+use indoc::indoc;
 
 mod common;
 use common::*;
@@ -8,19 +8,43 @@ use common::*;
 fn test_assertion_add_pred_obj() -> Result<()> {
     let subject = run_cli(&["subject", "type", "string", "Hello"])?;
     run_cli_expect(
-        &["assertion", "add", "pred-obj", "known", "note", "string", "This is the note.", &subject],
-        "ur:envelope/lftpsoihfdihjzjzjloyaatpsojsghisinjkcxinjkcxjyisihcxjtjljyihdmrdyasoie"
+        &[
+            "assertion",
+            "add",
+            "pred-obj",
+            "known",
+            "note",
+            "string",
+            "This is the note.",
+            &subject,
+        ],
+        "ur:envelope/lftpsoihfdihjzjzjloyaatpsojsghisinjkcxinjkcxjyisihcxjtjljyihdmrdyasoie",
     )?;
     run_cli_expect_stdin(
-        &["assertion", "add", "pred-obj", "known", "note", "string", "This is the note."],
+        &[
+            "assertion",
+            "add",
+            "pred-obj",
+            "known",
+            "note",
+            "string",
+            "This is the note.",
+        ],
         "ur:envelope/lftpsoihfdihjzjzjloyaatpsojsghisinjkcxinjkcxjyisihcxjtjljyihdmrdyasoie",
-        &subject
+        &subject,
     )
 }
 
 #[test]
 fn test_assertion() -> Result<()> {
-    let e = run_cli(&["subject", "assertion", "string", "Alpha", "string", "Beta"])?;
+    let e = run_cli(&[
+        "subject",
+        "assertion",
+        "string",
+        "Alpha",
+        "string",
+        "Beta",
+    ])?;
     assert_eq!(e, "ur:envelope/oytpsoihfpjzjoishstpsoiefwihjyhsgavlfypl");
     run_cli_expect(&["format", &e], r#""Alpha": "Beta""#)?;
     Ok(())
@@ -36,7 +60,14 @@ fn test_assertion_2() -> Result<()> {
 
 #[test]
 fn test_assertion_3() -> Result<()> {
-    let e = run_cli(&["subject", "assertion", "known", "note", "string", "ThisIsANote."])?;
+    let e = run_cli(&[
+        "subject",
+        "assertion",
+        "known",
+        "note",
+        "string",
+        "ThisIsANote.",
+    ])?;
     assert_eq!(e, "ur:envelope/oyaatpsojzghisinjkgajkfpgljljyihdmwktslkgm");
     run_cli_expect(&["format", &e], r#"'note': "ThisIsANote.""#)?;
     Ok(())
@@ -46,8 +77,17 @@ fn test_assertion_3() -> Result<()> {
 fn test_assertion_add() -> Result<()> {
     let subject = run_cli(&["subject", "type", "string", "Alice"])?;
     run_cli_expect(
-        &["assertion", "add", "pred-obj", "string", "knows", "string", "Bob", &subject],
-        ALICE_KNOWS_BOB_EXAMPLE
+        &[
+            "assertion",
+            "add",
+            "pred-obj",
+            "string",
+            "knows",
+            "string",
+            "Bob",
+            &subject,
+        ],
+        ALICE_KNOWS_BOB_EXAMPLE,
     )?;
     #[rustfmt::skip]
     run_cli_expect(
@@ -67,8 +107,17 @@ fn test_assertion_add_2() -> Result<()> {
     let predicate = run_cli(&["subject", "type", "string", "knows"])?;
     let object = run_cli(&["subject", "type", "string", "Bob"])?;
     run_cli_expect(
-        &["assertion", "add", "pred-obj", "envelope", &predicate, "envelope", &object, &subject],
-        ALICE_KNOWS_BOB_EXAMPLE
+        &[
+            "assertion",
+            "add",
+            "pred-obj",
+            "envelope",
+            &predicate,
+            "envelope",
+            &object,
+            &subject,
+        ],
+        ALICE_KNOWS_BOB_EXAMPLE,
     )?;
     #[rustfmt::skip]
     run_cli_expect(
@@ -97,7 +146,7 @@ fn test_assertion_count_3() -> Result<()> {
     run_cli_piped_expect_stdin(
         &[&["extract", "wrapped"], &["assertion", "count"]],
         "13",
-        CREDENTIAL_EXAMPLE
+        CREDENTIAL_EXAMPLE,
     )
 }
 
@@ -112,9 +161,13 @@ fn test_assertion_at() -> Result<()> {
 #[test]
 fn test_assertion_at_2() -> Result<()> {
     run_cli_piped_expect_stdin(
-        &[&["extract", "wrapped"], &["assertion", "at", "12"], &["format"]],
+        &[
+            &["extract", "wrapped"],
+            &["assertion", "at", "12"],
+            &["format"],
+        ],
         r#"'issuer': "Example Electrical Engineering Board""#,
-        CREDENTIAL_EXAMPLE
+        CREDENTIAL_EXAMPLE,
     )
 }
 
@@ -128,7 +181,7 @@ fn test_assertion_at_3() -> Result<()> {
             &["extract", "string"],
         ],
         "Example Electrical Engineering Board",
-        CREDENTIAL_EXAMPLE
+        CREDENTIAL_EXAMPLE,
     )
 }
 
@@ -168,7 +221,7 @@ fn test_assertion_predicate_find_1() -> Result<()> {
             &["format"],
         ],
         r#""photo": "This is James Maxwell's photo.""#,
-        CREDENTIAL_EXAMPLE
+        CREDENTIAL_EXAMPLE,
     )
 }
 
@@ -181,7 +234,7 @@ fn test_assertion_predicate_find_2() -> Result<()> {
             &["format"],
         ],
         r#"'isA': "Certificate of Completion""#,
-        CREDENTIAL_EXAMPLE
+        CREDENTIAL_EXAMPLE,
     )
 }
 
@@ -194,15 +247,21 @@ fn test_assertion_object_find_1() -> Result<()> {
             &["format"],
         ],
         r#""lastName": "Maxwell""#,
-        CREDENTIAL_EXAMPLE
+        CREDENTIAL_EXAMPLE,
     )
 }
 
 #[test]
 fn test_assertion_create() -> Result<()> {
-    let assertion = run_cli(
-        &["assertion", "create", "--salted", "string", "knows", "string", "Bob"]
-    )?;
+    let assertion = run_cli(&[
+        "assertion",
+        "create",
+        "--salted",
+        "string",
+        "knows",
+        "string",
+        "Bob",
+    ])?;
 
     #[rustfmt::skip]
     run_cli_expect(
@@ -220,11 +279,16 @@ fn test_assertion_create() -> Result<()> {
 
 #[test]
 fn test_assertion_remove_envelope() -> Result<()> {
-    let assertion = run_cli(&["assertion", "at", "0", ALICE_KNOWS_BOB_EXAMPLE])?;
+    let assertion =
+        run_cli(&["assertion", "at", "0", ALICE_KNOWS_BOB_EXAMPLE])?;
 
-    let removed = run_cli(
-        &["assertion", "remove", "envelope", &assertion, ALICE_KNOWS_BOB_EXAMPLE]
-    )?;
+    let removed = run_cli(&[
+        "assertion",
+        "remove",
+        "envelope",
+        &assertion,
+        ALICE_KNOWS_BOB_EXAMPLE,
+    ])?;
 
     #[rustfmt::skip]
     run_cli_expect(
@@ -238,18 +302,16 @@ fn test_assertion_remove_envelope() -> Result<()> {
 
 #[test]
 fn test_assertion_remove_pred_obj() -> Result<()> {
-    let removed = run_cli(
-        &[
-            "assertion",
-            "remove",
-            "pred-obj",
-            "string",
-            "knows",
-            "string",
-            "Bob",
-            ALICE_KNOWS_BOB_EXAMPLE,
-        ]
-    )?;
+    let removed = run_cli(&[
+        "assertion",
+        "remove",
+        "pred-obj",
+        "string",
+        "knows",
+        "string",
+        "Bob",
+        ALICE_KNOWS_BOB_EXAMPLE,
+    ])?;
 
     #[rustfmt::skip]
     run_cli_expect(

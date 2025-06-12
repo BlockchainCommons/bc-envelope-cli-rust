@@ -1,7 +1,10 @@
-use clap::Args;
 use anyhow::Result;
+use clap::Args;
 
-use crate::{cmd::xid::utils::XIDDocumentReadable, envelope_args::{ EnvelopeArgs, EnvelopeArgsLike }};
+use crate::{
+    cmd::xid::utils::XIDDocumentReadable,
+    envelope_args::{EnvelopeArgs, EnvelopeArgsLike},
+};
 
 /// Print the count of the XID document's delegates.
 #[derive(Debug, Args)]
@@ -12,12 +15,10 @@ pub struct CommandArgs {
 }
 
 impl EnvelopeArgsLike for CommandArgs {
-    fn envelope(&self) -> Option<&str> {
-        self.envelope_args.envelope()
-    }
+    fn envelope(&self) -> Option<&str> { self.envelope_args.envelope() }
 }
 
-impl XIDDocumentReadable for CommandArgs { }
+impl XIDDocumentReadable for CommandArgs {}
 
 impl crate::exec::Exec for CommandArgs {
     fn exec(&self) -> Result<String> {

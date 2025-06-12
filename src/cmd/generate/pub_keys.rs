@@ -1,4 +1,4 @@
-use anyhow::{bail, Result};
+use anyhow::{Result, bail};
 use bc_envelope::prelude::*;
 use clap::Args;
 
@@ -38,8 +38,12 @@ impl CommandArgs {
 
 impl crate::exec::Exec for CommandArgs {
     fn exec(&self) -> Result<String> {
-        if let Ok(private_key_base) = bc_components::PrivateKeyBase::from_ur_string(self.read_prv_keys()?) {
-            let public_keys = self.signer_type.to_public_keys(&private_key_base, &self.comment)?;
+        if let Ok(private_key_base) =
+            bc_components::PrivateKeyBase::from_ur_string(self.read_prv_keys()?)
+        {
+            let public_keys = self
+                .signer_type
+                .to_public_keys(&private_key_base, &self.comment)?;
             Ok(public_keys.ur_string())
         } else {
             bail!("Invalid private key base");

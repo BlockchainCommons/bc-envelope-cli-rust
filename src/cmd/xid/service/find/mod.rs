@@ -1,8 +1,8 @@
 pub mod name;
 pub mod uri;
 
-use clap::{Subcommand, Args};
 use anyhow::Result;
+use clap::{Args, Subcommand};
 
 /// Find all XID services matching the given criteria
 #[derive(Debug, Args)]

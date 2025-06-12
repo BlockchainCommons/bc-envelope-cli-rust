@@ -1,6 +1,6 @@
-use anyhow::{bail, Result};
-use clap::Args;
+use anyhow::{Result, bail};
 use bc_envelope::prelude::*;
+use clap::Args;
 
 /// Join a set of SSKR shares back into the original envelope.
 #[derive(Debug, Args)]

@@ -1,12 +1,12 @@
+use anyhow::Result;
 use bc_envelope::EnvelopeEncodable;
 use bc_ur::prelude::*;
 use bc_xid::HasNickname;
 use clap::Args;
-use anyhow::Result;
 
 use crate::{
     cmd::xid::utils::XIDDocumentReadable,
-    envelope_args::{ EnvelopeArgs, EnvelopeArgsLike },
+    envelope_args::{EnvelopeArgs, EnvelopeArgsLike},
 };
 
 /// Find the XID document's keys by assigned name.
@@ -20,9 +20,7 @@ pub struct CommandArgs {
 }
 
 impl EnvelopeArgsLike for CommandArgs {
-    fn envelope(&self) -> Option<&str> {
-        self.envelope_args.envelope()
-    }
+    fn envelope(&self) -> Option<&str> { self.envelope_args.envelope() }
 }
 
 impl XIDDocumentReadable for CommandArgs {}
@@ -35,7 +33,11 @@ impl crate::exec::Exec for CommandArgs {
         let result = keys
             .iter()
             .filter_map(|key| {
-                if key.nickname() == self.name { Some(key.to_envelope().ur_string()) } else { None }
+                if key.nickname() == self.name {
+                    Some(key.to_envelope().ur_string())
+                } else {
+                    None
+                }
             })
             .collect::<Vec<String>>()
             .join("\n");

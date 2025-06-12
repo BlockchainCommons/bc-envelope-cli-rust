@@ -6,10 +6,10 @@ pub mod find;
 pub mod remove;
 pub mod update;
 
+use anyhow::Result;
 use bc_ur::prelude::*;
 use bc_xid::{Delegate, HasPermissions, Privilege, XIDDocument};
-use clap::{Subcommand, Args};
-use anyhow::Result;
+use clap::{Args, Subcommand};
 
 use super::xid_privilege::XIDPrivilege;
 
@@ -46,7 +46,10 @@ impl crate::exec::Exec for CommandArgs {
     }
 }
 
-fn add_delegate_permissions(delegate: &mut Delegate, permissions: &[XIDPrivilege]) {
+fn add_delegate_permissions(
+    delegate: &mut Delegate,
+    permissions: &[XIDPrivilege],
+) {
     // If `All` is in the permissions, just add it.
     if permissions.contains(&XIDPrivilege::All) {
         delegate.add_allow(Privilege::All);
@@ -58,7 +61,11 @@ fn add_delegate_permissions(delegate: &mut Delegate, permissions: &[XIDPrivilege
     }
 }
 
-fn xid_document_to_unsigned_envelope_ur_string(xid_document: XIDDocument) -> String {
+fn xid_document_to_unsigned_envelope_ur_string(
+    xid_document: XIDDocument,
+) -> String {
     let unsigned_envelope = xid_document.to_unsigned_envelope();
-    UR::new("xid", unsigned_envelope.to_cbor()).unwrap().string()
+    UR::new("xid", unsigned_envelope.to_cbor())
+        .unwrap()
+        .string()
 }

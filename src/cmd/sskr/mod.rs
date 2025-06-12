@@ -1,8 +1,7 @@
 pub mod join;
 pub mod split;
 pub use anyhow::Result;
-
-use clap::{Subcommand, Args};
+use clap::{Args, Subcommand};
 
 /// Sharded Secret Key Reconstruction (SSKR).
 #[derive(Debug, Args)]

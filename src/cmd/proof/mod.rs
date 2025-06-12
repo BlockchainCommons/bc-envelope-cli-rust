@@ -1,8 +1,7 @@
-pub mod create;
 pub mod confirm;
+pub mod create;
 pub use anyhow::Result;
-
-use clap::{Subcommand, Args};
+use clap::{Args, Subcommand};
 
 /// Work with inclusion proofs.
 #[derive(Debug, Args)]

@@ -1,9 +1,9 @@
 use std::collections::HashSet;
 
-use bc_components::SymmetricKey;
-use clap::{ValueEnum, Args};
 use anyhow::Result;
+use bc_components::SymmetricKey;
 use bc_envelope::prelude::*;
+use clap::{Args, ValueEnum};
 
 use crate::utils::parse_digests;
 
@@ -31,10 +31,12 @@ pub trait ElideArgsLike {
         let action = match self.action() {
             Action::Elide => ObscureAction::Elide,
             Action::Encrypt => {
-                let key = self.key().ok_or_else(|| anyhow::anyhow!("No key provided"))?;
+                let key = self
+                    .key()
+                    .ok_or_else(|| anyhow::anyhow!("No key provided"))?;
                 let key = SymmetricKey::from_ur_string(key)?;
                 ObscureAction::Encrypt(key)
-            },
+            }
             Action::Compress => ObscureAction::Compress,
         };
         Ok(action)
@@ -43,7 +45,8 @@ pub trait ElideArgsLike {
     fn run(&self, envelope: Envelope, revealing: bool) -> Result<Envelope> {
         let target = self.get_target_set()?;
         let action = self.get_action()?;
-        let result = envelope.elide_set_with_action(&target, revealing, &action);
+        let result =
+            envelope.elide_set_with_action(&target, revealing, &action);
         Ok(result)
     }
 }
@@ -66,15 +69,9 @@ pub struct ElideArgs {
 }
 
 impl ElideArgsLike for ElideArgs {
-    fn action(&self) -> Action {
-        self.action
-    }
+    fn action(&self) -> Action { self.action }
 
-    fn key(&self) -> Option<&str> {
-        self.key.as_deref()
-    }
+    fn key(&self) -> Option<&str> { self.key.as_deref() }
 
-    fn target(&self) -> &String {
-        &self.target
-    }
+    fn target(&self) -> &String { &self.target }
 }

@@ -9,8 +9,6 @@ pub enum XIDPrivilege {
 
     //
     // Operational Functions
-    //
-
     /// Operational: Authenticate as the subject (e.g., log into services)
     Auth,
 
@@ -23,7 +21,8 @@ pub enum XIDPrivilege {
     /// Operational: Elide data under the subject's control
     Elide,
 
-    /// Operational: Issue or revoke verifiable credentials on the subject's authority
+    /// Operational: Issue or revoke verifiable credentials on the subject's
+    /// authority
     Issue,
 
     /// Operational: Access resources under the subject's control
@@ -31,8 +30,6 @@ pub enum XIDPrivilege {
 
     //
     // Management Functions
-    //
-
     /// Management: Delegate priviledges to third parties
     Delegate,
 

@@ -2,8 +2,8 @@ pub mod inception;
 pub mod name;
 pub mod public;
 
-use clap::{Subcommand, Args};
 use anyhow::Result;
+use clap::{Args, Subcommand};
 
 /// Find all XID keys matching the given criteria
 #[derive(Debug, Args)]

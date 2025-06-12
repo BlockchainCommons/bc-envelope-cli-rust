@@ -1,6 +1,6 @@
+use anyhow::{Result, anyhow};
 use bc_envelope::prelude::*;
 use clap::Args;
-use anyhow::{anyhow, Result};
 
 use crate::envelope_args::{EnvelopeArgs, EnvelopeArgsLike};
 
@@ -16,16 +16,16 @@ pub struct CommandArgs {
 }
 
 impl EnvelopeArgsLike for CommandArgs {
-    fn envelope(&self) -> Option<&str> {
-        self.envelope_args.envelope()
-    }
+    fn envelope(&self) -> Option<&str> { self.envelope_args.envelope() }
 }
 
 impl crate::exec::Exec for CommandArgs {
     fn exec(&self) -> Result<String> {
         let envelope = self.read_envelope()?;
         let assertions = envelope.assertions();
-        let assertion = assertions.get(self.index).ok_or_else(|| anyhow!("Index out of bounds"))?;
+        let assertion = assertions
+            .get(self.index)
+            .ok_or_else(|| anyhow!("Index out of bounds"))?;
         Ok(assertion.ur_string())
     }
 }

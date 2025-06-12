@@ -1,10 +1,9 @@
-use indoc::indoc;
 use anyhow::Result;
+use indoc::indoc;
 
 mod common;
-use common::*;
-
 use bc_envelope::prelude::*;
+use common::*;
 
 #[test]
 fn test_subject_type_arid_1() -> Result<()> {
@@ -15,7 +14,7 @@ fn test_subject_type_arid_1() -> Result<()> {
             "arid",
             "ur:arid/hdcxaywpflbdnyynyaeyykssbwfxbzcwwnyaampacnetbssatkpasrmerospveluinsgpdesltpe",
         ],
-        "ur:envelope/tpsotansgshdcxaywpflbdnyynyaeyykssbwfxbzcwwnyaampacnetbssatkpasrmerospveluinsgfejejkyk"
+        "ur:envelope/tpsotansgshdcxaywpflbdnyynyaeyykssbwfxbzcwwnyaampacnetbssatkpasrmerospveluinsgfejejkyk",
     )
 }
 
@@ -28,25 +27,31 @@ fn test_subject_type_arid_2() -> Result<()> {
             "arid",
             "08ec470b9af6f832f5c41343151bf1f806b123380fc2cfb1c391b8c8e48b69ca",
         ],
-        "ur:envelope/tpsotansgshdcxaywpflbdnyynyaeyykssbwfxbzcwwnyaampacnetbssatkpasrmerospveluinsgfejejkyk"
+        "ur:envelope/tpsotansgshdcxaywpflbdnyynyaeyykssbwfxbzcwwnyaampacnetbssatkpasrmerospveluinsgfejejkyk",
     )
 }
 
 #[test]
 fn test_subject_type_cbor() -> Result<()> {
-    run_cli_expect(&["subject", "type", "cbor", "83010203"], "ur:envelope/tpsolsadaoaxzerkykme")
+    run_cli_expect(
+        &["subject", "type", "cbor", "83010203"],
+        "ur:envelope/tpsolsadaoaxzerkykme",
+    )
 }
 
 #[test]
 fn test_subject_type_data() -> Result<()> {
-    run_cli_expect(&["subject", "type", "data", "010203"], "ur:envelope/tpsofxadaoaxloyncwms")
+    run_cli_expect(
+        &["subject", "type", "data", "010203"],
+        "ur:envelope/tpsofxadaoaxloyncwms",
+    )
 }
 
 #[test]
 fn test_subject_type_date_1() -> Result<()> {
     run_cli_expect(
         &["subject", "type", "date", "2022-08-30T07:16:11Z"],
-        "ur:envelope/tpsosecyiabtrhfrrfztcase"
+        "ur:envelope/tpsosecyiabtrhfrrfztcase",
     )
 }
 
@@ -54,7 +59,7 @@ fn test_subject_type_date_1() -> Result<()> {
 fn test_subject_type_date_2() -> Result<()> {
     run_cli_expect(
         &["subject", "type", "date", "2022-08-30"],
-        "ur:envelope/tpsosecyiabtguaeptiywsls"
+        "ur:envelope/tpsosecyiabtguaeptiywsls",
     )
 }
 
@@ -67,15 +72,20 @@ fn test_subject_type_digest() -> Result<()> {
             "digest",
             "ur:digest/hdcxvlfgdmamwlsshgiaemcsnelkylfwjefdsktadpfwolgmlrlevduyontbbbpyiaspvadsadje",
         ],
-        "ur:envelope/tpsotansfphdcxvlfgdmamwlsshgiaemcsnelkylfwjefdsktadpfwolgmlrlevduyontbbbpyiasplnecbehy"
+        "ur:envelope/tpsotansfphdcxvlfgdmamwlsshgiaemcsnelkylfwjefdsktadpfwolgmlrlevduyontbbbpyiasplnecbehy",
     )
 }
 
 #[test]
 fn test_subject_type_envelope() -> Result<()> {
     run_cli_expect(
-        &["subject", "type", "envelope", "ur:envelope/tpcsfyadaoaxaatitospwz"],
-        "ur:envelope/tpsofyadaoaxaaaspsatks"
+        &[
+            "subject",
+            "type",
+            "envelope",
+            "ur:envelope/tpcsfyadaoaxaatitospwz",
+        ],
+        "ur:envelope/tpsofyadaoaxaaaspsatks",
     )
 }
 
@@ -86,48 +96,67 @@ fn test_subject_type_know_1() -> Result<()> {
 
 #[test]
 fn test_subject_type_known_2() -> Result<()> {
-    run_cli_expect(&["subject", "type", "known", "isA"], "ur:envelope/adonahurcw")
+    run_cli_expect(
+        &["subject", "type", "known", "isA"],
+        "ur:envelope/adonahurcw",
+    )
 }
 
 #[test]
 fn test_subject_type_number_1() -> Result<()> {
     run_cli_expect(
         &["subject", "type", "number", "3.14"],
-        "ur:envelope/tpsozofzasckrogywmlpctynlngyfx"
+        "ur:envelope/tpsozofzasckrogywmlpctynlngyfx",
     )
 }
 
 #[test]
 fn test_subject_type_number_2() -> Result<()> {
-    run_cli_expect(&["subject", "type", "number", "42"], "ur:envelope/tpsocsdrahknprdr")
+    run_cli_expect(
+        &["subject", "type", "number", "42"],
+        "ur:envelope/tpsocsdrahknprdr",
+    )
 }
 
 #[test]
 fn test_subject_type_string() -> Result<()> {
-    run_cli_expect(&["subject", "type", "string", "Hello"], "ur:envelope/tpsoihfdihjzjzjllamdlowy")
+    run_cli_expect(
+        &["subject", "type", "string", "Hello"],
+        "ur:envelope/tpsoihfdihjzjzjllamdlowy",
+    )
 }
 
 #[test]
 fn test_subject_type_uri() -> Result<()> {
     run_cli_expect(
         &["subject", "type", "uri", "https://example.com"],
-        "ur:envelope/tpsotpcxjkisjyjyjojkftdldlihkshsjnjojzihdmiajljnrlsrpsas"
+        "ur:envelope/tpsotpcxjkisjyjyjojkftdldlihkshsjnjojzihdmiajljnrlsrpsas",
     )
 }
 
 #[test]
 fn test_subject_type_uuid() -> Result<()> {
     run_cli_expect(
-        &["subject", "type", "uuid", "492ACBF4-13DC-4872-8A3B-4BF65C6BDF7C"],
-        "ur:envelope/tpsotpdagdgadrsbwkbwuofdjplefrgrynhhjeurkeflkgehwt"
+        &[
+            "subject",
+            "type",
+            "uuid",
+            "492ACBF4-13DC-4872-8A3B-4BF65C6BDF7C",
+        ],
+        "ur:envelope/tpsotpdagdgadrsbwkbwuofdjplefrgrynhhjeurkeflkgehwt",
     )
 }
 
 #[test]
 fn test_subject_type_wrapped() -> Result<()> {
     run_cli_expect(
-        &["subject", "type", "wrapped", "ur:envelope/tpcslsadaoaxgedmotks"],
-        "ur:envelope/tpsptpsolsadaoaxaegyemck"
+        &[
+            "subject",
+            "type",
+            "wrapped",
+            "ur:envelope/tpcslsadaoaxgedmotks",
+        ],
+        "ur:envelope/tpsptpsolsadaoaxaegyemck",
     )
 }
 
@@ -148,12 +177,15 @@ fn test_arid_subject() -> Result<()> {
         e,
         "ur:envelope/tpsotansgshdcxuestvsdemusrdlkngwtosweortdwbasrdrfxhssgfmvlrflthdplatjydmmwahgdaabzoswy"
     );
-    run_cli_expect(&["format", &e], &format!("ARID({})", ARID_HEX.get(..8).unwrap()))?;
+    run_cli_expect(
+        &["format", &e],
+        &format!("ARID({})", ARID_HEX.get(..8).unwrap()),
+    )?;
     run_cli_expect(&["extract", "arid", &e], ARID)?;
     run_cli_expect(&["extract", "arid-hex", &e], ARID_HEX)?;
     run_cli_expect(
         &["extract", "cbor", &e],
-        "d99c4c5820dec7e82893c32f7a4fcec633c02c0ec32a4361ca3ee3bc8758ae07742e940550"
+        "d99c4c5820dec7e82893c32f7a4fcec633c02c0ec32a4361ca3ee3bc8758ae07742e940550",
     )?;
 
     let e2 = run_cli(&["subject", "type", "arid", ARID])?;
@@ -222,7 +254,7 @@ fn test_digest_subject() -> Result<()> {
     run_cli_expect(&["extract", "digest", &e], DIGEST_EXAMPLE)?;
     run_cli_expect(
         &["extract", "cbor", &e],
-        "d99c4158202d8bd7d9bb5f85ba643f0110d50cb506a1fe439e769a22503193ea6046bb87f7"
+        "d99c4158202d8bd7d9bb5f85ba643f0110d50cb506a1fe439e769a22503193ea6046bb87f7",
     )?;
     Ok(())
 }
@@ -274,12 +306,18 @@ fn test_known_value_subject() -> Result<()> {
 
 #[test]
 fn test_string_subject() -> Result<()> {
-    run_cli_expect(&["subject", "type", "string", HELLO_STR], HELLO_ENVELOPE_UR)?;
+    run_cli_expect(
+        &["subject", "type", "string", HELLO_STR],
+        HELLO_ENVELOPE_UR,
+    )?;
     run_cli_expect(&["extract", "string", HELLO_ENVELOPE_UR], HELLO_STR)?;
     run_cli_expect(&["extract", "cbor", HELLO_ENVELOPE_UR], "6648656c6c6f2e")?;
     run_cli_piped_expect(
-        &[&["subject", "type", "string", HELLO_STR], &["extract", "string"]],
-        HELLO_STR
+        &[
+            &["subject", "type", "string", HELLO_STR],
+            &["extract", "string"],
+        ],
+        HELLO_STR,
     )
 }
 
@@ -304,7 +342,10 @@ fn test_envelope_ur_subject() -> Result<()> {
 #[test]
 fn test_known_ur_subject() -> Result<()> {
     let e = run_cli(&["subject", "type", "ur", SEED_UR_EXAMPLE])?;
-    assert_eq!(e, "ur:envelope/tpsotantjzoyadgdaawzwplrbdhdpabgrnvokorolnrtemkslgdpfebs");
+    assert_eq!(
+        e,
+        "ur:envelope/tpsotantjzoyadgdaawzwplrbdhdpabgrnvokorolnrtemkslgdpfebs"
+    );
     run_cli_expect(&["format", &e], "Seed")?;
     run_cli_expect(&["extract", "ur", &e], SEED_UR_EXAMPLE)?;
     Ok(())
@@ -312,10 +353,17 @@ fn test_known_ur_subject() -> Result<()> {
 
 #[test]
 fn test_unknown_ur_subject() -> Result<()> {
-    let unknown_ur = "ur:unknown/oyadgdjlssmkcklgoskseodnyteofwwfylkiftjzamgrht";
+    let unknown_ur =
+        "ur:unknown/oyadgdjlssmkcklgoskseodnyteofwwfylkiftjzamgrht";
     let e = run_cli(&["subject", "type", "ur", "--ur-tag", "555", unknown_ur])?;
-    assert_eq!(e, "ur:envelope/tpsotaaodnoyadgdjlssmkcklgoskseodnyteofwwfylkiftaydpdsjz");
-    run_cli_expect(&["format", &e], "555({1: h'6fc4981e8da778332bf93342f3f77d3a'})")?;
+    assert_eq!(
+        e,
+        "ur:envelope/tpsotaaodnoyadgdjlssmkcklgoskseodnyteofwwfylkiftaydpdsjz"
+    );
+    run_cli_expect(
+        &["format", &e],
+        "555({1: h'6fc4981e8da778332bf93342f3f77d3a'})",
+    )?;
     run_cli_expect(&["extract", "ur", &e, "--ur-type", "unknown"], unknown_ur)?;
     Ok(())
 }
@@ -323,9 +371,15 @@ fn test_unknown_ur_subject() -> Result<()> {
 #[test]
 fn test_uuid_subject() -> Result<()> {
     let e = run_cli(&["subject", "type", "uuid", UUID_EXAMPLE])?;
-    assert_eq!(e, "ur:envelope/tpsotpdagdwmemkbihhgjyfpbkrhsbgybdztjkvatabwmnltwl");
+    assert_eq!(
+        e,
+        "ur:envelope/tpsotpdagdwmemkbihhgjyfpbkrhsbgybdztjkvatabwmnltwl"
+    );
     run_cli_expect(&["format", &e], &format!("UUID({})", UUID_EXAMPLE))?;
     run_cli_expect(&["extract", "uuid", &e], UUID_EXAMPLE)?;
-    run_cli_expect(&["extract", "cbor", &e], "d82550eb377e655774410ab9cb510bfc73e6d9")?;
+    run_cli_expect(
+        &["extract", "cbor", &e],
+        "d82550eb377e655774410ab9cb510bfc73e6d9",
+    )?;
     Ok(())
 }

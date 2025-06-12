@@ -4,8 +4,8 @@ pub mod at;
 pub mod count;
 pub mod remove;
 
-use clap::{Subcommand, Args};
 use anyhow::Result;
+use clap::{Args, Subcommand};
 
 /// Work a XID document's resolution methods.
 #[derive(Debug, Args)]

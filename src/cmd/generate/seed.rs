@@ -1,4 +1,4 @@
-use anyhow::{ bail, Result };
+use anyhow::{Result, bail};
 use bc_envelope::prelude::*;
 use clap::Args;
 

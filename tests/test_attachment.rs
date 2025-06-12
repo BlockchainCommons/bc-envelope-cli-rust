@@ -1,5 +1,5 @@
-use indoc::indoc;
 use anyhow::Result;
+use indoc::indoc;
 
 mod common;
 use common::*;
@@ -24,11 +24,25 @@ fn payload_v2_envelope() -> Result<String> {
 }
 
 fn attachment_v1() -> Result<String> {
-    run_cli(&["attachment", "create", VENDOR, "--conforms-to", CONFORMS_TO_V1, &payload_v1_envelope()?])
+    run_cli(&[
+        "attachment",
+        "create",
+        VENDOR,
+        "--conforms-to",
+        CONFORMS_TO_V1,
+        &payload_v1_envelope()?,
+    ])
 }
 
 fn attachment_v2() -> Result<String> {
-    run_cli(&["attachment", "create", VENDOR, "--conforms-to", CONFORMS_TO_V2, &payload_v2_envelope()?])
+    run_cli(&[
+        "attachment",
+        "create",
+        VENDOR,
+        "--conforms-to",
+        CONFORMS_TO_V2,
+        &payload_v2_envelope()?,
+    ])
 }
 
 fn attachment_v1_no_conformance() -> Result<String> {
@@ -36,11 +50,12 @@ fn attachment_v1_no_conformance() -> Result<String> {
 }
 
 fn envelope_v1_v2() -> Result<String> {
-    run_cli_piped_stdin(&[
-        &["attachment", "add", "envelope", &attachment_v1()?],
-        &["attachment", "add", "envelope", &attachment_v2()?],
+    run_cli_piped_stdin(
+        &[
+            &["attachment", "add", "envelope", &attachment_v1()?],
+            &["attachment", "add", "envelope", &attachment_v2()?],
         ],
-        &subject_envelope()?
+        &subject_envelope()?,
     )
 }
 
@@ -90,7 +105,8 @@ fn test_attachment_queries() -> Result<()> {
     assert_eq!(conforms_to, CONFORMS_TO_V1);
 
     let attachment_no_conformance = attachment_v1_no_conformance()?;
-    let conforms_to = run_cli(&["attachment", "conforms-to", &attachment_no_conformance])?;
+    let conforms_to =
+        run_cli(&["attachment", "conforms-to", &attachment_no_conformance])?;
     assert_eq!(conforms_to, "");
     Ok(())
 }
@@ -155,10 +171,7 @@ fn test_attachment_add_envelope() -> Result<()> {
 
 #[test]
 fn test_attachment_count() -> Result<()> {
-    run_cli_expect(
-        &["attachment", "count", &envelope_v1_v2()?],
-        "2"
-    )
+    run_cli_expect(&["attachment", "count", &envelope_v1_v2()?], "2")
 }
 
 trait IntoLines {
@@ -177,7 +190,8 @@ impl IntoLines for String {
 
 #[test]
 fn test_attachment_all() -> Result<()> {
-    let envelopes = run_cli(&["attachment", "all", &envelope_v1_v2()?])?.lines();
+    let envelopes =
+        run_cli(&["attachment", "all", &envelope_v1_v2()?])?.lines();
     assert_eq!(envelopes.len(), 2);
     assert_eq!(envelopes[0], attachment_v2()?);
     assert_eq!(envelopes[1], attachment_v1()?);
@@ -188,11 +202,11 @@ fn test_attachment_all() -> Result<()> {
 fn test_attachment_at() -> Result<()> {
     run_cli_expect(
         &["attachment", "at", "0", &envelope_v1_v2()?],
-        &attachment_v2()?
+        &attachment_v2()?,
     )?;
     run_cli_expect(
         &["attachment", "at", "1", &envelope_v1_v2()?],
-        &attachment_v1()?
+        &attachment_v1()?,
     )?;
     assert!(run_cli(&["attachment", "at", "2", &envelope_v1_v2()?]).is_err());
     Ok(())
@@ -200,13 +214,62 @@ fn test_attachment_at() -> Result<()> {
 
 #[test]
 fn test_attachment_find() -> Result<()> {
-    assert_eq!(run_cli(&["attachment", "find", &envelope_v1_v2()?])?.lines().len(), 2);
+    assert_eq!(
+        run_cli(&["attachment", "find", &envelope_v1_v2()?])?
+            .lines()
+            .len(),
+        2
+    );
 
-    assert_eq!(run_cli(&["attachment", "find", "--vendor", VENDOR, &envelope_v1_v2()?])?.lines().len(), 2);
-    assert_eq!(run_cli(&["attachment", "find", "--vendor", "bar", &envelope_v1_v2()?])?.lines().len(), 0);
+    assert_eq!(
+        run_cli(&[
+            "attachment",
+            "find",
+            "--vendor",
+            VENDOR,
+            &envelope_v1_v2()?
+        ])?
+        .lines()
+        .len(),
+        2
+    );
+    assert_eq!(
+        run_cli(&[
+            "attachment",
+            "find",
+            "--vendor",
+            "bar",
+            &envelope_v1_v2()?
+        ])?
+        .lines()
+        .len(),
+        0
+    );
 
-    assert_eq!(run_cli(&["attachment", "find", "--conforms-to", CONFORMS_TO_V1, &envelope_v1_v2()?])?.lines().len(), 1);
-    assert_eq!(run_cli(&["attachment", "find", "--conforms-to", "foo", &envelope_v1_v2()?])?.lines().len(), 0);
+    assert_eq!(
+        run_cli(&[
+            "attachment",
+            "find",
+            "--conforms-to",
+            CONFORMS_TO_V1,
+            &envelope_v1_v2()?
+        ])?
+        .lines()
+        .len(),
+        1
+    );
+    assert_eq!(
+        run_cli(&[
+            "attachment",
+            "find",
+            "--conforms-to",
+            "foo",
+            &envelope_v1_v2()?
+        ])?
+        .lines()
+        .len(),
+        0
+    );
 
     Ok(())
 }

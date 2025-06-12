@@ -1,9 +1,9 @@
 use std::str::FromStr;
 
-use anyhow::{bail, Result};
-use clap::ValueEnum;
-use bc_envelope::prelude::*;
+use anyhow::{Result, bail};
 use bc_components::{ARID, Digest};
+use bc_envelope::prelude::*;
+use clap::ValueEnum;
 
 #[derive(ValueEnum, Copy, Clone, Debug, PartialEq, Eq)]
 pub enum DataType {
@@ -50,7 +50,11 @@ pub enum DataType {
     Wrapped,
 }
 
-pub fn parse_data_type_to_envelope(data_type: DataType, s: Option<&str>, ur_cbor_tag_value: Option<u64>) -> Result<Envelope> {
+pub fn parse_data_type_to_envelope(
+    data_type: DataType,
+    s: Option<&str>,
+    ur_cbor_tag_value: Option<u64>,
+) -> Result<Envelope> {
     if let Some(s) = s {
         match data_type {
             DataType::Arid => parse_arid(s),
@@ -133,7 +137,9 @@ fn parse_known_value(s: &str) -> Result<Envelope> {
     } else {
         with_format_context!(|context: &FormatContext| {
             let store = context.known_values();
-            if let Some(known_value) = KnownValuesStore::known_value_for_name(s, Some(store)) {
+            if let Some(known_value) =
+                KnownValuesStore::known_value_for_name(s, Some(store))
+            {
                 Ok(Envelope::new(known_value))
             } else {
                 bail!("Unknown known value")
@@ -149,17 +155,15 @@ fn parse_number(s: &str) -> Result<Envelope> {
 }
 
 /// Parse a string from a string.
-fn parse_string(s: &str) -> Result<Envelope> {
-    Ok(Envelope::new(s))
-}
+fn parse_string(s: &str) -> Result<Envelope> { Ok(Envelope::new(s)) }
 
 /// Parse a UR from a string.
 ///
 /// - If the UR is a ur:envelope, acts like `type envelope`.
-/// - If the UR is another type, then it attempts to look up the CBOR tag for the type and
-///   encodes the envelope with the tagged CBOR content of the UR.
-/// - If the UR is of an unknown type, then a tag must be used to specify the CBOR tag
-///   to use.
+/// - If the UR is another type, then it attempts to look up the CBOR tag for
+///   the type and encodes the envelope with the tagged CBOR content of the UR.
+/// - If the UR is of an unknown type, then a tag must be used to specify the
+///   CBOR tag to use.
 fn parse_ur(s: &str, cbor_tag_value: Option<u64>) -> Result<Envelope> {
     let ur = UR::from_ur_string(s)?;
     if ur.ur_type_str() == "envelope" {

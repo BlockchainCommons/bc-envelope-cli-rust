@@ -1,5 +1,5 @@
-use indoc::indoc;
 use anyhow::Result;
+use indoc::indoc;
 
 mod common;
 use common::*;
@@ -34,16 +34,23 @@ fn test_sskr_2() -> Result<()> {
         "2-of-3",
         ALICE_KNOWS_BOB_EXAMPLE,
     ])?;
-    let shares = result.split_whitespace().map(|s| s.to_string()).collect::<Vec<_>>();
+    let shares = result
+        .split_whitespace()
+        .map(|s| s.to_string())
+        .collect::<Vec<_>>();
     let indexes = [0, 1, 4, 5];
-    let recovered_shares = indexes.iter().map(|i| shares[*i].clone()).collect::<Vec<_>>();
+    let recovered_shares = indexes
+        .iter()
+        .map(|i| shares[*i].clone())
+        .collect::<Vec<_>>();
 
     let mut args1 = vec!["sskr", "join"];
     args1.extend(recovered_shares.iter().map(|s| s.as_str()));
     let restored1 = run_cli(&args1)?;
     assert_eq!(restored1, ALICE_KNOWS_BOB_EXAMPLE);
 
-    let restored2 = run_cli_stdin(&["sskr", "join"], &recovered_shares.join("\n"))?;
+    let restored2 =
+        run_cli_stdin(&["sskr", "join"], &recovered_shares.join("\n"))?;
     assert_eq!(restored2, ALICE_KNOWS_BOB_EXAMPLE);
     Ok(())
 }

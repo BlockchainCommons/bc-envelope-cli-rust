@@ -1,15 +1,15 @@
+use anyhow::{Result, bail};
 use bc_ur::prelude::*;
 use bc_xid::{Delegate, XIDDocument};
 use clap::Args;
-use anyhow::{bail, Result};
 
-use crate::{
-    cmd::xid::{xid_privilege::XIDPrivilege, utils::XIDDocumentReadable},
-    envelope_args::{ EnvelopeArgs, EnvelopeArgsLike },
+use super::{
+    add_delegate_permissions, xid_document_to_unsigned_envelope_ur_string,
 };
-
-use super::add_delegate_permissions;
-use super::xid_document_to_unsigned_envelope_ur_string;
+use crate::{
+    cmd::xid::{utils::XIDDocumentReadable, xid_privilege::XIDPrivilege},
+    envelope_args::{EnvelopeArgs, EnvelopeArgsLike},
+};
 
 /// Add a delegate to the XID document.
 #[derive(Debug, Args)]
@@ -19,7 +19,12 @@ pub struct CommandArgs {
     delegate: String,
 
     /// Grant a specific permission to the delegate. May be repeated.
-    #[arg(long = "allow", name = "PRIVILEGE", default_value = "all", num_args = 1)]
+    #[arg(
+        long = "allow",
+        name = "PRIVILEGE",
+        default_value = "all",
+        num_args = 1
+    )]
     permissions: Vec<XIDPrivilege>,
 
     #[command(flatten)]
@@ -27,9 +32,7 @@ pub struct CommandArgs {
 }
 
 impl EnvelopeArgsLike for CommandArgs {
-    fn envelope(&self) -> Option<&str> {
-        self.envelope_args.envelope()
-    }
+    fn envelope(&self) -> Option<&str> { self.envelope_args.envelope() }
 }
 
 impl XIDDocumentReadable for CommandArgs {}

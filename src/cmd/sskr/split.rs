@@ -1,10 +1,12 @@
-use anyhow::bail;
-use bc_components::{SymmetricKey, SSKRSpec, SSKRGroupSpec, SSKRError, PublicKeys};
-use clap::Args;
 pub use anyhow::Result;
+use anyhow::bail;
+use bc_components::{
+    PublicKeys, SSKRError, SSKRGroupSpec, SSKRSpec, SymmetricKey,
+};
+use bc_envelope::prelude::*;
+use clap::Args;
 
 use crate::envelope_args::{EnvelopeArgs, EnvelopeArgsLike};
-use bc_envelope::prelude::*;
 
 /// Split an envelope into several shares using SSKR.
 #[derive(Debug, Args)]
@@ -18,7 +20,8 @@ pub struct CommandArgs {
 
     /// A group specification (e.g., `2-of-3`).
     ///
-    /// May be specified multiple times. Must be equal to or greater than the group threshold.
+    /// May be specified multiple times. Must be equal to or greater than the
+    /// group threshold.
     #[arg(short = 'g', long = "group", default_value = "1-of-1")]
     groups: Vec<String>,
 
@@ -28,7 +31,8 @@ pub struct CommandArgs {
     #[arg(short = 'k', long)]
     key: Option<String>,
 
-    /// One or more public keys (ur:crypto-pubkeys) to also encrypt the message to.
+    /// One or more public keys (ur:crypto-pubkeys) to also encrypt the message
+    /// to.
     ///
     /// May be specified multiple times.
     #[arg(short = 'r', long = "recipient")]
@@ -39,9 +43,7 @@ pub struct CommandArgs {
 }
 
 impl EnvelopeArgsLike for CommandArgs {
-    fn envelope(&self) -> Option<&str> {
-        self.envelope_args.envelope()
-    }
+    fn envelope(&self) -> Option<&str> { self.envelope_args.envelope() }
 }
 
 impl crate::exec::Exec for CommandArgs {
@@ -49,7 +51,9 @@ impl crate::exec::Exec for CommandArgs {
         let envelope = self.read_envelope()?;
 
         if self.group_threshold > self.groups.len() {
-            bail!("Group threshold must be less than or equal to the number of groups");
+            bail!(
+                "Group threshold must be less than or equal to the number of groups"
+            );
         }
 
         let regex = regex::Regex::new(r"(\d{1,2})-of-(\d{1,2})")?;
@@ -57,9 +61,9 @@ impl crate::exec::Exec for CommandArgs {
             .groups
             .iter()
             .map(|group| {
-                let matches = regex
-                    .captures(group)
-                    .ok_or_else(|| anyhow::anyhow!("Invalid group specifier: {}", group))?;
+                let matches = regex.captures(group).ok_or_else(|| {
+                    anyhow::anyhow!("Invalid group specifier: {}", group)
+                })?;
                 let m = matches[1].parse()?;
                 let n = matches[2].parse()?;
                 Ok((m, n))
@@ -82,14 +86,17 @@ impl crate::exec::Exec for CommandArgs {
             .collect::<Result<Vec<_>, _>>()?;
         let spec = SSKRSpec::new(self.group_threshold, group_specs)?;
         let grouped_shares = encrypted.sskr_split(&spec, &content_key)?;
-        let flattened_shares = grouped_shares.into_iter().flatten().collect::<Vec<_>>();
+        let flattened_shares =
+            grouped_shares.into_iter().flatten().collect::<Vec<_>>();
         let flattened_shares = if self.recipients.is_empty() {
             flattened_shares
         } else {
             let recipients: Vec<PublicKeys> = self
                 .recipients
                 .iter()
-                .map(|r| PublicKeys::from_ur_string(r).map_err(anyhow::Error::from))
+                .map(|r| {
+                    PublicKeys::from_ur_string(r).map_err(anyhow::Error::from)
+                })
                 .collect::<Result<_>>()?;
             flattened_shares
                 .into_iter()

@@ -11,7 +11,10 @@ const COMMENT: &str = "comment";
 #[test]
 fn test_generate_random_private_key_base() {
     let prvkeys = run_cli(&["generate", "prvkeys"]).unwrap();
-    assert_eq!(UR::from_ur_string(prvkeys).unwrap().ur_type_str(), "crypto-prvkey-base");
+    assert_eq!(
+        UR::from_ur_string(prvkeys).unwrap().ur_type_str(),
+        "crypto-prvkey-base"
+    );
 }
 
 #[test]
@@ -28,37 +31,45 @@ fn test_keys(
     expected_signature_summary: &str,
 ) {
     let pubkeys = run_cli(&[
-        "generate", "pubkeys",
-        "--type", key_type,
+        "generate",
+        "pubkeys",
+        "--type",
+        key_type,
         PRVKEYS,
-        "--comment", COMMENT
-    ]).unwrap();
+        "--comment",
+        COMMENT,
+    ])
+    .unwrap();
     assert_eq!(pubkeys, expected_pubkeys);
 
     let signer = run_cli(&[
-        "generate", "signer",
-        "--type", key_type,
+        "generate",
+        "signer",
+        "--type",
+        key_type,
         PRVKEYS,
-        "--comment", COMMENT
-    ]).unwrap();
+        "--comment",
+        COMMENT,
+    ])
+    .unwrap();
     assert_eq!(signer, expected_signer);
 
-    let verifier = run_cli(&[
-        "generate", "verifier",
-        &signer
-    ]).unwrap();
+    let verifier = run_cli(&["generate", "verifier", &signer]).unwrap();
     assert_eq!(verifier, expected_verifier);
 
-    let verifier = run_cli(&[
-        "generate", "verifier", expected_pubkeys]).unwrap();
+    let verifier =
+        run_cli(&["generate", "verifier", expected_pubkeys]).unwrap();
     assert_eq!(verifier, expected_verifier);
 
     let signed = run_cli(&[
         "sign",
-        "--signer", &signer,
-        "--namespace", "test",
+        "--signer",
+        &signer,
+        "--namespace",
+        "test",
         ALICE_KNOWS_BOB_EXAMPLE,
-    ]).unwrap();
+    ])
+    .unwrap();
 
     #[rustfmt::skip]
     let expected_format = indoc!(r#"
@@ -67,7 +78,8 @@ fn test_keys(
             'signed': {}
         ]
     "#);
-    let expected_format = expected_format.replace("{}", expected_signature_summary);
+    let expected_format =
+        expected_format.replace("{}", expected_signature_summary);
     run_cli_expect(&["format", &signed], &expected_format).unwrap();
 
     run_cli(&["verify", &signed, "--verifier", &pubkeys]).unwrap();
@@ -102,7 +114,7 @@ fn test_ssh_ed25519() {
         "ur:crypto-pubkeys/lftanshftanehskshdjkjkisdpihieeyececehescxfpfpfpfpfxeoglknhsfxehjzhtfygaehglghfeecfpfpfpfpgafwemeydlgseseyetendndlhkgdkpeojneseckogridjyjshsflgmjnidjzgdhgiygtgdhsgwhthkemdldyjyiycxiajljnjnihjtjytansgrhdcxfdgwgacloxsrmupdcybdchfylewsdilrbestjodpwnknndjoztjprfkkjopkdejogoimkkkt",
         "ur:signing-private-key/tanehnkkadmydpdpdpdpdpfwfeflgaglcxgwgdfeglgugufdcxgdgmgahffpghfecxgrfehkdpdpdpdpdpbkideofwjzidjtglknhsfxehjphthdjejyieimfefpfpfpfpfpfwfleckoidjngofpfpfpfpfeidjneskphtgyfpfpfpfpfpfpfpfpfpfwfpfpfpfpgtktfpfpfpfpjykniaeyiojyhthgbkgykkglghgoksgwgyfpfpfpfxfpiheskokkdliekogwkokoeyfyemjyeckoihidkkjnemhsjnisjehtjnecghehjtknfyeyimjnhggwdlesgshdktfpfpfpgefyjkeejpgyjlemgwgrdybkgrfpfpfpfpfpjykniaeyiojyhthggykkglghgoksgwgyfpfpfpfxfpiheskokkdliekogwkokoeyfyemjyeckoihidkkjnemhsjnisjehtjnecghehjtknfyeyimjnhggwdlesgshdktbkfpfpfpfefyidiaesjpgdjojpioioidjkkokpiaghgugsjsjlflkphdidiahtecihgyktjsinfxecehfgfykpdygheciegwfwemeydlgseseyetendndlhkgdkpeojneseckogridjyjsbkhsflgmjnidjzgdhgiygtgdhsgwhthkemdldyjyiyfpfpfpfpfweyglkoidhgehjzidjtgyfwfpiogtfefwgyhkfsbkdpdpdpdpdpfeglfycxgwgdfeglgugufdcxgdgmgahffpghfecxgrfehkdpdpdpdpdpbkmnfptpeh",
         "ur:signing-public-key/tanehskshdjkjkisdpihieeyececehescxfpfpfpfpfxeoglknhsfxehjzhtfygaehglghfeecfpfpfpfpgafwemeydlgseseyetendndlhkgdkpeojneseckogridjyjshsflgmjnidjzgdhgiygtgdhsgwhthkemdldyjyiycxiajljnjnihjtjyeyflsegd",
-        "Signature(SshEd25519)"
+        "Signature(SshEd25519)",
     );
 }
 
@@ -113,7 +125,7 @@ fn test_ssh_ecdsa_nistp256() {
         "ur:crypto-pubkeys/lftanshftanehskspdihiaiejkhsdpjkishseydpjtinjkjyjoeyecencxfpfpfpfpfeeyhfimhtfdglisgshdgljlhkghgajyidjnjzkniefdfpkkglghhkfpfpfpfpgaidjnjzkniefdfpkkglghhkfpfpfpfwfwfwflengakpflgygoiajteyeyehgdhkimgwgeihgmgmingeiyiyhtjzjnksfxjkemfwenkphsgsksjtgyeyioeteokohsidjykpehgdihgsiyguenjsjtgojofgjlfggadyjedlgrioetgahdemjyihjpioidjtidkpgajkglgafektfscxiajljnjnihjtjytansgrhdcxfdgwgacloxsrmupdcybdchfylewsdilrbestjodpwnknndjoztjprfkkjopkdejodlztswca",
         "ur:signing-private-key/tanehnkkadwpdpdpdpdpdpfwfeflgaglcxgwgdfeglgugufdcxgdgmgahffpghfecxgrfehkdpdpdpdpdpbkideofwjzidjtglknhsfxehjphthdjejyieimfefpfpfpfpfpfwfleckoidjngofpfpfpfpfeidjneskphtgyfpfpfpfpfpfpfpfpfpfwfpfpfpfphsfpfpfpfpfwgljzhkeygmknhkgubkehknhsflfekkgshgecjoiaeogmktgtimgoeyfpfpfpfpfxflecjoiaeogmktgtimgoeyfpfpfpfpgygygmkpingsisjefgfdgeesjyjygheygakninhdjegohkinhdeoeyhthtjkgyjpbkgwktihjpjninethtdygljlgdglemeyjnemidjygheoineodykpjsjoehgrgmhsfwguglgegdkkjlgdfxfgdnemhdjseefleceyemingsfygufwgtfpfpfpfpjlgwhggsfxgykojzinktbkjegsfpfpfpfpfeeyhfimhtfdglisgshdgljlhkghgajyidjnjzkniefdfpkkglghhkfpfpfpfpgaidjnjzkniefdfpkkglghhkfpfpfpfwfwfwflengakpflgygoiajteyeyehgdhkimbkgwgeihgmgmingeiyiyhtjzjnksfxjkemfwenkphsgsksjtgyeyioeteokohsidjykpehgdihgsiyguenjsjtgojofgjlfggadyjedlgrioetgahdemjyihjpioidjtidkpgajkglgafebkktfpfpfpfpiofdjeeegreeengtktgleejpeoiaesimjnjtjteyjzglkkghimhkiydnemdlgaghgdindngsiojlkkgoflghfxfpfpfpfpfpfdhkeyesjyidhghfkpiefpfefsbkdpdpdpdpdpfeglfycxgwgdfeglgugufdcxgdgmgahffpghfecxgrfehkdpdpdpdpdpbktynbssur",
         "ur:signing-public-key/tanehskspdihiaiejkhsdpjkishseydpjtinjkjyjoeyecencxfpfpfpfpfeeyhfimhtfdglisgshdgljlhkghgajyidjnjzkniefdfpkkglghhkfpfpfpfpgaidjnjzkniefdfpkkglghhkfpfpfpfwfwfwflengakpflgygoiajteyeyehgdhkimgwgeihgmgmingeiyiyhtjzjnksfxjkemfwenkphsgsksjtgyeyioeteokohsidjykpehgdihgsiyguenjsjtgojofgjlfggadyjedlgrioetgahdemjyihjpioidjtidkpgajkglgafektfscxiajljnjnihjtjyrhpttnon",
-        "Signature(SshEcdsaP256)"
+        "Signature(SshEcdsaP256)",
     );
 }
 
@@ -124,7 +136,7 @@ fn test_ssh_ecdsa_nistp384() {
         "ur:crypto-pubkeys/lftanshftanehskstyihiaiejkhsdpjkishseydpjtinjkjyjoeoeteecxfpfpfpfpfeeyhfimhtfdglisgshdgljlhkghgajyidjnjzkniefdfpkngwfygyfpfpfpfpgaidjnjzkniefdfpkngwfygyfpfpfpfwisfwfeeedyfgdyksjogrgmgoghhkieidindlgrisfggdjofwihehgwidjohsgsgleojlgwjlflhdhfjehkkoksecgmididkkengdjkiaflgehtemflgtdyingsguihinjojljletkkhdgyemfefwgogmksinflgaingokojliyhgkojyetjzeefggmehfleyksgaiogadyimiefxiseteyfggejkiegoehkkfgimethtiajkgtindlisjnecghdnjthsiofsfscxiajljnjnihjtjytansgrhdcxfdgwgacloxsrmupdcybdchfylewsdilrbestjodpwnknndjoztjprfkkjopkdejoltvdgula",
         "ur:signing-private-key/tanehnkkaohtdpdpdpdpdpfwfeflgaglcxgwgdfeglgugufdcxgdgmgahffpghfecxgrfehkdpdpdpdpdpbkideofwjzidjtglknhsfxehjphthdjejyieimfefpfpfpfpfpfwfleckoidjngofpfpfpfpfeidjneskphtgyfpfpfpfpfpfpfpfpfpfwfpfpfpfpinfpfpfpfpfwgljzhkeygmknhkgubkehknhsflfekkgshgecjoiaeogmktgtkniodyfpfpfpfpfxflecjoiaeogmktgtkniodyfpfpfpfphkgygmgwglfwiegthsgujehffeeyfdhgeekokkjlgmghengyhdjyghjnenhginknbkieenfyjsfwjzehhtflgsetihgohgeyetkpimemfdfwinhgihksimglgaindyjtjljshsgrgdgtjzdygwksfphffeiahkisingajzgsenfdehjpemiygeihfwgoiegmjyjkgugafxglgabkeogyjliyglisguidfdhfgliaishkdlflhdgsfygakoeehtkpgodljoeyjlfpfpfpfygyioeseefegtgagdihfwfyfpfpfpfpfpghhthggljeiaeyfejyiaeyisisgtinehkphshdgldybkiafygteeglfpfpfpfpfpiskphshdgldyiafygteeglfpfpfpfpflfefeghimgyhdghfljejofggmglisehkpgsetjsfegodnjefgemgoeckpjzjljkeoihioeniohtiehggmindlfdjzbkfgjykogsjldnkskthkjzjtjkhkkngugajygeengrjninimkngeiefyjkgyfggmfdflgahkingegudniseshsdneokkhdiohffdgoididfeinfpimgugldygrfdknhkgojnksehghhdgabkhggdksjzkkktkkgsdnflidjzgdeniejsfpfpfpfpgtgyfxjljejtjygdinidgmfejliaiadlehglioiejofddnhdkojleejpjejehdenglesjyjofldliagrjljkgeisdyjeksjekojybkdyfgihkkesktknhkioehfpetkshtkojseefpfpfpfpfdhkeyesjyidhghfkpiefpfsfsbkdpdpdpdpdpfeglfycxgwgdfeglgugufdcxgdgmgahffpghfecxgrfehkdpdpdpdpdpbkkomhbwty",
         "ur:signing-public-key/tanehskstyihiaiejkhsdpjkishseydpjtinjkjyjoeoeteecxfpfpfpfpfeeyhfimhtfdglisgshdgljlhkghgajyidjnjzkniefdfpkngwfygyfpfpfpfpgaidjnjzkniefdfpkngwfygyfpfpfpfwisfwfeeedyfgdyksjogrgmgoghhkieidindlgrisfggdjofwihehgwidjohsgsgleojlgwjlflhdhfjehkkoksecgmididkkengdjkiaflgehtemflgtdyingsguihinjojljletkkhdgyemfefwgogmksinflgaingokojliyhgkojyetjzeefggmehfleyksgaiogadyimiefxiseteyfggejkiegoehkkfgimethtiajkgtindlisjnecghdnjthsiofsfscxiajljnjnihjtjyaagtkkvo",
-        "Signature(SshEcdsaP384)"
+        "Signature(SshEcdsaP384)",
     );
 }
 

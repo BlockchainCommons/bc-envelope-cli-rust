@@ -1,14 +1,15 @@
+use anyhow::Result;
 use bc_envelope::EnvelopeEncodable;
 use bc_ur::prelude::*;
 use clap::Args;
-use anyhow::Result;
 
 use crate::{
     cmd::xid::utils::XIDDocumentReadable,
-    envelope_args::{ EnvelopeArgs, EnvelopeArgsLike },
+    envelope_args::{EnvelopeArgs, EnvelopeArgsLike},
 };
 
-/// Find the XID document's services by assigned name. May return multiple services.
+/// Find the XID document's services by assigned name. May return multiple
+/// services.
 #[derive(Debug, Args)]
 #[group(skip)]
 pub struct CommandArgs {
@@ -19,9 +20,7 @@ pub struct CommandArgs {
 }
 
 impl EnvelopeArgsLike for CommandArgs {
-    fn envelope(&self) -> Option<&str> {
-        self.envelope_args.envelope()
-    }
+    fn envelope(&self) -> Option<&str> { self.envelope_args.envelope() }
 }
 
 impl XIDDocumentReadable for CommandArgs {}

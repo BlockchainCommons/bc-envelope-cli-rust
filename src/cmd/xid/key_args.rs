@@ -1,12 +1,12 @@
+use anyhow::Result;
 use bc_components::URI;
 use bc_envelope::PublicKeys;
 use clap::Args;
-use anyhow::Result;
 
 use super::{
-    xid_privilege::XIDPrivilege,
     private_options::PrivateOptions,
-    utils::{ read_key, read_public_key, InputKey },
+    utils::{InputKey, read_key, read_public_key},
+    xid_privilege::XIDPrivilege,
 };
 
 pub trait KeyArgsLike {
@@ -16,9 +16,7 @@ pub trait KeyArgsLike {
     fn permissions(&self) -> &[XIDPrivilege];
     fn keys(&self) -> Option<&str>;
 
-    fn read_key(&self) -> Result<InputKey> {
-        read_key(self.keys())
-    }
+    fn read_key(&self) -> Result<InputKey> { read_key(self.keys()) }
 
     fn read_public_key(&self) -> Result<PublicKeys> {
         read_public_key(self.keys())
@@ -41,7 +39,12 @@ pub struct KeyArgs {
     endpoints: Vec<URI>,
 
     /// Grant a specific permission to the key. May be repeated.
-    #[arg(long = "allow", name = "PRIVILEGE", default_value = "all", num_args = 1)]
+    #[arg(
+        long = "allow",
+        name = "PRIVILEGE",
+        default_value = "all",
+        num_args = 1
+    )]
     permissions: Vec<XIDPrivilege>,
 
     /// The key to process. If omitted, the key will be read from stdin.
@@ -50,23 +53,13 @@ pub struct KeyArgs {
 }
 
 impl KeyArgsLike for KeyArgs {
-    fn nickname(&self) -> &str {
-        &self.nickname
-    }
+    fn nickname(&self) -> &str { &self.nickname }
 
-    fn private_opts(&self) -> PrivateOptions {
-        self.private_opts
-    }
+    fn private_opts(&self) -> PrivateOptions { self.private_opts }
 
-    fn endpoints(&self) -> &[URI] {
-        &self.endpoints
-    }
+    fn endpoints(&self) -> &[URI] { &self.endpoints }
 
-    fn permissions(&self) -> &[XIDPrivilege] {
-        &self.permissions
-    }
+    fn permissions(&self) -> &[XIDPrivilege] { &self.permissions }
 
-    fn keys(&self) -> Option<&str> {
-        self.keys.as_deref()
-    }
+    fn keys(&self) -> Option<&str> { self.keys.as_deref() }
 }

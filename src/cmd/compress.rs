@@ -1,8 +1,8 @@
+use anyhow::Result;
+use bc_envelope::prelude::*;
 use clap::Args;
 
 use crate::envelope_args::{EnvelopeArgs, EnvelopeArgsLike};
-use bc_envelope::prelude::*;
-use anyhow::Result;
 
 /// Compress the envelope or its subject.
 #[derive(Debug, Args)]
@@ -17,9 +17,7 @@ pub struct CommandArgs {
 }
 
 impl EnvelopeArgsLike for CommandArgs {
-    fn envelope(&self) -> Option<&str> {
-        self.envelope_args.envelope()
-    }
+    fn envelope(&self) -> Option<&str> { self.envelope_args.envelope() }
 }
 
 impl crate::exec::Exec for CommandArgs {
@@ -29,6 +27,7 @@ impl crate::exec::Exec for CommandArgs {
             envelope.compress_subject()
         } else {
             envelope.compress()
-        }?.ur_string())
+        }?
+        .ur_string())
     }
 }

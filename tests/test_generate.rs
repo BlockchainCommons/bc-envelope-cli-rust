@@ -1,5 +1,5 @@
-use bc_envelope::prelude::*;
 use anyhow::Result;
+use bc_envelope::prelude::*;
 
 mod common;
 use common::*;
@@ -16,7 +16,7 @@ fn test_generate_arid() -> Result<()> {
 fn test_generate_digest_arg() -> Result<()> {
     run_cli_expect(
         &["generate", "digest", "Hello"],
-        "ur:digest/hdcxcshelgqdcpjszedaykhsolztmuludmdsfxamwpdygltngylaatttkofddsetcfinrkcltpsp"
+        "ur:digest/hdcxcshelgqdcpjszedaykhsolztmuludmdsfxamwpdygltngylaatttkofddsetcfinrkcltpsp",
     )
 }
 
@@ -25,7 +25,7 @@ fn test_generate_digest_stdin() -> Result<()> {
     run_cli_expect_stdin(
         &["generate", "digest"],
         "ur:digest/hdcxcshelgqdcpjszedaykhsolztmuludmdsfxamwpdygltngylaatttkofddsetcfinrkcltpsp",
-        "Hello"
+        "Hello",
     )
 }
 
@@ -77,10 +77,9 @@ fn test_generate_seed_with_count() -> Result<()> {
 
     let output = run_cli(&["generate", "seed", "--count", "32"])?;
     let seed = bc_components::Seed::from_ur_string(output.trim())?;
-    assert_eq!(seed.data().len(), 32);
+    assert_eq!(seed.as_bytes().len(), 32);
     Ok(())
 }
-
 
 #[test]
 fn test_generate_seed_with_bad_count() -> Result<()> {
@@ -93,16 +92,22 @@ fn test_generate_seed_with_bad_count() -> Result<()> {
 fn test_generate_seed_with_hex() -> Result<()> {
     bc_envelope::register_tags();
 
-    let output = run_cli(
-        &["generate", "seed", "--hex", "7e31b2b14b895e75cdb82c22b013527c"]
-    )?;
+    let output = run_cli(&[
+        "generate",
+        "seed",
+        "--hex",
+        "7e31b2b14b895e75cdb82c22b013527c",
+    ])?;
 
-    assert_eq!(output, "ur:seed/oyadgdkbehprpagrldhykpsnrodwcppfbwgmkemtaolbdt");
+    assert_eq!(
+        output,
+        "ur:seed/oyadgdkbehprpagrldhykpsnrodwcppfbwgmkemtaolbdt"
+    );
 
     let seed = bc_components::Seed::from_ur_string(output)?;
-    assert_eq!(seed.data().len(), 16);
+    assert_eq!(seed.as_bytes().len(), 16);
     assert_eq!(
-        seed.data(),
+        seed.as_bytes(),
         &hex::decode("7e31b2b14b895e75cdb82c22b013527c")?
     );
     Ok(())
@@ -125,15 +130,24 @@ fn test_generate_prvkeys() -> Result<()> {
 #[test]
 fn test_generate_prvkeys_from_seed() -> Result<()> {
     run_cli_expect(
-        &["generate", "prvkeys", "--seed", "ur:seed/oyadgdkbehprpagrldhykpsnrodwcppfbwgmkemtaolbdt"],
-        "ur:crypto-prvkey-base/gdkbehprpagrldhykpsnrodwcppfbwgmkeadrturam"
+        &[
+            "generate",
+            "prvkeys",
+            "--seed",
+            "ur:seed/oyadgdkbehprpagrldhykpsnrodwcppfbwgmkemtaolbdt",
+        ],
+        "ur:crypto-prvkey-base/gdkbehprpagrldhykpsnrodwcppfbwgmkeadrturam",
     )
 }
 
 #[test]
 fn test_generate_pubkeys() -> Result<()> {
     run_cli_expect(
-        &["generate", "pubkeys", "ur:crypto-prvkey-base/gdkbehprpagrldhykpsnrodwcppfbwgmkeadrturam"],
-        "ur:crypto-pubkeys/lftanshfhdcxfpfwzcparpckfhvlidynjepsltsgjlprostpcmgehsmedtlbcktajodispgsfroytansgrhdcxenrytyrlpknyosfnfwlrwkdwsknduogwlyhdrfdrftflnnksbzsaierhbdrnrfbbfdvlwsca"
+        &[
+            "generate",
+            "pubkeys",
+            "ur:crypto-prvkey-base/gdkbehprpagrldhykpsnrodwcppfbwgmkeadrturam",
+        ],
+        "ur:crypto-pubkeys/lftanshfhdcxfpfwzcparpckfhvlidynjepsltsgjlprostpcmgehsmedtlbcktajodispgsfroytansgrhdcxenrytyrlpknyosfnfwlrwkdwsknduogwlyhdrfdrftflnnksbzsaierhbdrnrfbbfdvlwsca",
     )
 }

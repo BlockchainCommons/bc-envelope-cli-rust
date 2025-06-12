@@ -1,15 +1,15 @@
+use anyhow::{Result, anyhow};
 use bc_components::URI;
 use clap::Args;
-use anyhow::{ Result, anyhow };
 
 use crate::{
     cmd::xid::{
-        key_args::{ KeyArgs, KeyArgsLike },
+        key_args::{KeyArgs, KeyArgsLike},
         private_options::PrivateOptions,
-        utils::{ update_key, xid_document_to_ur_string, XIDDocumentReadable },
+        utils::{XIDDocumentReadable, update_key, xid_document_to_ur_string},
         xid_privilege::XIDPrivilege,
     },
-    envelope_args::{ EnvelopeArgs, EnvelopeArgsLike },
+    envelope_args::{EnvelopeArgs, EnvelopeArgsLike},
 };
 
 /// Updates the permissions, endpoints, or name of a key in a XID document.
@@ -24,31 +24,19 @@ pub struct CommandArgs {
 }
 
 impl KeyArgsLike for CommandArgs {
-    fn nickname(&self) -> &str {
-        self.key_args.nickname()
-    }
+    fn nickname(&self) -> &str { self.key_args.nickname() }
 
-    fn private_opts(&self) -> PrivateOptions {
-        self.key_args.private_opts()
-    }
+    fn private_opts(&self) -> PrivateOptions { self.key_args.private_opts() }
 
-    fn endpoints(&self) -> &[URI] {
-        self.key_args.endpoints()
-    }
+    fn endpoints(&self) -> &[URI] { self.key_args.endpoints() }
 
-    fn permissions(&self) -> &[XIDPrivilege] {
-        self.key_args.permissions()
-    }
+    fn permissions(&self) -> &[XIDPrivilege] { self.key_args.permissions() }
 
-    fn keys(&self) -> Option<&str> {
-        self.key_args.keys()
-    }
+    fn keys(&self) -> Option<&str> { self.key_args.keys() }
 }
 
 impl EnvelopeArgsLike for CommandArgs {
-    fn envelope(&self) -> Option<&str> {
-        self.envelope_args.envelope()
-    }
+    fn envelope(&self) -> Option<&str> { self.envelope_args.envelope() }
 }
 
 impl XIDDocumentReadable for CommandArgs {}
@@ -65,9 +53,17 @@ impl crate::exec::Exec for CommandArgs {
             .ok_or_else(|| anyhow!("Key not found"))?;
 
         xid_document.take_key(&key);
-        update_key(&mut key, self.nickname(), self.endpoints(), self.permissions());
+        update_key(
+            &mut key,
+            self.nickname(),
+            self.endpoints(),
+            self.permissions(),
+        );
         xid_document.add_key(key)?;
 
-        Ok(xid_document_to_ur_string(&xid_document, self.private_opts()))
+        Ok(xid_document_to_ur_string(
+            &xid_document,
+            self.private_opts(),
+        ))
     }
 }

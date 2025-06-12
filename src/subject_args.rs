@@ -1,5 +1,6 @@
-use anyhow::{bail, Result};
+use anyhow::{Result, bail};
 use clap::Args;
+
 use crate::data_types::DataType;
 
 pub trait SubjectArgsLike {
@@ -36,15 +37,9 @@ pub struct SubjectArgs {
 }
 
 impl SubjectArgsLike for SubjectArgs {
-    fn subject_type(&self) -> DataType {
-        self.subject_type
-    }
+    fn subject_type(&self) -> DataType { self.subject_type }
 
-    fn subject_value(&self) -> Option<&str> {
-        self.subject_value.as_deref()
-    }
+    fn subject_value(&self) -> Option<&str> { self.subject_value.as_deref() }
 
-    fn ur_tag(&self) -> Option<u64> {
-        self.ur_tag
-    }
+    fn ur_tag(&self) -> Option<u64> { self.ur_tag }
 }

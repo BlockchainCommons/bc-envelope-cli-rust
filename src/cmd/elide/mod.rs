@@ -1,9 +1,9 @@
+pub mod elide_args;
 pub mod removing;
 pub mod revealing;
-pub mod elide_args;
 
-use clap::{Subcommand, Args};
 use anyhow::Result;
+use clap::{Args, Subcommand};
 
 /// Elide a subset of elements.
 #[derive(Debug, Args)]

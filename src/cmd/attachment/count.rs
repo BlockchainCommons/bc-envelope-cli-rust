@@ -1,6 +1,7 @@
-use clap::Args;
-use crate::utils::read_envelope;
 use anyhow::Result;
+use clap::Args;
+
+use crate::utils::read_envelope;
 
 /// Print the count of the envelope's assertions.
 #[derive(Debug, Args)]

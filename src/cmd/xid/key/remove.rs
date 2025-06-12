@@ -1,7 +1,15 @@
-use clap::Args;
 use anyhow::Result;
+use clap::Args;
 
-use crate::{cmd::xid::{private_options::PrivateOptions, utils::{read_public_key, xid_document_to_ur_string, XIDDocumentReadable}}, envelope_args::{ EnvelopeArgs, EnvelopeArgsLike }};
+use crate::{
+    cmd::xid::{
+        private_options::PrivateOptions,
+        utils::{
+            XIDDocumentReadable, read_public_key, xid_document_to_ur_string,
+        },
+    },
+    envelope_args::{EnvelopeArgs, EnvelopeArgsLike},
+};
 
 /// Remove the given key from the XID document.
 #[derive(Debug, Args)]
@@ -16,12 +24,10 @@ pub struct CommandArgs {
 }
 
 impl EnvelopeArgsLike for CommandArgs {
-    fn envelope(&self) -> Option<&str> {
-        self.envelope_args.envelope()
-    }
+    fn envelope(&self) -> Option<&str> { self.envelope_args.envelope() }
 }
 
-impl XIDDocumentReadable for CommandArgs { }
+impl XIDDocumentReadable for CommandArgs {}
 
 impl crate::exec::Exec for CommandArgs {
     fn exec(&self) -> Result<String> {
@@ -29,6 +35,9 @@ impl crate::exec::Exec for CommandArgs {
         let mut xid_document = self.read_xid_document()?;
         xid_document.remove_key(&public_keys)?;
 
-        Ok(xid_document_to_ur_string(&xid_document, PrivateOptions::Include))
+        Ok(xid_document_to_ur_string(
+            &xid_document,
+            PrivateOptions::Include,
+        ))
     }
 }

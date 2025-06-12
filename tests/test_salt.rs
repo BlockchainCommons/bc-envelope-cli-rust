@@ -1,5 +1,5 @@
-use indoc::indoc;
 use anyhow::Result;
+use indoc::indoc;
 
 mod common;
 use common::*;

@@ -3,22 +3,22 @@
 #[doc(hidden)]
 mod cmd;
 #[doc(hidden)]
-mod exec;
-#[doc(hidden)]
-mod styles;
-#[doc(hidden)]
 mod data_types;
+#[doc(hidden)]
+mod envelope_args;
+#[doc(hidden)]
+mod exec;
 #[doc(hidden)]
 mod pred_obj_args;
 #[doc(hidden)]
-mod envelope_args;
+mod styles;
 #[doc(hidden)]
 mod subject_args;
 #[doc(hidden)]
 mod utils;
 
-use clap::{Parser, Subcommand};
 use anyhow::Result;
+use clap::{Parser, Subcommand};
 
 use crate::exec::Exec;
 

@@ -1,6 +1,6 @@
+use anyhow::Result;
 use bc_envelope::prelude::*;
 use clap::Args;
-use anyhow::Result;
 
 /// Generate a private key base.
 ///
@@ -17,7 +17,8 @@ impl crate::exec::Exec for CommandArgs {
     fn exec(&self) -> Result<String> {
         if let Some(seed_ur) = &self.seed {
             let seed = bc_components::Seed::from_ur_string(seed_ur)?;
-            let private_key_base = bc_components::PrivateKeyBase::new_with_provider(seed);
+            let private_key_base =
+                bc_components::PrivateKeyBase::new_with_provider(seed);
             Ok(private_key_base.ur_string())
         } else {
             let private_key_base = bc_components::PrivateKeyBase::new();

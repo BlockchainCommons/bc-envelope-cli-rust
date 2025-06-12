@@ -1,13 +1,13 @@
 pub mod add;
-pub mod update;
-pub mod count;
-pub mod at;
 pub mod all;
+pub mod at;
+pub mod count;
 pub mod find;
 pub mod remove;
+pub mod update;
 
-use clap::{Subcommand, Args};
 use anyhow::Result;
+use clap::{Args, Subcommand};
 
 /// Work with a XID document's keys.
 #[derive(Debug, Args)]

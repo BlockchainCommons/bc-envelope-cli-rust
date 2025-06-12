@@ -1,9 +1,12 @@
-use bc_components::URI;
-use clap::Args;
 use anyhow::Result;
+use bc_components::URI;
 use bc_ur::prelude::*;
+use clap::Args;
 
-use crate::{cmd::xid::utils::XIDDocumentReadable, envelope_args::{ EnvelopeArgs, EnvelopeArgsLike }};
+use crate::{
+    cmd::xid::utils::XIDDocumentReadable,
+    envelope_args::{EnvelopeArgs, EnvelopeArgsLike},
+};
 
 /// Add a resolution method to a XID document
 #[derive(Debug, Args)]
@@ -18,12 +21,10 @@ pub struct CommandArgs {
 }
 
 impl EnvelopeArgsLike for CommandArgs {
-    fn envelope(&self) -> Option<&str> {
-        self.envelope_args.envelope()
-    }
+    fn envelope(&self) -> Option<&str> { self.envelope_args.envelope() }
 }
 
-impl XIDDocumentReadable for CommandArgs { }
+impl XIDDocumentReadable for CommandArgs {}
 
 impl crate::exec::Exec for CommandArgs {
     fn exec(&self) -> Result<String> {

@@ -37,7 +37,8 @@ impl From<PasswordDerivationType> for KeyDerivationMethod {
 /// In addition, the content key can be locked, potentially several ways:
 ///     - If a password is provided, it is used to lock the content key.
 ///     - If an SSH identity is provided, it is used to lock the content key.
-///     - If one or more recipients are provided, the envelope's subject is encrypted
+///     - If one or more recipients are provided, the envelope's subject is
+///       encrypted
 /// for those recipients using the content key.
 #[derive(Debug, Args)]
 #[group(skip)]
@@ -74,7 +75,7 @@ pub struct CommandArgs {
     /// The SSH agent key identity used to lock the content key.
     ///
     /// - If provided, the content key will be locked using the Ed25519 key
-    /// associated with the specified SSH identity.
+    ///   associated with the specified SSH identity.
     /// - If provided but empty:
     ///     - If multiple keys are available, an error is returned.
     ///     - Otherwise the only Ed25519 key in the SSH agent is used.

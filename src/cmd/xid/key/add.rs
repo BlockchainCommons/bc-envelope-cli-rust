@@ -1,16 +1,19 @@
-use bc_components::URI;
-use bc_xid::{ Key, PrivateKeyOptions };
-use clap::Args;
 use anyhow::Result;
+use bc_components::URI;
+use bc_xid::{Key, PrivateKeyOptions};
+use clap::Args;
 
 use crate::{
     cmd::xid::{
-        key_args::{ KeyArgs, KeyArgsLike },
+        key_args::{KeyArgs, KeyArgsLike},
         private_options::PrivateOptions,
-        utils::{ envelope_to_xid_ur_string, update_key, InputKey, XIDDocumentReadable },
+        utils::{
+            InputKey, XIDDocumentReadable, envelope_to_xid_ur_string,
+            update_key,
+        },
         xid_privilege::XIDPrivilege,
     },
-    envelope_args::{ EnvelopeArgs, EnvelopeArgsLike },
+    envelope_args::{EnvelopeArgs, EnvelopeArgsLike},
 };
 
 /// Add a key to the XID document.
@@ -25,31 +28,19 @@ pub struct CommandArgs {
 }
 
 impl KeyArgsLike for CommandArgs {
-    fn nickname(&self) -> &str {
-        self.key_args.nickname()
-    }
+    fn nickname(&self) -> &str { self.key_args.nickname() }
 
-    fn private_opts(&self) -> PrivateOptions {
-        self.key_args.private_opts()
-    }
+    fn private_opts(&self) -> PrivateOptions { self.key_args.private_opts() }
 
-    fn endpoints(&self) -> &[URI] {
-        self.key_args.endpoints()
-    }
+    fn endpoints(&self) -> &[URI] { self.key_args.endpoints() }
 
-    fn permissions(&self) -> &[XIDPrivilege] {
-        self.key_args.permissions()
-    }
+    fn permissions(&self) -> &[XIDPrivilege] { self.key_args.permissions() }
 
-    fn keys(&self) -> Option<&str> {
-        self.key_args.keys()
-    }
+    fn keys(&self) -> Option<&str> { self.key_args.keys() }
 }
 
 impl EnvelopeArgsLike for CommandArgs {
-    fn envelope(&self) -> Option<&str> {
-        self.envelope_args.envelope()
-    }
+    fn envelope(&self) -> Option<&str> { self.envelope_args.envelope() }
 }
 
 impl XIDDocumentReadable for CommandArgs {}
@@ -64,10 +55,15 @@ impl crate::exec::Exec for CommandArgs {
             InputKey::Private(private_key_base) => {
                 Key::new_with_private_key_base(private_key_base.clone())
             }
-            InputKey::Public(public_keys) => { Key::new(public_keys.clone()) }
+            InputKey::Public(public_keys) => Key::new(public_keys.clone()),
         };
 
-        update_key(&mut key, self.nickname(), self.endpoints(), self.permissions());
+        update_key(
+            &mut key,
+            self.nickname(),
+            self.endpoints(),
+            self.permissions(),
+        );
 
         xid_document.add_key(key)?;
 

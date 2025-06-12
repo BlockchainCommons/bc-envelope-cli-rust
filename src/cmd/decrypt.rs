@@ -59,9 +59,9 @@ pub struct CommandArgs {
     /// The SSH identity to use to decrypt the envelope's subject.
     ///
     /// - If provided, the SSH agent will be used to find the Ed25519 key
-    /// associated with the identity.
+    ///   associated with the identity.
     /// - If provided but empty, the first available Ed25519 key in the SSH
-    /// agent is used.
+    ///   agent is used.
     #[arg(
         long,
         short,
@@ -100,19 +100,23 @@ impl crate::exec::Exec for CommandArgs {
             )?;
             Ok(envelope.unlock_subject(password.as_bytes())?.ur_string())
         } else if let Some(recipient_ur) = &self.recipient {
-            // If a recipient's private key is provided, decrypt the subject using it
+            // If a recipient's private key is provided, decrypt the subject
+            // using it
             let recipient = PrivateKeyBase::from_ur_string(recipient_ur)?;
             Ok(envelope
                 .decrypt_subject_to_recipient(&recipient)?
                 .ur_string())
         } else if let Some(ssh_id) = &self.ssh_id {
-            // If an SSH identity is provided, decrypt the subject using the SSH agent
+            // If an SSH identity is provided, decrypt the subject using the SSH
+            // agent
             if !envelope.is_locked_with_ssh_agent() {
                 bail!("envelope is not locked with an SSH agent");
             }
             Ok(envelope.unlock_subject(ssh_id)?.ur_string())
         } else {
-            bail!("missing unlock method: either a symmetric key, password, recipient's private key, or SSH identity must be provided");
+            bail!(
+                "missing unlock method: either a symmetric key, password, recipient's private key, or SSH identity must be provided"
+            );
         }
     }
 }

@@ -1,21 +1,26 @@
-use std::{ collections::HashSet, io::Read, process::Command, str };
-use anyhow::{ bail, Result };
+use std::{
+    collections::HashSet,
+    env,
+    io::Read,
+    path::{Path, PathBuf},
+    process::Command,
+    str,
+};
+
+use anyhow::{Result, bail};
 use bc_components::XID;
 use bc_envelope::prelude::*;
 use bc_xid::XIDDocument;
-use std::{
-    env,
-    path::{Path, PathBuf},
-};
 
-/// Reads a password either from the provided argument, via the system's askpass tool when enabled,
-/// or interactively via rpassword.
+/// Reads a password either from the provided argument, via the system's askpass
+/// tool when enabled, or interactively via rpassword.
 ///
 /// # Arguments
 ///
 /// * `prompt` - The prompt to show the user.
 /// * `password` - An optional password string.
-/// * `use_askpass` - Boolean flag to indicate if the system's askpass should be used.
+/// * `use_askpass` - Boolean flag to indicate if the system's askpass should be
+///   used.
 ///
 /// # Returns
 ///
@@ -27,19 +32,21 @@ pub fn read_password(
     password_override: Option<&str>,
     use_askpass: bool,
 ) -> anyhow::Result<String> {
-    // 1.  If the caller already supplied a password, trust it and return.
+    // 1. If the caller already supplied a password, trust it and return.
     if let Some(p) = password_override {
         return Ok(p.to_owned());
     }
 
-    // 2.  If the caller wants a GUI prompt, try to discover and invoke one.
+    // 2. If the caller wants a GUI prompt, try to discover and invoke one.
     let password = if use_askpass {
         if let Some(cmd) = resolve_askpass() {
             let out = Command::new(cmd).arg(prompt).output()?;
 
             if out.status.success() {
                 let pass = str::from_utf8(&out.stdout)
-                    .map_err(|e| anyhow::anyhow!("askpass produced invalid UTF‑8: {e}"))?
+                    .map_err(|e| {
+                        anyhow::anyhow!("askpass produced invalid UTF‑8: {e}")
+                    })?
                     .trim_end_matches(&['\n', '\r'][..])
                     .to_owned();
                 Some(pass)
@@ -54,12 +61,13 @@ pub fn read_password(
         }
     } else {
         None
-    }.unwrap_or_else(|| {
-        // 3.  Last resort: prompt on the terminal.
+    }
+    .unwrap_or_else(|| {
+        // 3. Last resort: prompt on the terminal.
         rpassword::prompt_password(prompt).unwrap_or_default()
     });
 
-    // 4.  If the password is empty, return an error.
+    // 4. If the password is empty, return an error.
     if password.is_empty() {
         bail!("Password cannot be empty");
     }
@@ -143,8 +151,8 @@ pub fn read_envelope(envelope: Option<&str>) -> Result<Envelope> {
 pub fn parse_digest(target: &str) -> Result<Digest> {
     let ur = UR::from_ur_string(target)?;
     let digest = match ur.ur_type_str() {
-        "digest" => { Digest::from_ur(&ur)? }
-        "envelope" => { Envelope::from_ur(&ur)?.digest().into_owned() }
+        "digest" => Digest::from_ur(&ur)?,
+        "envelope" => Envelope::from_ur(&ur)?.digest().into_owned(),
         _ => {
             bail!("Invalid digest type: {}", ur.ur_type_str());
         }
@@ -157,6 +165,9 @@ pub fn parse_digests(target: &str) -> Result<HashSet<Digest>> {
     if target.is_empty() {
         Ok(HashSet::new())
     } else {
-        target.split(' ').map(parse_digest).collect::<Result<HashSet<Digest>>>()
+        target
+            .split(' ')
+            .map(parse_digest)
+            .collect::<Result<HashSet<Digest>>>()
     }
 }

@@ -1,18 +1,17 @@
-use bc_components::URI;
-use bc_xid::{ HasPermissions, Service };
-use clap::Args;
 use anyhow::Result;
+use bc_components::URI;
+use bc_xid::{HasPermissions, Service};
+use clap::Args;
 
+use super::service_args::{ServiceArgs, ServiceArgsLike};
 use crate::{
     cmd::xid::{
         private_options::PrivateOptions,
-        utils::{ xid_document_to_ur_string, XIDDocumentReadable },
+        utils::{XIDDocumentReadable, xid_document_to_ur_string},
         xid_privilege::XIDPrivilege,
     },
-    envelope_args::{ EnvelopeArgs, EnvelopeArgsLike },
+    envelope_args::{EnvelopeArgs, EnvelopeArgsLike},
 };
-
-use super::service_args::{ ServiceArgs, ServiceArgsLike };
 
 /// Add a service to the XID document.
 #[derive(Debug, Args)]
@@ -26,25 +25,15 @@ pub struct CommandArgs {
 }
 
 impl ServiceArgsLike for CommandArgs {
-    fn uri(&self) -> Option<&URI> {
-        self.service_args.uri()
-    }
+    fn uri(&self) -> Option<&URI> { self.service_args.uri() }
 
-    fn name(&self) -> Option<&str> {
-        self.service_args.name()
-    }
+    fn name(&self) -> Option<&str> { self.service_args.name() }
 
-    fn capability(&self) -> Option<&str> {
-        self.service_args.capability()
-    }
+    fn capability(&self) -> Option<&str> { self.service_args.capability() }
 
-    fn permissions(&self) -> &[XIDPrivilege] {
-        self.service_args.permissions()
-    }
+    fn permissions(&self) -> &[XIDPrivilege] { self.service_args.permissions() }
 
-    fn keys(&self) -> &[bc_envelope::PublicKeys] {
-        self.service_args.keys()
-    }
+    fn keys(&self) -> &[bc_envelope::PublicKeys] { self.service_args.keys() }
 
     fn delegates(&self) -> &[bc_xid::XIDDocument] {
         self.service_args.delegates()
@@ -52,9 +41,7 @@ impl ServiceArgsLike for CommandArgs {
 }
 
 impl EnvelopeArgsLike for CommandArgs {
-    fn envelope(&self) -> Option<&str> {
-        self.envelope_args.envelope()
-    }
+    fn envelope(&self) -> Option<&str> { self.envelope_args.envelope() }
 }
 
 impl XIDDocumentReadable for CommandArgs {}
@@ -96,6 +83,9 @@ impl crate::exec::Exec for CommandArgs {
         xid_document.check_service_consistency(&service)?;
         xid_document.add_service(service)?;
 
-        Ok(xid_document_to_ur_string(&xid_document, PrivateOptions::Include))
+        Ok(xid_document_to_ur_string(
+            &xid_document,
+            PrivateOptions::Include,
+        ))
     }
 }

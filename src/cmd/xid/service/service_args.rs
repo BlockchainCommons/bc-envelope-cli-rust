@@ -1,8 +1,8 @@
+use anyhow::Result;
 use bc_components::URI;
 use bc_envelope::PublicKeys;
 use bc_ur::URDecodable;
 use bc_xid::XIDDocument;
-use anyhow::Result;
 use clap::Args;
 
 use crate::cmd::xid::{utils::read_uri, xid_privilege::XIDPrivilege};
@@ -15,9 +15,7 @@ pub trait ServiceArgsLike {
     fn keys(&self) -> &[PublicKeys];
     fn delegates(&self) -> &[XIDDocument];
 
-    fn read_uri(&self) -> Result<URI> {
-        read_uri(self.uri())
-    }
+    fn read_uri(&self) -> Result<URI> { read_uri(self.uri()) }
 }
 
 fn parse_public_keys(s: &str) -> Result<PublicKeys, String> {
@@ -50,7 +48,12 @@ pub struct ServiceArgs {
     delegates: Vec<XIDDocument>,
 
     /// Grant a specific permission to the service. May be repeated.
-    #[arg(long = "allow", name = "PRIVILEGE", default_value = "all", num_args = 1)]
+    #[arg(
+        long = "allow",
+        name = "PRIVILEGE",
+        default_value = "all",
+        num_args = 1
+    )]
     permissions: Vec<XIDPrivilege>,
 
     /// The service URI. If omitted, the URI will be read from stdin.
@@ -58,27 +61,15 @@ pub struct ServiceArgs {
 }
 
 impl ServiceArgsLike for ServiceArgs {
-    fn name(&self) -> Option<&str> {
-        self.name.as_deref()
-    }
+    fn name(&self) -> Option<&str> { self.name.as_deref() }
 
-    fn capability(&self) -> Option<&str> {
-        self.capability.as_deref()
-    }
+    fn capability(&self) -> Option<&str> { self.capability.as_deref() }
 
-    fn keys(&self) -> &[PublicKeys] {
-        &self.keys
-    }
+    fn keys(&self) -> &[PublicKeys] { &self.keys }
 
-    fn delegates(&self) -> &[XIDDocument] {
-        &self.delegates
-    }
+    fn delegates(&self) -> &[XIDDocument] { &self.delegates }
 
-    fn permissions(&self) -> &[XIDPrivilege] {
-        &self.permissions
-    }
+    fn permissions(&self) -> &[XIDPrivilege] { &self.permissions }
 
-    fn uri(&self) -> Option<&URI> {
-        self.uri.as_ref()
-    }
+    fn uri(&self) -> Option<&URI> { self.uri.as_ref() }
 }

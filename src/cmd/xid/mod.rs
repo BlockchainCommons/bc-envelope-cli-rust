@@ -1,16 +1,16 @@
 pub mod delegate;
 pub mod id;
-pub mod key_args;
-pub mod xid_privilege;
 pub mod key;
+pub mod key_args;
 pub mod method;
 pub mod new;
 pub mod private_options;
-pub mod utils;
 pub mod service;
+pub mod utils;
+pub mod xid_privilege;
 
-use clap::{Subcommand, Args};
 use anyhow::Result;
+use clap::{Args, Subcommand};
 
 /// Work with Extensible Identifiers (XID).
 #[derive(Debug, Args)]

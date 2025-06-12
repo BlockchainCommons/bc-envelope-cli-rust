@@ -12,8 +12,8 @@ pub struct CommandArgs {
     #[arg(long = "type", id = "TYPE", default_value = "envelope")]
     format_type: FormatType,
 
-    /// For `tree` and `mermaid`, hides the NODE case and digests, which provides a
-    /// more semantically readable tree output.
+    /// For `tree` and `mermaid`, hides the NODE case and digests, which
+    /// provides a more semantically readable tree output.
     #[arg(long)] // No short because it conflicts with `-h` for help.
     hide_nodes: bool,
 
@@ -88,10 +88,18 @@ pub enum MermaidOrientationType {
 impl From<MermaidOrientationType> for MermaidOrientation {
     fn from(value: MermaidOrientationType) -> Self {
         match value {
-            MermaidOrientationType::LeftToRight => MermaidOrientation::LeftToRight,
-            MermaidOrientationType::TopToBottom => MermaidOrientation::TopToBottom,
-            MermaidOrientationType::RightToLeft => MermaidOrientation::RightToLeft,
-            MermaidOrientationType::BottomToTop => MermaidOrientation::BottomToTop,
+            MermaidOrientationType::LeftToRight => {
+                MermaidOrientation::LeftToRight
+            }
+            MermaidOrientationType::TopToBottom => {
+                MermaidOrientation::TopToBottom
+            }
+            MermaidOrientationType::RightToLeft => {
+                MermaidOrientation::RightToLeft
+            }
+            MermaidOrientationType::BottomToTop => {
+                MermaidOrientation::BottomToTop
+            }
         }
     }
 }
@@ -132,7 +140,7 @@ impl crate::exec::Exec for CommandArgs {
                     .hide_nodes(self.hide_nodes)
                     .theme(self.theme.into())
                     .monochrome(self.monochrome)
-                    .orientation(self.orientation.into())
+                    .orientation(self.orientation.into()),
             ),
             FormatType::Diag => e.diagnostic(),
             FormatType::Cbor => hex::encode(e.tagged_cbor_data()),

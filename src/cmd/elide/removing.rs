@@ -1,10 +1,9 @@
+use anyhow::Result;
+use bc_envelope::prelude::*;
 use clap::Args;
 
-use bc_envelope::prelude::*;
-use anyhow::Result;
-
+use super::elide_args::{Action, ElideArgs, ElideArgsLike};
 use crate::envelope_args::{EnvelopeArgs, EnvelopeArgsLike};
-use super::elide_args::{ElideArgs, ElideArgsLike, Action};
 
 /// Elide all objects in the target.
 #[derive(Debug, Args)]
@@ -18,23 +17,15 @@ pub struct CommandArgs {
 }
 
 impl ElideArgsLike for CommandArgs {
-    fn action(&self) -> Action {
-        self.elide_args.action()
-    }
+    fn action(&self) -> Action { self.elide_args.action() }
 
-    fn key(&self) -> Option<&str> {
-        self.elide_args.key()
-    }
+    fn key(&self) -> Option<&str> { self.elide_args.key() }
 
-    fn target(&self) -> &String {
-        self.elide_args.target()
-    }
+    fn target(&self) -> &String { self.elide_args.target() }
 }
 
 impl EnvelopeArgsLike for CommandArgs {
-    fn envelope(&self) -> Option<&str> {
-        self.envelope_args.envelope()
-    }
+    fn envelope(&self) -> Option<&str> { self.envelope_args.envelope() }
 }
 
 impl crate::exec::Exec for CommandArgs {

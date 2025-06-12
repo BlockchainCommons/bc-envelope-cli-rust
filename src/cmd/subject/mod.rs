@@ -1,8 +1,8 @@
-pub mod r#type;
 pub mod assertion;
+pub mod r#type;
 
-use clap::{Subcommand, Args};
 use anyhow::Result;
+use clap::{Args, Subcommand};
 
 /// Create an envelope with the given subject.
 #[derive(Debug, Args)]

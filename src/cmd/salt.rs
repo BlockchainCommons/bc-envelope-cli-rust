@@ -1,8 +1,8 @@
+use anyhow::Result;
+use bc_envelope::prelude::*;
 use clap::Args;
 
 use crate::envelope_args::{EnvelopeArgs, EnvelopeArgsLike};
-use bc_envelope::prelude::*;
-use anyhow::Result;
 
 /// Add random salt to the envelope.
 ///
@@ -22,9 +22,7 @@ pub struct CommandArgs {
 }
 
 impl EnvelopeArgsLike for CommandArgs {
-    fn envelope(&self) -> Option<&str> {
-        self.envelope_args.envelope()
-    }
+    fn envelope(&self) -> Option<&str> { self.envelope_args.envelope() }
 }
 
 impl crate::exec::Exec for CommandArgs {
@@ -34,6 +32,7 @@ impl crate::exec::Exec for CommandArgs {
             envelope.add_salt_with_len(size)?
         } else {
             envelope.add_salt()
-        }).ur_string())
+        })
+        .ur_string())
     }
 }

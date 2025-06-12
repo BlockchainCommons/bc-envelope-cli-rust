@@ -6,14 +6,13 @@ pub mod prv_keys;
 pub mod pub_keys;
 pub mod seed;
 pub mod signer;
-pub mod verifier;
 pub mod signer_type;
+pub mod verifier;
 pub use signer_type::SignerType;
 pub mod hash_type;
-pub use hash_type::HashType;
-
-use clap::{Subcommand, Args};
 use anyhow::Result;
+use clap::{Args, Subcommand};
+pub use hash_type::HashType;
 
 /// Utilities to generate and convert various objects.
 #[derive(Debug, Args)]

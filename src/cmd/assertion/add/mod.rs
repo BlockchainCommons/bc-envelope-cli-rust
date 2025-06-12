@@ -1,8 +1,8 @@
-pub mod pred_obj;
 pub mod envelope;
+pub mod pred_obj;
 
-use clap::{Subcommand, Args};
 use anyhow::Result;
+use clap::{Args, Subcommand};
 
 /// Add an assertion to the given envelope.
 #[derive(Debug, Args)]

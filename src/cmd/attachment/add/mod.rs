@@ -1,8 +1,8 @@
 pub mod components;
 pub mod envelope;
 
-use clap::{Subcommand, Args};
 use anyhow::Result;
+use clap::{Args, Subcommand};
 
 /// Add an assertion to the given envelope.
 #[derive(Debug, Args)]

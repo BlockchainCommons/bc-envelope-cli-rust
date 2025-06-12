@@ -6,8 +6,8 @@ pub mod create;
 pub mod find;
 pub mod remove;
 
-use clap::{Subcommand, Args};
 use anyhow::Result;
+use clap::{Args, Subcommand};
 
 /// Work with the envelope's assertions.
 #[derive(Debug, Args)]

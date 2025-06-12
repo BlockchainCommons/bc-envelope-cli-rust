@@ -1,12 +1,13 @@
-use indoc::indoc;
 use anyhow::Result;
+use indoc::indoc;
 
 mod common;
 use common::*;
 
 #[test]
 fn test_compress_1() -> Result<()> {
-    let compressed = run_cli(&["compress", "--subject", ALICE_KNOWS_BOB_EXAMPLE])?;
+    let compressed =
+        run_cli(&["compress", "--subject", ALICE_KNOWS_BOB_EXAMPLE])?;
 
     #[rustfmt::skip]
     run_cli_expect(
@@ -30,10 +31,7 @@ fn test_compress_2() -> Result<()> {
     assert_eq!(CREDENTIAL_EXAMPLE.len(), 1210);
     assert_eq!(compressed.len(), 1036);
 
-    run_cli_expect(
-        &["format", &compressed],
-        "COMPRESSED"
-    )?;
+    run_cli_expect(&["format", &compressed], "COMPRESSED")?;
     let decompressed = run_cli(&["uncompress", &compressed])?;
     assert_eq!(decompressed, CREDENTIAL_EXAMPLE);
     Ok(())

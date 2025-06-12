@@ -1,5 +1,5 @@
-use anyhow::{bail, Result};
-use bc_components::{tags::TAG_ENVELOPE, Digest, ARID, URI, UUID, XID};
+use anyhow::{Result, bail};
+use bc_components::{ARID, Digest, URI, UUID, XID, tags::TAG_ENVELOPE};
 use bc_envelope::prelude::*;
 use clap::{Args, ValueEnum};
 
@@ -83,9 +83,7 @@ pub struct CommandArgs {
 }
 
 impl EnvelopeArgsLike for CommandArgs {
-    fn envelope(&self) -> Option<&str> {
-        self.envelope_args.envelope()
-    }
+    fn envelope(&self) -> Option<&str> { self.envelope_args.envelope() }
 }
 
 impl crate::exec::Exec for CommandArgs {
@@ -96,20 +94,38 @@ impl crate::exec::Exec for CommandArgs {
             SubjectType::Object => extract_object(envelope)?,
             SubjectType::Predicate => extract_predicate(envelope)?,
 
-            SubjectType::Arid => envelope.extract_subject::<ARID>()?.ur_string(),
+            SubjectType::Arid => {
+                envelope.extract_subject::<ARID>()?.ur_string()
+            }
             SubjectType::AridHex => envelope.extract_subject::<ARID>()?.hex(),
-            SubjectType::Bool => envelope.extract_subject::<bool>()?.to_string(),
+            SubjectType::Bool => {
+                envelope.extract_subject::<bool>()?.to_string()
+            }
             SubjectType::Cbor => extract_cbor_string(envelope)?,
-            SubjectType::Data => hex::encode(envelope.subject().try_leaf()?.to_cbor().try_into_byte_string()?),
-            SubjectType::Date => envelope.extract_subject::<dcbor::Date>()?.to_string(),
-            SubjectType::Digest => envelope.extract_subject::<Digest>()?.ur_string(),
+            SubjectType::Data => hex::encode(
+                envelope
+                    .subject()
+                    .try_leaf()?
+                    .to_cbor()
+                    .try_into_byte_string()?,
+            ),
+            SubjectType::Date => {
+                envelope.extract_subject::<dcbor::Date>()?.to_string()
+            }
+            SubjectType::Digest => {
+                envelope.extract_subject::<Digest>()?.ur_string()
+            }
             SubjectType::Envelope => envelope.subject().ur_string(),
             SubjectType::Known => extract_known_value_string(envelope)?,
-            SubjectType::Number => envelope.extract_subject::<f64>()?.to_string(),
+            SubjectType::Number => {
+                envelope.extract_subject::<f64>()?.to_string()
+            }
             SubjectType::String => envelope.extract_subject::<String>()?,
             SubjectType::Ur => self.extract_ur(envelope)?,
             SubjectType::Uri => envelope.extract_subject::<URI>()?.to_string(),
-            SubjectType::Uuid => envelope.extract_subject::<UUID>()?.to_string(),
+            SubjectType::Uuid => {
+                envelope.extract_subject::<UUID>()?.to_string()
+            }
             SubjectType::Wrapped => envelope.unwrap_envelope()?.ur_string(),
             SubjectType::Xid => envelope.extract_subject::<XID>()?.ur_string(),
         };
@@ -119,8 +135,15 @@ impl crate::exec::Exec for CommandArgs {
 
 fn extract_assertion(envelope: Envelope) -> Result<String> {
     if let Some(assertion) = envelope.as_assertion() {
-        let pred_obj = [assertion.clone().as_predicate().unwrap(), assertion.as_object().unwrap()];
-        Ok(pred_obj.into_iter().map(|e| e.ur_string()).collect::<Vec<String>>().join("\n"))
+        let pred_obj = [
+            assertion.clone().as_predicate().unwrap(),
+            assertion.as_object().unwrap(),
+        ];
+        Ok(pred_obj
+            .into_iter()
+            .map(|e| e.ur_string())
+            .collect::<Vec<String>>()
+            .join("\n"))
     } else {
         bail!("Envelope is not an assertion.");
     }
@@ -146,12 +169,14 @@ impl CommandArgs {
     fn extract_ur(&self, envelope: Envelope) -> Result<String> {
         Ok(if let Some(cbor) = envelope.clone().subject().as_leaf() {
             if let CBORCase::Tagged(tag, untagged_cbor) = cbor.into_case() {
-                let known_tag = with_tags!(|tags: &dyn dcbor::TagsStoreTrait| {
-                    tags.tag_for_value(tag.value())
-                });
+                let known_tag =
+                    with_tags!(|tags: &dyn dcbor::TagsStoreTrait| {
+                        tags.tag_for_value(tag.value())
+                    });
                 // Default to the provided ur_type if there is one.
                 let mut ur_type: Option<String> = self.ur_type.clone();
-                // If there is a known_tag and it has a name, then use that as the ur_type.
+                // If there is a known_tag and it has a name, then use that as
+                // the ur_type.
                 if let Some(known_tag) = known_tag {
                     if let Some(name) = known_tag.name() {
                         ur_type = Some(name.to_string());
@@ -163,16 +188,19 @@ impl CommandArgs {
                 }
                 bc_ur::UR::new(ur_type.unwrap(), untagged_cbor)?.to_string()
             } else {
-                bail!("Can't convert to UR: CBOR in envelope subject has no tag");
+                bail!(
+                    "Can't convert to UR: CBOR in envelope subject has no tag"
+                );
             }
         } else if envelope.is_wrapped() {
             if self.ur_tag.is_some() || self.ur_type.is_some() {
                 if self.ur_tag != Some(TAG_ENVELOPE) {
                     bail!("UR tag mismatch");
                 }
-                let envelope_name = with_format_context!(|context: &FormatContext| {
-                    context.tags().name_for_value(TAG_ENVELOPE)
-                });
+                let envelope_name =
+                    with_format_context!(|context: &FormatContext| {
+                        context.tags().name_for_value(TAG_ENVELOPE)
+                    });
                 if self.ur_type != Some(envelope_name) {
                     bail!("UR type mismatch");
                 }

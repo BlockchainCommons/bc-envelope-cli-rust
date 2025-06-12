@@ -11,10 +11,12 @@ fn test_invalid_command() -> Result<()> {
 
 #[test]
 fn test_invalid_data() -> Result<()> {
-    assert!(run_cli(&[
-        "format",
-        "ur:seed/oyadgdtokgdpwkrsonfdltvdwttsnddneonbmdbntakkss"
-    ])
-    .is_err());
+    assert!(
+        run_cli(&[
+            "format",
+            "ur:seed/oyadgdtokgdpwkrsonfdltvdwttsnddneonbmdbntakkss"
+        ])
+        .is_err()
+    );
     Ok(())
 }

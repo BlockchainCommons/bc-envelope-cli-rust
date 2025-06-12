@@ -1,8 +1,8 @@
 use std::io::Read;
 
-use clap::Args;
-use bc_envelope::prelude::*;
 use anyhow::Result;
+use bc_envelope::prelude::*;
+use clap::Args;
 
 /// Generate a digest from the input data.
 ///

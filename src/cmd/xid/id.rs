@@ -1,9 +1,12 @@
-use bc_ur::prelude::*;
-use clap::{Args, ValueEnum};
 use anyhow::Result;
 use bc_components::XIDProvider;
+use bc_ur::prelude::*;
+use clap::{Args, ValueEnum};
 
-use crate::{cmd::xid::utils::XIDDocumentReadable, envelope_args::{ EnvelopeArgs, EnvelopeArgsLike }};
+use crate::{
+    cmd::xid::utils::XIDDocumentReadable,
+    envelope_args::{EnvelopeArgs, EnvelopeArgsLike},
+};
 
 #[derive(ValueEnum, Copy, Clone, Debug, PartialEq, Eq, Default)]
 pub enum IDFormat {
@@ -25,7 +28,8 @@ pub enum IDFormat {
 #[derive(Debug, Args)]
 #[group(skip)]
 pub struct CommandArgs {
-    /// Output format of the XID identifier. May be repeated to output multiple formats.
+    /// Output format of the XID identifier. May be repeated to output multiple
+    /// formats.
     #[arg(long, default_value = "ur", num_args = 1)]
     format: Vec<IDFormat>,
 
@@ -34,24 +38,29 @@ pub struct CommandArgs {
 }
 
 impl EnvelopeArgsLike for CommandArgs {
-    fn envelope(&self) -> Option<&str> {
-        self.envelope_args.envelope()
-    }
+    fn envelope(&self) -> Option<&str> { self.envelope_args.envelope() }
 }
 
-impl XIDDocumentReadable for CommandArgs { }
+impl XIDDocumentReadable for CommandArgs {}
 
 impl crate::exec::Exec for CommandArgs {
     fn exec(&self) -> Result<String> {
         let xid_document = self.read_xid_document()?;
-        let result = self.format.iter().map(|&format| {
-            match format {
+        let result = self
+            .format
+            .iter()
+            .map(|&format| match format {
                 IDFormat::Ur => xid_document.xid().ur_string(),
                 IDFormat::Hex => xid_document.xid().to_string(),
-                IDFormat::Bytewords => xid_document.xid().bytewords_identifier(true),
-                IDFormat::Bytemoji => xid_document.xid().bytemoji_identifier(true),
-            }
-        }).collect::<Vec<_>>().join("\n");
+                IDFormat::Bytewords => {
+                    xid_document.xid().bytewords_identifier(true)
+                }
+                IDFormat::Bytemoji => {
+                    xid_document.xid().bytemoji_identifier(true)
+                }
+            })
+            .collect::<Vec<_>>()
+            .join("\n");
         Ok(result)
     }
 }

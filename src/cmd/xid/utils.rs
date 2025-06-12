@@ -1,13 +1,13 @@
+use anyhow::{Result, bail};
 use bc_components::URI;
-use bc_envelope::{ Envelope, PrivateKeyBase, PublicKeys };
+use bc_envelope::{Envelope, PrivateKeyBase, PublicKeys};
 use bc_ur::prelude::*;
+use bc_xid::{
+    HasNickname, HasPermissions, Key, PrivateKeyOptions, XIDDocument,
+};
 
-use anyhow::{ Result, bail };
-use bc_xid::{ HasNickname, HasPermissions, Key, PrivateKeyOptions, XIDDocument };
-
+use super::{private_options::PrivateOptions, xid_privilege::XIDPrivilege};
 use crate::envelope_args::EnvelopeArgsLike;
-
-use super::{ private_options::PrivateOptions, xid_privilege::XIDPrivilege };
 
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub enum InputKey {
@@ -25,13 +25,16 @@ pub fn read_key(key: Option<&str>) -> Result<InputKey> {
     if key_string.is_empty() {
         bail!("No key provided");
     }
-    let input_key = if let Ok(public_keys) = PublicKeys::from_ur_string(&key_string) {
-        InputKey::Public(public_keys)
-    } else if let Ok(private_key_base) = PrivateKeyBase::from_ur_string(&key_string) {
-        InputKey::Private(private_key_base)
-    } else {
-        bail!("Invalid public or private key base");
-    };
+    let input_key =
+        if let Ok(public_keys) = PublicKeys::from_ur_string(&key_string) {
+            InputKey::Public(public_keys)
+        } else if let Ok(private_key_base) =
+            PrivateKeyBase::from_ur_string(&key_string)
+        {
+            InputKey::Private(private_key_base)
+        } else {
+            bail!("Invalid public or private key base");
+        };
     Ok(input_key)
 }
 
@@ -43,7 +46,12 @@ pub fn read_public_key(key: Option<&str>) -> Result<PublicKeys> {
     }
 }
 
-pub fn update_key(key: &mut Key, nickname: &str, endpoints: &[URI], permissions: &[XIDPrivilege]) {
+pub fn update_key(
+    key: &mut Key,
+    nickname: &str,
+    endpoints: &[URI],
+    permissions: &[XIDPrivilege],
+) {
     if !nickname.is_empty() {
         key.set_nickname(nickname);
     }
@@ -88,7 +96,7 @@ pub fn envelope_to_xid_ur_string(envelope: &Envelope) -> String {
 
 pub fn xid_document_to_ur_string(
     xid_document: &XIDDocument,
-    private_opts: PrivateOptions
+    private_opts: PrivateOptions,
 ) -> String {
     let options = PrivateKeyOptions::from(private_opts);
     let unsigned_envelope = xid_document.to_unsigned_envelope_opt(options);

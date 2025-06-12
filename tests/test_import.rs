@@ -26,14 +26,11 @@ const ED25519_PRIVATE_KEY_SSH: &str = indoc! {"
     -----END OPENSSH PRIVATE KEY-----
 "};
 
-const ED25519_PRIVATE_KEY_UR: &str =
-    "ur:signing-private-key/tanehnkkadotdpdpdpdpdpfwfeflgaglcxgwgdfeglgugufdcxgdgmgahffpghfecxgrfehkdpdpdpdpdpbkideofwjzidjtglknhsfxehjphthdjejyieimfefpfpfpfpfpfwfleckoidjngofpfpfpfpfeidjneskphtgyfpfpfpfpfpfpfpfpfpfwfpfpfpfpgtktfpfpfpfpjykniaeyiojyhthgbkgykkglghgoksgwgyfpfpfpfxfwidimfejzghjljojoiofpdyiheeiojokkdykpetfykpgminjeetetjnehioiohtflhfjoknjyjtihfxjsfphkfpfpfpfpgrfpkoecimimgwgsdnhkeebkkniofpfpfpfpjykniaeyiojyhthggykkglghgoksgwgyfpfpfpfxfwidimfejzghjljojoiofpdyiheeiojokkdykpetfykpgminjeetetjnehioiohtflhfjoknjyjtihfxjsfphkfpbkfpfpfpfefpemdldlecgrhkkokoenfgjliminktjsdngrfeisgaksgmjnfpiejeksjeeciogthdgseejkjojsknfwiogagtehkpgtguhfgwinjnjnfpfygmeminfxjtgsguemktgwecflbkgrghknkkidhgfxfwjehthgjtgweyieeegrjlfwiofpfpfpfpfdfdiekoidflhtfphfeyesjkhtjtgtjyghhgfgimgyjneskohskkehgyiajnetkpidflesimhkhgktfwbkdpdpdpdpdpfeglfycxgwgdfeglgugufdcxgdgmgahffpghfecxgrfehkdpdpdpdpdpbkgtctcyrd";
+const ED25519_PRIVATE_KEY_UR: &str = "ur:signing-private-key/tanehnkkadotdpdpdpdpdpfwfeflgaglcxgwgdfeglgugufdcxgdgmgahffpghfecxgrfehkdpdpdpdpdpbkideofwjzidjtglknhsfxehjphthdjejyieimfefpfpfpfpfpfwfleckoidjngofpfpfpfpfeidjneskphtgyfpfpfpfpfpfpfpfpfpfwfpfpfpfpgtktfpfpfpfpjykniaeyiojyhthgbkgykkglghgoksgwgyfpfpfpfxfwidimfejzghjljojoiofpdyiheeiojokkdykpetfykpgminjeetetjnehioiohtflhfjoknjyjtihfxjsfphkfpfpfpfpgrfpkoecimimgwgsdnhkeebkkniofpfpfpfpjykniaeyiojyhthggykkglghgoksgwgyfpfpfpfxfwidimfejzghjljojoiofpdyiheeiojokkdykpetfykpgminjeetetjnehioiohtflhfjoknjyjtihfxjsfphkfpbkfpfpfpfefpemdldlecgrhkkokoenfgjliminktjsdngrfeisgaksgmjnfpiejeksjeeciogthdgseejkjojsknfwiogagtehkpgtguhfgwinjnjnfpfygmeminfxjtgsguemktgwecflbkgrghknkkidhgfxfwjehthgjtgweyieeegrjlfwiofpfpfpfpfdfdiekoidflhtfphfeyesjkhtjtgtjyghhgfgimgyjneskohskkehgyiajnetkpidflesimhkhgktfwbkdpdpdpdpdpfeglfycxgwgdfeglgugufdcxgdgmgahffpghfecxgrfehkdpdpdpdpdpbkgtctcyrd";
 
-const ED25519_PUBLIC_KEY_SSH: &str =
-    "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIFuMSVOimmADR7iCnLS7wO5GKTzybWCBkZWnO2d4KoBg wolf@Wolfs-MacBook-Pro.local";
+const ED25519_PUBLIC_KEY_SSH: &str = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIFuMSVOimmADR7iCnLS7wO5GKTzybWCBkZWnO2d4KoBg wolf@Wolfs-MacBook-Pro.local";
 
-const ED25519_PUBLIC_KEY_UR: &str =
-    "ur:signing-public-key/tanehsksjnjkjkisdpihieeyececehescxfpfpfpfpfxeoglknhsfxehjzhtfygaehglghfeecfpfpfpfpgafgkpgtguhfgwinjnjnfpfygmeminfxjtgsguemktgwecflgrghknkkidhgfxfwjehthgjtgweyieeegrjlfwiocxktjljziyfzhgjljziyjkdpgthsiafwjljljedpgdjpjldmjzjliahsjzmybngyfs";
+const ED25519_PUBLIC_KEY_UR: &str = "ur:signing-public-key/tanehsksjnjkjkisdpihieeyececehescxfpfpfpfpfxeoglknhsfxehjzhtfygaehglghfeecfpfpfpfpgafgkpgtguhfgwinjnjnfpfygmeminfxjtgsguemktgwecflgrghknkkidhgfxfwjehthgjtgweyieeegrjlfwiocxktjljziyfzhgjljziyjkdpgthsiafwjljljedpgdjpjldmjzjliahsjzmybngyfs";
 
 #[rustfmt::skip]
 const ED25519_SIGNATURE_SSH: &str = indoc! {"
@@ -45,19 +42,20 @@ const ED25519_SIGNATURE_SSH: &str = indoc! {"
     -----END SSH SIGNATURE-----
 "};
 
-const ED25519_SIGNATURE_UR: &str =
-    "ur:signature/taneidkkaddsdpdpdpdpdpfwfeflgaglcxgugufdcxgugaflglfpghgogmfedpdpdpdpdpbkgoehglgagodyjzfdfpfpfpfpfpgyfpfpfpfygtfpfpfpfpgsiaeogljlgshghfjegtimgoehgtghjefpfpfpfpiohgeeksgegoengrhshkfpglfdkpgagriajygskofpemjehkjogdgdbkgejyhkgaflgmjzhsiaemhteoiojsioflfpfpfpfpfpfehtjnjzjkhtgyfpfpfpfpfpfpfpfpfpfliaeyisisglghfekkfpfpfpfpgoktfpfpfpfpjykniaeyiojyhthggykkglghgoksbkgwgyfpfpfpfefpenglkseeflhkghknjkeogegsdlfedldljpkpgeiyeyfpjlidfyiyjkjtiogmishtetgyghdlfwhshtjtgsjliyiejpgmfpgogagtgdideegresjyjlfxfxgaghimflbkguiofxkpgyjkhfdydlisgogojpiaimemkofwfxiohkgrbkdpdpdpdpdpfeglfycxgugufdcxgugaflglfpghgogmfedpdpdpdpdpbkcllebeje";
+const ED25519_SIGNATURE_UR: &str = "ur:signature/taneidkkaddsdpdpdpdpdpfwfeflgaglcxgugufdcxgugaflglfpghgogmfedpdpdpdpdpbkgoehglgagodyjzfdfpfpfpfpfpgyfpfpfpfygtfpfpfpfpgsiaeogljlgshghfjegtimgoehgtghjefpfpfpfpiohgeeksgegoengrhshkfpglfdkpgagriajygskofpemjehkjogdgdbkgejyhkgaflgmjzhsiaemhteoiojsioflfpfpfpfpfpfehtjnjzjkhtgyfpfpfpfpfpfpfpfpfpfliaeyisisglghfekkfpfpfpfpgoktfpfpfpfpjykniaeyiojyhthggykkglghgoksbkgwgyfpfpfpfefpenglkseeflhkghknjkeogegsdlfedldljpkpgeiyeyfpjlidfyiyjkjtiogmishtetgyghdlfwhshtjtgsjliyiejpgmfpgogagtgdideegresjyjlfxfxgaghimflbkguiofxkpgyjkhfdydlisgogojpiaimemkofwfxiohkgrbkdpdpdpdpdpfeglfycxgugufdcxgugaflglfpghgogmfedpdpdpdpdpbkcllebeje";
 
 #[test]
 fn test_import_export_signing_private_key() {
     let imported = run_cli_stdin(
         &["import", "--password", "test"],
-        ED25519_PRIVATE_KEY_SSH_ENCRYPTED
-    ).unwrap();
+        ED25519_PRIVATE_KEY_SSH_ENCRYPTED,
+    )
+    .unwrap();
     assert_eq!(imported, ED25519_PRIVATE_KEY_UR);
     let exported = run_cli(&["export", ED25519_PRIVATE_KEY_UR]).unwrap();
     assert_eq!(exported, ED25519_PRIVATE_KEY_SSH.trim());
-    let re_imported = run_cli(&["import", "--", ED25519_PRIVATE_KEY_SSH]).unwrap();
+    let re_imported =
+        run_cli(&["import", "--", ED25519_PRIVATE_KEY_SSH]).unwrap();
     assert_eq!(re_imported, ED25519_PRIVATE_KEY_UR);
 }
 
