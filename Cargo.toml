@@ -26,10 +26,10 @@ name = "envelope"
 path = "src/main.rs"
 
 [dependencies]
-dcbor = "^0.20.0"
-bc-ur = "^0.10.0"
+dcbor = "^0.21.0"
+bc-ur = "^0.11.0"
 bc-envelope = "^0.30.0"
-bc-components = "^0.22.0"
+bc-components = "^0.23.0"
 bc-rand = "^0.4.0"
 bc-xid = "^0.10.0"
 
