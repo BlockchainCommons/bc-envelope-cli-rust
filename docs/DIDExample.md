@@ -20,7 +20,7 @@ envelope format $ALICE_SIGNED_DOCUMENT
 ```
 
 👈
-```
+```envelope
 {
     ARID(d44c5e0a) [
         'controller': ARID(d44c5e0a)
@@ -59,7 +59,7 @@ envelope format $ALICE_REGISTRATION
 ```
 
 👈
-```
+```envelope
 {
     ARID(d44c5e0a) [
         'dereferenceVia': URI(https://exampleledger.com/arid/d44c5e0afd353f47b02f58a5a3a29d9a2efa6298692f896cd2923268599a0d0f)
@@ -109,7 +109,7 @@ echo $ALICE_CHALLENGE
 ```
 
 👈
-```
+```dcbor
 ur:envelope/lftpsotansglgshevewshdtobktdemaslfdyrsoyaatpsokscefxishsjzjzihjtioihcxjyjlcxfpjziniaihcxiyjpjljncxfwjliddmbtcavsrl
 ```
 
@@ -119,7 +119,7 @@ envelope format $ALICE_CHALLENGE
 ```
 
 👈
-```
+```envelope
 Nonce [
     note: "Challenge to Alice from Bob."
 ]
@@ -137,7 +137,7 @@ envelope format $ALICE_RESPONSE
 ```
 
 👈
-```
+```envelope
 {
     {
         Nonce [
@@ -162,7 +162,7 @@ echo $ALICE_CHALLENGE_2
 ```
 
 👈
-```
+```dcbor
 ur:envelope/lftpsotansglgshevewshdtobktdemaslfdyrsoyaatpsokscefxishsjzjzihjtioihcxjyjlcxfpjziniaihcxiyjpjljncxfwjliddmbtcavsrl
 ```
 

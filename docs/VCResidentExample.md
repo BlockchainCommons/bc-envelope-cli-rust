@@ -24,7 +24,7 @@ envelope format $JOHN_IMAGE
 ```
 
 👈
-```
+```envelope
 "John Smith Smiling" [
     'dereferenceVia': URI(https://exampleledger.com/digest/36be30726befb65ca13b136ae29d8081f64792c2702415eb60ad1c56ed33c999)
     'note': "This is an image of John Smith."
@@ -69,7 +69,7 @@ envelope format $JOHN_RESIDENT_CARD
 ```
 
 👈
-```
+```envelope
 {
     ARID(b8ed3d5e) [
         'isA': "credential"
@@ -147,7 +147,7 @@ envelope format $ELIDED_CARD
 ```
 
 👈
-```
+```envelope
 {
     ARID(b8ed3d5e) [
         'isA': "credential"

@@ -136,7 +136,7 @@ envelope generate prvkeys
 ```
 
 👈
-```
+```dcbor
 ur:crypto-prvkey-base/hdcxhdvsaelylaaesfqdwzghfmsswfrlzsfgytbbnecpkshekstbhdwzrkktasknztkecycaotda
 ```
 
@@ -152,7 +152,7 @@ echo $PRVKEYS
 ```
 
 👈
-```
+```dcbor
 ur:crypto-prvkey-base/gdmdeefejoaonnatcycefxjedrfyaspkiawdioolhs
 ```
 
@@ -180,7 +180,7 @@ echo $PUBKEYS
 ```
 
 👈
-```
+```dcbor
 ur:crypto-pubkeys/lftanshfhdcxweplrnkpsruepkaeahnetppsteaojtdlgudetlyksrlbzoiduoglpemujydnsrattansgrhdcximbgoskbjpgtluwededpjywdlkfwksjpglsrfdcaurdahycfasmtylihpfrsfgkblomttisr
 ```
 
@@ -227,7 +227,7 @@ envelope format $SIGNED
 ```
 
 👈
-```
+```envelope
 "Alice" [
     "knows": "Bob"
     'signed': Signature
@@ -245,7 +245,7 @@ envelope format $WRAPPED_SIGNED
 ```
 
 👈
-```
+```envelope
 {
     "Alice" [
         "knows": "Bob"
@@ -263,7 +263,7 @@ envelope verify --verifier $PUBKEYS $WRAPPED_SIGNED
 ```
 
 👈
-```
+```dcbor
 ur:envelope/lftpsplftpcsihfpjziniaihoytpcsihjejtjlktjktpcsiafwjlidoyaxtpcstansghhdfznltbglechtrkecemfhahkbrkcfzcasfnbbkpktzmsrvewtksknahmnpkinguktdwkgfrdklfrtdwpssamujtidcteovyongeamayftfxiaesfwceecoxueimmhwfrsyaidiycwdl
 ```
 
@@ -331,7 +331,7 @@ envelope format $SSH_SIGNED
 ```
 
 👈
-```
+```envelope
 {
     "Alice" [
         "knows": "Bob"

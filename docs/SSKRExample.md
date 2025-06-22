@@ -18,7 +18,7 @@ echo $DAN_ENVELOPE
 ```
 
 👈
-```
+```dcbor
 ur:envelope/tpsotantjzoxadgdhkwzdtfthptokigtvwnnjsqzcxknsktdaosezofptpbtlnlyjzkefmaxkpfyhsjpjecxgdkpjpjojzihcxfpjskphscxgsjlkoihaakskggsjljpihjncxinjojkkpjncxiejljzjljpcxjkinjycxhsjnihjydwcxiajljtjkihiajyihjykpjpcxhsieinjoinjkiainjtiocxihjzinjydwcxjkihiecxiejlcxihinkpjkjnjliecxjyihjnjojljpcxinjtiainieiniekpjtjycxkpjycxjzhsidjljpihcxihjycxiejljzjljpihcxjnhsiojthscxhsjzinjskphsdmfmflcnfy
 ```
 
@@ -30,7 +30,7 @@ envelope format $DAN_ENVELOPE
 ```
 
 👈
-```
+```envelope
 seed(Map)
 ```
 
@@ -68,7 +68,7 @@ envelope format $SHARE_ENVELOPE_BOB
 ```
 
 👈
-```
+```envelope
 ENCRYPTED [
     'hasRecipient': SealedMessage
     'sskrShare': SSKRShare
@@ -95,7 +95,7 @@ envelope sskr join $SHARE_ENVELOPE_BOB $SHARE_ENVELOPE_CAROL | envelope extract 
 ```
 
 👈
-```
+```dcbor
 ur:seed/oxadgdhkwzdtfthptokigtvwnnjsqzcxknsktdaosezofptpbtlnlyjzkefmaxkpfyhsjpjecxgdkpjpjojzihcxfpjskphscxgsjlkoihaakskggsjljpihjncxinjojkkpjncxiejljzjljpcxjkinjycxhsjnihjydwcxiajljtjkihiajyihjykpjpcxhsieinjoinjkiainjtiocxihjzinjydwcxjkihiecxiejlcxihinkpjkjnjliecxjyihjnjojljpcxinjtiainieiniekpjtjycxkpjycxjzhsidjljpihcxihjycxiejljzjljpihcxjnhsiojthscxhsjzinjskphsdmluwmoxny
 ```
 
@@ -107,7 +107,6 @@ envelope decrypt --recipient $DAN_PRIVATE_KEY $SHARE_ENVELOPE_BOB | envelope ext
 ```
 
 👈
-```
+```dcbor
 ur:seed/oxadgdhkwzdtfthptokigtvwnnjsqzcxknsktdaosezofptpbtlnlyjzkefmaxkpfyhsjpjecxgdkpjpjojzihcxfpjskphscxgsjlkoihaakskggsjljpihjncxinjojkkpjncxiejljzjljpcxjkinjycxhsjnihjydwcxiajljtjkihiajyihjykpjpcxhsieinjoinjkiainjtiocxihjzinjydwcxjkihiecxiejlcxihinkpjkjnjliecxjyihjnjojljpcxinjtiainieiniekpjtjycxkpjycxjzhsidjljpihcxihjycxiejljzjljpihcxjnhsiojthscxhsjzinjskphsdmluwmoxny
 ```
-

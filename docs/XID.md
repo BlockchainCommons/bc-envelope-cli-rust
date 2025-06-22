@@ -13,10 +13,13 @@ The `envelope` tool now includes basic support for working with [XID Documents](
 Anywhere in `envelope` that accepts a `ur:envelope` can also accept any other UR type, including XID documents.
 
 👉
-```
+```bash
 $ XID_DOC=ur:xid/tpsplftpsotanshdhdcxjsdigtwneocmnybadpdlzobysbstmekteypspeotcfldynlpsfolsbintyjkrhfnoyaylftpsotansgylftanshfhdcxhslkfzemaylrwttynsdlghrydpmdfzvdglndloimaahykorefddtsguogmvlahqztansgrhdcxetlewzvlwyfdtobeytidosbamkswaomwwfyabakssakggegychesmerkcatekpcxoycsfncsfggmplgshd
 $ envelope format $XID_DOC
+```
 
+👈
+```envelope
 XID(71274df1) [
     'key': PublicKeys(eb9b1cae) [
         'allow': 'All'
@@ -27,47 +30,65 @@ XID(71274df1) [
 Note that this does not validate the XID document (or any other envelope-containing UR), it just reads the UR’s envelope, meaning you can manipulate it like any other envelope.
 
 👉
-```
+```bash
 $ envelope assertion at 0 $XID_DOC | \
     envelope format
+```
 
+👈
+```envelope
 'key': PublicKeys(eb9b1cae) [
     'allow': 'All'
 ]
+```
 
+👉
+```bash
 $ envelope assertion at 0 $XID_DOC | \
     envelope extract object | \
     envelope assertion at 0 | \
     envelope format
+```
 
+👈
+```envelope
 'allow': 'All'
 ```
 
 XID Documents always have the XID CBOR object as their subject. So you can extract the bare XID of a XID document using the `extract xid` subcommand.
 
 👉
-```
+```bash
 $ BARE_XID=`envelope extract xid $XID_DOC`
 $ echo $BARE_XID
+```
 
+👈
+```dcbor
 ur:xid/hdcxjsdigtwneocmnybadpdlzobysbstmekteypspeotcfldynlpsfolsbintyjkrhfnvsbyrdfw
 ```
 
 Bare XID URs, although they do not contain an envelope (they are just CBOR) are also internally imported into an empty XID document and then turned into an envelope, with just the XID as its subject.
 
 👉
-```
+```bash
 $ envelope format $BARE_XID
+```
 
+👈
+```envelope
 XID(71274df1)
 ```
 
 This means that bare XIDs can be brought in like any other envelope subject. Again, no XID Document-specific validation is done.
 
 👉
-```
+```bash
 $ envelope assertion add pred-obj string "knows" string "Bob" $BARE_XID | envelope format
+```
 
+👈
+```envelope
 XID(71274df1) [
     "knows": "Bob"
 ]
@@ -78,7 +99,7 @@ XID(71274df1) [
 The `xid` subcommand parses and manipulates XID documents. Invalid XID documents will be rejected. All XID documents returned by its subcommands are in `ur:xid` form.
 
 👉
-```
+```bash
 $ envelope xid --help
 ```
 
@@ -87,33 +108,42 @@ $ envelope xid --help
 Unlike the technique of simply extracting the subject above, this subcommand validates the entire XID document.
 
 👉
-```
+```bash
 $ XID_ID=`envelope xid id $XID_DOC`
 $ echo $XID_ID
+```
 
+👈
+```dcbor
 ur:xid/hdcxjsdigtwneocmnybadpdlzobysbstmekteypspeotcfldynlpsfolsbintyjkrhfnvsbyrdfw
 ```
 
 Extracting the bare XID from a bare XID UR is idempotent.
 
 👉
-```
+```bash
 $ envelope xid id $XID_ID
+```
 
+👈
+```dcbor
 ur:xid/hdcxjsdigtwneocmnybadpdlzobysbstmekteypspeotcfldynlpsfolsbintyjkrhfnvsbyrdfw
 ```
 
 Several output formats are supported. `ur` is the default and is machine-readable, while the others are human-readable.
 
 👉
-```
+```bash
 $ envelope xid id \
     --format ur \
     --format hex \
     --format bytewords \
     --format bytemoji \
     $XID_DOC
+```
 
+👈
+```
 ur:xid/hdcxjsdigtwneocmnybadpdlzobysbstmekteypspeotcfldynlpsfolsbintyjkrhfnvsbyrdfw
 XID(71274df1)
 🅧 JUGS DELI GIFT WHEN
@@ -125,12 +155,15 @@ XID(71274df1)
 The `xid new` subcommand converts a `PrivateKeyBase` or `PublicKeys` into a XID Document with the provided key as the inception key.
 
 👉
-```
+```bash
 $ ALICE_PRVKEY_BASE=ur:crypto-prvkey-base/gdlfwfdwlphlfsghcphfcsaybekkkbaejksfnynsct
 $ ALICE_PUBKEYS=`envelope generate pubkeys $ALICE_PRVKEY_BASE`
 
 $ envelope xid new $ALICE_PUBKEYS | envelope format
+```
 
+👈
+```envelope
 XID(93a4d4e7) [
     'key': PublicKeys(cab108a0) [
         'allow': 'All'
@@ -141,18 +174,24 @@ XID(93a4d4e7) [
 A XID document returned by the `xid new` subcommand is returned as a `ur:xid`.
 
 👉
-```
+```bash
 $ envelope xid new $ALICE_PUBKEYS
+```
 
+👈
+```dcbor
 ur:xid/tpsplftpsotanshdhdcxmuoxtyvddifztyryhymkgolbmefhssmejsgaykcljtjnfmaelrrkvwayehbzfessoyaylftpsotansgylftanshfhdcxrdhgfsfsfsosrloebgwmfrfhsnlskegsjydecawybniadyzovehncacnlbmdbesstansgrhdcxytgefrmnbzftltcmcnaspaimhftbjehlatjklkhktidrpmjobslewkfretcaetbnoycsfncsfgzckbfwes
 ```
 
 If a `PrivateKeyBase` is provided, by default the salted private key itself will be included.
 
 👉
-```
+```bash
 $ envelope xid new $ALICE_PRVKEY_BASE | envelope format
+```
 
+👈
+```envelope
 XID(93a4d4e7) [
     'key': PublicKeys(cab108a0) [
         {
@@ -168,17 +207,26 @@ XID(93a4d4e7) [
 The private key can be omitted using the `--private omit` option, or elided using `--private elide`.
 
 👉
-```
+```bash
 $ envelope xid new $ALICE_PRVKEY_BASE --private omit | envelope format
+```
 
+👈
+```envelope
 XID(93a4d4e7) [
     'key': PublicKeys(cab108a0) [
         'allow': 'All'
     ]
 ]
+```
 
+👉
+```bash
 $ envelope xid new $ALICE_PRVKEY_BASE --private elide | envelope format
+```
 
+👈
+```envelope
 XID(93a4d4e7) [
     'key': PublicKeys(cab108a0) [
         'allow': 'All'
@@ -190,12 +238,15 @@ XID(93a4d4e7) [
 One or more endpoint URIs may be added to the inception key.
 
 👉
-```
+```bash
 $ envelope xid new $ALICE_PUBKEYS \
     --endpoint 'https://endpoint.example.com/' \
     --endpoint 'btc:5e54156cfe0e62d9a56c72b84a5c40b84e2fd7dfe786c7d5c667e11ab85c45c6' \
     | envelope format
+```
 
+👈
+```envelope
 XID(93a4d4e7) [
     'key': PublicKeys(cab108a0) [
         'allow': 'All'
@@ -208,12 +259,15 @@ XID(93a4d4e7) [
 One or more permissions may be specified for the inception key. These replace the default `'All'` permission.
 
 👉
-```
+```bash
 $ envelope xid new $ALICE_PUBKEYS \
     --allow 'encrypt' \
     --allow 'sign' \
     | envelope format
+```
 
+👈
+```envelope
 XID(93a4d4e7) [
     'key': PublicKeys(cab108a0) [
         'allow': 'Encrypt'
@@ -225,11 +279,14 @@ XID(93a4d4e7) [
 The key may be given a user-assigned name ("pet name") using the `--name` option.
 
 👉
-```
+```bash
 $ envelope xid new $ALICE_PUBKEYS \
     --name 'Alice'\''s Key' \
     | envelope format
+```
 
+👈
+```envelope
 XID(93a4d4e7) [
     'key': PublicKeys(cab108a0) [
         'allow': 'All'
@@ -241,7 +298,7 @@ XID(93a4d4e7) [
 ### `xid key`: Work With XID Document Keys
 
 👉
-```
+```bash
 $ envelope xid key --help
 ```
 
@@ -250,14 +307,17 @@ $ envelope xid key --help
 All the same options as `xid new` are available. The same key may not be added twice.
 
 👉
-```
+```bash
 $ XID_DOC=`envelope xid new --name 'Alice' $ALICE_PUBKEYS`
 
 $ BOB_PRVKEY_BASE=ur:crypto-prvkey-base/gdcsknhkjkswgtecnslsjtrdfgimfyuykgbzbagdva
 $ BOB_PUBKEYS=`envelope generate pubkeys $BOB_PRVKEY_BASE`
 
 $ envelope xid key add --name 'Bob' $BOB_PUBKEYS $XID_DOC | envelope format
+```
 
+👈
+```envelope
 XID(93a4d4e7) [
     'key': PublicKeys(cab108a0) [
         'allow': 'All'
@@ -275,10 +335,13 @@ XID(93a4d4e7) [
 All the same options as `xid new` are available. The key must already exist in the XID document.
 
 👉
-```
+```bash
 $ XID_DOC=`envelope xid new --name 'Alice' $ALICE_PUBKEYS | envelope xid key add --name 'Bob' $BOB_PUBKEYS`
 $ envelope format $XID_DOC
+```
 
+👈
+```envelope
 XID(93a4d4e7) [
     'key': PublicKeys(cab108a0) [
         'allow': 'All'
@@ -289,13 +352,19 @@ XID(93a4d4e7) [
         'name': "Bob"
     ]
 ]
+```
 
+👉
+```bash
 $ XID_DOC_UPDATED=`envelope xid key update $BOB_PUBKEYS \
     --allow 'encrypt' \
     --allow 'sign' \
     $XID_DOC`
 $ envelope format $XID_DOC_UPDATED
+```
 
+👈
+```envelope
 XID(93a4d4e7) [
     'key': PublicKeys(cab108a0) [
         'allow': 'All'
@@ -312,9 +381,12 @@ XID(93a4d4e7) [
 #### `xid key count`: Count the Number of Keys in a XID Document
 
 👉
-```
+```bash
 $ envelope xid key count $XID_DOC_UPDATED
+```
 
+👈
+```
 2
 ```
 
@@ -323,16 +395,25 @@ $ envelope xid key count $XID_DOC_UPDATED
 The indexes are zero-based, and in the order the key assertions appear in the XID document's Gordian Envelope, which is not necessarily the order they appear via `envelope format`.
 
 👉
-```
+```bash
 $ envelope xid key at 0 $XID_DOC_UPDATED | envelope format
+```
 
+👈
+```envelope
 PublicKeys(cab108a0) [
     'allow': 'All'
     'name': "Alice"
 ]
+```
 
+👉
+```bash
 $ envelope xid key at 1 $XID_DOC_UPDATED | envelope format
+```
 
+👈
+```envelope
 PublicKeys(e2c18423) [
     'allow': 'Encrypt'
     'allow': 'Sign'
@@ -345,9 +426,12 @@ PublicKeys(e2c18423) [
 The keys envelopes separated by newlines.
 
 👉
-```
+```bash
 $ envelope xid key all $XID_DOC_UPDATED
+```
 
+👈
+```dcbor
 ur:envelope/lstpsotansgylftanshfhdcxrdhgfsfsfsosrloebgwmfrfhsnlskegsjydecawybniadyzovehncacnlbmdbesstansgrhdcxytgefrmnbzftltcmcnaspaimhftbjehlatjklkhktidrpmjobslewkfretcaetbnoybdtpsoihfpjziniaihoycsfncsfgrnkedtns
 ur:envelope/lrtpsotansgylftanshfhdcxndctnnflynethhhnwdkbhtehhdosmhgoclvefhjpehtaethkltsrmssnwfctfggdtansgrhdcxtipdbagmoertsklaflfhfewsptrlmhjpdeemkbdyktmtfwnninfrbnmwonetwpheoybdtpsoiafwjlidoycsfncsfdoycsfncsgafpmnvszt
 ```
@@ -355,18 +439,27 @@ ur:envelope/lrtpsotansgylftanshfhdcxndctnnflynethhhnwdkbhtehhdosmhgoclvefhjpehta
 Example capturing the above envelopes into a shell array. Note that newer shells like `zsh` use one-based indexing by default, but can be configured to use zero-based indexing.
 
 👉
-```
+```bash
 $ XID_KEYS=($(envelope xid key all $XID_DOC_UPDATED))
 
 $ envelope format ${XID_KEYS[1]}
+```
 
+👈
+```envelope
 PublicKeys(cab108a0) [
     'allow': 'All'
     'name': "Alice"
 ]
+```
 
+👉
+```bash
 $ envelope format ${XID_KEYS[2]}
+```
 
+👈
+```envelope
 PublicKeys(e2c18423) [
     'allow': 'Encrypt'
     'allow': 'Sign'
@@ -381,9 +474,12 @@ PublicKeys(e2c18423) [
 Returns at most one key envelope.
 
 👉
-```
+```bash
 $ envelope xid key find public $BOB_PUBKEYS $XID_DOC_UPDATED | envelope format
+```
 
+👈
+```envelope
 PublicKeys(e2c18423) [
     'allow': 'Encrypt'
     'allow': 'Sign'
@@ -396,16 +492,25 @@ PublicKeys(e2c18423) [
 May return multiple key envelopes.
 
 👉
-```
+```bash
 $ envelope xid key find name 'Alice' $XID_DOC_UPDATED | envelope format
+```
 
+👈
+```envelope
 PublicKeys(cab108a0) [
     'allow': 'All'
     'name': "Alice"
 ]
+```
 
+👉
+```bash
 $ envelope xid key find name 'Wolf' $XID_DOC_UPDATED
+```
 
+👈
+```
 (nothing returned)
 ```
 
@@ -414,9 +519,12 @@ $ envelope xid key find name 'Wolf' $XID_DOC_UPDATED
 Returns at most one key envelope.
 
 👉
-```
+```bash
 $ envelope xid key find inception $XID_DOC_UPDATED | envelope format
+```
 
+👈
+```envelope
 PublicKeys(cab108a0) [
     'allow': 'All'
     'name': "Alice"
@@ -426,10 +534,13 @@ PublicKeys(cab108a0) [
 #### `xid key remove`: Remove a Given Key
 
 👉
-```
+```bash
 $ XID_DOC_REMOVED=`envelope xid key remove $ALICE_PUBKEYS $XID_DOC_UPDATED`
 $ envelope format $XID_DOC_REMOVED
+```
 
+👈
+```envelope
 XID(93a4d4e7) [
     'key': PublicKeys(e2c18423) [
         'allow': 'Encrypt'
@@ -437,9 +548,15 @@ XID(93a4d4e7) [
         'name': "Bob"
     ]
 ]
+```
 
+👉
+```bash
 $ envelope xid key find inception $XID_DOC_REMOVED
+```
 
+👈
+```
 (nothing returned)
 ```
 
@@ -448,19 +565,21 @@ $ envelope xid key find inception $XID_DOC_REMOVED
 Resolution methods are URIs that describe how to resolve a XID. They are used to find the complete, most up-to-date version of a XID document.
 
 👉
-```
+```bash
 $ envelope xid method --help
 ```
 
 #### `xid method add`: Add a Resolution Method to a XID Document
 
 👉
-```
+```bash
 $ XID_DOC=`envelope xid new --name 'Alice' $ALICE_PUBKEYS`
 $ XID_DOC_WITH_RESOLVERS=`envelope xid method add 'https://resolver.example.com/' $XID_DOC | \
     envelope xid method add 'btc:5e54156cfe0e62d9a56c72b84a5c40b84e2fd7dfe786c7d5c667e11ab85c45c6'`
 $ envelope format $XID_DOC_WITH_RESOLVERS
-
+```
+👈
+```envelope
 XID(93a4d4e7) [
     'dereferenceVia': URI(btc:5e54156cfe0e62d9a56c72b84a5c40b84e2fd7dfe786c7d5c667e11ab85c45c6)
     'dereferenceVia': URI(https://resolver.example.com/)
@@ -474,9 +593,12 @@ XID(93a4d4e7) [
 #### `xid method count`: Count the Number of Resolution Methods in a XID Document
 
 👉
-```
+```bash
 $ envelope xid method count $XID_DOC_WITH_RESOLVERS
+```
 
+👈
+```
 2
 ```
 
@@ -485,22 +607,34 @@ $ envelope xid method count $XID_DOC_WITH_RESOLVERS
 The indexes are zero-based, and in the order the resolution methods appear in the XID document's Gordian Envelope, which is not necessarily the order they appear via `envelope format`.
 
 👉
-```
+```bash
 $ envelope xid method at 0 $XID_DOC_WITH_RESOLVERS
+```
 
+👈
+```
 https://resolver.example.com/
+```
 
+👉
+```bash
 $ envelope xid method at 1 $XID_DOC_WITH_RESOLVERS
+```
 
+👈
+```
 btc:5e54156cfe0e62d9a56c72b84a5c40b84e2fd7dfe786c7d5c667e11ab85c45c6
 ```
 
 #### `xid method all`: List All Resolution Methods in a XID Document
 
 👉
-```
+```bash
 $ envelope xid method all $XID_DOC_WITH_RESOLVERS
+```
 
+👈
+```
 https://resolver.example.com/
 btc:5e54156cfe0e62d9a56c72b84a5c40b84e2fd7dfe786c7d5c667e11ab85c45c6
 ```
@@ -508,9 +642,12 @@ btc:5e54156cfe0e62d9a56c72b84a5c40b84e2fd7dfe786c7d5c667e11ab85c45c6
 #### `xid method remove`: Remove a Resolution Method from a XID Document
 
 👉
-```
+```bash
 $ envelope xid method remove 'https://resolver.example.com/' $XID_DOC_WITH_RESOLVERS | envelope format
+```
 
+👈
+```envelope
 XID(93a4d4e7) [
     'dereferenceVia': URI(btc:5e54156cfe0e62d9a56c72b84a5c40b84e2fd7dfe786c7d5c667e11ab85c45c6)
     'key': PublicKeys(cab108a0) [
@@ -525,7 +662,7 @@ XID(93a4d4e7) [
 A *delegate* is XID document that is authorized to act on behalf of the *principal* XID document. A delegate can be granted any permissions, but its *effective* permissions will be a subset of the permissions of the principal XID document.
 
 👉
-```
+```bash
 $ envelope xid delegate --help
 ```
 
@@ -540,7 +677,7 @@ This example:
     - but only add's Dave's XID identifier to the XID document, which means it will have to be resolved to be used.
 
 👉
-```
+```bash
 $ ALICE_PRVKEY_BASE="ur:crypto-prvkey-base/gdlfwfdwlphlfsghcphfcsaybekkkbaejksfnynsct"
 $ ALICE_PUBKEYS=`envelope generate pubkeys $ALICE_PRVKEY_BASE`
 $ BOB_PRVKEY_BASE="ur:crypto-prvkey-base/gdcsknhkjkswgtecnslsjtrdfgimfyuykgbzbagdva"
@@ -560,7 +697,10 @@ $ ALICE_XID_DOC=`envelope xid delegate add --allow 'all' $CAROL_XID_DOC $ALICE_X
 $ ALICE_XID_DOC=`envelope xid delegate add --allow 'sign' --allow 'encrypt' $BOB_XID_DOC $ALICE_XID_DOC`
 $ ALICE_XID_DOC=`envelope xid delegate add --allow 'elide' $DAVE_XID $ALICE_XID_DOC`
 $ envelope format $ALICE_XID_DOC
+```
 
+👈
+```envelope
 XID(93a4d4e7) [
     'delegate': {
         XID(3636003e)
@@ -598,9 +738,12 @@ XID(93a4d4e7) [
 #### `xid delegate count`: Count the Number of Delegates in a XID Document
 
 👉
-```
+```bash
 $ envelope xid delegate count $ALICE_XID_DOC
+```
 
+👈
+```
 3
 ```
 
@@ -609,9 +752,12 @@ $ envelope xid delegate count $ALICE_XID_DOC
 The indexes are zero-based, and in the order the delegate assertions appear in the XID document's Gordian Envelope, which is not necessarily the order they appear via `envelope format`.
 
 👉
-```
+```bash
 $ envelope xid delegate at 0 $ALICE_XID_DOC | envelope format
+```
 
+👈
+```envelope
 {
     XID(f1199a75) [
         'key': PublicKeys(e2c18423) [
@@ -623,9 +769,15 @@ $ envelope xid delegate at 0 $ALICE_XID_DOC | envelope format
     'allow': 'Encrypt'
     'allow': 'Sign'
 ]
+```
 
+👉
+```bash
 $ envelope xid delegate at 1 $ALICE_XID_DOC | envelope format
+```
 
+👈
+```envelope
 {
     XID(61b1f3c7) [
         'key': PublicKeys(eebd4add) [
@@ -636,9 +788,15 @@ $ envelope xid delegate at 1 $ALICE_XID_DOC | envelope format
 } [
     'allow': 'All'
 ]
+```
 
+👉
+```bash
 $ envelope xid delegate at 2 $ALICE_XID_DOC | envelope format
+```
 
+👈
+```envelope
 {
     XID(3636003e)
 } [
@@ -649,9 +807,12 @@ $ envelope xid delegate at 2 $ALICE_XID_DOC | envelope format
 #### `xid delegate all`: List All Delegates in a XID Document
 
 👉
-```
+```bash
 $ envelope xid delegate all $ALICE_XID_DOC
+```
 
+👈
+```dcbor
 ur:envelope/lstpsplftpsotanshdhdcxwncfnykphhsekedagdsfqdihoysadpzmimrpgtrnlesansjtdshtkedyhlwdmngloyaylstpsotansgylftanshfhdcxndctnnflynethhhnwdkbhtehhdosmhgoclvefhjpehtaethkltsrmssnwfctfggdtansgrhdcxtipdbagmoertsklaflfhfewsptrlmhjpdeemkbdyktmtfwnninfrbnmwonetwpheoybdtpsoiafwjlidoycsfncsfgoycsfncsfdoycsfncsgauyzsurla
 ur:envelope/lftpsplftpsotanshdhdcxhspawfstecswotwpbsweiowlsrmyfpwpskmeonrtjsrhetsrhnaxfwylvtvsuorkoyaylstpsotansgylftanshfhdcxeckpgwvyasletilffeeekbtyjlzeimmtkslkpadrtnnytontpyfyeocnecstktkttansgrhdcxoyndtbndhspebgtewmgrgrgriygmvwckkkaysfzozclbgendfmhfjliorteenlbwoycsfncsfgoybdtpsoihfxhsjpjljzoycsfncsfgzsiddlec
 ur:envelope/lftpsptpsotanshdhdcxenenaefmosgecksalokgmnrhgrsemhhfnlfssroxbytkvllrvsrhgtgscpvswfveoycsfncsgegtgtyljt
@@ -660,10 +821,13 @@ ur:envelope/lftpsptpsotanshdhdcxenenaefmosgecksalokgmnrhgrsemhhfnlfssroxbytkvllr
 Example capturing the above envelopes into a shell array. Note that newer shells like `zsh` use one-based indexing by default, but can be configured to use zero-based indexing.
 
 👉
-```
+```bash
 $ XID_DELEGATES=($(envelope xid delegate all $ALICE_XID_DOC))
 $ envelope format ${XID_DELEGATES[1]}
+```
 
+👈
+```envelope
 {
     XID(f1199a75) [
         'key': PublicKeys(e2c18423) [
@@ -675,9 +839,15 @@ $ envelope format ${XID_DELEGATES[1]}
     'allow': 'Encrypt'
     'allow': 'Sign'
 ]
+```
 
+👉
+```bash
 $ envelope format ${XID_DELEGATES[2]}
+```
 
+👈
+```envelope
 {
     XID(61b1f3c7) [
         'key': PublicKeys(eebd4add) [
@@ -688,9 +858,15 @@ $ envelope format ${XID_DELEGATES[2]}
 } [
     'allow': 'All'
 ]
+```
 
+👉
+```bash
 $ envelope format ${XID_DELEGATES[3]}
+```
 
+👈
+```envelope
 {
     XID(3636003e)
 } [
@@ -701,9 +877,12 @@ $ envelope format ${XID_DELEGATES[3]}
 #### `xid delegate find`: Find a Delegate by its XID Identifier
 
 👉
-```
+```bash
 $ envelope xid delegate find $DAVE_XID $ALICE_XID_DOC | envelope format
+```
 
+👈
+```envelope
 {
     XID(3636003e)
 } [
@@ -721,11 +900,14 @@ In this example:
 - her permissions are reduced.
 
 👉
-```
+```bash
 $ CAROL_XID=`envelope xid id $CAROL_XID_DOC`
 $ ALICE_XID_DOC_UPDATED=`envelope xid delegate update --allow 'auth' --allow 'encrypt' --allow 'sign' $CAROL_XID $ALICE_XID_DOC`
 $ envelope format $ALICE_XID_DOC_UPDATED
+```
 
+👈
+```envelope
 XID(93a4d4e7) [
     'delegate': {
         XID(3636003e)
@@ -760,11 +942,14 @@ XID(93a4d4e7) [
 #### `xid delegate remove`: Remove a Delegate from a XID Document
 
 👉
-```
+```bash
 $ BOB_XID=`envelope xid id $BOB_XID_DOC`
 $ ALICE_XID_DOC_UPDATED=`envelope xid delegate remove $BOB_XID $ALICE_XID_DOC_UPDATED`
 $ envelope format $ALICE_XID_DOC_UPDATED
+```
 
+👈
+```envelope
 XID(93a4d4e7) [
     'delegate': {
         XID(3636003e)
@@ -788,7 +973,7 @@ XID(93a4d4e7) [
 ### `xid service`: Work with Services
 
 👉
-```
+```bash
 $ envelope xid service --help
 ```
 
@@ -797,7 +982,7 @@ Services are URI endpoints along with the keys, delegates, and permissions that 
 The keys and delegates in a Service declaration are references to keys and delegates that must already exist in the XID document.
 
 👉
-```
+```bash
 $ ALICE_PRVKEY_BASE=ur:crypto-prvkey-base/gdlfwfdwlphlfsghcphfcsaybekkkbaejksfnynsct
 $ ALICE_PUBKEYS=`envelope generate pubkeys $ALICE_PRVKEY_BASE`
 $ BOB_PRVKEY_BASE=ur:crypto-prvkey-base/gdcsknhkjkswgtecnslsjtrdfgimfyuykgbzbagdva
@@ -811,10 +996,13 @@ $ CAROL_PUBKEYS=`envelope generate pubkeys $CAROL_PRVKEY_BASE`
 Alice creates a basic XID document.
 
 👉
-```
+```bash
 $ ALICE_XID_DOC=`envelope xid new --name 'Alice' $ALICE_PUBKEYS`
 $ envelope format $ALICE_XID_DOC
+```
 
+👈
+```envelope
 XID(93a4d4e7) [
     'key': PublicKeys(cab108a0) [
         'allow': 'All'
@@ -826,11 +1014,14 @@ XID(93a4d4e7) [
 Alice adds Bob as a delegate.
 
 👉
-```
+```bash
 $ BOB_XID_DOC=`envelope xid new --name 'Bob' $BOB_PUBKEYS`
 $ ALICE_XID_DOC=`envelope xid delegate add --allow 'sign' --allow 'encrypt' $BOB_XID_DOC $ALICE_XID_DOC`
 $ envelope format $ALICE_XID_DOC
+```
 
+👈
+```envelope
 XID(93a4d4e7) [
     'delegate': {
         XID(f1199a75) [
@@ -860,7 +1051,7 @@ Alice adds a secure messaging service.
 - Alice and Bob, as the holders of the private keys, can decrypt messages sent to them and sign messages they send.
 
 👉
-```
+```bash
 $ ALICE_XID_DOC_WITH_SERVICE=`envelope xid service add \
     --name 'Messaging' \
     --capability 'com.example.messaging' \
@@ -872,7 +1063,10 @@ $ ALICE_XID_DOC_WITH_SERVICE=`envelope xid service add \
     $ALICE_XID_DOC`
 
 $ envelope format $ALICE_XID_DOC_WITH_SERVICE
+```
 
+👈
+```envelope
 XID(93a4d4e7) [
     'delegate': {
         XID(f1199a75) [
@@ -909,7 +1103,7 @@ Alice adds a second service for retrieving her status.
 - Alice, as the holder of the private key, can sign her status updates.
 
 👉
-```
+```bash
 $ ALICE_XID_DOC_WITH_SERVICE=`envelope xid service add \
     --name 'Status' \
     --capability 'com.example.status' \
@@ -919,7 +1113,10 @@ $ ALICE_XID_DOC_WITH_SERVICE=`envelope xid service add \
     $ALICE_XID_DOC_WITH_SERVICE`
 
 $ envelope format $ALICE_XID_DOC_WITH_SERVICE
+```
 
+👈
+```envelope
 XID(93a4d4e7) [
     'delegate': {
         XID(f1199a75) [
@@ -956,9 +1153,12 @@ XID(93a4d4e7) [
 #### `xid service count`: Count the Number of Services in a XID Document
 
 👉
-```
+```bash
 $ envelope xid service count $ALICE_XID_DOC_WITH_SERVICE
+```
 
+👈
+```
 2
 ```
 
@@ -967,9 +1167,12 @@ $ envelope xid service count $ALICE_XID_DOC_WITH_SERVICE
 The indexes are zero-based, and in the order the service assertions appear in the XID document's Gordian Envelope, which is not necessarily the order they appear via `envelope format`.
 
 👉
-```
+```bash
 $ envelope xid service at 0 $ALICE_XID_DOC_WITH_SERVICE | envelope format
+```
 
+👈
+```envelope
 URI(https://messaging.example.com) [
     'allow': 'Encrypt'
     'allow': 'Sign'
@@ -981,9 +1184,12 @@ URI(https://messaging.example.com) [
 ```
 
 👉
-```
+```bash
 $ envelope xid service at 1 $ALICE_XID_DOC_WITH_SERVICE | envelope format
+```
 
+👈
+```envelope
 URI(https://status.example.com/alice) [
     'allow': 'Sign'
     'capability': "com.example.status"
@@ -995,9 +1201,12 @@ URI(https://status.example.com/alice) [
 #### `xid service all`: List All Services in a XID Document
 
 👉
-```
+```bash
 $ envelope xid service all $ALICE_XID_DOC_WITH_SERVICE
+```
 
+👈
+```dcbor
 ur:envelope/lttpsotpcxkscaisjyjyjojkftdldljnihjkjkhsioinjtiodmihkshsjnjojzihdmiajljnoycsfhtpsotanshkhdcxwncfnykphhsekedagdsfqdihoysadpzmimrpgtrnlesansjtdshtkedyhlwdmngloybdtpsoingtihjkjkhsioinjtiooycsfxtpsokpiajljndmihkshsjnjojzihdmjnihjkjkhsioinjtiooyaytpsotanshkhdcxsgpaaynbpdrdlbmkloykidfzmdtonnlngrtyrkbwcpfnmntyoyamuoetwydaremwoycsfncsfdoycsfncsgagdvamume
 ur:envelope/lptpsotpcxkscxisjyjyjojkftdldljkjyhsjykpjkdmihkshsjnjojzihdmiajljndlhsjziniaihoybdtpsoiygujyhsjykpjkoycsfxtpsojpiajljndmihkshsjnjojzihdmjkjyhsjykpjkoyaytpsotanshkhdcxsgpaaynbpdrdlbmkloykidfzmdtonnlngrtyrkbwcpfnmntyoyamuoetwydaremwoycsfncsfdglmhuenb
 ```
@@ -1005,10 +1214,13 @@ ur:envelope/lptpsotpcxkscxisjyjyjojkftdldljkjyhsjykpjkdmihkshsjnjojzihdmiajljndl
 Example capturing the above envelopes into a shell array. Note that newer shells like `zsh` use one-based indexing by default, but can be configured to use zero-based indexing.
 
 👉
-```
+```bash
 $ XID_SERVICES=($(envelope xid service all $ALICE_XID_DOC_WITH_SERVICE))
 $ envelope format ${XID_SERVICES[1]}
+```
 
+👈
+```envelope
 URI(https://messaging.example.com) [
     'allow': 'Encrypt'
     'allow': 'Sign'
@@ -1017,9 +1229,15 @@ URI(https://messaging.example.com) [
     'key': Reference(cab108a0)
     'name': "Messaging"
 ]
+```
 
+👉
+```bash
 $ envelope format ${XID_SERVICES[2]}
+```
 
+👈
+```envelope
 URI(https://status.example.com/alice) [
     'allow': 'Sign'
     'capability': "com.example.status"
@@ -1035,9 +1253,12 @@ URI(https://status.example.com/alice) [
 Returns at most one service envelope.
 
 👉
-```
+```bash
 $ envelope xid service find uri 'https://status.example.com/alice' $ALICE_XID_DOC_WITH_SERVICE | envelope format
+```
 
+👈
+```envelope
 URI(https://status.example.com/alice) [
     'allow': 'Sign'
     'capability': "com.example.status"
@@ -1051,9 +1272,12 @@ URI(https://status.example.com/alice) [
 May return multiple service envelopes.
 
 👉
-```
+```bash
 $ envelope xid service find name 'Messaging' $ALICE_XID_DOC_WITH_SERVICE | envelope format
+```
 
+👈
+```envelope
 URI(https://messaging.example.com) [
     'allow': 'Encrypt'
     'allow': 'Sign'
@@ -1069,10 +1293,13 @@ URI(https://messaging.example.com) [
 Alice removes the messaging service.
 
 👉
-```
+```bash
 $ ALICE_XID_DOC_WITH_SERVICE_REMOVED=`envelope xid service remove 'https://messaging.example.com' $ALICE_XID_DOC_WITH_SERVICE`
 $ envelope format $ALICE_XID_DOC_WITH_SERVICE_REMOVED
+```
 
+👈
+```envelope
 XID(93a4d4e7) [
     'delegate': {
         XID(f1199a75) [
@@ -1109,14 +1336,17 @@ XID(93a4d4e7) [
 Alice adds Bob as a delegate to the status service. This leaves Alices key and all other attributes of the service unchanged.
 
 👉
-```
+```bash
 $ ALICE_XID_DOC_WITH_SERVICE_UPDATED=`envelope xid service update \
     --delegate $BOB_XID_DOC \
     'https://status.example.com/alice' \
     $ALICE_XID_DOC_WITH_SERVICE_REMOVED`
 
 $ envelope format $ALICE_XID_DOC_WITH_SERVICE_UPDATED
+```
 
+👈
+```envelope
 XID(93a4d4e7) [
     'delegate': {
         XID(f1199a75) [
@@ -1148,9 +1378,11 @@ Removing a key or delegate from the XID that is referenced by a service is not a
 To remove a key or delegate that is referenced by a service, first remove the service.
 
 👉
-```
+```bash
 $ envelope xid delegate remove $BOB_XID_DOC $ALICE_XID_DOC_WITH_SERVICE_UPDATED
+```
 
+👈
+```
 Error: Delegate is referenced by a service
 ```
-

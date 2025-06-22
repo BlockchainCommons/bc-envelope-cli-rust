@@ -17,7 +17,7 @@ envelope format $AUTHOR
 ```
 
 👈
-```
+```envelope
 ARID(9c747ace) [
     'dereferenceVia': "LibraryOfCongress"
     'name': "Ayn Rand"
@@ -34,7 +34,7 @@ envelope format $NAME_EN
 ```
 
 👈
-```
+```envelope
 "Atlas Shrugged" [
     'language': "en"
 ]
@@ -48,7 +48,7 @@ envelope format $NAME_ES
 ```
 
 👈
-```
+```envelope
 "La rebelión de Atlas" [
     'language': "es"
 ]
@@ -69,7 +69,7 @@ envelope format $WORK
 ```
 
 👈
-```
+```envelope
 ARID(7fb90a9d) [
     'isA': "Novel"
     "author": ARID(9c747ace) [
@@ -97,7 +97,7 @@ echo $BOOK_DIGEST
 ```
 
 👈
-```
+```dcbor
 ur:digest/hdcxdstihtykswvlcmamsrcwdtgdwscmtyemfdcyprclhtjzsameimtdbedidspkmuvtgdwzplwn
 ```
 
@@ -113,7 +113,7 @@ envelope format $BOOK_METADATA
 ```
 
 👈
-```
+```envelope
 Digest(26d05af5) [
     "format": "EPUB"
     "work": ARID(7fb90a9d) [

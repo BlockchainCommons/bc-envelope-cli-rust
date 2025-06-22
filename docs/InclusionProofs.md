@@ -32,7 +32,7 @@ envelope format $ALICE_FRIENDS
 ```
 
 👈
-```
+```envelope
 "Alice" [
     {
         "knows": "Bob"
@@ -61,7 +61,7 @@ envelope format $ALICE_FRIENDS_ROOT
 ```
 
 👈
-```
+```envelope
 ELIDED
 ```
 
@@ -77,7 +77,7 @@ envelope format $KNOWS_BOB_PROOF
 ```
 
 👈
-```
+```envelope
 ELIDED [
     ELIDED [
         ELIDED
@@ -123,7 +123,7 @@ envelope format $CREDENTIAL
 ```
 
 👈
-```
+```envelope
 {
     ARID(4676635a) [
         isA: "Certificate of Completion"
@@ -181,7 +181,7 @@ envelope format $CREDENTIAL_ROOT
 ```
 
 👈
-```
+```envelope
 ELIDED
 ```
 
@@ -197,7 +197,7 @@ envelope format $SUBJECT_PROOF
 The proof includes digests from all the elided assertions.
 
 👈
-```
+```envelope
 {
     ELIDED [
         ELIDED [
@@ -251,7 +251,7 @@ envelope format $NAME_PROOF
 ```
 
 👈
-```
+```envelope
 {
     ELIDED [
         ELIDED [

@@ -55,7 +55,7 @@ envelope format $CREDENTIAL
 ```
 
 👈
-```
+```envelope
 {
     ARID(4676635a) [
         'isA': "Certificate of Completion"
@@ -95,7 +95,7 @@ REDACTED_CREDENTIAL=`envelope elide revealing "$TARGET" $CREDENTIAL`; envelope f
 ```
 
 👈
-```
+```envelope
 ELIDED
 ```
 
@@ -112,7 +112,7 @@ REDACTED_CREDENTIAL=`envelope elide revealing "$TARGET" $CREDENTIAL`; envelope f
 ```
 
 👈
-```
+```envelope
 ELIDED [
     ELIDED (2)
 ]
@@ -132,7 +132,7 @@ REDACTED_CREDENTIAL=`envelope elide revealing "$TARGET" $CREDENTIAL`; envelope f
 ```
 
 👈
-```
+```envelope
 ELIDED [
     'note': "Signed by Example Electrical Engineering Board"
     'signed': Signature
@@ -163,7 +163,7 @@ REDACTED_CREDENTIAL=`envelope elide revealing "$TARGET" $CREDENTIAL`; envelope f
 ```
 
 👈
-```
+```envelope
 {
     ELIDED
 } [
@@ -186,7 +186,7 @@ REDACTED_CREDENTIAL=`envelope elide revealing "$TARGET" $CREDENTIAL`; envelope f
 ```
 
 👈
-```
+```envelope
 {
     ELIDED [
         ELIDED (13)
@@ -210,7 +210,7 @@ REDACTED_CREDENTIAL=`envelope elide revealing "$TARGET" $CREDENTIAL`; envelope f
 ```
 
 👈
-```
+```envelope
 {
     ARID(4676635a) [
         ELIDED (13)
@@ -235,7 +235,7 @@ REDACTED_CREDENTIAL=`envelope elide revealing "$TARGET" $CREDENTIAL`; envelope f
 ```
 
 👈
-```
+```envelope
 {
     ARID(4676635a) [
         'isA': "Certificate of Completion"
@@ -264,7 +264,7 @@ envelope format $WARRANTY
 ```
 
 👈
-```
+```envelope
 {
     {
         {
@@ -326,7 +326,7 @@ envelope elide revealing --action compress "$TARGET" $CREDENTIAL | envelope form
 ```
 
 👈
-```
+```envelope
 {
     ARID(4676635a) [
         'isA': "Certificate of Completion"
@@ -351,7 +351,7 @@ envelope elide revealing --action encrypt --key ur:crypto-key/hdcxcnqzoeuobzdksp
 ```
 
 👈
-```
+```envelope
 {
     ARID(4676635a) [
         'isA': "Certificate of Completion"

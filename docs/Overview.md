@@ -324,7 +324,7 @@ envelope subject type string "Hello."
 ```
 
 👈
-```
+```dcbor
 ur:envelope/tpsoiyfdihjzjzjldmksbaoede
 ```
 
@@ -336,7 +336,7 @@ envelope format ur:envelope/tpsoiyfdihjzjzjldmksbaoede
 ```
 
 👈
-```
+```envelope
 "Hello."
 ```
 
@@ -402,7 +402,7 @@ envelope extract envelope $ALICE_KNOWS_BOB
 ```
 
 👈
-```
+```dcbor
 ur:envelope/tpsoihfpjziniaihmebdmodl
 ```
 
@@ -412,7 +412,7 @@ envelope format ur:envelope/tpsoihfpjziniaihmebdmodl
 ```
 
 👈
-```
+```envelope
 "Alice"
 ```
 
@@ -426,7 +426,7 @@ envelope subject type string "Alice" | envelope assertion add pred-obj string "k
 ```
 
 👈
-```
+```dcbor
 ur:envelope/lftpsoihfpjziniaihoytpsoihjejtjlktjktpsoiafwjlidutgmnnns
 ```
 
@@ -472,7 +472,7 @@ envelope digest $ALICE_KNOWS_BOB
 ```
 
 👈
-```
+```dcbor
 ur:digest/hdcxldgouyhyadimzmpaeourhfsectvaskspdlotaxidiatbgydejnbwgskbhfrtwlwzneroatds
 ```
 
@@ -484,7 +484,7 @@ envelope extract envelope $ALICE_KNOWS_BOB | envelope digest
 ```
 
 👈
-```
+```dcbor
 ur:digest/hdcxbwmwcwfdkecauerfvsdirpwpfhfgtalfmulesnstvlrpoyfzuyenamdpmdcfutdlstyaqzrk
 ```
 
@@ -498,7 +498,7 @@ envelope assertion at 0 $ALICE_KNOWS_BOB | envelope digest
 ```
 
 👈
-```
+```dcbor
 ur:digest/hdcxkstbiywmmygsasktnbfwhtrppkclwdcmmugejesokejlbnftrdwspsmdcechbboerhzebtws
 ```
 
@@ -512,7 +512,7 @@ envelope assertion at 0 $ALICE_KNOWS_BOB |    # Gets the assertion
 ```
 
 👈
-```
+```dcbor
 ur:digest/hdcxbwrlfpmwnsemrovtnssrtnotcfgshdvezcjedlbbtypatiwtecoxjnjnhtcafhbysptsnsnl
 ```
 
@@ -529,7 +529,7 @@ echo $SUBJECT_DIGEST
 ```
 
 👈
-```
+```dcbor
 ur:digest/hdcxbwmwcwfdkecauerfvsdirpwpfhfgtalfmulesnstvlrpoyfzuyenamdpmdcfutdlstyaqzrk
 ```
 
@@ -541,7 +541,7 @@ envelope elide removing $SUBJECT_DIGEST $ALICE_KNOWS_BOB | envelope format
 ```
 
 👈
-```
+```envelope
 ELIDED [
     "knows": "Bob"
 ]
@@ -558,7 +558,7 @@ envelope elide removing "$SUBJECT_DIGEST $BOB_DIGEST" $ALICE_KNOWS_BOB | envelop
 ```
 
 👈
-```
+```envelope
 ELIDED [
     "knows": ELIDED
 ]
@@ -574,7 +574,7 @@ envelope digest $ALICE_KNOWS_BOB
 ```
 
 👈
-```
+```dcbor
 ur:digest/hdcxldgouyhyadimzmpaeourhfsectvaskspdlotaxidiatbgydejnbwgskbhfrtwlwzneroatds
 ```
 
@@ -584,7 +584,7 @@ envelope elide removing "$SUBJECT_DIGEST $BOB_DIGEST" $ALICE_KNOWS_BOB | envelop
 ```
 
 👈
-```
+```dcbor
 ur:digest/hdcxldgouyhyadimzmpaeourhfsectvaskspdlotaxidiatbgydejnbwgskbhfrtwlwzneroatds
 ```
 
@@ -601,7 +601,7 @@ echo $KEY
 ```
 
 👈
-```
+```dcbor
 ur:crypto-key/hdcxwfmnsbasamfgptbkwtvofgctmwroldcxjnltwsatzsdmimhlvehlsphebsfrzcssbzinhnrd
 ```
 
@@ -614,7 +614,7 @@ envelope format $ENCRYPTED
 ```
 
 👈
-```
+```envelope
 ENCRYPTED [
     "knows": "Bob"
 ]
@@ -628,7 +628,7 @@ envelope encrypt --key $KEY $ALICE_KNOWS_BOB
 ```
 
 👈
-```
+```dcbor
 ur:envelope/lftansfwlrgepkbnsgostemndaknguidgsmdpkfhtsimkibeotvymynbsggdcknegmfnspbdmhenchnswelslkzcnsbzhddatansfphdcxbwmwcwfdkecauerfvsdirpwpfhfgtalfmulesnstvlrpoyfzuyenamdpmdcfutdloytpsoihjejtjlktjktpsoiafwjlidbnvlrtin
 ```
 
@@ -638,7 +638,7 @@ envelope encrypt --key $KEY $ALICE_KNOWS_BOB
 ```
 
 👈
-```
+```dcbor
 ur:envelope/lftansfwlrgectvameeovwntswtdhllagsecvalrsrfgamsovtolnnmopfgdaectsfvazopdbketfgfpckweuochiaolhddatansfphdcxbwmwcwfdkecauerfvsdirpwpfhfgtalfmulesnstvlrpoyfzuyenamdpmdcfutdloytpsoihjejtjlktjktpsoiafwjlidytztdpms
 ```
 
@@ -650,7 +650,7 @@ envelope digest $ALICE_KNOWS_BOB
 ```
 
 👈
-```
+```dcbor
 ur:digest/hdcxldgouyhyadimzmpaeourhfsectvaskspdlotaxidiatbgydejnbwgskbhfrtwlwzneroatds
 ```
 
@@ -660,7 +660,7 @@ envelope encrypt --key $KEY $ALICE_KNOWS_BOB | envelope digest
 ```
 
 👈
-```
+```dcbor
 ur:digest/hdcxldgouyhyadimzmpaeourhfsectvaskspdlotaxidiatbgydejnbwgskbhfrtwlwzneroatds
 ```
 
@@ -677,7 +677,7 @@ envelope format $WRAPPED
 ```
 
 👈
-```
+```envelope
 {
     "Alice" [
         "knows": "Bob"
@@ -697,7 +697,7 @@ envelope digest $ALICE_KNOWS_BOB
 ```
 
 👈
-```
+```dcbor
 ur:digest/hdcxldgouyhyadimzmpaeourhfsectvaskspdlotaxidiatbgydejnbwgskbhfrtwlwzneroatds
 ```
 
@@ -707,7 +707,7 @@ envelope digest $WRAPPED
 ```
 
 👈
-```
+```dcbor
 ur:digest/hdcxzclocydkrespdwwygrldbyvabyplolrdfgfnsolnjkgwledyvwhtghlncylkhgdnltdkjest
 ```
 
@@ -718,7 +718,7 @@ envelope format $WRAPPED_ENCRYPTED
 ```
 
 👈
-```
+```envelope
 ENCRYPTED
 ```
 
@@ -730,7 +730,7 @@ envelope digest $WRAPPED
 ```
 
 👈
-```
+```dcbor
 ur:digest/hdcxzclocydkrespdwwygrldbyvabyplolrdfgfnsolnjkgwledyvwhtghlncylkhgdnltdkjest
 ```
 
@@ -740,7 +740,7 @@ envelope digest $WRAPPED_ENCRYPTED
 ```
 
 👈
-```
+```dcbor
 ur:digest/hdcxzclocydkrespdwwygrldbyvabyplolrdfgfnsolnjkgwledyvwhtghlncylkhgdnltdkjest
 ```
 
@@ -754,7 +754,7 @@ envelope decrypt --key $KEY $WRAPPED_ENCRYPTED |   # Decrypt the envelope
 ```
 
 👈
-```
+```envelope
 "Alice" [
     "knows": "Bob"
 ]
@@ -770,7 +770,7 @@ envelope generate prvkeys
 ```
 
 👈
-```
+```dcbor
 ur:crypto-prvkey-base/hdcxhdvsaelylaaesfqdwzghfmsswfrlzsfgytbbnecpkshekstbhdwzrkktasknztkecycaotda
 ```
 
@@ -784,7 +784,7 @@ echo $PRVKEYS
 ```
 
 👈
-```
+```dcbor
 ur:crypto-prvkey-base/gdmdeefejoaonnatcycefxjedrfyaspkiawdioolhs
 ```
 
@@ -797,7 +797,7 @@ echo $PUBKEYS
 ```
 
 👈
-```
+```dcbor
 ur:crypto-pubkeys/lftanshfhdcxweplrnkpsruepkaeahnetppsteaojtdlgudetlyksrlbzoiduoglpemujydnsrattansgrhdcximbgoskbjpgtluwededpjywdlkfwksjpglsrfdcaurdahycfasmtylihpfrsfgkblomttisr
 ```
 
@@ -816,7 +816,7 @@ envelope format $SIGNED
 ```
 
 👈
-```
+```envelope
 "Alice" [
     "knows": "Bob"
     'signed': Signature
@@ -834,7 +834,7 @@ envelope format $WRAPPED_SIGNED
 ```
 
 👈
-```
+```envelope
 {
     "Alice" [
         "knows": "Bob"
@@ -852,7 +852,7 @@ envelope verify --verifier $PUBKEYS $WRAPPED_SIGNED
 ```
 
 👈
-```
+```dcbor
 ur:envelope/lftpsplftpcsihfpjziniaihoytpcsihjejtjlktjktpcsiafwjlidoyaxtpcstansghhdfznltbglechtrkecemfhahkbrkcfzcasfnbbkpktzmsrvewtksknahmnpkinguktdwkgfrdklfrtdwpssamujtidcteovyongeamayftfxiaesfwceecoxueimmhwfrsyaidiycwdl
 ```
 
@@ -905,7 +905,7 @@ envelope format $SHARE_1
 ```
 
 👈
-```
+```envelope
 ENCRYPTED [
         'sskrShare': SSKRShare
 ]
@@ -920,7 +920,7 @@ envelope format $RECOVERED
 ```
 
 👈
-```
+```envelope
 "Alice" [
     "knows": "Bob"
 ]
@@ -967,7 +967,7 @@ envelope format $SALTED_WRAPPED
 ```
 
 👈
-```
+```envelope
 {
     "Alice" [
         "knows": "Bob"
@@ -1038,7 +1038,7 @@ envelope format $COMPRESSED
 ```
 
 👈
-```
+```envelope
 COMPRESSED
 ```
 
@@ -1066,7 +1066,7 @@ envelope format $ALICE_COMPRESSED
 ```
 
 👈
-```
+```envelope
 COMPRESSED [
     "knows": "Bob"
 ]
