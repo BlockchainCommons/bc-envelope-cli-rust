@@ -126,7 +126,7 @@ impl crate::exec::Exec for CommandArgs {
             SubjectType::Uuid => {
                 envelope.extract_subject::<UUID>()?.to_string()
             }
-            SubjectType::Wrapped => envelope.unwrap_envelope()?.ur_string(),
+            SubjectType::Wrapped => envelope.try_unwrap()?.ur_string(),
             SubjectType::Xid => envelope.extract_subject::<XID>()?.ur_string(),
         };
         Ok(string)
@@ -205,7 +205,7 @@ impl CommandArgs {
                     bail!("UR type mismatch");
                 }
             }
-            envelope.unwrap_envelope()?.ur_string()
+            envelope.try_unwrap()?.ur_string()
         } else {
             bail!("No CBOR data found in envelope subject");
         })
@@ -222,7 +222,7 @@ fn extract_cbor_string(envelope: Envelope) -> Result<String> {
     Ok(if let Some(cbor) = subject.as_leaf() {
         cbor.hex()
     } else if subject.is_wrapped() {
-        envelope.unwrap_envelope()?.to_cbor().hex()
+        envelope.try_unwrap()?.to_cbor().hex()
     } else if let Some(known_value) = subject.as_known_value() {
         known_value.to_cbor().hex()
     } else {

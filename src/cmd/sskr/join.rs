@@ -34,7 +34,7 @@ impl crate::exec::Exec for CommandArgs {
 
         let shares_refs: Vec<&Envelope> = shares.iter().collect();
         let wrapped = bc_envelope::Envelope::sskr_join(&shares_refs)?;
-        let result = wrapped.unwrap_envelope()?;
+        let result = wrapped.try_unwrap()?;
         Ok(result.ur_string())
     }
 }

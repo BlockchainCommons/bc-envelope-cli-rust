@@ -75,7 +75,7 @@ impl crate::exec::Exec for CommandArgs {
             None => SymmetricKey::new(),
         };
 
-        let wrapped = envelope.wrap_envelope();
+        let wrapped = envelope.wrap();
         let encrypted = wrapped.encrypt_subject(&content_key)?;
         let group_spec_results: Vec<Result<SSKRGroupSpec, SSKRError>> = groups
             .iter()

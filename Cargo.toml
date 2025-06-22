@@ -28,7 +28,8 @@ path = "src/main.rs"
 [dependencies]
 dcbor = "^0.21.0"
 bc-ur = "^0.11.0"
-bc-envelope = "^0.30.0"
+bc-envelope = "^0.32.0"
+bc-envelope-pattern = "^0.1.0"
 bc-components = "^0.23.0"
 bc-rand = "^0.4.0"
 bc-xid = "^0.10.0"
@@ -37,7 +38,7 @@ clap = { version = "^4.4.3", features = ["derive", "unstable-styles"] }
 anyhow = "^1.0.0"
 anstyle = "^1.0.1"
 hex = "^0.4.3"
-regex = "^1.9.5"
+regex = "^1.11.1"
 ssh-key = { version = "=0.6.7", default-features = false, features = [
     "dsa",
     "ecdsa",

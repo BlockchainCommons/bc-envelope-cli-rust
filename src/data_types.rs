@@ -168,7 +168,7 @@ fn parse_ur(s: &str, cbor_tag_value: Option<u64>) -> Result<Envelope> {
     let ur = UR::from_ur_string(s)?;
     if ur.ur_type_str() == "envelope" {
         let envelope = Envelope::from_ur(&ur)?;
-        Ok(envelope.wrap_envelope())
+        Ok(envelope.wrap())
     } else {
         let cbor_tag = with_format_context!(|context: &FormatContext| {
             let store = context.tags();
@@ -203,5 +203,5 @@ fn parse_uuid(s: &str) -> Result<Envelope> {
 /// Parse a wrapped envelope from a ur:envelope string.
 fn parse_wrapped_envelope(s: &str) -> Result<Envelope> {
     let envelope = Envelope::from_ur_string(s)?;
-    Ok(envelope.wrap_envelope())
+    Ok(envelope.wrap())
 }
