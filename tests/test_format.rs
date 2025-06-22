@@ -180,7 +180,7 @@ fn test_format_tree() -> Result<()> {
         indoc! {r#"
             7da760aa NODE
                 2f50e5e7 subj WRAPPED
-                    ee1bfc78 subj NODE
+                    ee1bfc78 cont NODE
                         6c1c5596 subj ARID(174842ea)
                         3cc7a442 ELIDED
                         728e7274 ASSERTION
