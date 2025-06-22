@@ -19,6 +19,7 @@ pub mod subject;
 pub mod uncompress;
 pub mod verify;
 pub mod xid;
+pub mod pattern;
 
 pub const ASKPASS_HELP: &str =
     "Prompt for the password using an external program.";
