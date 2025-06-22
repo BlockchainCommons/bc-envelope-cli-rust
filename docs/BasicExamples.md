@@ -13,15 +13,15 @@ This document walks you through a set of basic examples using the `envelope` com
 
 Throughout this document, commands entered into the shell are annotation with a right-pointing hand:
 
-```bash
 👉
+```bash
 echo Hello.
 ```
 
 Shell output is annotated with a left-pointing hand:
 
-```
 👈
+```
 Hello.
 ```
 
@@ -33,8 +33,8 @@ Alice ➡️ ☁️ ➡️ Bob
 
 These examples define a common plaintext, and `ARID`s and `PrivateKeyBase` objects for *Alice*, *Bob*, *Carol*, *ExampleLedger*, and *The State of Example*, each with a corresponding `PublicKeys`.
 
-```bash
 👉
+```bash
 PLAINTEXT_HELLO="Hello."
 
 ALICE_ARID="ur:arid/hdcxtygshybkzcecfhflpfdlhdonotoentnydmzsidmkindlldjztdmoeyishknybtbswtgwwpdi"
@@ -69,14 +69,14 @@ In this example no signing or encryption is performed.
 
 Alice sends a plaintext message to Bob.
 
-```bash
 👉
+```bash
 HELLO_ENVELOPE=`envelope subject type string $PLAINTEXT_HELLO`
 echo $HELLO_ENVELOPE
 ```
 
-```
 👈
+```dcbor
 ur:envelope/tpsoiyfdihjzjzjldmksbaoede
 ```
 
@@ -84,13 +84,13 @@ Alice ➡️ ☁️ ➡️ Bob
 
 Bob receives the envelope and reads the message.
 
-```bash
 👉
+```bash
 envelope extract string $HELLO_ENVELOPE
 ```
 
-```
 👈
+```
 Hello.
 ```
 
@@ -100,14 +100,14 @@ This example demonstrates the signature of a plaintext message.
 
 Alice sends a signed plaintext message to Bob.
 
-```bash
 👉
+```bash
 SIGNED_ENVELOPE=`envelope subject type string $PLAINTEXT_HELLO | envelope sign --prvkeys $ALICE_PRVKEY_BASE`
 echo $SIGNED_ENVELOPE
 ```
 
-```
 👈
+```dcbor
 ur:envelope/lftpsoiyfdihjzjzjldmoyaxtpsotansghhdfztimhtswewlimbszsbnlrrsperkwznlmsehghlpbejooxdtdiyazmglcxiekblplrfrmwgajllnnnrfnbcxmswmgtaoykvdcnsalblgfhgekobsjzotsawsprhkeybshlidplgesr
 ```
 
@@ -115,13 +115,13 @@ Alice ➡️ ☁️ ➡️ Bob
 
 Bob receives the envelope and examines its contents.
 
-```bash
 👉
+```bash
 envelope format $SIGNED_ENVELOPE
 ```
 
-```
 👈
+```envelope
 "Hello." [
     'signed': Signature
 ]
@@ -129,51 +129,51 @@ envelope format $SIGNED_ENVELOPE
 
 Bob verifies Alice's signature. Note that the `--silent` flag is used to generate no output on success.
 
-```bash
 👉
+```bash
 envelope verify --silent $SIGNED_ENVELOPE --pubkeys $ALICE_PUBKEYS
 ```
 
 Bob extracts the message.
 
-```bash
 👉
+```bash
 envelope extract string $SIGNED_ENVELOPE
 ```
 
-```
 👈
+```
 Hello.
 ```
 
 Confirm that it wasn't signed by Carol. Note that a failed verification results in an error condition.
 
-```bash
 👉
+```bash
 envelope verify $SIGNED_ENVELOPE --pubkeys $CAROL_PUBKEYS
 ```
 
-```
 👈
+```
 Error: could not verify a signature
 ```
 
 Confirm that it was signed by Alice OR Carol.
 
-```bash
 👉
+```bash
 envelope verify --silent $SIGNED_ENVELOPE --threshold 1 --pubkeys $ALICE_PUBKEYS --pubkeys $CAROL_PUBKEYS
 ```
 
 Confirm that it was not signed by Alice AND Carol.
 
-```bash
 👉
+```bash
 envelope verify $SIGNED_ENVELOPE --threshold 2 --pubkeys $ALICE_PUBKEYS --pubkeys $CAROL_PUBKEYS
 ```
 
-```
 👈
+```
 Error: could not verify a signature
 ```
 
@@ -183,14 +183,14 @@ This example demonstrates a plaintext message signed by more than one party.
 
 Alice and Carol jointly send a signed plaintext message to Bob.
 
-```bash
 👉
+```bash
 MULTISIGNED_ENVELOPE=`envelope subject type string $PLAINTEXT_HELLO | envelope sign --prvkeys $ALICE_PRVKEY_BASE --prvkeys $CAROL_PRVKEY_BASE`
 echo $MULTISIGNED_ENVELOPE
 ```
 
-```
 👈
+```dcbor
 ur:envelope/lstpsoiyfdihjzjzjldmoyaxtpsotansghhdfzbgqdbglkfhjlrpimaawndiiortahtiethdrdotrkmerfaxatayoyjnkgmsmwgspegduehhswfnprtsayesrtrpjpvlmnaslpnsryqdflfhhypasgpaguidstfpbnhkmkoyaxtpsotansghhdfzksdedssrtdcywsneluvthelnadoxvydmfnfwrlfpwpqddltbetleoyvstalsykfgmngllonegrlefptivyglhttkvdeopkytyatpfrdibsvydseeurticnbkjtgeyncflsmdctrl
 ```
 
@@ -198,13 +198,13 @@ Alice & Carol ➡️ ☁️ ➡️ Bob
 
 Bob receives the envelope and examines its contents.
 
-```bash
 👉
+```bash
 envelope format $MULTISIGNED_ENVELOPE
 ```
 
-```
 👈
+```envelope
 "Hello." [
     'signed': Signature
     'signed': Signature
@@ -213,20 +213,20 @@ envelope format $MULTISIGNED_ENVELOPE
 
 Bob verifies the message was signed by both Alice and Carol.
 
-```bash
 👉
+```bash
 envelope verify --silent $MULTISIGNED_ENVELOPE --pubkeys $ALICE_PUBKEYS --pubkeys $CAROL_PUBKEYS
 ```
 
 Bob extracts the message.
 
-```bash
 👉
+```bash
 envelope extract string $MULTISIGNED_ENVELOPE
 ```
 
-```
 👈
+```
 Hello.
 ```
 
@@ -236,27 +236,27 @@ This examples debuts the idea of an encrypted message, based on a symmetric key 
 
 Alice and Bob have agreed to use this key:
 
-```bash
 👉
+```bash
 KEY=`envelope generate key`
 echo $KEY
 ```
 
-```
 👈
+```dcbor
 ur:crypto-key/hdcxndcpaxtllrgtclpasaytgoynadhnssbnlaytyluokelebggokpkkgodyfpchlnwnnehpmtte
 ```
 
 Alice sends a message encrypted with the key to Bob.
 
-```bash
 👉
+```bash
 ENCRYPTED_ENVELOPE=`envelope subject type string $PLAINTEXT_HELLO | envelope encrypt --key $KEY`
 echo $ENCRYPTED_ENVELOPE
 ```
 
-```
 👈
+```dcbor
 ur:envelope/tansfwlrgrlubnrsgykoyntaskktbbrsgssbynrfkiosdtkpwmvsylytrngdwskgtdlarycsntpdvtvoguurgedlosprhddatansfphdcxlksojzuyktbykovsecbygebsldeninbdfptkwebtwzdpadglwetbgltnwdmwhlhksprsbghn
 ```
 
@@ -264,38 +264,38 @@ Alice ➡️ ☁️ ➡️ Bob
 
 Bob receives the envelope and examines its contents.
 
-```bash
 👉
+```bash
 envelope format $ENCRYPTED_ENVELOPE
 ```
 
-```
 👈
+```envelope
 ENCRYPTED
 ```
 
 Bob decrypts the message and extracts its subject.
 
-```bash
 👉
+```bash
 DECRYPTED=`envelope decrypt $ENCRYPTED_ENVELOPE --key $KEY`
 envelope extract string $DECRYPTED
 ```
 
-```
 👈
+```
 Hello.
 ```
 
 Can't read with incorrect key.
 
-```bash
 👉
+```bash
 envelope decrypt $ENCRYPTED_ENVELOPE --key `envelope generate key`
 ```
 
-```
 👈
+```
 Error: decrypt failed
 ```
 
@@ -303,45 +303,45 @@ Error: decrypt failed
 
 Alice encrypts a message using a password she chooses.
 
-```bash
 👉
+```bash
 ENCRYPTED_ENVELOPE=`envelope subject type string $PLAINTEXT_HELLO | envelope encrypt --password`
 ```
 
-```
 👈
+```
 Encryption password: <Alice enters 'test'>
 ```
 
-```bash
 👉
+```bash
 echo $ENCRYPTED_ENVELOPE
 ```
 
-```
 👈
+```dcbor
 ur:envelope/lftansfwlrgrlbhykttnrnluldfemointygsbkaorolupsehetkoytbtkslsgdrnolwmfyuednmocmmhwzbkytgldrlurdhddatansfphdcxlksojzuyktbykovsecbygebsldeninbdfptkwebtwzdpadglwetbgltnwdmwhlhkoybwtpsotanshptansfwlrhdcxfxpdnshtpresbdskveremkmdqdvyzmftckdyhtuocsjtlrtopfyljoykgensbemwgsluskplhsbzaewnryjteedmolgdqzlovdsssgknclrogtnyiolnmhdthfnthflfaxtansgmgdbsdimwlegesbvduymsutkbrdghdnghrsvotsndda
 ```
 
 Later, Alice decrypts the message using the same password.
 
-```bash
 👉
+```bash
 DECRYPTED=`envelope decrypt $ENCRYPTED_ENVELOPE --password`
 ```
 
-```
 👈
+```
 Decryption password: <Alice enters 'test' again>
 ```
 
-```bash
 👉
+```bash
 envelope extract string $DECRYPTED
 ```
 
-```
 👈
+```
 Hello.
 ```
 
@@ -349,13 +349,13 @@ Hello.
 
 Alice generates an Ed25519 key pair and adds it to her SSH agent.
 
-```bash
 👉
+```bash
 ssh-keygen -t ed25519 -f ~/.ssh/alice_ed25519 -C "alice@localhost"
 ```
 
-```
 👈
+```
 Generating public/private ed25519 key pair.
 Enter passphrase for "/Users/alice/.ssh/alice_ed25519" (empty for no passphrase):
 Enter same passphrase again:
@@ -379,48 +379,48 @@ The key's randomart image is:
 
 Alice adds her private key to the SSH agent.
 
-```bash
 👉
+```bash
 ssh-add ~/.ssh/alice_ed25519
 ```
 
-```
 👈
+```
 Identity added: /Users/alice/.ssh/alice_ed25519 (alice@localhost)
 ```
 
 Alice lists the keys in her SSH agent to confirm it was added.
 
-```bash
 👉
+```bash
 ssh-add -L
 ```
 
-```
 👈
+```
 ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAILvLgo1Ep8md2MTAxLCM+e9MLFw0vDdfa5N4BGwvk893 alice@localhost
 ```
 
 Alice encrypts a message using her SSH agent.
 
-```bash
 👉
+```bash
 ENCRYPTED=`envelope subject type string $PLAINTEXT_HELLO | envelope encrypt --ssh-id alice@localhost`
 echo $ENCRYPTED
 ```
 
-```
 👈
+```dcbor
 ur:envelope/lftansfwlrgrzotttdghayfyfsdpnbiymtgsgartdytlptsntpielerenshfgdhyvowkcaatfmehrdfyweiebbieeekkgwhddatansfphdcxlksojzuyktbykovsecbygebsldeninbdfptkwebtwzdpadglwetbgltnwdmwhlhkoybwtpsotanshptansfwlrhdcxtirdvoqdberhinrewklahemotspkonuyzeytnebewpemjkrtylbndleoinynsppagslboeahutvtdlplynylwkbtingdnykofmmuhphnhsgacfihzobkgoaxwnkghddslsaatansgmgdmnceetcajllfrnkkotverohlpelrlrltjlhsjziniaihfzjzjliahsjzisjljkjydatkhenl
 ```
 
-```bash
 👉
+```bash
 envelope format $ENCRYPTED
 ```
 
-```
 👈
+```envelope
 ENCRYPTED [
     'hasSecret': EncryptedKey(SSHAgent("alice@localhost"))
 ]
@@ -428,14 +428,14 @@ ENCRYPTED [
 
 Later, Alice decrypts the message using her SSH agent.
 
-```bash
 👉
+```bash
 DECRYPTED=`envelope decrypt $ENCRYPTED --ssh-id alice@localhost`
 envelope extract string $DECRYPTED
 ```
 
-```
 👈
+```
 Hello.
 ```
 
@@ -445,27 +445,27 @@ This example combines the previous ones, first signing, then encrypting a messag
 
 Alice and Bob have agreed to use this key.
 
-```bash
 👉
+```bash
 KEY=`envelope generate key`
 echo $KEY
 ```
 
-```
 👈
+```dcbor
 ur:crypto-key/hdcxhkwenldmtpvyuyjthgjnwpurdndrhhesatlsqddrrkbtclfmdreooscmamdsdsvyvyrpmojn
 ```
 
 Alice signs a plaintext message, wraps it so her signature will also be encrypted, then encrypts it.
 
-```bash
 👉
+```bash
 SIGNED_ENCRYPTED=`envelope subject type string $PLAINTEXT_HELLO | envelope sign --prvkeys $ALICE_PRVKEY_BASE | envelope subject type wrapped | envelope encrypt --key $KEY`
 echo $SIGNED_ENCRYPTED
 ```
 
-```
 👈
+```dcbor
 ur:envelope/tansfwlrhdhgjszmsfgdynpmhdgtbwkemyoerflnfxmdesgridjzatlpzebnlahhjoldetecmtpabklkotckvacnvehgfwntvagttkwzgonemklnasiotblkwlgliaoxcskezetprhwyttcfnncfdsdtwzchfdvahgseutvwgagtsbpyvtwfjtqddigsckrnnyclwzpmbntprdntonmdgdsslfdnoefgkspfpdbyfpathyhncndawthddatansfphdcxpfzeltkkrpwsesbnnylrzceymdatdkpeiegowliossnyoxsrveieltftytnslgbyknbeuorl
 ```
 
@@ -473,26 +473,26 @@ Alice ➡️ ☁️ ➡️ Bob
 
 Bob receives the envelope, and examines its contents.
 
-```bash
 👉
+```bash
 envelope format $SIGNED_ENCRYPTED
 ```
 
-```
 👈
+```envelope
 ENCRYPTED
 ```
 
 Bob decrypts it using the shared key, and then examines the decrypted envelope's contents.
 
-```bash
 👉
+```bash
 DECRYPTED=`envelope decrypt $SIGNED_ENCRYPTED --key $KEY`
 envelope format $DECRYPTED
 ```
 
-```
 👈
+```envelope
 {
     "Hello." [
         'signed': Signature
@@ -502,25 +502,25 @@ envelope format $DECRYPTED
 
 Bob unwraps the inner envelope, verifies Alice's signature, and then extracts the message.
 
-```bash
 👉
+```bash
 envelope extract wrapped $DECRYPTED | envelope verify --pubkeys $ALICE_PUBKEYS | envelope extract string
 ```
 
-```
 👈
+```
 Hello.
 ```
 
 Attempting to verify the wrong key exits with an error.
 
-```bash
 👉
+```bash
 envelope extract wrapped $DECRYPTED | envelope verify --pubkeys $CAROL_PUBKEYS
 ```
 
-```
 👈
+```
 Error: could not verify a signature
 ```
 
@@ -536,27 +536,27 @@ The main difference between this order of operations and the sign-then-encrypt o
 
 Alice and Bob have agreed to use this key.
 
-```bash
 👉
+```bash
 KEY=`envelope generate key`
 echo $KEY
 ```
 
-```
 👈
+```dcbor
 ur:crypto-key/hdcxvtbafhhncnmywyckttntsawypyayhlgalypluodlcmnysalbaxaajefsromestdpdnplwyns
 ```
 
 Alice encrypts a plaintext message, then signs it.
 
-```bash
 👉
+```bash
 ENCRYPTED_SIGNED=`envelope subject type string $PLAINTEXT_HELLO | envelope encrypt --key $KEY | envelope sign --prvkeys $ALICE_PRVKEY_BASE`
 echo $ENCRYPTED_SIGNED
 ```
 
-```
 👈
+```dcbor
 ur:envelope/lftansfwlrgrinhkwkbbdevduevosatkwlgsmyzoiadwotdmsonsplolptgmgdpesrrhvwvoosfxlpztsaisndtpbburcwhddatansfphdcxlksojzuyktbykovsecbygebsldeninbdfptkwebtwzdpadglwetbgltnwdmwhlhkoyaxtpsotansghhdfzjyqzbkfgiepyrfhlkbzclphdhgtnbbehadtoetrkgwdtcawsynrohkoscpssylcyylkifltakoztflptcyrswlsafeynrdmolurdftfnbnsfmsuoswwschsakghlrsylhysaaxad
 ```
 
@@ -564,13 +564,13 @@ Alice ➡️ ☁️ ➡️ Bob
 
 Bob receives the envelope and examines its contents.
 
-```bash
 👉
+```bash
 envelope format $ENCRYPTED_SIGNED
 ```
 
-```
 👈
+```envelope
 ENCRYPTED [
     'signed': Signature
 ]
@@ -578,15 +578,15 @@ ENCRYPTED [
 
 Bob verifies Alice's signature, decrypts the message, then extracts the message.
 
-```bash
 👉
+```bash
 envelope verify $ENCRYPTED_SIGNED --pubkeys $ALICE_PUBKEYS | \
     envelope decrypt --key $KEY | \
     envelope extract string
 ```
 
-```
 👈
+```
 Hello.
 ```
 
@@ -596,14 +596,14 @@ This example demonstrates an encrypted message sent to multiple parties.
 
 Alice encrypts a message so that it can only be decrypted by Bob or Carol.
 
-```bash
 👉
+```bash
 ENVELOPE_TO=`envelope subject type string $PLAINTEXT_HELLO | envelope encrypt --recipient $BOB_PUBKEYS --recipient $CAROL_PUBKEYS`
 echo $ENVELOPE_TO
 ```
 
-```
 👈
+```dcbor
 ur:envelope/lstansfwlrgrgysgbseowfndfxwklfghjzgsfeahftztbggrjkssdewlmkcmgddmeszcnstepyctfzlacmpkpyimotrkrdhddatansfphdcxlksojzuyktbykovsecbygebsldeninbdfptkwebtwzdpadglwetbgltnwdmwhlhkoyahtpsotansgulftansfwlshddapypswkgedrfmmyketsnyjpnynnaasodmdtnylpyaemsbneaxseethhgersaopstniorshgsaolgsyltndscylkasfesamowyjzesgdbwaaztdizogundzcsfwemnskntdihngltansgrhdcxdlgegoneftkpvlfrpsiaprlnkgfechzclspdkbihwswtcpuodrtbfgwmehttswdroyahtpsotansgulftansfwlshddaprpebzghlnpmgtcyctkbfdframolfxdefrwlrsqzplenbdckuesojostctlsdlceasplrppfjtgsdpztcwwyzoctlbstndpsjlaygdrefhnerdfhgotinytblgcxcxdppdlsnttansgrhdcxsnlabgaychstbsrlsavetblbfxwlfsuyrnoxsfbzghhnwzpfwtpmtkfslkyklnieldcfgywf
 ```
 
@@ -613,13 +613,13 @@ Alice ➡️ ☁️ ➡️ Carol
 
 Bob receives the envelope and examines its structure:
 
-```bash
 👉
+```bash
 envelope format $ENVELOPE_TO
 ```
 
-```
 👈
+```envelope
 ENCRYPTED [
     'hasRecipient': SealedMessage
     'hasRecipient': SealedMessage
@@ -628,37 +628,37 @@ ENCRYPTED [
 
 Bob decrypts and reads the message.
 
-```bash
 👉
+```bash
 envelope decrypt $ENVELOPE_TO --recipient $BOB_PRVKEY_BASE | envelope extract string
 ```
 
-```
 👈
+```
 Hello.
 ```
 
 Carol decrypts and reads the message.
 
-```bash
 👉
+```bash
 envelope decrypt $ENVELOPE_TO --recipient $CAROL_PRVKEY_BASE | envelope extract string
 ```
 
-```
 👈
+```
 Hello.
 ```
 
 Alice didn't encrypt it to herself, so she can't read it.
 
-```bash
 👉
+```bash
 envelope decrypt $ENVELOPE_TO --recipient $ALICE_PRVKEY_BASE
 ```
 
-```
 👈
+```
 Error: unknown recipient
 ```
 
@@ -668,14 +668,14 @@ This example demonstrates a signed, then encrypted message, sent to multiple par
 
 Alice signs a message, and then encrypts it so that it can only be decrypted by Bob or Carol.
 
-```bash
 👉
+```bash
 ENVELOPE_SIGNED_TO=`envelope subject type string $PLAINTEXT_HELLO | envelope sign --prvkeys $ALICE_PRVKEY_BASE | envelope encrypt --recipient $BOB_PUBKEYS --recipient $CAROL_PUBKEYS`
 echo $ENVELOPE_SIGNED_TO
 ```
 
-```
 👈
+```dcbor
 ur:envelope/lrtansfwlrgrbbsrpegwhtlyztatlfzeglgsmybsfttiknfpintpnyqztskpgdcevacyqdihasececdwcwimpskttbtnbkhddatansfphdcxlksojzuyktbykovsecbygebsldeninbdfptkwebtwzdpadglwetbgltnwdmwhlhkoyahtpsotansgulftansfwlshddaeclypmidwzjtatdrgunlyaghpkplmntnoetldrvlaepeemgdtkynaxwdaecmnsiyjspsmknywngswztktldnvtnlbeskmnonzorkgddsfzrflyiedybgcpsaghisjpchytdnvetansgrhdcxfwytuegmrozeyaeoasuotofrttndkktdoefygozeeeoxhncywlghbssklnemckfloyaxtpsotansghhdfzgannghwpfzwskbzehekidwihgrvafhjkynbzlftbmktbltveutwkaagtsorszsctwllezogodrtlzeisdrdndrglmsdisaosspcpihtdbawktabbfdmhnsesecemwdcmoyahtpsotansgulftansfwlshddahlfenbtsltgsamidbsldhhutlptpplemltpaeszeehctpttkfptlfprljnfrbbenamgegwcnaegsoykerhvygezcchjeetyapdssgdzobdwtmkfwlfrnzmztknoejtwmrnbgketansgrhdcxhliegdcxosbgnywsinjkaadtwttnjyylsrlsluwygtcnmtgyonwnronepklsbaaaiarklyeh
 ```
 
@@ -685,13 +685,13 @@ Alice ➡️ ☁️ ➡️ Carol
 
 Bob receives the envelope and examines its structure:
 
-```bash
 👉
+```bash
 envelope format $ENVELOPE_SIGNED_TO
 ```
 
-```
 👈
+```envelope
 ENCRYPTED [
     'hasRecipient': SealedMessage
     'hasRecipient': SealedMessage
@@ -701,12 +701,12 @@ ENCRYPTED [
 
 Bob verifies Alice's signature, then decrypts and reads the message
 
-```bash
 👉
+```bash
 envelope verify $ENVELOPE_SIGNED_TO --pubkeys $ALICE_PUBKEYS | envelope decrypt --recipient $BOB_PRVKEY_BASE | envelope extract string
 ```
 
-```
 👈
+```
 Hello.
 ```

@@ -29,10 +29,13 @@ pub struct CommandArgs {
     #[arg(long, group = "format")]
     digest_ur: bool,
 
-    /// Format path elements as summary with optional maximum length for
-    /// truncation.
+    /// Format path elements as summary.
     #[arg(long, group = "format")]
-    summary: Option<usize>,
+    summary: bool,
+
+    /// Maximum length for summary truncation.
+    #[arg(long, requires = "summary")]
+    max_length: Option<usize>,
 
     #[command(flatten)]
     envelope_args: EnvelopeArgs,
@@ -89,8 +92,10 @@ impl crate::exec::Exec for CommandArgs {
             PathElementFormat::EnvelopeUR
         } else if self.digest_ur {
             PathElementFormat::DigestUR
+        } else if self.summary {
+            PathElementFormat::Summary(self.max_length)
         } else {
-            PathElementFormat::Summary(self.summary)
+            PathElementFormat::Summary(None)
         };
 
         let format_options = FormatPathsOpts::new()

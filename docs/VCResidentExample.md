@@ -6,8 +6,8 @@ Envelopes can also be built to support verifiable credentials, supporting the co
 
 John Smith's identifier:
 
-```bash
 👉
+```bash
 JOHN_ARID=`envelope generate arid`
 echo $JOHN_ARID
 ur:arid/hdcxrowefshyrpbapewtbwjowpvlimztemamzevoktdwdytnvldloltadeihwewschlflutinbfm
@@ -15,16 +15,16 @@ ur:arid/hdcxrowefshyrpbapewtbwjowpvlimztemamzevoktdwdytnvldloltadeihwewschlfluti
 
 A photo of John Smith:
 
-```bash
 👉
+```bash
 JOHN_IMAGE=`envelope subject type string "John Smith Smiling" | \
 envelope assertion add pred-obj known note string "This is an image of John Smith." | \
 envelope assertion add pred-obj known dereferenceVia uri "https://exampleledger.com/digest/36be30726befb65ca13b136ae29d8081f64792c2702415eb60ad1c56ed33c999"`
 envelope format $JOHN_IMAGE
 ```
 
-```
 👈
+```
 "John Smith Smiling" [
     'dereferenceVia': URI(https://exampleledger.com/digest/36be30726befb65ca13b136ae29d8081f64792c2702415eb60ad1c56ed33c999)
     'note': "This is an image of John Smith."
@@ -33,8 +33,8 @@ envelope format $JOHN_IMAGE
 
 John Smith's Permanent Resident Card issued by the State of Example:
 
-```bash
 👉
+```bash
 STATE_ARID="ur:arid/hdcxaaenfsheytmseorfbsbzktrdrdfybkwntkeegetaveghzstattdertbswsihahvspllbghcp"
 
 ISSUER=`envelope subject type ur $STATE_ARID | \
@@ -68,8 +68,8 @@ JOHN_RESIDENT_CARD=`envelope subject type ur $JOHN_ARID | \
 envelope format $JOHN_RESIDENT_CARD
 ```
 
-```
 👈
+```
 {
     ARID(b8ed3d5e) [
         'isA': "credential"
@@ -108,8 +108,8 @@ John wishes to identify himself to a third party using his government-issued cre
 
 Redaction is performed by building a set of digests that will be revealed. All digests not present in the reveal-set will be replaced with elision markers containing only the hash of what has been elided, thus preserving the hash tree including revealed signatures. If a higher-level object is elided, then everything it contains will also be elided, so if a deeper object is to be revealed, all of its parent objects also need to be revealed, even though not everything *about* the parent objects must be revealed.
 
-```bash
 👉
+```bash
 # Start a target set.
 TARGET=()
 
@@ -146,8 +146,8 @@ ELIDED_CARD=`envelope elide revealing "$TARGET" $JOHN_RESIDENT_CARD`
 envelope format $ELIDED_CARD
 ```
 
-```
 👈
+```
 {
     ARID(b8ed3d5e) [
         'isA': "credential"
@@ -175,45 +175,45 @@ envelope format $ELIDED_CARD
 
 Print the number of digests in the target set.
 
-```bash
 👉
+```bash
 echo ${#TARGET[@]}
 ```
 
-```
 👈
+```
 46
 ```
 
 Remove duplicates to get the number of unique digests in the target. Duplicates don't harm anything, but they might point to opportunities for optimization.
 
-```bash
 👉
+```bash
 UNIQUE_DIGESTS=( `for i in ${TARGET[@]}; do echo $i; done | sort -u` )
 echo ${#UNIQUE_DIGESTS[@]}
 ```
 
-```
 👈
+```
 40
 ```
 
 Note that the original card and the elided card have the same digest.
 
-```bash
 👉
+```bash
 envelope digest $JOHN_RESIDENT_CARD; envelope digest $ELIDED_CARD
 ```
 
-```
 👈
+```
 ur:digest/hdcxstcnlogtmnuraesttbnngojeryeebswtqznsbbgdjnfemucwonhlbbhfrywyadlyhpcftkft
 ur:digest/hdcxstcnlogtmnuraesttbnngojeryeebswtqznsbbgdjnfemucwonhlbbhfrywyadlyhpcftkft
 ```
 
 Note that the state's signature on the elided card still verifies.
 
-```bash
 👉
+```bash
 envelope verify --silent $ELIDED_CARD --pubkeys $STATE_PUBKEYS
 ```

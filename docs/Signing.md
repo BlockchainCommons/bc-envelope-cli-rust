@@ -62,15 +62,15 @@ Envelopes may be signed by several algorithms. The default is Schnorr, which is 
 
 ```mermaid
 graph LR
-    Seed --> PrivateKeyBase
-    random([Random]) --> PrivateKeyBase
-    PrivateKeyBase --> SigningPrivateKey
-    PrivateKeyBase --> SigningPublicKey
-    PrivateKeyBase --> X25519PrivateKey
-    X25519PrivateKey --> X25519PublicKey
-    PrivateKeyBase --> PublicKeys
-    PublicKeys --> SigningPublicKey
-    PublicKeys --> X25519PublicKey
+        Seed --> PrivateKeyBase
+        random([Random]) --> PrivateKeyBase
+        PrivateKeyBase --> SigningPrivateKey
+        PrivateKeyBase --> SigningPublicKey
+        PrivateKeyBase --> X25519PrivateKey
+        X25519PrivateKey --> X25519PublicKey
+        PrivateKeyBase --> PublicKeys
+        PublicKeys --> SigningPublicKey
+        PublicKeys --> X25519PublicKey
 ```
 
 ### Signers and Verifiers
@@ -113,14 +113,14 @@ A signature (`ur:signature`) is a cryptographic object that is produced by combi
 
 ## Basic Signing
 
-```bash
 👉
+```bash
 ALICE_KNOWS_BOB=ur:envelope/lftpsoihfpjziniaihoytpsoihjejtjlktjktpsoiafwjlidutgmnnns
 envelope format $ALICE_KNOWS_BOB
 ```
 
-```bash
 👈
+```bash
 "Alice" [
     "knows": "Bob"
 ]
@@ -130,13 +130,13 @@ The `envelope` tool can add a signature to a message using a private key base or
 
 To generate a private key base randomly:
 
-```bash
 👉
+```bash
 envelope generate prvkeys
 ```
 
-```
 👈
+```
 ur:crypto-prvkey-base/hdcxhdvsaelylaaesfqdwzghfmsswfrlzsfgytbbnecpkshekstbhdwzrkktasknztkecycaotda
 ```
 
@@ -144,28 +144,28 @@ Cryptographic seeds can also be used as a starting point. For more about seeds, 
 
 If you wish to use a seed to generate a private key base:
 
-```bash
 👉
+```bash
 SEED=ur:seed/oyadgdmdeefejoaonnatcycefxjedrfyaspkiakionamgl
 PRVKEYS=`envelope generate prvkeys --seed $SEED`
 echo $PRVKEYS
 ```
 
-```
 👈
+```
 ur:crypto-prvkey-base/gdmdeefejoaonnatcycefxjedrfyaspkiawdioolhs
 ```
 
 We can use the private key base as-is to sign an envelope using Schnorr. We can also use it to derive the actual Schnorr signing private key:
 
-```bash
 👉
+```bash
 SIGNER=`envelope generate signer $PRVKEYS`
 echo $SIGNER
 ```
 
-```bash
 👈
+```bash
 ur:signing-private-key/hdcxasfymwaxcpktaowpatotolckatgrhnceveasueskwereprcyfrmstpfgflaahnwlbewlqdga
 ```
 
@@ -173,40 +173,40 @@ Later we'll see how to derive signing private keys of other types, like SSH.
 
 Of course, we'll also want to distribute the `PublicKeys`, so the signature can be verified:
 
-```bash
 👉
+```bash
 PUBKEYS=`envelope generate pubkeys $PRVKEYS`
 echo $PUBKEYS
 ```
 
-```
 👈
+```
 ur:crypto-pubkeys/lftanshfhdcxweplrnkpsruepkaeahnetppsteaojtdlgudetlyksrlbzoiduoglpemujydnsrattansgrhdcximbgoskbjpgtluwededpjywdlkfwksjpglsrfdcaurdahycfasmtylihpfrsfgkblomttisr
 ```
 
 Recall that a `PublicKeys` actually contains two public keys: one for verifying signatures and one for encryption to a recipient. The signing public key can be extracted from the `PublicKeys`:
 
-```bash
 👉
+```bash
 VERIFIER=`envelope generate verifier $PUBKEYS`
 echo $VERIFIER
 ```
 
-```bash
 👈
+```bash
 ur:signing-public-key/hdcxweplrnkpsruepkaeahnetppsteaojtdlgudetlyksrlbzoiduoglpemujydnsratyadyptla
 ```
 
 Or the signing public key can be derived from the signing private key:
 
-```bash
 👉
+```bash
 VERIFIER=`envelope generate verifier $SIGNER`
 echo $VERIFIER
 ```
 
-```bash
 👈
+```bash
 ur:signing-public-key/hdcxweplrnkpsruepkaeahnetppsteaojtdlgudetlyksrlbzoiduoglpemujydnsratyadyptla
 ```
 
@@ -214,20 +214,20 @@ Again: So far we're just using Schnorr, the default. If the signer is of type Sc
 
 Now we can sign our envelope:
 
-```bash
 👉
+```bash
 SIGNED=`envelope sign --signer $PRVKEYS $ALICE_KNOWS_BOB`
 ```
 
 Let's see what it looks like when formatted now:
 
-```bash
 👉
+```bash
 envelope format $SIGNED
 ```
 
-```
 👈
+```
 "Alice" [
     "knows": "Bob"
     'signed': Signature
@@ -238,14 +238,14 @@ OK... there's a signature there now, but it's a new assertion on the subject of 
 
 Wrapping to the rescue! First we wrap the entire envelope in a new envelope, then we sign the wrapped envelope:
 
-```bash
 👉
+```bash
 WRAPPED_SIGNED=`envelope subject type wrapped $ALICE_KNOWS_BOB | envelope sign --signer $PRVKEYS`
 envelope format $WRAPPED_SIGNED
 ```
 
-```
 👈
+```
 {
     "Alice" [
         "knows": "Bob"
@@ -257,26 +257,26 @@ envelope format $WRAPPED_SIGNED
 
 Now the entire contents of the envelope are signed, and if we send it to someone who has our public key, they can verify the signature:
 
-```bash
 👉
+```bash
 envelope verify --verifier $PUBKEYS $WRAPPED_SIGNED
 ```
 
-```
 👈
+```
 ur:envelope/lftpsplftpcsihfpjziniaihoytpcsihjejtjlktjktpcsiafwjlidoyaxtpcstansghhdfznltbglechtrkecemfhahkbrkcfzcasfnbbkpktzmsrvewtksknahmnpkinguktdwkgfrdklfrtdwpssamujtidcteovyongeamayftfxiaesfwceecoxueimmhwfrsyaidiycwdl
 ```
 
 To facilitate piping commands, the `verify` command prints the input envelope if the validation is successful (unless the `--silent` flag is provided), and exits with an error condition if it is unsuccessful. Lets produce some incorrect public keys and try this:
 
-```bash
 👉
+```bash
 BAD_PUBKEYS=`envelope generate prvkeys | envelope generate pubkeys`
 envelope verify --verifier $BAD_PUBKEYS $WRAPPED_SIGNED
 ```
 
-```
 👈
+```
 Error: could not verify a signature
 ```
 
@@ -292,8 +292,8 @@ First, we can't sign directly with a private key base, since it has no inherent 
 
 Although it isn't required, it is best practice to include a comment when generating an SSH key. This comment is included in the public key and can be used to identify the key's owner.
 
-```bash
 👉
+```bash
 SSH_SIGNER=`envelope generate signer --type ssh-ed25519 --comment "wolf@Wolfs-MacBook-Pro.local" $PRVKEYS`
 echo $SSH_SIGNER
 ```
@@ -306,8 +306,8 @@ ur:signing-private-key/tanehnkkadotdpdpdpdpdpfwfeflgaglcxgwgdfeglgugufdcxgdgmgah
 
 If you have an existing SSH key file, you can import it into the `envelope` tool. The following example demonstrates how to import an Ed25519 key from an existing file. In this example, the key is stored in a file named `test_ed25519` and is encrypted with the password `test`. You can either provide the encryption password using the `--password` command-line argument or by typing it when prompted.
 
-```bash
 👉
+```bash
 SSH_SIGNER=`envelope import <./ssh_objects/test_ed25519`
 Key decryption password: test
 echo $SSH_SIGNER
@@ -323,15 +323,15 @@ Now that we have an SSH signing key, we can use it to sign an envelope. The foll
 
 Note that when signing with SSH keys, two additional options may be used: `--namespace` and `--hash-type`. The default namespace is `envelope`, and the default hash type is `sha256`. These defaults are fine for most cases.
 
-```bash
 👉
+```bash
 WRAPPED=`envelope subject type wrapped $ALICE_KNOWS_BOB`
 SSH_SIGNED=`envelope sign --signer $SSH_SIGNER $WRAPPED`
 envelope format $SSH_SIGNED
 ```
 
-```bash
 👈
+```
 {
     "Alice" [
         "knows": "Bob"
@@ -347,14 +347,14 @@ This signed envelope looks just like the one we signed with Schnorr. The differe
 
 To verify the signature, we need to generate an SSH verifier from the SSH public key. The following example demonstrates how to generate an SSH verifier from the Ed25519 key we generated earlier.
 
-```bash
 👉
+```bash
 SSH_VERIFIER=`envelope generate verifier $SSH_SIGNER`
 echo $SSH_VERIFIER
 ```
 
-```bash
 👈
+```bash
 ur:signing-public-key/tanehsksjnjkjkisdpihieeyececehescxfpfpfpfpfxeoglknhsfxehjzhtfygaehglghfeecfpfpfpfpgafgkpgtguhfgwinjnjnfpfygmeminfxjtgsguemktgwecflgrghknkkidhgfxfwjehthgjtgweyieeegrjlfwiocxktjljziyfzhgjljziyjkdpgthsiafwjljljedpgdjpjldmjzjliahsjzmybngyfs
 ```
 
@@ -362,13 +362,13 @@ ur:signing-public-key/tanehsksjnjkjkisdpihieeyececehescxfpfpfpfpfxeoglknhsfxehjz
 
 Now that we have an SSH verifier, we can use it to verify the signature. The following example demonstrates how to verify the signature using the Ed25519 verifier we generated earlier.
 
-```bash
 👉
+```bash
 envelope verify --silent --verifier $SSH_VERIFIER $SSH_SIGNED
 ```
 
-```bash
 👈
+```bash
 <nothing printed>
 ```
 
@@ -382,13 +382,13 @@ The `envelope` tool can export SSH keys to Open SSH format.
 
 The following example demonstrates how to export an SSH private key to stdout. The private key can be saved to a file by redirecting the output to a file.
 
-```bash
 👉
+```bash
 envelope export $SSH_SIGNER
 ```
 
-```bash
 👈
+```bash
 -----BEGIN OPENSSH PRIVATE KEY-----
 b3BlbnNzaC1rZXktdjEAAAAABG5vbmUAAAAEbm9uZQAAAAAAAAABAAAAMwAAAAtzc2gtZW
 QyNTUxOQAAACBbjElToppgA0e4gpy0u8DuRik88m1ggZGVpztneCqAYAAAAKAv5jjOL+Y4
@@ -400,11 +400,12 @@ KTzybWCBkZWnO2d4KoBgAAAAHHdvbGZAV29sZnMtTWFjQm9vay1Qcm8ubG9jYWwB
 
 If desired, the private key can be encrypted with a password. To encrypt, add the `--encrypt` switch and either provide the password on the command line using the `--password` option or type it when prompted.
 
-```bash
 👉
+```bash
 envelope export --encrypt --password "test" $SSH_SIGNER
 ```
 
+👈
 ```bash
 -----BEGIN OPENSSH PRIVATE KEY-----
 b3BlbnNzaC1rZXktdjEAAAAACmFlczI1Ni1jdHIAAAAGYmNyeXB0AAAAGAAAABAIMtmOvv
@@ -420,13 +421,13 @@ UNt/6cpHT7g7Y6BKJBfAXCVato3ThQqbRlunE=
 
 The following example demonstrates how to export an SSH public key to stdout. The public key can be saved to a file by redirecting the output to a file.
 
-```bash
 👉
+```bash
 envelope export $SSH_VERIFER
 ```
 
-```bash
 👈
+```bash
 ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIFuMSVOimmADR7iCnLS7wO5GKTzybWCBkZWnO2d4KoBg wolf@Wolfs-MacBook-Pro.local
 ```
 
@@ -434,14 +435,14 @@ ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIFuMSVOimmADR7iCnLS7wO5GKTzybWCBkZWnO2d4KoBg
 
 If you have a `ur:signature` object that was generated with an SSH key, you can export it to a file in OpenSSH format. The following example demonstrates how to export an SSH signature to stdout. The signature can be saved to a file by redirecting the output to a file.
 
-```bash
 👉
+```bash
 SSH_SIGNATURE="ur:signature/taneidkkaddsdpdpdpdpdpfwfeflgaglcxgugufdcxgugaflglfpghgogmfedpdpdpdpdpbkgoehglgagodyjzfdfpfpfpfpfpgyfpfpfpfygtfpfpfpfpgsiaeogljlgshghfjegtimgoehgtghjefpfpfpfpiohgeeksgegoengrhshkfpglfdkpgagriajygskofpemjehkjogdgdbkgejyhkgaflgmjzhsiaemhteoiojsioflfpfpfpfpfpfehtjnjzjkhtgyfpfpfpfpfpfpfpfpfpfliaeyisisglghfekkfpfpfpfpgoktfpfpfpfpjykniaeyiojyhthggykkglghgoksbkgwgyfpfpfpfefpenglkseeflhkghknjkeogegsdlfedldljpkpgeiyeyfpjlidfyiyjkjtiogmishtetgyghdlfwhshtjtgsjliyiejpgmfpgogagtgdideegresjyjlfxfxgaghimflbkguiofxkpgyjkhfdydlisgogojpiaimemkofwfxiohkgrbkdpdpdpdpdpfeglfycxgugufdcxgugaflglfpghgogmfedpdpdpdpdpbkcllebeje"
 envelope export $SSH_SIGNATURE
 ```
 
-```bash
 👈
+```bash
 -----BEGIN SSH SIGNATURE-----
 U1NIU0lHAAAAAQAAADMAAAALc3NoLWVkMjU1MTkAAAAgW4xJU6KaYANHuIKctLvA7kYpPP
 JtYIGRlac7Z3gqgGAAAAAEZmlsZQAAAAAAAAAGc2hhNTEyAAAAUwAAAAtzc2gtZWQyNTUx
@@ -454,13 +455,13 @@ SgCuQsV0/hUUrcj7vBCgYK
 
 You can use the `info` subcommand to retrieve information about an SSH key or signature, including its type, comment, and fingerprint.
 
-```bash
 👉
+```bash
 envelope info $SSH_SIGNER
 ```
 
-```
 👈
+```
 Format: ur:signing-private-key
 Description: SSH Signing Private Key
 Algorithm: ssh-ed25519
