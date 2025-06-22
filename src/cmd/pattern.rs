@@ -19,15 +19,15 @@ pub struct CommandArgs {
 
     /// Format only the last element of each path.
     #[arg(long)]
-    last_element_only: bool,
+    last_only: bool,
 
     /// Format path elements as envelope URs.
     #[arg(long, group = "format")]
-    envelope_ur: bool,
+    envelopes: bool,
 
     /// Format path elements as digest URs.
     #[arg(long, group = "format")]
-    digest_ur: bool,
+    digests: bool,
 
     /// Format path elements as summary.
     #[arg(long, group = "format")]
@@ -88,9 +88,9 @@ impl crate::exec::Exec for CommandArgs {
         let (paths, _captures) = pattern.paths_with_captures(&envelope);
 
         // Build format options from command line arguments
-        let element_format = if self.envelope_ur {
+        let element_format = if self.envelopes {
             PathElementFormat::EnvelopeUR
-        } else if self.digest_ur {
+        } else if self.digests {
             PathElementFormat::DigestUR
         } else if self.summary {
             PathElementFormat::Summary(self.max_length)
@@ -101,12 +101,12 @@ impl crate::exec::Exec for CommandArgs {
         let format_options = FormatPathsOpts::new()
             .indent(!self.no_indent)
             .element_format(element_format)
-            .last_element_only(self.last_element_only);
+            .last_element_only(self.last_only);
 
         if !paths.is_empty() {
             Ok(format_paths_opt(&paths, format_options))
         } else {
-            bail!("Pattern did not match: {}", self.pattern)
+            bail!("No match")
         }
     }
 }
