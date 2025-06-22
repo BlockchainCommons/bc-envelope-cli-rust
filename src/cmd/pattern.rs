@@ -1,5 +1,5 @@
 use anyhow::{Result, bail};
-use bc_envelope_pattern::{Matcher, Pattern};
+use bc_envelope_pattern::{format_paths_opt, Matcher, Pattern};
 use clap::Args;
 
 use crate::envelope_args::{EnvelopeArgs, EnvelopeArgsLike};
@@ -59,9 +59,10 @@ impl crate::exec::Exec for CommandArgs {
                     _ => anyhow::anyhow!("Failed to parse pattern: {}", e),
                 }
             })?;
-        let matches = pattern.matches(&envelope);
-        if matches {
-            Ok(format!("Pattern matched: {}", self.pattern))
+        let (paths, captures) = pattern.paths_with_captures(&envelope);
+        let mut format_options = bc_envelope_pattern::FormatPathsOpts::default();
+        if !paths.is_empty() {
+            Ok(format_paths_opt(&paths, format_options))
         } else {
             bail!("Pattern did not match: {}", self.pattern)
         }
