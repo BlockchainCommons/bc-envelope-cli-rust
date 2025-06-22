@@ -1,5 +1,7 @@
 use anyhow::{Result, bail};
-use bc_envelope_pattern::{format_paths_opt, Matcher, Pattern};
+use bc_envelope_pattern::{
+    FormatPathsOpts, Matcher, PathElementFormat, Pattern, format_paths_opt,
+};
 use clap::Args;
 
 use crate::envelope_args::{EnvelopeArgs, EnvelopeArgsLike};
@@ -10,6 +12,27 @@ use crate::envelope_args::{EnvelopeArgs, EnvelopeArgsLike};
 pub struct CommandArgs {
     /// The pattern to be matched.
     pattern: String,
+
+    /// Disable indentation of path elements.
+    #[arg(long)]
+    no_indent: bool,
+
+    /// Format only the last element of each path.
+    #[arg(long)]
+    last_element_only: bool,
+
+    /// Format path elements as envelope URs.
+    #[arg(long, group = "format")]
+    envelope_ur: bool,
+
+    /// Format path elements as digest URs.
+    #[arg(long, group = "format")]
+    digest_ur: bool,
+
+    /// Format path elements as summary with optional maximum length for
+    /// truncation.
+    #[arg(long, group = "format")]
+    summary: Option<usize>,
 
     #[command(flatten)]
     envelope_args: EnvelopeArgs,
@@ -59,8 +82,22 @@ impl crate::exec::Exec for CommandArgs {
                     _ => anyhow::anyhow!("Failed to parse pattern: {}", e),
                 }
             })?;
-        let (paths, captures) = pattern.paths_with_captures(&envelope);
-        let mut format_options = bc_envelope_pattern::FormatPathsOpts::default();
+        let (paths, _captures) = pattern.paths_with_captures(&envelope);
+
+        // Build format options from command line arguments
+        let element_format = if self.envelope_ur {
+            PathElementFormat::EnvelopeUR
+        } else if self.digest_ur {
+            PathElementFormat::DigestUR
+        } else {
+            PathElementFormat::Summary(self.summary)
+        };
+
+        let format_options = FormatPathsOpts::new()
+            .indent(!self.no_indent)
+            .element_format(element_format)
+            .last_element_only(self.last_element_only);
+
         if !paths.is_empty() {
             Ok(format_paths_opt(&paths, format_options))
         } else {
