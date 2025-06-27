@@ -1,8 +1,8 @@
-# Pattern Syntax
+# Envelope Pattern Expression Syntax (_patex_)
 
 This syntax is inspired by regular expressions but is specifically designed for Gordian Envelope.
 
-The pattern syntax is designed to be flexible and expressive. Patterns can be composed of *leaf patterns*, *structure patterns*, and combinators known as *meta-patterns*.
+The patex syntax is designed to be flexible and expressive. Patterns can be composed of *leaf patterns*, *structure patterns*, and combinators known as *meta-patterns*.
 
 Keywords like `BOOL`, `ARRAY`, `MAP`, etc., are case-sensitive and must be written in uppercase. Patterns can include specific values, ranges, or regexes to match against the corresponding parts of the envelope.
 
@@ -102,6 +102,10 @@ All leaf patterns match Envelope leaves, which are CBOR values.
         - Matches a number less than the specified value.
     - `NUMBER ( NaN )`
         - Matches the NaN (Not a Number) value.
+    - `NUMBER ( Infinity )`
+        - Matches positive infinity.
+    - `NUMBER ( -Infinity )`
+        - Matches negative infinity.
 - Tagged
     - `TAG`
         - Matches any CBOR tagged value.
@@ -174,7 +178,7 @@ Structure patterns match parts of Gordian Envelope structures.
 
 The following meta patterns are available to combine or modify other patterns.
 
-Precedence: Repeat has the highest precedence, followed by And, Not, Sequence, and then Or. Parentheses can be used to group patterns and change precedence.
+Precedence: Repeat has the highest precedence, followed by And, Not, Traversal, and then Or. Parentheses can be used to group patterns and change precedence.
 
 - And
     - `pattern & pattern & pattern`…
@@ -214,6 +218,6 @@ Precedence: Repeat has the highest precedence, followed by And, Not, Sequence, a
 - Search
     - `SEARCH ( pattern )`
       - Visits every node in the Envelope tree, matching the specified pattern against each node.
-- Sequence
-    - `pattern > pattern > pattern`
-        - Matches if the specified patterns match in sequence, with no other nodes in between.
+- Traversal
+    - `pattern -> pattern -> pattern`
+        - Matches if the specified patterns match a traversal path, with no other nodes in between.
