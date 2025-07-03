@@ -113,7 +113,7 @@ fn parse_data(s: &str) -> Result<Envelope> {
 
 /// Parse a Date from a string.
 fn parse_date(s: &str) -> Result<Envelope> {
-    let date = dcbor::Date::from_string(s)?;
+    let date = Date::from_string(s)?;
     Ok(Envelope::new(date))
 }
 

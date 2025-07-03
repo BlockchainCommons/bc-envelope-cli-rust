@@ -22,74 +22,61 @@ In a merkle tree, the minumum subset of hashes necessary to confirm that a speci
 
 This document contains a list of people Alice knows. Each "knows" assertion has been salted so if the assertions have been elided one can't merely guess at who she knows by pairing the "knows" predicate with the names of possibly-known associates and comparing the resulting digests to the elided digests in the document.
 
-👉
-```bash
+```
 ALICE_FRIENDS=`envelope subject type string "Alice" |
     envelope assertion add pred-obj string "knows" string "Bob" --salted |
     envelope assertion add pred-obj string "knows" string "Carol" --salted |
     envelope assertion add pred-obj string "knows" string "Dan" --salted`
 envelope format $ALICE_FRIENDS
-```
 
-👈
-```envelope
-"Alice" [
-    {
-        "knows": "Bob"
-    } [
-        salt: Salt
-    ]
-    {
-        "knows": "Carol"
-    } [
-        salt: Salt
-    ]
-    {
-        "knows": "Dan"
-    } [
-        salt: Salt
-    ]
-]
+│ "Alice" [
+│     {
+│         "knows": "Bob"
+│     } [
+│         salt: Salt
+│     ]
+│     {
+│         "knows": "Carol"
+│     } [
+│         salt: Salt
+│     ]
+│     {
+│         "knows": "Dan"
+│     } [
+│         salt: Salt
+│     ]
+│ ]
 ```
 
 Alice provides just the root digest of her document to a third party. This is simply an envelope in which everything has been elided and nothing revealed.
 
-👉
-```bash
+```
 ALICE_FRIENDS_ROOT=`envelope elide revealing '' $ALICE_FRIENDS`
 envelope format $ALICE_FRIENDS_ROOT
-```
 
-👈
-```envelope
-ELIDED
+│ ELIDED
 ```
 
 Now Alice wants to prove to the third party that her document contains a "knows Bob" assertion. To do this, she produces a proof that is an envelope with the minimal structure of digests included so that the proof envelope has the same digest as the completely elided envelope, but also exposes the digest of the target of the proof.
 
 Note that in the proof the digests of the two other elided "knows" assertions are present, but because they have been salted, the third party cannot easily guess who else she knows.
 
-👉
-```bash
+```
 KNOWS_BOB_DIGEST=`envelope subject assertion string "knows" string "Bob" | envelope digest`
 KNOWS_BOB_PROOF=`envelope proof create $KNOWS_BOB_DIGEST $ALICE_FRIENDS`
 envelope format $KNOWS_BOB_PROOF
-```
 
-👈
-```envelope
-ELIDED [
-    ELIDED [
-        ELIDED
-    ]
-    ELIDED (2)
-]
+│ ELIDED [
+│     ELIDED [
+│         ELIDED
+│     ]
+│     ELIDED (2)
+│ ]
 ```
 
 The third party then uses the previously known and trusted root to confirm that the envelope does indeed contain a "knows bob" assertion.
 
-👉
-```bash
+```
 envelope proof confirm --silent $KNOWS_BOB_PROOF $KNOWS_BOB_DIGEST $ALICE_FRIENDS_ROOT
 ```
 
@@ -99,8 +86,7 @@ There is no output because the proof succeeded.
 
 A verifiable credential is constructed such that elements that might be elided are also salted, making correlation between digest and message much more difficult. Other assertions like `.issuer` and `.controller` are left unsalted.
 
-👉
-```bash
+```
 BOARD_PRVKEY_BASE="ur:crypto-prvkey-base/hdcxynlntpsbfrbgjkcetpzorohgsafsihcnhyrtoebzwegtvyzolbgtdaskcsldfgadtldmrkld"
 CREDENTIAL=`envelope subject type arid 4676635a6e6068c2ef3ffd8ff726dd401fd341036e920f136a1d8af5e829496d |
     envelope assertion add pred-obj known isA string "Certificate of Completion" |
@@ -117,160 +103,136 @@ CREDENTIAL=`envelope subject type arid 4676635a6e6068c2ef3ffd8ff726dd401fd341036
     envelope assertion add pred-obj string "professionalDevelopmentHours" number 15 |
     envelope assertion add pred-obj string "topics" cbor 82695375626a6563742031695375626a6563742032 |
     envelope subject type wrapped |
-    envelope sign --prvkeys $BOARD_PRVKEY_BASE |
+    envelope sign --signer $BOARD_PRVKEY_BASE |
     envelope assertion add pred-obj known note string "Signed by Example Electrical Engineering Board"`
 envelope format $CREDENTIAL
+
+│ {
+│     ARID(4676635a) [
+│         isA: "Certificate of Completion"
+│         {
+│             "certificateNumber": "123-456-789"
+│         } [
+│             salt: Salt
+│         ]
+│         {
+│             "expirationDate": 2028-01-01
+│         } [
+│             salt: Salt
+│         ]
+│         {
+│             "firstName": "James"
+│         } [
+│             salt: Salt
+│         ]
+│         {
+│             "issueDate": 2020-01-01
+│         } [
+│             salt: Salt
+│         ]
+│         {
+│             "lastName": "Maxwell"
+│         } [
+│             salt: Salt
+│         ]
+│         {
+│             "photo": "This is James Maxwell's photo."
+│         } [
+│             salt: Salt
+│         ]
+│         {
+│             "subject": "RF and Microwave Engineering"
+│         } [
+│             salt: Salt
+│         ]
+│         "continuingEducationUnits": 1.5
+│         "professionalDevelopmentHours": 15
+│         "topics": ["Subject 1", "Subject 2"]
+│         controller: "Example Electrical Engineering Board"
+│         issuer: "Example Electrical Engineering Board"
+│     ]
+│ } [
+│     note: "Signed by Example Electrical Engineering Board"
+│     signed: Signature
+│ ]
 ```
 
-👈
-```envelope
-{
-    ARID(4676635a) [
-        isA: "Certificate of Completion"
-        {
-            "certificateNumber": "123-456-789"
-        } [
-            salt: Salt
-        ]
-        {
-            "expirationDate": 2028-01-01
-        } [
-            salt: Salt
-        ]
-        {
-            "firstName": "James"
-        } [
-            salt: Salt
-        ]
-        {
-            "issueDate": 2020-01-01
-        } [
-            salt: Salt
-        ]
-        {
-            "lastName": "Maxwell"
-        } [
-            salt: Salt
-        ]
-        {
-            "photo": "This is James Maxwell's photo."
-        } [
-            salt: Salt
-        ]
-        {
-            "subject": "RF and Microwave Engineering"
-        } [
-            salt: Salt
-        ]
-        "continuingEducationUnits": 1.5
-        "professionalDevelopmentHours": 15
-        "topics": ["Subject 1", "Subject 2"]
-        controller: "Example Electrical Engineering Board"
-        issuer: "Example Electrical Engineering Board"
-    ]
-} [
-    note: "Signed by Example Electrical Engineering Board"
-    signed: Signature
-]
 ```
-
-👉
-```bash
 CREDENTIAL_ROOT=`envelope elide revealing '' $CREDENTIAL`
 envelope format $CREDENTIAL_ROOT
-```
 
-👈
-```envelope
-ELIDED
+│ ELIDED
 ```
 
 In this case the holder of a credential wants to prove a single assertion from it: the subject.
 
-👉
-```bash
+```
 SUBJECT_DIGEST=`envelope subject assertion string "subject" string "RF and Microwave Engineering" | envelope digest`
 SUBJECT_PROOF=`envelope proof create $SUBJECT_DIGEST $CREDENTIAL`
 envelope format $SUBJECT_PROOF
-```
 
-The proof includes digests from all the elided assertions.
-
-👈
-```envelope
-{
-    ELIDED [
-        ELIDED [
-            ELIDED
-        ]
-        ELIDED (12)
-    ]
-} [
-    ELIDED (2)
-]
+│ {
+│     ELIDED [
+│         ELIDED [
+│             ELIDED
+│         ]
+│         ELIDED (12)
+│     ]
+│ } [
+│     ELIDED (2)
+│ ]
 ```
 
 The proof confirms the subject, as intended.
 
-👉
-```bash
+```
 envelope proof confirm --silent $SUBJECT_PROOF $SUBJECT_DIGEST $CREDENTIAL_ROOT
 ```
 
 Assertions without salt can be guessed at, and confirmed if the the guess is correct.
 
-👉
-```bash
+```
 ISSUER_DIGEST=`envelope subject assertion known issuer string "Example Electrical Engineering Board" | envelope digest`
 envelope proof confirm --silent $SUBJECT_PROOF $ISSUER_DIGEST $CREDENTIAL_ROOT
 ```
 
 The proof cannot be used to confirm salted assertions.
 
-👉
-```bash
+```
 FIRST_NAME_DIGEST=`envelope subject assertion string "firstName" string "James" | envelope digest`
 envelope proof confirm --silent $SUBJECT_PROOF $FIRST_NAME_DIGEST $CREDENTIAL_ROOT
-```
 
-👈
-```
-Error: Proof does not confirm target
+│ Error: Proof does not confirm target
 ```
 
 ## Example 3: Multiproofs
 
 A single proof can be generated to reveal multiple target digests. In this example we prove the holder's `firstName` and `lastName` using a single proof, even though they are in different fields.
 
-👉
-```bash
+```
 FIRST_NAME_DIGEST=`envelope subject assertion string "firstName" string "James" | envelope digest`
 LAST_NAME_DIGEST=`envelope subject assertion string "lastName" string "Maxwell" | envelope digest`
 NAME_PROOF=`envelope proof create "$FIRST_NAME_DIGEST $LAST_NAME_DIGEST" $CREDENTIAL`
 envelope format $NAME_PROOF
-```
 
-👈
-```envelope
-{
-    ELIDED [
-        ELIDED [
-            ELIDED
-        ]
-        ELIDED [
-            ELIDED
-        ]
-        ELIDED (11)
-    ]
-} [
-    ELIDED (2)
-]
+│ {
+│     ELIDED [
+│         ELIDED [
+│             ELIDED
+│         ]
+│         ELIDED [
+│             ELIDED
+│         ]
+│         ELIDED (11)
+│     ]
+│ } [
+│     ELIDED (2)
+│ ]
 ```
 
 Now we confirm the contents of both fields with a single command.
 
-👉
-```bash
+```
 envelope proof confirm --silent $NAME_PROOF "$FIRST_NAME_DIGEST $LAST_NAME_DIGEST" $CREDENTIAL_ROOT
 ```
 

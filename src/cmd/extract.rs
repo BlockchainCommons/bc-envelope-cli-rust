@@ -110,7 +110,7 @@ impl crate::exec::Exec for CommandArgs {
                     .try_into_byte_string()?,
             ),
             SubjectType::Date => {
-                envelope.extract_subject::<dcbor::Date>()?.to_string()
+                envelope.extract_subject::<Date>()?.to_string()
             }
             SubjectType::Digest => {
                 envelope.extract_subject::<Digest>()?.ur_string()
