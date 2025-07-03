@@ -280,11 +280,11 @@ envelope xid key add --nickname 'Bob' $BOB_PUBKEYS $XID_DOC | envelope format
 │ XID(93a4d4e7) [
 │     'key': PublicKeys(cab108a0) [
 │         'allow': 'All'
-│         'name': "Alice"
+│         'nickname': "Alice"
 │     ]
 │     'key': PublicKeys(e2c18423) [
 │         'allow': 'All'
-│         'name': "Bob"
+│         'nickname': "Bob"
 │     ]
 │ ]
 ```
@@ -300,11 +300,11 @@ envelope format $XID_DOC
 │ XID(93a4d4e7) [
 │     'key': PublicKeys(cab108a0) [
 │         'allow': 'All'
-│         'name': "Alice"
+│         'nickname': "Alice"
 │     ]
 │     'key': PublicKeys(e2c18423) [
 │         'allow': 'All'
-│         'name': "Bob"
+│         'nickname': "Bob"
 │     ]
 │ ]
 ```
@@ -319,12 +319,12 @@ envelope format $XID_DOC_UPDATED
 │ XID(93a4d4e7) [
 │     'key': PublicKeys(cab108a0) [
 │         'allow': 'All'
-│         'name': "Alice"
+│         'nickname': "Alice"
 │     ]
 │     'key': PublicKeys(e2c18423) [
 │         'allow': 'Encrypt'
 │         'allow': 'Sign'
-│         'name': "Bob"
+│         'nickname': "Bob"
 │     ]
 │ ]
 ```
@@ -346,7 +346,7 @@ envelope xid key at 0 $XID_DOC_UPDATED | envelope format
 
 │ PublicKeys(cab108a0) [
 │     'allow': 'All'
-│     'name': "Alice"
+│     'nickname': "Alice"
 │ ]
 ```
 
@@ -356,7 +356,7 @@ envelope xid key at 1 $XID_DOC_UPDATED | envelope format
 │ PublicKeys(e2c18423) [
 │     'allow': 'Encrypt'
 │     'allow': 'Sign'
-│     'name': "Bob"
+│     'nickname': "Bob"
 │ ]
 ```
 
@@ -383,7 +383,7 @@ envelope format ${XID_KEYS[1]}
 
 │ PublicKeys(cab108a0) [
 │     'allow': 'All'
-│     'name': "Alice"
+│     'nickname': "Alice"
 │ ]
 
 ```
@@ -393,7 +393,7 @@ envelope format ${XID_KEYS[2]}
 │ PublicKeys(e2c18423) [
 │     'allow': 'Encrypt'
 │     'allow': 'Sign'
-│     'name': "Bob"
+│     'nickname': "Bob"
 │ ]
 
 #### `xid key find`: Find a Key by the Given Criteria
@@ -408,7 +408,7 @@ envelope xid key find public $BOB_PUBKEYS $XID_DOC_UPDATED | envelope format
 │ PublicKeys(e2c18423) [
 │     'allow': 'Encrypt'
 │     'allow': 'Sign'
-│     'name': "Bob"
+│     'nickname': "Bob"
 │ ]
 ```
 
@@ -421,7 +421,7 @@ envelope xid key find name 'Alice' $XID_DOC_UPDATED | envelope format
 
 │ PublicKeys(cab108a0) [
 │     'allow': 'All'
-│     'name': "Alice"
+│     'nickname': "Alice"
 │ ]
 ```
 
@@ -442,7 +442,7 @@ envelope xid key find inception $XID_DOC_UPDATED | envelope format
 
 │ PublicKeys(cab108a0) [
 │     'allow': 'All'
-│     'name': "Alice"
+│     'nickname': "Alice"
 │ ]
 ```
 
@@ -456,7 +456,7 @@ envelope format $XID_DOC_REMOVED
 │     'key': PublicKeys(e2c18423) [
 │         'allow': 'Encrypt'
 │         'allow': 'Sign'
-│         'name': "Bob"
+│         'nickname': "Bob"
 │     ]
 │ ]
 ```
@@ -490,7 +490,7 @@ envelope format $XID_DOC_WITH_RESOLVERS
 │     'dereferenceVia': URI(https://resolver.example.com/)
 │     'key': PublicKeys(cab108a0) [
 │         'allow': 'All'
-│         'name': "Alice"
+│         'nickname': "Alice"
 │     ]
 │ ]
 ```
@@ -539,7 +539,7 @@ envelope xid method remove 'https://resolver.example.com/' $XID_DOC_WITH_RESOLVE
 │     'dereferenceVia': URI(btc:5e54156cfe0e62d9a56c72b84a5c40b84e2fd7dfe786c7d5c667e11ab85c45c6)
 │     'key': PublicKeys(cab108a0) [
 │         'allow': 'All'
-│         'name': "Alice"
+│         'nickname': "Alice"
 │     ]
 │ ]
 ```
@@ -593,7 +593,7 @@ envelope format $ALICE_XID_DOC
 │         XID(61b1f3c7) [
 │             'key': PublicKeys(eebd4add) [
 │                 'allow': 'All'
-│                 'name': "Carol"
+│                 'nickname': "Carol"
 │             ]
 │         ]
 │     } [
@@ -603,7 +603,7 @@ envelope format $ALICE_XID_DOC
 │         XID(f1199a75) [
 │             'key': PublicKeys(e2c18423) [
 │                 'allow': 'All'
-│                 'name': "Bob"
+│                 'nickname': "Bob"
 │             ]
 │         ]
 │     } [
@@ -612,7 +612,7 @@ envelope format $ALICE_XID_DOC
 │     ]
 │     'key': PublicKeys(cab108a0) [
 │         'allow': 'All'
-│         'name': "Alice"
+│         'nickname': "Alice"
 │     ]
 │ ]
 ```
@@ -636,7 +636,7 @@ envelope xid delegate at 0 $ALICE_XID_DOC | envelope format
 │     XID(f1199a75) [
 │         'key': PublicKeys(e2c18423) [
 │             'allow': 'All'
-│             'name': "Bob"
+│             'nickname': "Bob"
 │         ]
 │     ]
 │ } [
@@ -652,7 +652,7 @@ envelope xid delegate at 1 $ALICE_XID_DOC | envelope format
 │     XID(61b1f3c7) [
 │         'key': PublicKeys(eebd4add) [
 │             'allow': 'All'
-│             'name': "Carol"
+│             'nickname': "Carol"
 │         ]
 │     ]
 │ } [
@@ -693,7 +693,7 @@ envelope format ${XID_DELEGATES[1]}
 │     XID(f1199a75) [
 │         'key': PublicKeys(e2c18423) [
 │             'allow': 'All'
-│             'name': "Bob"
+│             'nickname': "Bob"
 │         ]
 │     ]
 │ } [
@@ -709,7 +709,7 @@ envelope format ${XID_DELEGATES[2]}
 │     XID(61b1f3c7) [
 │         'key': PublicKeys(eebd4add) [
 │             'allow': 'All'
-│             'name': "Carol"
+│             'nickname': "Carol"
 │         ]
 │     ]
 │ } [
@@ -769,7 +769,7 @@ envelope format $ALICE_XID_DOC_UPDATED
 │         XID(f1199a75) [
 │             'key': PublicKeys(e2c18423) [
 │                 'allow': 'All'
-│                 'name': "Bob"
+│                 'nickname': "Bob"
 │             ]
 │         ]
 │     } [
@@ -778,7 +778,7 @@ envelope format $ALICE_XID_DOC_UPDATED
 │     ]
 │     'key': PublicKeys(cab108a0) [
 │         'allow': 'All'
-│         'name': "Alice"
+│         'nickname': "Alice"
 │     ]
 │ ]
 ```
@@ -805,7 +805,7 @@ envelope format $ALICE_XID_DOC_UPDATED
 │     ]
 │     'key': PublicKeys(cab108a0) [
 │         'allow': 'All'
-│         'name': "Alice"
+│         'nickname': "Alice"
 │     ]
 │ ]
 ```
@@ -840,7 +840,7 @@ envelope format $ALICE_XID_DOC
 │ XID(93a4d4e7) [
 │     'key': PublicKeys(cab108a0) [
 │         'allow': 'All'
-│         'name': "Alice"
+│         'nickname': "Alice"
 │     ]
 │ ]
 ```
@@ -857,7 +857,7 @@ envelope format $ALICE_XID_DOC
 │         XID(f1199a75) [
 │             'key': PublicKeys(e2c18423) [
 │                 'allow': 'All'
-│                 'name': "Bob"
+│                 'nickname': "Bob"
 │             ]
 │         ]
 │     } [
@@ -866,7 +866,7 @@ envelope format $ALICE_XID_DOC
 │     ]
 │     'key': PublicKeys(cab108a0) [
 │         'allow': 'All'
-│         'name': "Alice"
+│         'nickname': "Alice"
 │     ]
 │ ]
 ```
@@ -898,7 +898,7 @@ envelope format $ALICE_XID_DOC_WITH_SERVICE
 │         XID(f1199a75) [
 │             'key': PublicKeys(e2c18423) [
 │                 'allow': 'All'
-│                 'name': "Bob"
+│                 'nickname': "Bob"
 │             ]
 │         ]
 │     } [
@@ -907,7 +907,7 @@ envelope format $ALICE_XID_DOC_WITH_SERVICE
 │     ]
 │     'key': PublicKeys(cab108a0) [
 │         'allow': 'All'
-│         'name': "Alice"
+│         'nickname': "Alice"
 │     ]
 │     'service': URI(https://messaging.example.com) [
 │         'allow': 'Encrypt'
@@ -944,7 +944,7 @@ envelope format $ALICE_XID_DOC_WITH_SERVICE
 │         XID(f1199a75) [
 │             'key': PublicKeys(e2c18423) [
 │                 'allow': 'All'
-│                 'name': "Bob"
+│                 'nickname': "Bob"
 │             ]
 │         ]
 │     } [
@@ -953,7 +953,7 @@ envelope format $ALICE_XID_DOC_WITH_SERVICE
 │     ]
 │     'key': PublicKeys(cab108a0) [
 │         'allow': 'All'
-│         'name': "Alice"
+│         'nickname': "Alice"
 │     ]
 │     'service': URI(https://messaging.example.com) [
 │         'allow': 'Encrypt'
@@ -1095,7 +1095,7 @@ envelope format $ALICE_XID_DOC_WITH_SERVICE_REMOVED
 │         XID(f1199a75) [
 │             'key': PublicKeys(e2c18423) [
 │                 'allow': 'All'
-│                 'name': "Bob"
+│                 'nickname': "Bob"
 │             ]
 │         ]
 │     } [
@@ -1104,7 +1104,7 @@ envelope format $ALICE_XID_DOC_WITH_SERVICE_REMOVED
 │     ]
 │     'key': PublicKeys(cab108a0) [
 │         'allow': 'All'
-│         'name': "Alice"
+│         'nickname': "Alice"
 │     ]
 │     'service': URI(https://status.example.com/alice) [
 │         'allow': 'Sign'
@@ -1138,7 +1138,7 @@ envelope format $ALICE_XID_DOC_WITH_SERVICE_UPDATED
 │         XID(f1199a75) [
 │             'key': PublicKeys(e2c18423) [
 │                 'allow': 'All'
-│                 'name': "Bob"
+│                 'nickname': "Bob"
 │             ]
 │         ]
 │     } [
@@ -1147,7 +1147,7 @@ envelope format $ALICE_XID_DOC_WITH_SERVICE_UPDATED
 │     ]
 │     'key': PublicKeys(cab108a0) [
 │         'allow': 'All'
-│         'name': "Alice"
+│         'nickname': "Alice"
 │     ]
 │     'service': URI(https://status.example.com/alice) [
 │         'allow': 'All'
@@ -1157,253 +1157,6 @@ envelope format $ALICE_XID_DOC_WITH_SERVICE_UPDATED
 │         'name': "Status"
 │     ]
 │ ]
-```
-
-Removing a key or delegate from the XID that is referenced by a service is not allowed.
-
-To remove a key or delegate that is referenced by a service, first remove the service.
-    'key': PublicKeys(cab108a0) [
-        'allow': 'All'
-        'name': "Alice"
-    ]
-    'service': URI(https://messaging.example.com) [
-        'allow': 'Encrypt'
-        'allow': 'Sign'
-        'capability': "com.example.messaging"
-        'delegate': Reference(f1199a75)
-        'key': Reference(cab108a0)
-        'name': "Messaging"
-    ]
-    'service': URI(https://status.example.com/alice) [
-        'allow': 'Sign'
-        'capability': "com.example.status"
-        'key': Reference(cab108a0)
-        'name': "Status"
-    ]
-]
-```
-
-#### `xid service count`: Count the Number of Services in a XID Document
-
-👉
-```bash
-$ envelope xid service count $ALICE_XID_DOC_WITH_SERVICE
-```
-
-👈
-```
-2
-```
-
-#### `xid service at`: Return the Service at the Specified Index
-
-The indexes are zero-based, and in the order the service assertions appear in the XID document's Gordian Envelope, which is not necessarily the order they appear via `envelope format`.
-
-👉
-```bash
-$ envelope xid service at 0 $ALICE_XID_DOC_WITH_SERVICE | envelope format
-```
-
-👈
-```envelope
-URI(https://messaging.example.com) [
-    'allow': 'Encrypt'
-    'allow': 'Sign'
-    'capability': "com.example.messaging"
-    'delegate': Reference(f1199a75)
-    'key': Reference(cab108a0)
-    'name': "Messaging"
-]
-```
-
-👉
-```bash
-$ envelope xid service at 1 $ALICE_XID_DOC_WITH_SERVICE | envelope format
-```
-
-👈
-```envelope
-URI(https://status.example.com/alice) [
-    'allow': 'Sign'
-    'capability': "com.example.status"
-    'key': Reference(cab108a0)
-    'name': "Status"
-]
-```
-
-#### `xid service all`: List All Services in a XID Document
-
-👉
-```bash
-$ envelope xid service all $ALICE_XID_DOC_WITH_SERVICE
-```
-
-👈
-```dcbor
-ur:envelope/lttpsotpcxkscaisjyjyjojkftdldljnihjkjkhsioinjtiodmihkshsjnjojzihdmiajljnoycsfhtpsotanshkhdcxwncfnykphhsekedagdsfqdihoysadpzmimrpgtrnlesansjtdshtkedyhlwdmngloybdtpsoingtihjkjkhsioinjtiooycsfxtpsokpiajljndmihkshsjnjojzihdmjnihjkjkhsioinjtiooyaytpsotanshkhdcxsgpaaynbpdrdlbmkloykidfzmdtonnlngrtyrkbwcpfnmntyoyamuoetwydaremwoycsfncsfdoycsfncsgagdvamume
-ur:envelope/lptpsotpcxkscxisjyjyjojkftdldljkjyhsjykpjkdmihkshsjnjojzihdmiajljndlhsjziniaihoybdtpsoiygujyhsjykpjkoycsfxtpsojpiajljndmihkshsjnjojzihdmjkjyhsjykpjkoyaytpsotanshkhdcxsgpaaynbpdrdlbmkloykidfzmdtonnlngrtyrkbwcpfnmntyoyamuoetwydaremwoycsfncsfdglmhuenb
-```
-
-Example capturing the above envelopes into a shell array. Note that newer shells like `zsh` use one-based indexing by default, but can be configured to use zero-based indexing.
-
-👉
-```bash
-$ XID_SERVICES=($(envelope xid service all $ALICE_XID_DOC_WITH_SERVICE))
-$ envelope format ${XID_SERVICES[1]}
-```
-
-👈
-```envelope
-URI(https://messaging.example.com) [
-    'allow': 'Encrypt'
-    'allow': 'Sign'
-    'capability': "com.example.messaging"
-    'delegate': Reference(f1199a75)
-    'key': Reference(cab108a0)
-    'name': "Messaging"
-]
-```
-
-👉
-```bash
-$ envelope format ${XID_SERVICES[2]}
-```
-
-👈
-```envelope
-URI(https://status.example.com/alice) [
-    'allow': 'Sign'
-    'capability': "com.example.status"
-    'key': Reference(cab108a0)
-    'name': "Status"
-]
-```
-
-#### `xid service find`: Find a Service by its URI
-
-##### `xid service find uri`: Find a Service by its URI
-
-Returns at most one service envelope.
-
-👉
-```bash
-$ envelope xid service find uri 'https://status.example.com/alice' $ALICE_XID_DOC_WITH_SERVICE | envelope format
-```
-
-👈
-```envelope
-URI(https://status.example.com/alice) [
-    'allow': 'Sign'
-    'capability': "com.example.status"
-    'key': Reference(cab108a0)
-    'name': "Status"
-]
-```
-
-##### `xid service find name`: Find a Service by its Name
-
-May return multiple service envelopes.
-
-👉
-```bash
-$ envelope xid service find name 'Messaging' $ALICE_XID_DOC_WITH_SERVICE | envelope format
-```
-
-👈
-```envelope
-URI(https://messaging.example.com) [
-    'allow': 'Encrypt'
-    'allow': 'Sign'
-    'capability': "com.example.messaging"
-    'delegate': Reference(f1199a75)
-    'key': Reference(cab108a0)
-    'name': "Messaging"
-]
-```
-
-#### `xid service remove`: Remove a Service from a XID Document
-
-Alice removes the messaging service.
-
-👉
-```bash
-$ ALICE_XID_DOC_WITH_SERVICE_REMOVED=`envelope xid service remove 'https://messaging.example.com' $ALICE_XID_DOC_WITH_SERVICE`
-$ envelope format $ALICE_XID_DOC_WITH_SERVICE_REMOVED
-```
-
-👈
-```envelope
-XID(93a4d4e7) [
-    'delegate': {
-        XID(f1199a75) [
-            'key': PublicKeys(e2c18423) [
-                'allow': 'All'
-                'name': "Bob"
-            ]
-        ]
-    } [
-        'allow': 'Encrypt'
-        'allow': 'Sign'
-    ]
-    'key': PublicKeys(cab108a0) [
-        'allow': 'All'
-        'name': "Alice"
-    ]
-    'service': URI(https://status.example.com/alice) [
-        'allow': 'Sign'
-        'capability': "com.example.status"
-        'key': Reference(cab108a0)
-        'name': "Status"
-    ]
-]
-```
-
-#### `xid service update`: Update an Existing Service in an Existing XID Document
-
-- To remove the name, use `--name ''`.
-- To remove the capability, use `--capability ''`.
-- Passing one or more `--key` options replaces the existing keys with the ones provided.
-- Passing one or more `--delegate` options replaces the existing delegates with the ones provided.
-- Passing one or more `--allow` options replaces the existing permissions with the ones provided.
-
-Alice adds Bob as a delegate to the status service. This leaves Alices key and all other attributes of the service unchanged.
-
-👉
-```bash
-$ ALICE_XID_DOC_WITH_SERVICE_UPDATED=`envelope xid service update \
-    --delegate $BOB_XID_DOC \
-    'https://status.example.com/alice' \
-    $ALICE_XID_DOC_WITH_SERVICE_REMOVED`
-
-$ envelope format $ALICE_XID_DOC_WITH_SERVICE_UPDATED
-```
-
-👈
-```envelope
-XID(93a4d4e7) [
-    'delegate': {
-        XID(f1199a75) [
-            'key': PublicKeys(e2c18423) [
-                'allow': 'All'
-                'name': "Bob"
-            ]
-        ]
-    } [
-        'allow': 'Encrypt'
-        'allow': 'Sign'
-    ]
-    'key': PublicKeys(cab108a0) [
-        'allow': 'All'
-        'name': "Alice"
-    ]
-    'service': URI(https://status.example.com/alice) [
-        'allow': 'All'
-        'capability': "com.example.status"
-        'delegate': Reference(f1199a75)
-        'key': Reference(cab108a0)
-        'name': "Status"
-    ]
-]
 ```
 
 Removing a key or delegate from the XID that is referenced by a service is not allowed.
