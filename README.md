@@ -23,7 +23,7 @@ cargo install bc-envelope-cli
 To install a specific version:
 
 ```bash
-cargo install bc-envelope-cli --version 0.18.0
+cargo install bc-envelope-cli --version 0.19.0
 ```
 
 ### From Source
@@ -82,6 +82,14 @@ See the [docs](docs/README.md) directory for more information.
 **NOTE:** The `envelope` tool does *not* have the same command line syntax as the Swift `envelope` tool.
 
 ## Version History
+
+### 0.19.0: July 3, 2025
+
+- Updated to latest envelope patex syntax
+- Integrated dcbor patex matching
+- Add new pattern matching tests and test utilities
+- Fix Date type references in extract command
+- Update extensive documentation
 
 ### 0.13.1: May 9, 2025
 
