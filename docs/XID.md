@@ -366,35 +366,32 @@ The keys envelopes separated by newlines.
 
 ```
 envelope xid key all $XID_DOC_UPDATED
-```
 
-```dcbor
-ur:envelope/lstpsotansgylftanshfhdcxrdhgfsfsfsosrloebgwmfrfhsnlskegsjydecawybniadyzovehncacnlbmdbesstansgrhdcxytgefrmnbzftltcmcnaspaimhftbjehlatjklkhktidrpmjobslewkfretcaetbnoybdtpsoihfpjziniaihoycsfncsfgrnkedtns
-ur:envelope/lrtpsotansgylftanshfhdcxndctnnflynethhhnwdkbhtehhdosmhgoclvefhjpehtaethkltsrmssnwfctfggdtansgrhdcxtipdbagmoertsklaflfhfewsptrlmhjpdeemkbdyktmtfwnninfrbnmwonetwpheoybdtpsoiafwjlidoycsfncsfdoycsfncsgafpmnvszt
+│ ur:envelope/lstpsotansgylftanshfhdcxrdhgfsfsfsosrloebgwmfrfhsnlskegsjydecawybniadyzovehncacnlbmdbesstansgrhdcxytgefrmnbzftltcmcnaspaimhftbjehlatjklkhktidrpmjobslewkfretcaetbnoycsfncsfgoycscstpsoihfpjziniaihqdkobsbw
+│ ur:envelope/lrtpsotansgylftanshfhdcxndctnnflynethhhnwdkbhtehhdosmhgoclvefhjpehtaethkltsrmssnwfctfggdtansgrhdcxtipdbagmoertsklaflfhfewsptrlmhjpdeemkbdyktmtfwnninfrbnmwonetwpheoycsfncsfdoycsfncsgaoycscstpsoiafwjlidkpjkotey
 ```
 
 Example capturing the above envelopes into a shell array. Note that newer shells like `zsh` use one-based indexing by default, but can be configured to use zero-based indexing.
 
 ```
 XID_KEYS=($(envelope xid key all $XID_DOC_UPDATED))
-
 envelope format ${XID_KEYS[1]}
-```
 
 │ PublicKeys(cab108a0) [
 │     'allow': 'All'
 │     'nickname': "Alice"
 │ ]
+```
 
 ```
 envelope format ${XID_KEYS[2]}
-```
 
 │ PublicKeys(e2c18423) [
 │     'allow': 'Encrypt'
 │     'allow': 'Sign'
 │     'nickname': "Bob"
 │ ]
+```
 
 #### `xid key find`: Find a Key by the Given Criteria
 
@@ -475,6 +472,22 @@ Resolution methods are URIs that describe how to resolve a XID. They are used to
 
 ```
 envelope xid method --help
+
+│ Work a XID document's resolution methods
+│
+│ Usage: envelope xid method <COMMAND>
+│
+│ Commands:
+│   add     Add a resolution method to a XID document
+│   all     Retrieve all the XID document's resolution methods
+│   at      Retrieve the resolution method at the given index
+│   count   Print the count of the XID document's resolution methods
+│   remove  Remove the given resolution method from the XID document
+│   help    Print this message or the help of the given subcommand(s)
+│
+│ Options:
+│   -h, --help     Print help
+│   -V, --version  Print version
 ```
 
 #### `xid method add`: Add a Resolution Method to a XID Document
@@ -550,6 +563,24 @@ A *delegate* is XID document that is authorized to act on behalf of the *princip
 
 ```
 envelope xid delegate --help
+
+│ Work with a XID document's keys
+│
+│ Usage: envelope xid delegate <COMMAND>
+│
+│ Commands:
+│   add     Add a delegate to the XID document
+│   all     Retrieve all delegates from the XID document
+│   at      Retrieve the XID document's delegate at the specified index
+│   count   Print the count of the XID document's delegates
+│   find    Find a delegate in the XID document
+│   remove  Remove a delegate from the XID document
+│   update  Update a delegate in the XID document
+│   help    Print this message or the help of the given subcommand(s)
+│
+│ Options:
+│   -h, --help     Print help
+│   -V, --version  Print version
 ```
 
 #### `xid delegate add`: Add a Delegate to a XID Document
@@ -674,12 +705,10 @@ envelope xid delegate at 2 $ALICE_XID_DOC | envelope format
 
 ```
 envelope xid delegate all $ALICE_XID_DOC
-```
 
-```dcbor
-ur:envelope/lstpsplftpsotanshdhdcxwncfnykphhsekedagdsfqdihoysadpzmimrpgtrnlesansjtdshtkedyhlwdmngloyaylstpsotansgylftanshfhdcxndctnnflynethhhnwdkbhtehhdosmhgoclvefhjpehtaethkltsrmssnwfctfggdtansgrhdcxytgefrmnbzftltcmcnaspaimhftbjehlatjklkhktidrpmjobslewkfretcaetbnoybdtpsoihfxhsjpjljzoycsfncsfgzsiddlec
-ur:envelope/lftpsplftpsotanshdhdcxhspawfstecswotwpbsweiowlsrmyfpwpskmeonrtjsrhetsrhnaxfwylvtvsuorkoyaylstpsotansgylftanshfhdcxeckpgwvyasletilffeeekbtyjlzeimmtkslkpadrtnnytontpyfyeocnecstktkttansgrhdcxoyndtbndhspebgtewmgrgrgriygmvwckkkaysfzozclbgendfmhfjliorteenlbwoycsfncsfgoybdtpsoihfxhsjpjljzoycsfncsfgzsiddlec
-ur:envelope/lptpsplftpsotanshdhdcxenenaefmosgecksalokgmnrhgrsemhhfnlfssroxbytkvllrvsrhgtgscpvswfveoycsfncsgegtgtyljt
+│ ur:envelope/lftpsplftpsotanshdhdcxhspawfstecswotwpbsweiowlsrmyfpwpskmeonrtjsrhetsrhnaxfwylvtvsuorkoyaylstpsotansgylftanshfhdcxeckpgwvyasletilffeeekbtyjlzeimmtkslkpadrtnnytontpyfyeocnecstktkttansgrhdcxoyndtbndhspebgtewmgrgrgriygmvwckkkaysfzozclbgendfmhfjliorteenlbwoycsfncsfgoycscstpsoihfxhsjpjljzoycsfncsfgknhpttwe
+│ ur:envelope/lstpsplftpsotanshdhdcxwncfnykphhsekedagdsfqdihoysadpzmimrpgtrnlesansjtdshtkedyhlwdmngloyaylstpsotansgylftanshfhdcxndctnnflynethhhnwdkbhtehhdosmhgoclvefhjpehtaethkltsrmssnwfctfggdtansgrhdcxtipdbagmoertsklaflfhfewsptrlmhjpdeemkbdyktmtfwnninfrbnmwonetwpheoycsfncsfgoycscstpsoiafwjlidoycsfncsfdoycsfncsgawnftoeoy
+│ ur:envelope/lftpsptpsotanshdhdcxenenaefmosgecksalokgmnrhgrsemhhfnlfssroxbytkvllrvsrhgtgscpvswfveoycsfncsgegtgtyljt
 ```
 
 Example capturing the above envelopes into a shell array. Note that newer shells like `zsh` use one-based indexing by default, but can be configured to use zero-based indexing.
@@ -687,7 +716,21 @@ Example capturing the above envelopes into a shell array. Note that newer shells
 ```
 XID_DELEGATES=($(envelope xid delegate all $ALICE_XID_DOC))
 envelope format ${XID_DELEGATES[1]}
+
+│ {
+│     XID(61b1f3c7) [
+│         'key': PublicKeys(eebd4add) [
+│             'allow': 'All'
+│             'nickname': "Carol"
+│         ]
+│     ]
+│ } [
+│     'allow': 'All'
+│ ]
 ```
+
+```
+envelope format ${XID_DELEGATES[2]}
 
 │ {
 │     XID(f1199a75) [
@@ -700,21 +743,7 @@ envelope format ${XID_DELEGATES[1]}
 │     'allow': 'Encrypt'
 │     'allow': 'Sign'
 │ ]
-
 ```
-envelope format ${XID_DELEGATES[2]}
-```
-
-│ {
-│     XID(61b1f3c7) [
-│         'key': PublicKeys(eebd4add) [
-│             'allow': 'All'
-│             'nickname': "Carol"
-│         ]
-│     ]
-│ } [
-│     'allow': 'All'
-│ ]
 
 ```
 envelope format ${XID_DELEGATES[3]}
@@ -814,6 +843,24 @@ envelope format $ALICE_XID_DOC_UPDATED
 
 ```
 envelope xid service --help
+
+│ Work with a XID document's services
+│
+│ Usage: envelope xid service <COMMAND>
+│
+│ Commands:
+│   add     Add a service to the XID document
+│   all     Retrieve all the XID services
+│   at      Retrieve the XID Document's service at the given index
+│   count   Print the count of the XID document's services
+│   find    Find all XID services matching the given criteria
+│   remove  Remove the given service from the XID document
+│   update  Updates the permissions, delegates, keys, capability identifer, or name of a service in a XID document
+│   help    Print this message or the help of the given subcommand(s)
+│
+│ Options:
+│   -h, --help     Print help
+│   -V, --version  Print version
 ```
 
 Services are URI endpoints along with the keys, delegates, and permissions that are allowed to use them.
@@ -1163,12 +1210,8 @@ Removing a key or delegate from the XID that is referenced by a service is not a
 
 To remove a key or delegate that is referenced by a service, first remove the service.
 
-👉
-```bash
-$ envelope xid delegate remove $BOB_XID_DOC $ALICE_XID_DOC_WITH_SERVICE_UPDATED
 ```
+envelope xid delegate remove $BOB_XID_DOC $ALICE_XID_DOC_WITH_SERVICE_UPDATED
 
-👈
-```
-Error: Delegate is referenced by a service
+│ Error: Delegate is referenced by a service
 ```
