@@ -4,6 +4,18 @@ Attachments are defined in [BCR-2023-006](https://github.com/BlockchainCommons/R
 
 Attachments are assertions that can be built up by using various invocations of the `envelope` command line tool, but since they have a specific format, the `envelope` tool provides shortcuts for creating and working with them.
 
+## Table of Contents
+
+- [`envelope` - Attachments](#envelope---attachments)
+  - [Table of Contents](#table-of-contents)
+  - [Attachment Subcommands](#attachment-subcommands)
+  - [Creating an Attachment](#creating-an-attachment)
+  - [Querying an Attachment](#querying-an-attachment)
+  - [Adding an Attachment](#adding-an-attachment)
+  - [Multiple Attachments](#multiple-attachments)
+  - [Enumerating Attachments](#enumerating-attachments)
+  - [Finding Attachments](#finding-attachments)
+
 ## Attachment Subcommands
 
 ```

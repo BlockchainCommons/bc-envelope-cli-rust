@@ -4,6 +4,15 @@
 
 [![Gordian Envelope CLI - 5 - Inclusion Proofs](https://img.youtube.com/vi/LUQ-n9EZa0U/mqdefault.jpg)](https://www.youtube.com/watch?v=LUQ-n9EZa0U)
 
+## Table of Contents
+
+- [`envelope` - Inclusion Proofs](#envelope---inclusion-proofs)
+  - [Table of Contents](#table-of-contents)
+  - [Introduction](#introduction)
+  - [Example 1: Alice's Friends](#example-1-alices-friends)
+  - [Example 2: Verifiable Credential](#example-2-verifiable-credential)
+  - [Example 3: Multiproofs](#example-3-multiproofs)
+
 ## Introduction
 
 An *inclusion proof* is a method of showing that particular information exists in a document without revealing more than is necessary about the document in which it exists.

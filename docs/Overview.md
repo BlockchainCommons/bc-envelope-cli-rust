@@ -1,5 +1,26 @@
 # `envelope` - Overview of the Commands
 
+## Table of Contents
+
+- [`envelope` - Overview of the Commands](#envelope---overview-of-the-commands)
+  - [Table of Contents](#table-of-contents)
+  - [Help](#help)
+  - [Format](#format)
+    - [Hex CBOR Output](#hex-cbor-output)
+    - [CBOR Diagnostic Notation Output](#cbor-diagnostic-notation-output)
+    - [Tree Output](#tree-output)
+  - [Mermaid Output](#mermaid-output)
+  - [Subject](#subject)
+  - [Extract](#extract)
+  - [Assertion](#assertion)
+  - [Digest](#digest)
+  - [Elision](#elision)
+  - [Symmetric Key Encryption](#symmetric-key-encryption)
+  - [Signatures](#signatures)
+  - [SSKR](#sskr)
+  - [Salt](#salt)
+  - [Compression](#compression)
+
 ## Help
 
 Help is available for the tool and its subcommands.
@@ -35,7 +56,7 @@ Usage: envelope <COMMAND>
 │   verify      Verify a signature on the envelope using the provided verifiers
 │   xid         Work with Extensible Identifiers (XID)
 │   help        Print this message or the help of the given subcommand(s)
-│ 
+│
 │ Options:
 │   -h, --help     Print help
 │   -V, --version  Print version

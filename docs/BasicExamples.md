@@ -9,6 +9,23 @@ This document walks you through a set of basic examples using the `envelope` com
 [![Gordian Envelope CLI - 1 - Overview](https://img.youtube.com/vi/1Z3Z4Z2Z2Z4/mqdefault.jpg)](https://www.youtube.com/watch?v=1Z3Z4Z2Z2Z4)
 [![Gordian Envelope CLI - 2 - Examples](https://img.youtube.com/vi/LYjtuBO1Sgw/mqdefault.jpg)](https://www.youtube.com/watch?v=LYjtuBO1Sgw)
 
+## Table of Contents
+
+- [`envelope` - Basic Examples](#envelope---basic-examples)
+  - [Table of Contents](#table-of-contents)
+  - [Notation](#notation)
+  - [Common structures used by the examples](#common-structures-used-by-the-examples)
+  - [Example 1: Plaintext](#example-1-plaintext)
+  - [Example 2: Signed Plaintext](#example-2-signed-plaintext)
+  - [Example 3: Multi-signed Plaintext](#example-3-multi-signed-plaintext)
+  - [Example 4: Symmetric Encryption](#example-4-symmetric-encryption)
+  - [Example 5: Password Encryption](#example-5-password-encryption)
+  - [Example 6: SSH Agent Encryption](#example-6-ssh-agent-encryption)
+  - [Example 7: Sign-Then-Encrypt](#example-7-sign-then-encrypt)
+  - [Example 8: Encrypt-Then-Sign](#example-8-encrypt-then-sign)
+  - [Example 9: Multi-Recipient Encryption](#example-9-multi-recipient-encryption)
+  - [Example 10: Signed Multi-Recipient Encryption](#example-10-signed-multi-recipient-encryption)
+
 ## Notation
 
 Throughout this document, output from shell commands is prefixed by `│ `:
