@@ -7,7 +7,7 @@ use indoc::indoc;
 fn test_match_traversal_pattern() {
     // Test the new -> traversal syntax
     let alice_envelope =
-        run_cli_stdin(&["subject", "type", "string"], "\"Alice\"").unwrap();
+        run_cli_stdin(&["subject", "type", "string"], r#""Alice""#).unwrap();
 
     let alice_with_assertion = run_cli_stdin(
         &[
@@ -25,7 +25,7 @@ fn test_match_traversal_pattern() {
 
     // Test matching assertion predicate with new traversal syntax
     let match_result = run_cli_stdin(
-        &["match", "NODE -> ASSERTPRED(TEXT(\"isA\"))"],
+        &["match", r#"node -> assertpred("isA")"#],
         &alice_with_assertion,
     )
     .unwrap();
@@ -38,7 +38,7 @@ fn test_match_traversal_pattern() {
 
     // Test matching assertion object with new traversal syntax
     let match_obj_result = run_cli_stdin(
-        &["match", "NODE -> ASSERTOBJ(TEXT(\"Person\"))"],
+        &["match", r#"node -> assertobj("Person")"#],
         &alice_with_assertion,
     )
     .unwrap();
@@ -53,7 +53,7 @@ fn test_match_traversal_pattern() {
     let deep_match_result = run_cli_stdin(
         &[
             "match",
-            "NODE -> ASSERTPRED(TEXT(\"isA\")) -> OBJ(TEXT(\"Person\"))",
+            r#"node -> assertpred("isA") -> obj("Person")"#,
         ],
         &alice_with_assertion,
     )
@@ -73,13 +73,13 @@ fn test_match_numeric_comparison() {
         run_cli_stdin(&["subject", "type", "number"], "42").unwrap();
 
     let match_result =
-        run_cli_stdin(&["match", "NUMBER(>40)"], &number_envelope).unwrap();
+        run_cli_stdin(&["match", ">40"], &number_envelope).unwrap();
 
     assert!(match_result.contains("42"));
 
     // Test that < also works
     let match_less_result =
-        run_cli_stdin(&["match", "NUMBER(<50)"], &number_envelope).unwrap();
+        run_cli_stdin(&["match", "<50"], &number_envelope).unwrap();
 
     assert!(match_less_result.contains("42"));
 }
