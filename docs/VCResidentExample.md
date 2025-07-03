@@ -4,37 +4,39 @@ In this example we build a permanent resident card, which the holder then redact
 
 Envelopes can also be built to support verifiable credentials, supporting the core functionality of DIDs.
 
+Here are the keys that the issuing entity uses to sign the credential:
+
+```
+STATE_PRVKEY_BASE="ur:crypto-prvkey-base/gdfmmojswkjzuylpotrelrvdcpbdmsincshpiebwlp"
+STATE_PUBKEYS="ur:crypto-pubkeys/lftanshfhdcxsegystjeisrshnyattgsswclpdmnsfzsgwcphgskdyuyahhecfrlhyvddsonbbsatansgrhdcxrfretiztzsoectchdsdizslpwyticsleonoxwliywfvsmhclrdplcplsfrnnptishywnpfdt"
+```
+
 John Smith's identifier:
 
-👉
-```bash
+```
 JOHN_ARID=`envelope generate arid`
 echo $JOHN_ARID
-ur:arid/hdcxrowefshyrpbapewtbwjowpvlimztemamzevoktdwdytnvldloltadeihwewschlflutinbfm
+
+│ ur:arid/hdcxrowefshyrpbapewtbwjowpvlimztemamzevoktdwdytnvldloltadeihwewschlflutinbfm
 ```
 
 A photo of John Smith:
 
-👉
-```bash
+```
 JOHN_IMAGE=`envelope subject type string "John Smith Smiling" | \
 envelope assertion add pred-obj known note string "This is an image of John Smith." | \
 envelope assertion add pred-obj known dereferenceVia uri "https://exampleledger.com/digest/36be30726befb65ca13b136ae29d8081f64792c2702415eb60ad1c56ed33c999"`
 envelope format $JOHN_IMAGE
-```
 
-👈
-```envelope
-"John Smith Smiling" [
-    'dereferenceVia': URI(https://exampleledger.com/digest/36be30726befb65ca13b136ae29d8081f64792c2702415eb60ad1c56ed33c999)
-    'note': "This is an image of John Smith."
-]
+│ "John Smith Smiling" [
+│     'dereferenceVia': URI(https://exampleledger.com/digest/36be30726befb65ca13b136ae29d8081f64792c2702415eb60ad1c56ed33c999)
+│     'note': "This is an image of John Smith."
+│ ]
 ```
 
 John Smith's Permanent Resident Card issued by the State of Example:
 
-👉
-```bash
+```
 STATE_ARID="ur:arid/hdcxaaenfsheytmseorfbsbzktrdrdfybkwntkeegetaveghzstattdertbswsihahvspllbghcp"
 
 ISSUER=`envelope subject type ur $STATE_ARID | \
@@ -63,53 +65,53 @@ JOHN_RESIDENT_CARD=`envelope subject type ur $JOHN_ARID | \
     envelope assertion add pred-obj known holder envelope $HOLDER | \
     envelope assertion add pred-obj known note string "The State of Example recognizes JOHN SMITH as a Permanent Resident." | \
     envelope subject type wrapped | \
-    envelope sign --prvkeys $STATE_PRVKEY_BASE --note "Made by the State of Example."`
+    envelope sign --signer $STATE_PRVKEY_BASE --note "Made by the State of Example."`
 
 envelope format $JOHN_RESIDENT_CARD
-```
 
-👈
-```envelope
-{
-    ARID(b8ed3d5e) [
-        'isA': "credential"
-        "dateIssued": 2022-04-27
-        'holder': ARID(b8ed3d5e) [
-            'isA': "Permanent Resident"
-            'isA': "Person"
-            "birthCountry": "bs" [
-                'note': "The Bahamas"
-            ]
-            "birthDate": 1974-02-18
-            "familyName": "SMITH"
-            "givenName": "JOHN"
-            "image": "John Smith Smiling" [
-                'dereferenceVia': URI(https://exampleledger.com/digest/36be30726befb65ca13b136ae29d8081f64792c2702415eb60ad1c56ed33c999)
-                'note': "This is an image of John Smith."
-            ]
-            "lprCategory": "C09"
-            "residentSince": 2018-01-07
-            "sex": "MALE"
-        ]
-        'issuer': ARID(04363d5f) [
-            'dereferenceVia': URI(https://exampleledger.com/arid/04363d5ff99733bc0f1577baba440af1cf344ad9e454fad9d128c00fef6505e8)
-            'note': "Issued by the State of Example"
-        ]
-        'note': "The State of Example recognizes JOHN SMITH as a Permanent Resident."
-    ]
-} [
-    'signed': Signature [
-        'note': "Made by the State of Example."
-    ]
-]
+│ {
+│     ARID(5c19ae9d) [
+│         'isA': "credential"
+│         "dateIssued": 2022-04-27
+│         'holder': ARID(5c19ae9d) [
+│             'isA': "Permanent Resident"
+│             'isA': "Person"
+│             "birthCountry": "bs" [
+│                 'note': "The Bahamas"
+│             ]
+│             "birthDate": 1974-02-18
+│             "familyName": "SMITH"
+│             "givenName": "JOHN"
+│             "image": "John Smith Smiling" [
+│                 'dereferenceVia': URI(https://exampleledger.com/digest/36be30726befb65ca13b136ae29d8081f64792c2702415eb60ad1c56ed33c999)
+│                 'note': "This is an image of John Smith."
+│             ]
+│             "lprCategory": "C09"
+│             "residentSince": 2018-01-07
+│             "sex": "MALE"
+│         ]
+│         'issuer': ARID(04363d5f) [
+│             'dereferenceVia': URI(https://exampleledger.com/arid/04363d5ff99733bc0f1577baba440af1cf344ad9e454fad9d128c00fef6505e8)
+│             'note': "Issued by the State of Example"
+│         ]
+│         'note': "The State of Example recognizes JOHN SMITH as a Permanent Resident."
+│     ]
+│ } [
+│     'signed': {
+│         Signature [
+│             'note': "Made by the State of Example."
+│         ]
+│     } [
+│         'signed': Signature
+│     ]
+│ ]
 ```
 
 John wishes to identify himself to a third party using his government-issued credential, but does not wish to reveal more than his name, his photo, and the fact that the state has verified his identity.
 
 Redaction is performed by building a set of digests that will be revealed. All digests not present in the reveal-set will be replaced with elision markers containing only the hash of what has been elided, thus preserving the hash tree including revealed signatures. If a higher-level object is elided, then everything it contains will also be elided, so if a deeper object is to be revealed, all of its parent objects also need to be revealed, even though not everything *about* the parent objects must be revealed.
 
-👉
-```bash
+```
 # Start a target set.
 TARGET=()
 
@@ -144,76 +146,64 @@ ELIDED_CARD=`envelope elide revealing "$TARGET" $JOHN_RESIDENT_CARD`
 
 # Show the elided card
 envelope format $ELIDED_CARD
-```
 
-👈
-```envelope
-{
-    ARID(b8ed3d5e) [
-        'isA': "credential"
-        'holder': ARID(b8ed3d5e) [
-            "familyName": "SMITH"
-            "givenName": "JOHN"
-            "image": "John Smith Smiling" [
-                'dereferenceVia': URI(https://exampleledger.com/digest/36be30726befb65ca13b136ae29d8081f64792c2702415eb60ad1c56ed33c999)
-                'note': "This is an image of John Smith."
-            ]
-            ELIDED (7)
-        ]
-        'issuer': ARID(04363d5f) [
-            'dereferenceVia': URI(https://exampleledger.com/arid/04363d5ff99733bc0f1577baba440af1cf344ad9e454fad9d128c00fef6505e8)
-            'note': "Issued by the State of Example"
-        ]
-        ELIDED (2)
-    ]
-} [
-    'signed': Signature [
-        'note': "Made by the State of Example."
-    ]
-]
+│ {
+│     ARID(5c19ae9d) [
+│         'isA': "credential"
+│         'holder': ARID(5c19ae9d) [
+│             "familyName": "SMITH"
+│             "givenName": "JOHN"
+│             "image": "John Smith Smiling" [
+│                 'dereferenceVia': URI(https://exampleledger.com/digest/36be30726befb65ca13b136ae29d8081f64792c2702415eb60ad1c56ed33c999)
+│                 'note': "This is an image of John Smith."
+│             ]
+│             ELIDED (7)
+│         ]
+│         'issuer': ARID(04363d5f) [
+│             'dereferenceVia': URI(https://exampleledger.com/arid/04363d5ff99733bc0f1577baba440af1cf344ad9e454fad9d128c00fef6505e8)
+│             'note': "Issued by the State of Example"
+│         ]
+│         ELIDED (2)
+│     ]
+│ } [
+│     'signed': {
+│         Signature [
+│             'note': "Made by the State of Example."
+│         ]
+│     } [
+│         'signed': Signature
+│     ]
+│ ]
 ```
 
 Print the number of digests in the target set.
 
-👉
-```bash
+```
 echo ${#TARGET[@]}
-```
 
-👈
-```
-46
+│ 50
 ```
 
 Remove duplicates to get the number of unique digests in the target. Duplicates don't harm anything, but they might point to opportunities for optimization.
 
-👉
-```bash
+```
 UNIQUE_DIGESTS=( `for i in ${TARGET[@]}; do echo $i; done | sort -u` )
 echo ${#UNIQUE_DIGESTS[@]}
-```
 
-👈
-```
-40
+│ 44
 ```
 
 Note that the original card and the elided card have the same digest.
 
-👉
-```bash
+```
 envelope digest $JOHN_RESIDENT_CARD; envelope digest $ELIDED_CARD
-```
 
-👈
-```
-ur:digest/hdcxstcnlogtmnuraesttbnngojeryeebswtqznsbbgdjnfemucwonhlbbhfrywyadlyhpcftkft
-ur:digest/hdcxstcnlogtmnuraesttbnngojeryeebswtqznsbbgdjnfemucwonhlbbhfrywyadlyhpcftkft
+│ ur:digest/hdcxgyzmkkkiglbkmekewnlsjofstsgltpislrhefegweychvarouyyljyvsgljehgykwzbachah
+│ ur:digest/hdcxgyzmkkkiglbkmekewnlsjofstsgltpislrhefegweychvarouyyljyvsgljehgykwzbachah
 ```
 
 Note that the state's signature on the elided card still verifies.
 
-👉
-```bash
-envelope verify --silent $ELIDED_CARD --pubkeys $STATE_PUBKEYS
+```
+envelope verify --silent $ELIDED_CARD --verifier $STATE_PUBKEYS
 ```
