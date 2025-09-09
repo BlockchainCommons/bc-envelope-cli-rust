@@ -1,8 +1,6 @@
 pub use anyhow::Result;
 use anyhow::bail;
-use bc_components::{
-    PublicKeys, SSKRError, SSKRGroupSpec, SSKRSpec, SymmetricKey,
-};
+use bc_components::{PublicKeys, SSKRGroupSpec, SSKRSpec, SymmetricKey};
 use bc_envelope::prelude::*;
 use clap::Args;
 
@@ -43,7 +41,9 @@ pub struct CommandArgs {
 }
 
 impl EnvelopeArgsLike for CommandArgs {
-    fn envelope(&self) -> Option<&str> { self.envelope_args.envelope() }
+    fn envelope(&self) -> Option<&str> {
+        self.envelope_args.envelope()
+    }
 }
 
 impl crate::exec::Exec for CommandArgs {
@@ -77,13 +77,11 @@ impl crate::exec::Exec for CommandArgs {
 
         let wrapped = envelope.wrap();
         let encrypted = wrapped.encrypt_subject(&content_key)?;
-        let group_spec_results: Vec<Result<SSKRGroupSpec, SSKRError>> = groups
+        let group_specs: Vec<SSKRGroupSpec> = groups
             .iter()
             .map(|(m, n)| SSKRGroupSpec::new(*m, *n))
-            .collect();
-        let group_specs = group_spec_results
-            .into_iter()
-            .collect::<Result<Vec<_>, _>>()?;
+            .collect::<Result<Vec<_>, _>>()
+            .map_err(|e| anyhow::Error::from(e))?;
         let spec = SSKRSpec::new(self.group_threshold, group_specs)?;
         let grouped_shares = encrypted.sskr_split(&spec, &content_key)?;
         let flattened_shares =

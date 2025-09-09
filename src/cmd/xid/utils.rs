@@ -73,7 +73,7 @@ pub fn update_key(
 pub trait XIDDocumentReadable: EnvelopeArgsLike {
     fn read_xid_document(&self) -> Result<XIDDocument> {
         let envelope = self.read_envelope()?;
-        XIDDocument::from_unsigned_envelope(&envelope)
+        Ok(XIDDocument::from_unsigned_envelope(&envelope)?)
     }
 }
 
@@ -87,7 +87,7 @@ pub fn read_uri(uri: Option<&URI>) -> Result<URI> {
     if uri_string.is_empty() {
         bail!("No URI provided");
     }
-    URI::new(uri_string.trim())
+    Ok(URI::new(uri_string.trim())?)
 }
 
 pub fn envelope_to_xid_ur_string(envelope: &Envelope) -> String {

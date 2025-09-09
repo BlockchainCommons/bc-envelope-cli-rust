@@ -64,26 +64,26 @@ impl SignerType {
             Self::MLDSA65 => bail!("MLDSA conversion not supported"),
             Self::MLDSA87 => bail!("MLDSA conversion not supported"),
 
-            Self::SshEd25519 => private_key_base
-                .ssh_signing_private_key(SSHAlgorithm::Ed25519, ssh_comment),
-            Self::SshRsaSha256 => private_key_base.ssh_signing_private_key(
+            Self::SshEd25519 => Ok(private_key_base
+                .ssh_signing_private_key(SSHAlgorithm::Ed25519, ssh_comment)?),
+            Self::SshRsaSha256 => Ok(private_key_base.ssh_signing_private_key(
                 SSHAlgorithm::Rsa { hash: Some(HashAlg::Sha256) },
                 ssh_comment,
-            ),
-            Self::SshRsaSha512 => private_key_base.ssh_signing_private_key(
+            )?),
+            Self::SshRsaSha512 => Ok(private_key_base.ssh_signing_private_key(
                 SSHAlgorithm::Rsa { hash: Some(HashAlg::Sha512) },
                 ssh_comment,
-            ),
-            Self::SshDsa => private_key_base
-                .ssh_signing_private_key(SSHAlgorithm::Dsa, ssh_comment),
-            Self::SshEcdsaP256 => private_key_base.ssh_signing_private_key(
+            )?),
+            Self::SshDsa => Ok(private_key_base
+                .ssh_signing_private_key(SSHAlgorithm::Dsa, ssh_comment)?),
+            Self::SshEcdsaP256 => Ok(private_key_base.ssh_signing_private_key(
                 SSHAlgorithm::Ecdsa { curve: EcdsaCurve::NistP256 },
                 ssh_comment,
-            ),
-            Self::SshEcdsaP384 => private_key_base.ssh_signing_private_key(
+            )?),
+            Self::SshEcdsaP384 => Ok(private_key_base.ssh_signing_private_key(
                 SSHAlgorithm::Ecdsa { curve: EcdsaCurve::NistP384 },
                 ssh_comment,
-            ),
+            )?),
             // Self::SshEcdsaP521 =>
             // private_key_base.ssh_signing_private_key(SSHAlgorithm::Ecdsa {
             // curve: EcdsaCurve::NistP521 }, ssh_comment),

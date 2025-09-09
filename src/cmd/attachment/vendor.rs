@@ -14,6 +14,6 @@ pub struct CommandArgs {
 impl crate::exec::Exec for CommandArgs {
     fn exec(&self) -> Result<String> {
         let attachment = read_envelope(self.attachment.as_deref())?;
-        attachment.attachment_vendor()
+        Ok(attachment.attachment_vendor()?)
     }
 }
