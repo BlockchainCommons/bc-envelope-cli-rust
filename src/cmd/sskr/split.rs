@@ -41,9 +41,7 @@ pub struct CommandArgs {
 }
 
 impl EnvelopeArgsLike for CommandArgs {
-    fn envelope(&self) -> Option<&str> {
-        self.envelope_args.envelope()
-    }
+    fn envelope(&self) -> Option<&str> { self.envelope_args.envelope() }
 }
 
 impl crate::exec::Exec for CommandArgs {
@@ -81,7 +79,7 @@ impl crate::exec::Exec for CommandArgs {
             .iter()
             .map(|(m, n)| SSKRGroupSpec::new(*m, *n))
             .collect::<Result<Vec<_>, _>>()
-            .map_err(|e| anyhow::Error::from(e))?;
+            .map_err(anyhow::Error::from)?;
         let spec = SSKRSpec::new(self.group_threshold, group_specs)?;
         let grouped_shares = encrypted.sskr_split(&spec, &content_key)?;
         let flattened_shares =

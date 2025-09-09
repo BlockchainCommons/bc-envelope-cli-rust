@@ -11,6 +11,7 @@ pub mod format;
 pub mod generate;
 pub mod import;
 pub mod info;
+pub mod pattern;
 pub mod proof;
 pub mod salt;
 pub mod sign;
@@ -19,7 +20,6 @@ pub mod subject;
 pub mod uncompress;
 pub mod verify;
 pub mod xid;
-pub mod pattern;
 
 pub const ASKPASS_HELP: &str =
     "Prompt for the password using an external program.";

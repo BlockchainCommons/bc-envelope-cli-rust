@@ -33,7 +33,8 @@ fn test_match_traversal_pattern() {
     let expected = indoc! {r#"
         ea3bd24e NODE ""Alice"" [ "isA": "Person" ]
             242b24ff ASSERTION "isA": "Person"
-    "#}.trim();
+    "#}
+    .trim();
     assert_actual_expected!(match_result, expected);
 
     // Test matching assertion object with new traversal syntax
@@ -46,15 +47,13 @@ fn test_match_traversal_pattern() {
     let expected_obj = indoc! {r#"
         ea3bd24e NODE ""Alice"" [ "isA": "Person" ]
             242b24ff ASSERTION "isA": "Person"
-    "#}.trim();
+    "#}
+    .trim();
     assert_actual_expected!(match_obj_result, expected_obj);
 
     // Test deeper traversal pattern
     let deep_match_result = run_cli_stdin(
-        &[
-            "match",
-            r#"node -> assertpred("isA") -> obj("Person")"#,
-        ],
+        &["match", r#"node -> assertpred("isA") -> obj("Person")"#],
         &alice_with_assertion,
     )
     .unwrap();
@@ -62,7 +61,8 @@ fn test_match_traversal_pattern() {
     ea3bd24e NODE ""Alice"" [ "isA": "Person" ]
         242b24ff ASSERTION "isA": "Person"
             bd52917f LEAF "Person"
-    "#}.trim();
+    "#}
+    .trim();
     assert_actual_expected!(deep_match_result, expected_deep);
 }
 
