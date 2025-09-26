@@ -141,6 +141,19 @@ fn test_generate_prvkeys_from_seed() -> Result<()> {
 }
 
 #[test]
+fn test_generate_prvkeys_from_seed_envelope() -> Result<()> {
+    run_cli_expect(
+        &[
+            "generate",
+            "prvkeys",
+            "--seed",
+            "ur:envelope/lftpsogdkbehprpagrldhykpsnrodwcppfbwgmkeoyadcsspmypsdnon",
+        ],
+        "ur:crypto-prvkey-base/gdkbehprpagrldhykpsnrodwcppfbwgmkeadrturam",
+    )
+}
+
+#[test]
 fn test_generate_pubkeys() -> Result<()> {
     run_cli_expect(
         &[
