@@ -52,7 +52,7 @@ Usage: envelope <COMMAND>
 │   sign        Sign the envelope subject with the provided signer(s)
 │   sskr        Sharded Secret Key Reconstruction (SSKR)
 │   subject     Create an envelope with the given subject
-│   uncompress  Uncompress the envelope or its subject
+│   decompress  Decompress the envelope or its subject
 │   verify      Verify a signature on the envelope using the provided verifiers
 │   xid         Work with Extensible Identifiers (XID)
 │   help        Print this message or the help of the given subcommand(s)
@@ -807,7 +807,7 @@ envelope digest $COMPRESSED
 │ ur:digest/hdcxykfgenetdppftsuyhngwglrdiopsmtgshpteprchcaasvyiasbjldaqzcpfhzmcfcarkjepf
 ```
 
-When an envelope is compressed, you treat it like any other envelope (add assertions to it, use it as the object of an assertion, etc.) but you can't access its contents until it's been uncompressed.
+When an envelope is compressed, you treat it like any other envelope (add assertions to it, use it as the object of an assertion, etc.) but you can't access its contents until it's been decompressed.
 
 ```
 envelope format $COMPRESSED
@@ -815,18 +815,18 @@ envelope format $COMPRESSED
 │ COMPRESSED
 ```
 
-When the envelope is uncompressed, it returns to its original size.
+When the envelope is decompressed, it returns to its original size.
 
 ```
-UNCOMPRESSED=`envelope uncompress $COMPRESSED`
-env_cbor_count $UNCOMPRESSED
-envelope digest $UNCOMPRESSED
+DECOMPRESSED=`envelope decompress $COMPRESSED`
+env_cbor_count $DECOMPRESSED
+envelope digest $DECOMPRESSED
 
 │ 1110
 │ ur:digest/hdcxykfgenetdppftsuyhngwglrdiopsmtgshpteprchcaasvyiasbjldaqzcpfhzmcfcarkjepf
 ```
 
-The above technique compresses the entire envelope. You can also compress or uncompress just the subject of an envelope by adding the `--subject` flag:
+The above technique compresses the entire envelope. You can also compress or decompress just the subject of an envelope by adding the `--subject` flag:
 
 ```
 ALICE_COMPRESSED=`envelope compress --subject $ALICE_KNOWS_BOB`
@@ -847,4 +847,4 @@ env_cbor_count $ALICE_COMPRESSED
 │ 76
 ```
 
-Finally, note that compressing an already-compressed envelope, or uncompressing an already uncompressed envelope, has no effect.
+Finally, note that compressing an already-compressed envelope, or decompressing an already decompressed envelope, has no effect.

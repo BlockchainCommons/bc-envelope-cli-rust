@@ -55,7 +55,7 @@ enum MainCommands {
     Sign(cmd::sign::CommandArgs),
     Sskr(cmd::sskr::CommandArgs),
     Subject(cmd::subject::CommandArgs),
-    Uncompress(cmd::uncompress::CommandArgs),
+    Decompress(cmd::decompress::CommandArgs),
     Verify(cmd::verify::CommandArgs),
     Xid(cmd::xid::CommandArgs),
 }
@@ -86,7 +86,7 @@ fn main() -> Result<()> {
         MainCommands::Sign(args) => args.exec(),
         MainCommands::Sskr(args) => args.exec(),
         MainCommands::Subject(args) => args.exec(),
-        MainCommands::Uncompress(args) => args.exec(),
+        MainCommands::Decompress(args) => args.exec(),
         MainCommands::Verify(args) => args.exec(),
         MainCommands::Xid(args) => args.exec(),
     };

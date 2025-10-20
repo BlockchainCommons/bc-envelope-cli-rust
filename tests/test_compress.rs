@@ -18,7 +18,7 @@ fn test_compress_1() -> Result<()> {
             ]
         "#)
     )?;
-    let decompressed = run_cli(&["uncompress", "--subject", &compressed])?;
+    let decompressed = run_cli(&["decompress", "--subject", &compressed])?;
     assert_eq!(decompressed, ALICE_KNOWS_BOB_EXAMPLE);
     Ok(())
 }
@@ -32,7 +32,7 @@ fn test_compress_2() -> Result<()> {
     assert_eq!(compressed.len(), 1036);
 
     run_cli_expect(&["format", &compressed], "COMPRESSED")?;
-    let decompressed = run_cli(&["uncompress", &compressed])?;
+    let decompressed = run_cli(&["decompress", &compressed])?;
     assert_eq!(decompressed, CREDENTIAL_EXAMPLE);
     Ok(())
 }

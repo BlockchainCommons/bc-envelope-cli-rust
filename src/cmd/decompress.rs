@@ -4,11 +4,11 @@ use clap::Args;
 
 use crate::envelope_args::{EnvelopeArgs, EnvelopeArgsLike};
 
-/// Uncompress the envelope or its subject.
+/// Decompress the envelope or its subject.
 #[derive(Debug, Args)]
 #[group(skip)]
 pub struct CommandArgs {
-    /// Uncompress only the envelope's subject.
+    /// Decompress only the envelope's subject.
     #[arg(long, short, default_value = "false")]
     subject: bool,
 
@@ -24,9 +24,9 @@ impl crate::exec::Exec for CommandArgs {
     fn exec(&self) -> Result<String> {
         let envelope = self.read_envelope()?;
         Ok(if self.subject {
-            envelope.uncompress_subject()
+            envelope.decompress_subject()
         } else {
-            envelope.uncompress()
+            envelope.decompress()
         }?
         .ur_string())
     }
