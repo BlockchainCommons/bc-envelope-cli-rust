@@ -23,7 +23,7 @@ cargo install bc-envelope-cli
 To install a specific version:
 
 ```bash
-cargo install bc-envelope-cli --version 0.23.1
+cargo install bc-envelope-cli --version 0.24.0
 ```
 
 ### From Source
@@ -82,6 +82,13 @@ See the [docs](docs/README.md) directory for more information.
 **NOTE:** The `envelope` tool does *not* have the same command line syntax as the Swift `envelope` tool.
 
 ## Version History
+
+### 0.24.0: October 20, 2025
+
+- Add walk subcommand for navigating and manipulating envelope nodes.
+- Change terminology from uncompress to decompress.
+- Fix provenance-mark tag registration bug.
+- Align to dependencies.
 
 ### 0.23.1: September 29, 2025
 
