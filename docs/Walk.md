@@ -12,6 +12,11 @@ The `walk` command provides tools for navigating and manipulating envelope nodes
   - [Uneliding Nodes](#uneliding-nodes)
   - [Decrypting Nodes](#decrypting-nodes)
   - [Decompressing Nodes](#decompressing-nodes)
+  - [Replacing Nodes](#replacing-nodes)
+    - [Basic Replacement](#basic-replacement)
+    - [Replacing Elided Nodes](#replacing-elided-nodes)
+    - [Replacing Multiple Different Nodes](#replacing-multiple-different-nodes)
+    - [Replacement Validation](#replacement-validation)
   - [Using Target Filters](#using-target-filters)
   - [Complete Example](#complete-example)
 
@@ -24,6 +29,7 @@ The `walk` command traverses an envelope's structure and provides several operat
 - **`unelide`**: Restore elided nodes
 - **`decrypt`**: Decrypt encrypted nodes
 - **`decompress`**: Decompress compressed nodes
+- **`replace`**: Replace nodes matching target digests with a replacement envelope
 
 All subcommands can optionally filter nodes using the `--target` option.
 
@@ -198,6 +204,161 @@ envelope format $DECOMPRESSED
 ```
 
 The envelope is now fully decompressed and readable.
+
+## Replacing Nodes
+
+The `replace` subcommand allows you to replace nodes in an envelope that match specific digests with a replacement envelope. This is useful for transforming envelopes by substituting specific elements throughout the structure, regardless of whether those elements are plaintext or obscured (elided, encrypted, or compressed).
+
+The `replace` subcommand requires the `--target` option to specify which digests to replace.
+
+### Basic Replacement
+
+Let's start by creating an envelope where "Bob" appears in multiple places:
+
+```
+BOB=$(envelope subject type string "Bob")
+CHARLIE=$(envelope subject type string "Charlie")
+ENVELOPE_WITH_BOB=$(envelope assertion add pred-obj string "likes" envelope $BOB $ALICE_KNOWS_BOB)
+envelope format $ENVELOPE_WITH_BOB
+
+│ "Alice" [
+│     "knows": "Bob"
+│     "likes": "Bob"
+│ ]
+```
+
+Now let's replace all instances of "Bob" with "Charlie". First, we need Bob's digest:
+
+```
+BOB_DIGEST=$(envelope digest $BOB)
+```
+
+Now we can replace all occurrences:
+
+```
+REPLACED=$(envelope walk --target $BOB_DIGEST $ENVELOPE_WITH_BOB replace $CHARLIE)
+envelope format $REPLACED
+
+│ "Alice" [
+│     "knows": "Charlie"
+│     "likes": "Charlie"
+│ ]
+```
+
+Both instances of "Bob" have been replaced with "Charlie" because they share the same digest.
+
+### Replacing Elided Nodes
+
+You can replace ELIDED nodes with envelopes that *do not* match the elided content. If you do this, you are no longer *transforming* the original content, which would leave the Merkle structure the same, but rather substituting new content in place of the elided parts. This will change all the digests in the envelope from the point of the change up to the envelope's root digest. Doing this is likely to invalidate any signatures on the envelope, so use this feature with caution.
+
+Let's demonstrate this by first creating an envelope and checking its root digest:
+
+```
+ENVELOPE_WITH_BOB=$(envelope assertion add pred-obj string "likes" envelope $BOB $ALICE_KNOWS_BOB)
+envelope format $ENVELOPE_WITH_BOB
+
+│ "Alice" [
+│     "knows": "Bob"
+│     "likes": "Bob"
+│ ]
+```
+
+```
+envelope digest $ENVELOPE_WITH_BOB
+
+│ ur:digest/hdcxbesedketplchinhntebnvevlsremctoxvsynckzcnychtnrekbwzhdvtzesoamidutsksekn
+```
+
+Now elide Bob and check the root digest again. Notice that it remains the same because elision preserves the Merkle structure:
+
+```
+ELIDED=$(envelope elide removing $BOB_DIGEST $ENVELOPE_WITH_BOB)
+envelope format $ELIDED
+
+│ "Alice" [
+│     "knows": ELIDED
+│     "likes": ELIDED
+│ ]
+```
+
+```
+envelope digest $ELIDED
+
+│ ur:digest/hdcxbesedketplchinhntebnvevlsremctoxvsynckzcnychtnrekbwzhdvtzesoamidutsksekn
+```
+
+Now replace the elided nodes (which have Bob's digest) with Charlie. This substitutes different content, so the root digest will change:
+
+```
+REPLACED_ELIDED=$(envelope walk --target $BOB_DIGEST $ELIDED replace $CHARLIE)
+envelope format $REPLACED_ELIDED
+
+│ "Alice" [
+│     "knows": "Charlie"
+│     "likes": "Charlie"
+│ ]
+```
+
+```
+envelope digest $REPLACED_ELIDED
+
+│ ur:digest/hdcxcytdknwzttswkiaetyylbdmncmrkemlbfhcljegaosayjnsgbdptfdcewkinmdfllksrbebt
+```
+
+The root digest has changed because we've substituted different content. This is fundamentally different from uneliding with the original content, which would preserve the original digest.
+
+### Replacing Multiple Different Nodes
+
+You can replace multiple different elements with the same replacement by providing multiple target digests. Let's create an envelope with both Bob and Carol, then replace both with "REDACTED":
+
+```
+CAROL=$(envelope subject type string "Carol")
+REDACTED=$(envelope subject type string "REDACTED")
+ENVELOPE=$(envelope assertion add pred-obj string "likes" envelope $CAROL $ALICE_KNOWS_BOB)
+envelope format $ENVELOPE
+
+│ "Alice" [
+│     "knows": "Bob"
+│     "likes": "Carol"
+│ ]
+```
+
+Get both digests and replace them in one operation:
+
+```
+BOB_DIGEST=$(envelope digest $BOB)
+CAROL_DIGEST=$(envelope digest $CAROL)
+MULTI_REPLACED=$(envelope walk --target "$BOB_DIGEST $CAROL_DIGEST" $ENVELOPE replace $REDACTED)
+envelope format $MULTI_REPLACED
+
+│ "Alice" [
+│     "knows": "REDACTED"
+│     "likes": "REDACTED"
+│ ]
+```
+
+This is useful for anonymizing or redacting multiple pieces of information in a structured way.
+
+### Replacement Validation
+
+The `replace` subcommand validates that replacements maintain envelope structure integrity. Specifically, assertions (elements in a node's assertions array) can only be replaced with other assertions or obscured elements (which are presumed to be obscured assertions).
+
+Let's try to replace an entire assertion with a plain string, which should fail:
+
+```
+KNOWS_ASSERTION=$(envelope assertion at 0 $ALICE_KNOWS_BOB)
+ASSERTION_DIGEST=$(envelope digest $KNOWS_ASSERTION)
+CHARLIE=$(envelope subject type string "Charlie")
+envelope walk --target $ASSERTION_DIGEST $ALICE_KNOWS_BOB replace $CHARLIE
+
+│ Error: invalid format
+```
+
+This error occurs because "Charlie" is a plain string envelope, not an assertion. The envelope structure requires that elements in the assertions array be either:
+- Actual assertions (predicate-object pairs)
+- Obscured elements (ELIDED, ENCRYPTED, or COMPRESSED) which are presumed to be obscured assertions
+
+This validation ensures that envelopes maintain their structural integrity even when performing transformations.
 
 ## Using Target Filters
 

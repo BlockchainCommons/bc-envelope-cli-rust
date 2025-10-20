@@ -1,6 +1,7 @@
 pub mod decompress;
 pub mod decrypt;
 pub mod matching;
+pub mod replace;
 pub mod unelide;
 
 use anyhow::Result;
@@ -30,12 +31,11 @@ enum WalkCommands {
     Unelide(unelide::CommandArgs),
     Decrypt(decrypt::CommandArgs),
     Decompress(decompress::CommandArgs),
+    Replace(replace::CommandArgs),
 }
 
 impl EnvelopeArgsLike for CommandArgs {
-    fn envelope(&self) -> Option<&str> {
-        self.envelope_args.envelope()
-    }
+    fn envelope(&self) -> Option<&str> { self.envelope_args.envelope() }
 }
 
 impl crate::exec::Exec for CommandArgs {
@@ -53,6 +53,11 @@ impl crate::exec::Exec for CommandArgs {
                 args.exec_with_envelope(self.read_envelope()?)
             }
             Some(WalkCommands::Decompress(args)) => args
+                .exec_with_envelope_and_target(
+                    self.read_envelope()?,
+                    parse_target_digests(&self.target)?,
+                ),
+            Some(WalkCommands::Replace(args)) => args
                 .exec_with_envelope_and_target(
                     self.read_envelope()?,
                     parse_target_digests(&self.target)?,
