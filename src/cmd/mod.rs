@@ -19,6 +19,7 @@ pub mod sign;
 pub mod sskr;
 pub mod subject;
 pub mod verify;
+pub mod walk;
 pub mod xid;
 
 pub const ASKPASS_HELP: &str =

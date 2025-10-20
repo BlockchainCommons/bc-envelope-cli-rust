@@ -20,6 +20,7 @@
   - [SSKR](#sskr)
   - [Salt](#salt)
   - [Compression](#compression)
+  - [Walking Envelope Nodes](#walking-envelope-nodes)
 
 ## Help
 
@@ -848,3 +849,15 @@ env_cbor_count $ALICE_COMPRESSED
 ```
 
 Finally, note that compressing an already-compressed envelope, or decompressing an already decompressed envelope, has no effect.
+
+## Walking Envelope Nodes
+
+The `walk` command provides powerful tools for navigating and manipulating envelope nodes based on their obscuration state. It can:
+
+- List all node digests in an envelope
+- Find nodes by obscuration type (elided, encrypted, compressed)
+- Restore elided nodes from original envelopes
+- Decrypt encrypted nodes with symmetric keys
+- Decompress compressed nodes
+
+For detailed documentation and examples, see [Walk.md](Walk.md).

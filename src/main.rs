@@ -57,6 +57,7 @@ enum MainCommands {
     Subject(cmd::subject::CommandArgs),
     Decompress(cmd::decompress::CommandArgs),
     Verify(cmd::verify::CommandArgs),
+    Walk(cmd::walk::CommandArgs),
     Xid(cmd::xid::CommandArgs),
 }
 
@@ -88,6 +89,7 @@ fn main() -> Result<()> {
         MainCommands::Subject(args) => args.exec(),
         MainCommands::Decompress(args) => args.exec(),
         MainCommands::Verify(args) => args.exec(),
+        MainCommands::Walk(args) => args.exec(),
         MainCommands::Xid(args) => args.exec(),
     };
     let output = output?;
