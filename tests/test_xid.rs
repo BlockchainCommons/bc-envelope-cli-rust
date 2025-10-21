@@ -762,7 +762,7 @@ fn test_xid_delegate() {
     //       means it will have to be resolved to be used.
     //
     // ```
-    // 
+    //
     // $ ALICE_XID_DOC=`envelope xid new --nickname 'Alice' $ALICE_PUBKEYS`
 
     let alice_xid_doc =
@@ -1550,4 +1550,187 @@ fn test_xid_service() {
             ]
         "#}.trim()
     ).unwrap();
+}
+
+#[test]
+fn test_xid_encrypted_keys_preserved() {
+    // Test that encrypted private keys are preserved when modifying XID
+    // documents without providing a password.
+
+    // Generate private keys and create XID with encrypted private keys
+    // $ envelope generate prvkeys | \
+    // envelope xid new --private encrypt --encrypt-password "secret"
+
+    let xid_encrypted = run_cli_piped(&[
+        &["generate", "prvkeys"],
+        &[
+            "xid",
+            "new",
+            "--private",
+            "encrypt",
+            "--encrypt-password",
+            "secret",
+        ],
+    ])
+    .unwrap();
+
+    // Verify it contains ENCRYPTED by formatting it
+    let formatted = run_cli_stdin(&["format"], &xid_encrypted).unwrap();
+    assert!(formatted.contains("ENCRYPTED"));
+    assert!(formatted.contains("hasSecret"));
+
+    // Add a resolution method WITHOUT providing password
+    // $ envelope xid method add https://resolver.example.com <<< $XID_ENCRYPTED
+
+    let xid_with_method = run_cli_stdin(
+        &["xid", "method", "add", "https://resolver.example.com"],
+        &xid_encrypted,
+    )
+    .unwrap();
+
+    // Should still have encrypted keys
+    let formatted = run_cli_stdin(&["format"], &xid_with_method).unwrap();
+    assert!(formatted.contains("ENCRYPTED"));
+    assert!(formatted.contains("hasSecret"));
+    assert!(formatted.contains("dereference"));
+
+    // Verify we can still decrypt with the password by adding another key
+    // $ envelope generate prvkeys | envelope xid key add --password "secret" \
+    //   --private encrypt --encrypt-password "secret" <<< $XID_WITH_METHOD
+
+    let prvkeys_for_new_key = run_cli(&["generate", "prvkeys"]).unwrap();
+
+    let xid_final = run_cli_piped_stdin(
+        &[&[
+            "xid",
+            "key",
+            "add",
+            "--password",
+            "secret",
+            "--private",
+            "encrypt",
+            "--encrypt-password",
+            "secret",
+        ]],
+        &format!("{}\n{}", prvkeys_for_new_key, xid_with_method),
+    )
+    .unwrap();
+
+    // Should successfully decrypt, add the new key, and re-encrypt
+    // Both keys should now be encrypted
+    let formatted = run_cli_stdin(&["format"], &xid_final).unwrap();
+    assert!(formatted.contains("ENCRYPTED"));
+    assert!(formatted.contains("hasSecret"));
+    // Should have 2 keys now (inception key + newly added key)
+    assert_eq!(formatted.matches("'key':").count(), 2);
+}
+
+#[test]
+fn test_xid_key_private_flag() {
+    // Test the --private flag on key retrieval commands
+
+    // Create XID with encrypted private key
+    let prvkey = run_cli(&["generate", "prvkeys"]).unwrap();
+    let xid_encrypted = run_cli(&[
+        "xid",
+        "new",
+        &prvkey,
+        "--private",
+        "encrypt",
+        "--encrypt-password",
+        "secret",
+        "--nickname",
+        "TestKey",
+    ])
+    .unwrap();
+
+    // Test 1: xid key all without --private (returns public keys)
+    let public_keys = run_cli(&["xid", "key", "all", &xid_encrypted]).unwrap();
+    assert!(public_keys.starts_with("ur:envelope/"));
+    let formatted_public = run_cli_stdin(&["format"], &public_keys).unwrap();
+    assert!(formatted_public.contains("PublicKeys"));
+    assert!(formatted_public.contains("ENCRYPTED")); // Public key envelope includes encrypted assertion
+
+    // Test 2: xid key all --private without password (returns encrypted envelope)
+    let encrypted =
+        run_cli(&["xid", "key", "all", "--private", &xid_encrypted]).unwrap();
+    let formatted_encrypted = run_cli_stdin(&["format"], &encrypted).unwrap();
+    assert!(formatted_encrypted.contains("ENCRYPTED"));
+    assert!(formatted_encrypted.contains("hasSecret"));
+
+    // Test 3: xid key all --private with correct password (returns ur:crypto-prvkeys)
+    let decrypted = run_cli(&[
+        "xid",
+        "key",
+        "all",
+        "--private",
+        "--password",
+        "secret",
+        &xid_encrypted,
+    ])
+    .unwrap();
+    // Should return ur:crypto-prvkeys directly, not an envelope
+    assert!(decrypted.starts_with("ur:crypto-prvkeys/"));
+
+    // Test 4: xid key all --private with wrong password (should error)
+    let result = run_cli(&[
+        "xid",
+        "key",
+        "all",
+        "--private",
+        "--password",
+        "wrong",
+        &xid_encrypted,
+    ]);
+    assert!(result.is_err());
+    assert!(result.unwrap_err().to_string().contains("invalid password"));
+
+    // Test 5: xid key at 0 --private with password (returns ur:crypto-prvkeys)
+    let decrypted_at = run_cli(&[
+        "xid",
+        "key",
+        "at",
+        "0",
+        "--private",
+        "--password",
+        "secret",
+        &xid_encrypted,
+    ])
+    .unwrap();
+    assert!(decrypted_at.starts_with("ur:crypto-prvkeys/"));
+
+    // Test 6: xid key find inception --private
+    let inception_encrypted = run_cli(&[
+        "xid",
+        "key",
+        "find",
+        "inception",
+        "--private",
+        &xid_encrypted,
+    ])
+    .unwrap();
+    let formatted_inception =
+        run_cli_stdin(&["format"], &inception_encrypted).unwrap();
+    assert!(formatted_inception.contains("ENCRYPTED"));
+
+    // Test 7: xid key find name --private with password (returns ur:crypto-prvkeys)
+    let found_by_name = run_cli(&[
+        "xid",
+        "key",
+        "find",
+        "name",
+        "TestKey",
+        "--private",
+        "--password",
+        "secret",
+        &xid_encrypted,
+    ])
+    .unwrap();
+    assert!(found_by_name.starts_with("ur:crypto-prvkeys/"));
+
+    // Test 8: Unencrypted key with --private (returns ur:crypto-prvkeys)
+    let xid_unencrypted = run_cli(&["xid", "new", &prvkey]).unwrap();
+    let unencrypted_private =
+        run_cli(&["xid", "key", "all", "--private", &xid_unencrypted]).unwrap();
+    assert!(unencrypted_private.starts_with("ur:crypto-prvkeys/"));
 }

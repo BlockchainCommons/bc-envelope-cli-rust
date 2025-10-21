@@ -1,6 +1,14 @@
 # `envelope` XID Support
 
-The `envelope` tool now includes basic support for working with [XID Documents](https://github.com/BlockchainCommons/Research/blob/master/papers/bcr-2024-010-xid.md). This includes creating, updating, and removing keys, resolution methods, and delegates. XID documents are a type of envelope that contain public keys, permissions, and other metadata. They are used to represent the identity of a person, device, or service.
+The `envelope` tool includes support for working with [XID Documents](https://github.com/BlockchainCommons/Research/blob/master/papers/bcr-2024-010-xid.md). This includes creating, updating, and removing keys, resolution methods, delegates, and services. XID documents are a type of envelope that contain public keys, permissions, and other metadata. They are used to represent the identity of a person, device, or service.
+
+**Key Features:**
+
+- Create XID documents from public or private keys
+- Encrypt private keys with password protection
+- Modify documents (add methods, delegates, services) without decrypting keys
+- Commands that don't touch keys don't require passwords
+- Transparent preservation of encrypted keys across document modifications
 
 - [`envelope` XID Support](#envelope-xid-support)
   - [Future Work](#future-work)
@@ -14,6 +22,7 @@ The `envelope` tool now includes basic support for working with [XID Documents](
       - [`xid key count`: Count the Number of Keys in a XID Document](#xid-key-count-count-the-number-of-keys-in-a-xid-document)
       - [`xid key at`: Returns the Key at the Specified Index](#xid-key-at-returns-the-key-at-the-specified-index)
       - [`xid key all`: Returns All Keys in a XID Document](#xid-key-all-returns-all-keys-in-a-xid-document)
+        - [Retrieving Private Keys with `--private`](#retrieving-private-keys-with---private)
       - [`xid key find`: Find a Key by the Given Criteria](#xid-key-find-find-a-key-by-the-given-criteria)
         - [`xid key find public`: Find a Key by the Given Public Key](#xid-key-find-public-find-a-key-by-the-given-public-key)
         - [`xid key find name`: Find a Key by the Given Name](#xid-key-find-name-find-a-key-by-the-given-name)
@@ -237,6 +246,81 @@ envelope xid new $ALICE_PRVKEY_BASE --private elide | envelope format
 │ ]
 ```
 
+Private keys can be encrypted with a password using `--private encrypt --encrypt-password <PASSWORD>`. This allows you to store and share XID documents with encrypted private keys. The encrypted keys are preserved even when modifying the document (adding resolution methods, delegates, or services) without providing the password.
+
+```
+envelope xid new $ALICE_PRVKEY_BASE --private encrypt --encrypt-password "secret" | envelope format
+
+│ XID(ea7a20f0) [
+│     'key': PublicKeys(2642d992) [
+│         {
+│             'privateKey': ENCRYPTED [
+│                 'hasSecret': EncryptedKey(Argon2id)
+│             ]
+│         } [
+│             'salt': Salt
+│         ]
+│         'allow': 'All'
+│     ]
+│ ]
+```
+
+Encrypted private keys are automatically preserved when modifying the document, even without providing the password:
+
+```
+XID_ENCRYPTED=`envelope xid new $ALICE_PRVKEY_BASE --private encrypt --encrypt-password "secret"`
+envelope xid method add https://resolver.example.com $XID_ENCRYPTED | envelope format
+
+│ XID(ea7a20f0) [
+│     'dereferenceVia': URI(https://resolver.example.com)
+│     'key': PublicKeys(2642d992) [
+│         {
+│             'privateKey': ENCRYPTED [
+│                 'hasSecret': EncryptedKey(Argon2id)
+│             ]
+│         } [
+│             'salt': Salt
+│         ]
+│         'allow': 'All'
+│     ]
+│ ]
+```
+
+Note that the encrypted private key is still present after adding the resolution method. To add a new key to a document with encrypted keys, you must provide the password:
+
+```
+XID_WITH_METHOD=`envelope xid new $ALICE_PRVKEY_BASE --private encrypt --encrypt-password "secret" | envelope xid method add https://resolver.example.com`
+NEW_KEY=`envelope generate prvkeys`
+envelope xid key add --password "secret" --private encrypt --encrypt-password "secret" --nickname "Backup Key" $NEW_KEY $XID_WITH_METHOD | envelope format
+
+│ XID(ea7a20f0) [
+│     'dereferenceVia': URI(https://resolver.example.com)
+│     'key': PublicKeys(2642d992) [
+│         {
+│             'privateKey': ENCRYPTED [
+│                 'hasSecret': EncryptedKey(Argon2id)
+│             ]
+│         } [
+│             'salt': Salt
+│         ]
+│         'allow': 'All'
+│     ]
+│     'key': PublicKeys(94e9ae04) [
+│         {
+│             'privateKey': ENCRYPTED [
+│                 'hasSecret': EncryptedKey(Argon2id)
+│             ]
+│         } [
+│             'salt': Salt
+│         ]
+│         'allow': 'All'
+│         'nickname': "Backup Key"
+│     ]
+│ ]
+```
+
+Commands that only read or modify non-key attributes (like `xid method`, `xid delegate`, and `xid service`) do not require passwords, making it easy to work with documents that have encrypted keys.
+
 One or more endpoint URIs may be added to the inception key.
 
 ```
@@ -432,6 +516,101 @@ envelope format ${XID_KEYS[2]}
 │     'allow': 'Encrypt'
 │     'allow': 'Sign'
 │     'nickname': "Bob"
+│ ]
+```
+
+##### Retrieving Private Keys with `--private`
+
+The key retrieval commands (`xid key all`, `xid key at`, `xid key find`) support a `--private` flag that returns the private key portion instead of the public key envelope. The behavior depends on whether the private key is encrypted and whether a password is provided.
+
+**For unencrypted private keys:**
+
+```
+PRVKEY=`envelope generate prvkeys`
+XID_UNENCRYPTED=`envelope xid new $PRVKEY --nickname "Bob"`
+envelope xid key all --private $XID_UNENCRYPTED
+
+│ ur:crypto-prvkeys/lftansgohdcxbnlaoehflgesdrktpspmbwrogwtdeopemegtteflaazcwmlbpdfrytbgknlufmlytansgehdcxjzglimguhplbcpqzlndmyawlaywnjyzmqdbaaxmsbkeswpcmnetilaqziopfwddytimolnpk
+```
+
+The `--private` flag returns the raw `ur:crypto-prvkeys` UR, which can be used directly with other `envelope` commands that accept private keys.
+
+**For encrypted private keys without a password:**
+
+```
+XID_ENCRYPTED=`envelope xid new $PRVKEY --private encrypt --encrypt-password "secret" --nickname "Alice"`
+envelope xid key all --private $XID_ENCRYPTED | envelope format
+
+│ ENCRYPTED [
+│     'hasSecret': EncryptedKey(Argon2id)
+│ ]
+```
+
+Without providing a password, the encrypted envelope is returned as-is. This allows you to verify that a key is encrypted without needing to decrypt it.
+
+**For encrypted private keys with the correct password:**
+
+```
+envelope xid key all --private --password "secret" $XID_ENCRYPTED
+
+│ ur:crypto-prvkeys/lftansgohdcxsoldpmsgadprlfjlayeybbvogwhygymwihgmwnjllgrlkorsfnhycprnhfntzoprtansgehdcxfmrdtysbsfmygskibytyhsfmrfnbdsottyndonwdfndscxkgamstlbecjlbbfrgtkezttyox
+```
+
+With the correct password, the private key is decrypted and returned as the raw `ur:crypto-prvkeys` UR.
+
+**For encrypted private keys with an incorrect password:**
+
+```
+envelope xid key all --private --password "wrong" $XID_ENCRYPTED
+
+│ Error: invalid password
+```
+
+Providing an incorrect password results in an error.
+
+**For keys with no private key:**
+
+```
+PUBKEYS=`envelope generate prvkeys | envelope generate pubkeys`
+XID_NO_PRIVATE=`envelope xid new $PUBKEYS --nickname "Public Only"`
+envelope xid key all --private $XID_NO_PRIVATE
+
+│ Error: No private key present in this key
+```
+
+When a key was created from `PublicKeys` only (without a private key), attempting to retrieve the private key results in an error.
+
+**The `--private` flag works with all key retrieval commands:**
+
+```
+# Get private key at index
+envelope xid key at 0 --private --password "secret" $XID_ENCRYPTED
+
+# Find inception key's private key
+envelope xid key find inception --private --password "secret" $XID_ENCRYPTED
+
+# Find key by name and get private key
+envelope xid key find name Alice --private --password "secret" $XID_ENCRYPTED
+
+# Find key by public key and get private key
+envelope xid key find public $PUBKEYS --private --password "secret" $XID_ENCRYPTED
+```
+
+**Note:** Without the `--private` flag, key retrieval commands return the complete public key envelope, which includes public keys, metadata (nickname, endpoints, permissions), and the encrypted private key assertion (if present):
+
+```
+envelope xid key all $XID_ENCRYPTED | envelope format
+
+│ PublicKeys(c4de0c9a) [
+│     {
+│         'privateKey': ENCRYPTED [
+│             'hasSecret': EncryptedKey(Argon2id)
+│         ]
+│     } [
+│         'salt': Salt
+│     ]
+│     'allow': 'All'
+│     'nickname': "Alice"
 │ ]
 ```
 

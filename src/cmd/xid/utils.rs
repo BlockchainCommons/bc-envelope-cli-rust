@@ -6,7 +6,11 @@ use bc_xid::{
     HasNickname, HasPermissions, Key, PrivateKeyOptions, XIDDocument,
 };
 
-use super::{private_options::PrivateOptions, xid_privilege::XIDPrivilege};
+use super::{
+    password_args::{ReadPasswordArgs, WritePasswordArgs},
+    private_options::PrivateOptions,
+    xid_privilege::XIDPrivilege,
+};
 use crate::envelope_args::EnvelopeArgsLike;
 
 #[derive(Debug, Clone, PartialEq, Eq)]
@@ -19,6 +23,7 @@ pub fn read_key(key: Option<&str>) -> Result<InputKey> {
     let mut key_string = String::new();
     if key.is_none() {
         std::io::stdin().read_line(&mut key_string)?;
+        key_string = key_string.trim().to_string();
     } else {
         key_string = key.as_ref().unwrap().to_string();
     }
@@ -75,8 +80,54 @@ pub trait XIDDocumentReadable: EnvelopeArgsLike {
         let envelope = self.read_envelope()?;
         Ok(XIDDocument::from_unsigned_envelope(&envelope)?)
     }
+
+    fn read_xid_document_with_password(
+        &self,
+        password_args: &ReadPasswordArgs,
+    ) -> Result<XIDDocument> {
+        let envelope = self.read_envelope()?;
+        let password = password_args.read_password("Decryption password:")?;
+        Ok(XIDDocument::from_unsigned_envelope_with_password(
+            &envelope,
+            password.as_deref().map(|s| s.as_bytes()),
+        )?)
+    }
 }
 
+/// Get the private key from a key, optionally decrypting it.
+///
+/// Returns the UR string:
+/// - For unencrypted keys: ur:crypto-prvkeys
+/// - For encrypted keys without password: ur:envelope of the encrypted envelope
+/// - For encrypted keys with correct password: ur:crypto-prvkeys
+/// - For encrypted keys with wrong password: Returns an error
+pub fn get_private_key_ur(
+    key: &Key,
+    password_args: &ReadPasswordArgs,
+) -> Result<String> {
+    use bc_components::PrivateKeys;
+
+    let password = password_args.read_password("Decryption password:")?;
+
+    match key.private_key_envelope(password.as_deref())? {
+        None => bail!("No private key present in this key"),
+        Some(envelope) => {
+            // Try to extract PrivateKeys from the subject
+            // If successful, we have decrypted keys - return as ur:crypto-prvkeys
+            // If it fails, we have an encrypted envelope - return as ur:envelope
+            match PrivateKeys::try_from(envelope.subject()) {
+                Ok(private_keys) => {
+                    // Successfully extracted PrivateKeys - return the raw UR
+                    Ok(private_keys.ur_string())
+                }
+                Err(_) => {
+                    // Subject is not PrivateKeys (it's ENCRYPTED) - return the envelope
+                    Ok(envelope.ur_string())
+                }
+            }
+        }
+    }
+}
 pub fn read_uri(uri: Option<&URI>) -> Result<URI> {
     let mut uri_string = String::new();
     if uri.is_none() {
@@ -101,4 +152,25 @@ pub fn xid_document_to_ur_string(
     let options = PrivateKeyOptions::from(private_opts);
     let unsigned_envelope = xid_document.to_unsigned_envelope_opt(options);
     envelope_to_xid_ur_string(&unsigned_envelope)
+}
+
+/// Convert an XID document to a UR string with password encryption support.
+pub fn xid_document_to_ur_string_with_password(
+    xid_document: &XIDDocument,
+    private_opts: PrivateOptions,
+    password_args: &WritePasswordArgs,
+) -> Result<String> {
+    let options = if private_opts.is_encrypt() {
+        // Read the encryption password
+        let password = password_args.read_password("Encryption password:")?;
+        PrivateKeyOptions::Encrypt {
+            method: password_args.method(),
+            password: password.into_bytes(),
+        }
+    } else {
+        PrivateKeyOptions::from(private_opts)
+    };
+
+    let unsigned_envelope = xid_document.to_unsigned_envelope_opt(options);
+    Ok(envelope_to_xid_ur_string(&unsigned_envelope))
 }

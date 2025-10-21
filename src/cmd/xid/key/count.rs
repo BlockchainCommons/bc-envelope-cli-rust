@@ -15,7 +15,9 @@ pub struct CommandArgs {
 }
 
 impl EnvelopeArgsLike for CommandArgs {
-    fn envelope(&self) -> Option<&str> { self.envelope_args.envelope() }
+    fn envelope(&self) -> Option<&str> {
+        self.envelope_args.envelope()
+    }
 }
 
 impl XIDDocumentReadable for CommandArgs {}

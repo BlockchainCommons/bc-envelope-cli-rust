@@ -1,15 +1,16 @@
 use anyhow::Result;
 use bc_components::URI;
-use bc_xid::{Key, PrivateKeyOptions};
+use bc_xid::Key;
 use clap::Args;
 
 use crate::{
     cmd::xid::{
         key_args::{KeyArgs, KeyArgsLike},
+        password_args::ReadWritePasswordArgs,
         private_options::PrivateOptions,
         utils::{
-            InputKey, XIDDocumentReadable, envelope_to_xid_ur_string,
-            update_key,
+            InputKey, XIDDocumentReadable, update_key,
+            xid_document_to_ur_string_with_password,
         },
         xid_privilege::XIDPrivilege,
     },
@@ -24,23 +25,38 @@ pub struct CommandArgs {
     key_args: KeyArgs,
 
     #[command(flatten)]
+    password_args: ReadWritePasswordArgs,
+
+    #[command(flatten)]
     envelope_args: EnvelopeArgs,
 }
 
 impl KeyArgsLike for CommandArgs {
-    fn nickname(&self) -> &str { self.key_args.nickname() }
+    fn nickname(&self) -> &str {
+        self.key_args.nickname()
+    }
 
-    fn private_opts(&self) -> PrivateOptions { self.key_args.private_opts() }
+    fn private_opts(&self) -> PrivateOptions {
+        self.key_args.private_opts()
+    }
 
-    fn endpoints(&self) -> &[URI] { self.key_args.endpoints() }
+    fn endpoints(&self) -> &[URI] {
+        self.key_args.endpoints()
+    }
 
-    fn permissions(&self) -> &[XIDPrivilege] { self.key_args.permissions() }
+    fn permissions(&self) -> &[XIDPrivilege] {
+        self.key_args.permissions()
+    }
 
-    fn keys(&self) -> Option<&str> { self.key_args.keys() }
+    fn keys(&self) -> Option<&str> {
+        self.key_args.keys()
+    }
 }
 
 impl EnvelopeArgsLike for CommandArgs {
-    fn envelope(&self) -> Option<&str> { self.envelope_args.envelope() }
+    fn envelope(&self) -> Option<&str> {
+        self.envelope_args.envelope()
+    }
 }
 
 impl XIDDocumentReadable for CommandArgs {}
@@ -49,7 +65,8 @@ impl crate::exec::Exec for CommandArgs {
     fn exec(&self) -> Result<String> {
         let keys = self.read_key()?;
 
-        let mut xid_document = self.read_xid_document()?;
+        let mut xid_document =
+            self.read_xid_document_with_password(&self.password_args.read)?;
 
         let mut key = match &keys {
             InputKey::Private(private_key_base) => {
@@ -67,8 +84,10 @@ impl crate::exec::Exec for CommandArgs {
 
         xid_document.add_key(key)?;
 
-        let options = PrivateKeyOptions::from(self.private_opts());
-        let unsigned_envelope = xid_document.to_unsigned_envelope_opt(options);
-        Ok(envelope_to_xid_ur_string(&unsigned_envelope))
+        xid_document_to_ur_string_with_password(
+            &xid_document,
+            self.private_opts(),
+            &self.password_args.write,
+        )
     }
 }

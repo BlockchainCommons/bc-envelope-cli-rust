@@ -26,9 +26,9 @@ name = "envelope"
 path = "src/main.rs"
 
 [dependencies]
-dcbor = "^0.23.1"
+dcbor = { version = "^0.23.1", features = ["multithreaded"] }
 bc-ur = "^0.14.0"
-bc-envelope = "^0.35.1"
+bc-envelope = { version = "^0.35.1", features = ["multithreaded"] }
 bc-envelope-pattern = "^0.6.0"
 bc-components = "^0.26.0"
 bc-rand = "^0.4.1"
