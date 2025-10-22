@@ -23,7 +23,7 @@ cargo install bc-envelope-cli
 To install a specific version:
 
 ```bash
-cargo install bc-envelope-cli --version 0.24.0
+cargo install bc-envelope-cli --version 0.25.0
 ```
 
 ### From Source
@@ -97,6 +97,14 @@ See the [docs](docs/README.md) directory for more information.
 ### 0.23.0: September 26, 2025
 
 - Added support for ur:envelope seed format to the 'generate prvkeys --seed' command.
+
+## Version History
+
+### 0.25.0: October 21, 2025
+
+- Add walk replace subcommand.
+- Add XID private key encryption support.
+- Align to dependencies.
 
 ### 0.22.0: September 16, 2025
 
