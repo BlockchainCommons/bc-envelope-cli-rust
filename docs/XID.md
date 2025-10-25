@@ -68,7 +68,7 @@ XID_DOC=ur:xid/tpsplftpsotanshdhdcxjsdigtwneocmnybadpdlzobysbstmekteypspeotcfldy
 envelope format $XID_DOC
 
 │ XID(71274df1) [
-│     'key': PublicKeys(eb9b1cae) [
+│     'key': PublicKeys(eb9b1cae, SigningPublicKey(SchnorrPublicKey(9022010e)), EncapsulationPublicKey(X25519PublicKey(b4f7059a))) [
 │         'allow': 'All'
 │     ]
 │ ]
@@ -80,7 +80,7 @@ Note that this does not validate the XID document (or any other envelope-contain
 envelope assertion at 0 $XID_DOC | \
     envelope format
 
-│ 'key': PublicKeys(eb9b1cae) [
+│ 'key': PublicKeys(eb9b1cae, SigningPublicKey(SchnorrPublicKey(9022010e)), EncapsulationPublicKey(X25519PublicKey(b4f7059a))) [
 │     'allow': 'All'
 │ ]
 ```
@@ -192,7 +192,7 @@ ALICE_PUBKEYS=`envelope generate pubkeys $ALICE_PRVKEY_BASE`
 envelope xid new $ALICE_PUBKEYS | envelope format
 
 │ XID(93a4d4e7) [
-│     'key': PublicKeys(cab108a0) [
+│     'key': PublicKeys(cab108a0, SigningPublicKey(SchnorrPublicKey(26712894)), EncapsulationPublicKey(X25519PublicKey(00b42db3))) [
 │         'allow': 'All'
 │     ]
 │ ]
@@ -212,7 +212,7 @@ If a `PrivateKeyBase` is provided, by default the salted private key itself will
 envelope xid new $ALICE_PRVKEY_BASE | envelope format
 
 │ XID(93a4d4e7) [
-│     'key': PublicKeys(cab108a0) [
+│     'key': PublicKeys(cab108a0, SigningPublicKey(SchnorrPublicKey(26712894)), EncapsulationPublicKey(X25519PublicKey(00b42db3))) [
 │         {
 │             'privateKey': PrivateKeyBase
 │         } [
@@ -229,7 +229,7 @@ The private key can be omitted using the `--private omit` option, or elided usin
 envelope xid new $ALICE_PRVKEY_BASE --private omit | envelope format
 
 │ XID(93a4d4e7) [
-│     'key': PublicKeys(cab108a0) [
+│     'key': PublicKeys(cab108a0, SigningPublicKey(SchnorrPublicKey(26712894)), EncapsulationPublicKey(X25519PublicKey(00b42db3))) [
 │         'allow': 'All'
 │     ]
 │ ]
@@ -239,7 +239,7 @@ envelope xid new $ALICE_PRVKEY_BASE --private omit | envelope format
 envelope xid new $ALICE_PRVKEY_BASE --private elide | envelope format
 
 │ XID(93a4d4e7) [
-│     'key': PublicKeys(cab108a0) [
+│     'key': PublicKeys(cab108a0, SigningPublicKey(SchnorrPublicKey(26712894)), EncapsulationPublicKey(X25519PublicKey(00b42db3))) [
 │         'allow': 'All'
 │         ELIDED
 │     ]
@@ -251,8 +251,8 @@ Private keys can be encrypted with a password using `--private encrypt --encrypt
 ```
 envelope xid new $ALICE_PRVKEY_BASE --private encrypt --encrypt-password "secret" | envelope format
 
-│ XID(ea7a20f0) [
-│     'key': PublicKeys(2642d992) [
+│ XID(93a4d4e7) [
+│     'key': PublicKeys(cab108a0, SigningPublicKey(SchnorrPublicKey(26712894)), EncapsulationPublicKey(X25519PublicKey(00b42db3))) [
 │         {
 │             'privateKey': ENCRYPTED [
 │                 'hasSecret': EncryptedKey(Argon2id)
@@ -271,9 +271,9 @@ Encrypted private keys are automatically preserved when modifying the document, 
 XID_ENCRYPTED=`envelope xid new $ALICE_PRVKEY_BASE --private encrypt --encrypt-password "secret"`
 envelope xid method add https://resolver.example.com $XID_ENCRYPTED | envelope format
 
-│ XID(ea7a20f0) [
+│ XID(93a4d4e7) [
 │     'dereferenceVia': URI(https://resolver.example.com)
-│     'key': PublicKeys(2642d992) [
+│     'key': PublicKeys(cab108a0, SigningPublicKey(SchnorrPublicKey(26712894)), EncapsulationPublicKey(X25519PublicKey(00b42db3))) [
 │         {
 │             'privateKey': ENCRYPTED [
 │                 'hasSecret': EncryptedKey(Argon2id)
@@ -293,19 +293,9 @@ XID_WITH_METHOD=`envelope xid new $ALICE_PRVKEY_BASE --private encrypt --encrypt
 NEW_KEY=`envelope generate prvkeys`
 envelope xid key add --password "secret" --private encrypt --encrypt-password "secret" --nickname "Backup Key" $NEW_KEY $XID_WITH_METHOD | envelope format
 
-│ XID(ea7a20f0) [
+│ XID(93a4d4e7) [
 │     'dereferenceVia': URI(https://resolver.example.com)
-│     'key': PublicKeys(2642d992) [
-│         {
-│             'privateKey': ENCRYPTED [
-│                 'hasSecret': EncryptedKey(Argon2id)
-│             ]
-│         } [
-│             'salt': Salt
-│         ]
-│         'allow': 'All'
-│     ]
-│     'key': PublicKeys(94e9ae04) [
+│     'key': PublicKeys(ab6d9495, SigningPublicKey(SchnorrPublicKey(abe0d005)), EncapsulationPublicKey(X25519PublicKey(7b4bee90))) [
 │         {
 │             'privateKey': ENCRYPTED [
 │                 'hasSecret': EncryptedKey(Argon2id)
@@ -315,6 +305,16 @@ envelope xid key add --password "secret" --private encrypt --encrypt-password "s
 │         ]
 │         'allow': 'All'
 │         'nickname': "Backup Key"
+│     ]
+│     'key': PublicKeys(cab108a0, SigningPublicKey(SchnorrPublicKey(26712894)), EncapsulationPublicKey(X25519PublicKey(00b42db3))) [
+│         {
+│             'privateKey': ENCRYPTED [
+│                 'hasSecret': EncryptedKey(Argon2id)
+│             ]
+│         } [
+│             'salt': Salt
+│         ]
+│         'allow': 'All'
 │     ]
 │ ]
 ```
@@ -330,7 +330,7 @@ envelope xid new $ALICE_PUBKEYS \
     | envelope format
 
 │ XID(93a4d4e7) [
-│     'key': PublicKeys(cab108a0) [
+│     'key': PublicKeys(cab108a0, SigningPublicKey(SchnorrPublicKey(26712894)), EncapsulationPublicKey(X25519PublicKey(00b42db3))) [
 │         'allow': 'All'
 │         'endpoint': URI(btc:5e54156cfe0e62d9a56c72b84a5c40b84e2fd7dfe786c7d5c667e11ab85c45c6)
 │         'endpoint': URI(https://endpoint.example.com/)
@@ -347,7 +347,7 @@ envelope xid new $ALICE_PUBKEYS \
     | envelope format
 
 │ XID(93a4d4e7) [
-│     'key': PublicKeys(cab108a0) [
+│     'key': PublicKeys(cab108a0, SigningPublicKey(SchnorrPublicKey(26712894)), EncapsulationPublicKey(X25519PublicKey(00b42db3))) [
 │         'allow': 'Encrypt'
 │         'allow': 'Sign'
 │     ]
@@ -362,7 +362,7 @@ envelope xid new $ALICE_PUBKEYS \
     | envelope format
 
 │ XID(93a4d4e7) [
-│     'key': PublicKeys(cab108a0) [
+│     'key': PublicKeys(cab108a0, SigningPublicKey(SchnorrPublicKey(26712894)), EncapsulationPublicKey(X25519PublicKey(00b42db3))) [
 │         'allow': 'All'
 │         'nickname': "Alice's Key"
 │     ]
@@ -404,11 +404,11 @@ BOB_PUBKEYS=`envelope generate pubkeys $BOB_PRVKEY_BASE`
 envelope xid key add --nickname 'Bob' $BOB_PUBKEYS $XID_DOC | envelope format
 
 │ XID(93a4d4e7) [
-│     'key': PublicKeys(cab108a0) [
+│     'key': PublicKeys(cab108a0, SigningPublicKey(SchnorrPublicKey(26712894)), EncapsulationPublicKey(X25519PublicKey(00b42db3))) [
 │         'allow': 'All'
 │         'nickname': "Alice"
 │     ]
-│     'key': PublicKeys(e2c18423) [
+│     'key': PublicKeys(e2c18423, SigningPublicKey(SchnorrPublicKey(f0638394)), EncapsulationPublicKey(X25519PublicKey(4af6be52))) [
 │         'allow': 'All'
 │         'nickname': "Bob"
 │     ]
@@ -424,11 +424,11 @@ XID_DOC=`envelope xid new --nickname 'Alice' $ALICE_PUBKEYS | envelope xid key a
 envelope format $XID_DOC
 
 │ XID(93a4d4e7) [
-│     'key': PublicKeys(cab108a0) [
+│     'key': PublicKeys(cab108a0, SigningPublicKey(SchnorrPublicKey(26712894)), EncapsulationPublicKey(X25519PublicKey(00b42db3))) [
 │         'allow': 'All'
 │         'nickname': "Alice"
 │     ]
-│     'key': PublicKeys(e2c18423) [
+│     'key': PublicKeys(e2c18423, SigningPublicKey(SchnorrPublicKey(f0638394)), EncapsulationPublicKey(X25519PublicKey(4af6be52))) [
 │         'allow': 'All'
 │         'nickname': "Bob"
 │     ]
@@ -443,11 +443,11 @@ XID_DOC_UPDATED=`envelope xid key update $BOB_PUBKEYS \
 envelope format $XID_DOC_UPDATED
 
 │ XID(93a4d4e7) [
-│     'key': PublicKeys(cab108a0) [
+│     'key': PublicKeys(cab108a0, SigningPublicKey(SchnorrPublicKey(26712894)), EncapsulationPublicKey(X25519PublicKey(00b42db3))) [
 │         'allow': 'All'
 │         'nickname': "Alice"
 │     ]
-│     'key': PublicKeys(e2c18423) [
+│     'key': PublicKeys(e2c18423, SigningPublicKey(SchnorrPublicKey(f0638394)), EncapsulationPublicKey(X25519PublicKey(4af6be52))) [
 │         'allow': 'Encrypt'
 │         'allow': 'Sign'
 │         'nickname': "Bob"
@@ -470,7 +470,7 @@ The indexes are zero-based, and in the order the key assertions appear in the XI
 ```
 envelope xid key at 0 $XID_DOC_UPDATED | envelope format
 
-│ PublicKeys(cab108a0) [
+│ PublicKeys(cab108a0, SigningPublicKey(SchnorrPublicKey(26712894)), EncapsulationPublicKey(X25519PublicKey(00b42db3))) [
 │     'allow': 'All'
 │     'nickname': "Alice"
 │ ]
@@ -479,7 +479,7 @@ envelope xid key at 0 $XID_DOC_UPDATED | envelope format
 ```
 envelope xid key at 1 $XID_DOC_UPDATED | envelope format
 
-│ PublicKeys(e2c18423) [
+│ PublicKeys(e2c18423, SigningPublicKey(SchnorrPublicKey(f0638394)), EncapsulationPublicKey(X25519PublicKey(4af6be52))) [
 │     'allow': 'Encrypt'
 │     'allow': 'Sign'
 │     'nickname': "Bob"
@@ -503,7 +503,7 @@ Example capturing the above envelopes into a shell array. Note that newer shells
 XID_KEYS=($(envelope xid key all $XID_DOC_UPDATED))
 envelope format ${XID_KEYS[1]}
 
-│ PublicKeys(cab108a0) [
+│ PublicKeys(cab108a0, SigningPublicKey(SchnorrPublicKey(26712894)), EncapsulationPublicKey(X25519PublicKey(00b42db3))) [
 │     'allow': 'All'
 │     'nickname': "Alice"
 │ ]
@@ -512,7 +512,7 @@ envelope format ${XID_KEYS[1]}
 ```
 envelope format ${XID_KEYS[2]}
 
-│ PublicKeys(e2c18423) [
+│ PublicKeys(e2c18423, SigningPublicKey(SchnorrPublicKey(f0638394)), EncapsulationPublicKey(X25519PublicKey(4af6be52))) [
 │     'allow': 'Encrypt'
 │     'allow': 'Sign'
 │     'nickname': "Bob"
@@ -601,7 +601,7 @@ envelope xid key find public $PUBKEYS --private --password "secret" $XID_ENCRYPT
 ```
 envelope xid key all $XID_ENCRYPTED | envelope format
 
-│ PublicKeys(c4de0c9a) [
+│ PublicKeys(cab108a0, SigningPublicKey(SchnorrPublicKey(26712894)), EncapsulationPublicKey(X25519PublicKey(00b42db3))) [
 │     {
 │         'privateKey': ENCRYPTED [
 │             'hasSecret': EncryptedKey(Argon2id)
@@ -610,7 +610,6 @@ envelope xid key all $XID_ENCRYPTED | envelope format
 │         'salt': Salt
 │     ]
 │     'allow': 'All'
-│     'nickname': "Alice"
 │ ]
 ```
 
@@ -623,7 +622,7 @@ Returns at most one key envelope.
 ```
 envelope xid key find public $BOB_PUBKEYS $XID_DOC_UPDATED | envelope format
 
-│ PublicKeys(e2c18423) [
+│ PublicKeys(e2c18423, SigningPublicKey(SchnorrPublicKey(f0638394)), EncapsulationPublicKey(X25519PublicKey(4af6be52))) [
 │     'allow': 'Encrypt'
 │     'allow': 'Sign'
 │     'nickname': "Bob"
@@ -637,7 +636,7 @@ May return multiple key envelopes.
 ```
 envelope xid key find name 'Alice' $XID_DOC_UPDATED | envelope format
 
-│ PublicKeys(cab108a0) [
+│ PublicKeys(cab108a0, SigningPublicKey(SchnorrPublicKey(26712894)), EncapsulationPublicKey(X25519PublicKey(00b42db3))) [
 │     'allow': 'All'
 │     'nickname': "Alice"
 │ ]
@@ -658,7 +657,7 @@ Returns at most one key envelope.
 ```
 envelope xid key find inception $XID_DOC_UPDATED | envelope format
 
-│ PublicKeys(cab108a0) [
+│ PublicKeys(cab108a0, SigningPublicKey(SchnorrPublicKey(26712894)), EncapsulationPublicKey(X25519PublicKey(00b42db3))) [
 │     'allow': 'All'
 │     'nickname': "Alice"
 │ ]
@@ -671,7 +670,7 @@ XID_DOC_REMOVED=`envelope xid key remove $ALICE_PUBKEYS $XID_DOC_UPDATED`
 envelope format $XID_DOC_REMOVED
 
 │ XID(93a4d4e7) [
-│     'key': PublicKeys(e2c18423) [
+│     'key': PublicKeys(e2c18423, SigningPublicKey(SchnorrPublicKey(f0638394)), EncapsulationPublicKey(X25519PublicKey(4af6be52))) [
 │         'allow': 'Encrypt'
 │         'allow': 'Sign'
 │         'nickname': "Bob"
@@ -722,7 +721,7 @@ envelope format $XID_DOC_WITH_RESOLVERS
 │ XID(93a4d4e7) [
 │     'dereferenceVia': URI(btc:5e54156cfe0e62d9a56c72b84a5c40b84e2fd7dfe786c7d5c667e11ab85c45c6)
 │     'dereferenceVia': URI(https://resolver.example.com/)
-│     'key': PublicKeys(cab108a0) [
+│     'key': PublicKeys(cab108a0, SigningPublicKey(SchnorrPublicKey(26712894)), EncapsulationPublicKey(X25519PublicKey(00b42db3))) [
 │         'allow': 'All'
 │         'nickname': "Alice"
 │     ]
@@ -771,7 +770,7 @@ envelope xid method remove 'https://resolver.example.com/' $XID_DOC_WITH_RESOLVE
 
 │ XID(93a4d4e7) [
 │     'dereferenceVia': URI(btc:5e54156cfe0e62d9a56c72b84a5c40b84e2fd7dfe786c7d5c667e11ab85c45c6)
-│     'key': PublicKeys(cab108a0) [
+│     'key': PublicKeys(cab108a0, SigningPublicKey(SchnorrPublicKey(26712894)), EncapsulationPublicKey(X25519PublicKey(00b42db3))) [
 │         'allow': 'All'
 │         'nickname': "Alice"
 │     ]
@@ -843,7 +842,7 @@ envelope format $ALICE_XID_DOC
 │     ]
 │     'delegate': {
 │         XID(61b1f3c7) [
-│             'key': PublicKeys(eebd4add) [
+│             'key': PublicKeys(eebd4add, SigningPublicKey(SchnorrPublicKey(8684e3e4)), EncapsulationPublicKey(X25519PublicKey(0995c476))) [
 │                 'allow': 'All'
 │                 'nickname': "Carol"
 │             ]
@@ -853,7 +852,7 @@ envelope format $ALICE_XID_DOC
 │     ]
 │     'delegate': {
 │         XID(f1199a75) [
-│             'key': PublicKeys(e2c18423) [
+│             'key': PublicKeys(e2c18423, SigningPublicKey(SchnorrPublicKey(f0638394)), EncapsulationPublicKey(X25519PublicKey(4af6be52))) [
 │                 'allow': 'All'
 │                 'nickname': "Bob"
 │             ]
@@ -862,7 +861,7 @@ envelope format $ALICE_XID_DOC
 │         'allow': 'Encrypt'
 │         'allow': 'Sign'
 │     ]
-│     'key': PublicKeys(cab108a0) [
+│     'key': PublicKeys(cab108a0, SigningPublicKey(SchnorrPublicKey(26712894)), EncapsulationPublicKey(X25519PublicKey(00b42db3))) [
 │         'allow': 'All'
 │         'nickname': "Alice"
 │     ]
@@ -886,7 +885,7 @@ envelope xid delegate at 0 $ALICE_XID_DOC | envelope format
 
 │ {
 │     XID(f1199a75) [
-│         'key': PublicKeys(e2c18423) [
+│         'key': PublicKeys(e2c18423, SigningPublicKey(SchnorrPublicKey(f0638394)), EncapsulationPublicKey(X25519PublicKey(4af6be52))) [
 │             'allow': 'All'
 │             'nickname': "Bob"
 │         ]
@@ -902,7 +901,7 @@ envelope xid delegate at 1 $ALICE_XID_DOC | envelope format
 
 │ {
 │     XID(61b1f3c7) [
-│         'key': PublicKeys(eebd4add) [
+│         'key': PublicKeys(eebd4add, SigningPublicKey(SchnorrPublicKey(8684e3e4)), EncapsulationPublicKey(X25519PublicKey(0995c476))) [
 │             'allow': 'All'
 │             'nickname': "Carol"
 │         ]
@@ -940,7 +939,7 @@ envelope format ${XID_DELEGATES[1]}
 
 │ {
 │     XID(61b1f3c7) [
-│         'key': PublicKeys(eebd4add) [
+│         'key': PublicKeys(eebd4add, SigningPublicKey(SchnorrPublicKey(8684e3e4)), EncapsulationPublicKey(X25519PublicKey(0995c476))) [
 │             'allow': 'All'
 │             'nickname': "Carol"
 │         ]
@@ -955,7 +954,7 @@ envelope format ${XID_DELEGATES[2]}
 
 │ {
 │     XID(f1199a75) [
-│         'key': PublicKeys(e2c18423) [
+│         'key': PublicKeys(e2c18423, SigningPublicKey(SchnorrPublicKey(f0638394)), EncapsulationPublicKey(X25519PublicKey(4af6be52))) [
 │             'allow': 'All'
 │             'nickname': "Bob"
 │         ]
@@ -1017,7 +1016,7 @@ envelope format $ALICE_XID_DOC_UPDATED
 │     ]
 │     'delegate': {
 │         XID(f1199a75) [
-│             'key': PublicKeys(e2c18423) [
+│             'key': PublicKeys(e2c18423, SigningPublicKey(SchnorrPublicKey(f0638394)), EncapsulationPublicKey(X25519PublicKey(4af6be52))) [
 │                 'allow': 'All'
 │                 'nickname': "Bob"
 │             ]
@@ -1026,7 +1025,7 @@ envelope format $ALICE_XID_DOC_UPDATED
 │         'allow': 'Encrypt'
 │         'allow': 'Sign'
 │     ]
-│     'key': PublicKeys(cab108a0) [
+│     'key': PublicKeys(cab108a0, SigningPublicKey(SchnorrPublicKey(26712894)), EncapsulationPublicKey(X25519PublicKey(00b42db3))) [
 │         'allow': 'All'
 │         'nickname': "Alice"
 │     ]
@@ -1053,7 +1052,7 @@ envelope format $ALICE_XID_DOC_UPDATED
 │         'allow': 'Encrypt'
 │         'allow': 'Sign'
 │     ]
-│     'key': PublicKeys(cab108a0) [
+│     'key': PublicKeys(cab108a0, SigningPublicKey(SchnorrPublicKey(26712894)), EncapsulationPublicKey(X25519PublicKey(00b42db3))) [
 │         'allow': 'All'
 │         'nickname': "Alice"
 │     ]
@@ -1106,7 +1105,7 @@ ALICE_XID_DOC=`envelope xid new --nickname 'Alice' $ALICE_PUBKEYS`
 envelope format $ALICE_XID_DOC
 
 │ XID(93a4d4e7) [
-│     'key': PublicKeys(cab108a0) [
+│     'key': PublicKeys(cab108a0, SigningPublicKey(SchnorrPublicKey(26712894)), EncapsulationPublicKey(X25519PublicKey(00b42db3))) [
 │         'allow': 'All'
 │         'nickname': "Alice"
 │     ]
@@ -1123,7 +1122,7 @@ envelope format $ALICE_XID_DOC
 │ XID(93a4d4e7) [
 │     'delegate': {
 │         XID(f1199a75) [
-│             'key': PublicKeys(e2c18423) [
+│             'key': PublicKeys(e2c18423, SigningPublicKey(SchnorrPublicKey(f0638394)), EncapsulationPublicKey(X25519PublicKey(4af6be52))) [
 │                 'allow': 'All'
 │                 'nickname': "Bob"
 │             ]
@@ -1132,7 +1131,7 @@ envelope format $ALICE_XID_DOC
 │         'allow': 'Encrypt'
 │         'allow': 'Sign'
 │     ]
-│     'key': PublicKeys(cab108a0) [
+│     'key': PublicKeys(cab108a0, SigningPublicKey(SchnorrPublicKey(26712894)), EncapsulationPublicKey(X25519PublicKey(00b42db3))) [
 │         'allow': 'All'
 │         'nickname': "Alice"
 │     ]
@@ -1164,7 +1163,7 @@ envelope format $ALICE_XID_DOC_WITH_SERVICE
 │ XID(93a4d4e7) [
 │     'delegate': {
 │         XID(f1199a75) [
-│             'key': PublicKeys(e2c18423) [
+│             'key': PublicKeys(e2c18423, SigningPublicKey(SchnorrPublicKey(f0638394)), EncapsulationPublicKey(X25519PublicKey(4af6be52))) [
 │                 'allow': 'All'
 │                 'nickname': "Bob"
 │             ]
@@ -1173,7 +1172,7 @@ envelope format $ALICE_XID_DOC_WITH_SERVICE
 │         'allow': 'Encrypt'
 │         'allow': 'Sign'
 │     ]
-│     'key': PublicKeys(cab108a0) [
+│     'key': PublicKeys(cab108a0, SigningPublicKey(SchnorrPublicKey(26712894)), EncapsulationPublicKey(X25519PublicKey(00b42db3))) [
 │         'allow': 'All'
 │         'nickname': "Alice"
 │     ]
@@ -1210,7 +1209,7 @@ envelope format $ALICE_XID_DOC_WITH_SERVICE
 │ XID(93a4d4e7) [
 │     'delegate': {
 │         XID(f1199a75) [
-│             'key': PublicKeys(e2c18423) [
+│             'key': PublicKeys(e2c18423, SigningPublicKey(SchnorrPublicKey(f0638394)), EncapsulationPublicKey(X25519PublicKey(4af6be52))) [
 │                 'allow': 'All'
 │                 'nickname': "Bob"
 │             ]
@@ -1219,7 +1218,7 @@ envelope format $ALICE_XID_DOC_WITH_SERVICE
 │         'allow': 'Encrypt'
 │         'allow': 'Sign'
 │     ]
-│     'key': PublicKeys(cab108a0) [
+│     'key': PublicKeys(cab108a0, SigningPublicKey(SchnorrPublicKey(26712894)), EncapsulationPublicKey(X25519PublicKey(00b42db3))) [
 │         'allow': 'All'
 │         'nickname': "Alice"
 │     ]
@@ -1361,7 +1360,7 @@ envelope format $ALICE_XID_DOC_WITH_SERVICE_REMOVED
 │ XID(93a4d4e7) [
 │     'delegate': {
 │         XID(f1199a75) [
-│             'key': PublicKeys(e2c18423) [
+│             'key': PublicKeys(e2c18423, SigningPublicKey(SchnorrPublicKey(f0638394)), EncapsulationPublicKey(X25519PublicKey(4af6be52))) [
 │                 'allow': 'All'
 │                 'nickname': "Bob"
 │             ]
@@ -1370,7 +1369,7 @@ envelope format $ALICE_XID_DOC_WITH_SERVICE_REMOVED
 │         'allow': 'Encrypt'
 │         'allow': 'Sign'
 │     ]
-│     'key': PublicKeys(cab108a0) [
+│     'key': PublicKeys(cab108a0, SigningPublicKey(SchnorrPublicKey(26712894)), EncapsulationPublicKey(X25519PublicKey(00b42db3))) [
 │         'allow': 'All'
 │         'nickname': "Alice"
 │     ]
@@ -1404,7 +1403,7 @@ envelope format $ALICE_XID_DOC_WITH_SERVICE_UPDATED
 │ XID(93a4d4e7) [
 │     'delegate': {
 │         XID(f1199a75) [
-│             'key': PublicKeys(e2c18423) [
+│             'key': PublicKeys(e2c18423, SigningPublicKey(SchnorrPublicKey(f0638394)), EncapsulationPublicKey(X25519PublicKey(4af6be52))) [
 │                 'allow': 'All'
 │                 'nickname': "Bob"
 │             ]
@@ -1413,7 +1412,7 @@ envelope format $ALICE_XID_DOC_WITH_SERVICE_UPDATED
 │         'allow': 'Encrypt'
 │         'allow': 'Sign'
 │     ]
-│     'key': PublicKeys(cab108a0) [
+│     'key': PublicKeys(cab108a0, SigningPublicKey(SchnorrPublicKey(26712894)), EncapsulationPublicKey(X25519PublicKey(00b42db3))) [
 │         'allow': 'All'
 │         'nickname': "Alice"
 │     ]

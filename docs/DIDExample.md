@@ -19,7 +19,7 @@ envelope format $ALICE_SIGNED_DOCUMENT
 │ {
 │     ARID(d44c5e0a) [
 │         'controller': ARID(d44c5e0a)
-│         'key': PublicKeys(cab108a0)
+│         'key': PublicKeys(cab108a0, SigningPublicKey(SchnorrPublicKey(26712894)), EncapsulationPublicKey(X25519PublicKey(00b42db3)))
 │     ]
 │ } [
 │     'signed': {
@@ -60,7 +60,7 @@ envelope format $ALICE_REGISTRATION
 │         'entity': {
 │             ARID(d44c5e0a) [
 │                 'controller': ARID(d44c5e0a)
-│                 'key': PublicKeys(cab108a0)
+│                 'key': PublicKeys(cab108a0, SigningPublicKey(SchnorrPublicKey(26712894)), EncapsulationPublicKey(X25519PublicKey(00b42db3)))
 │             ]
 │         } [
 │             'signed': {
