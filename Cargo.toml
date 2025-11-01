@@ -30,7 +30,7 @@ dcbor = { version = "^0.23.1", features = ["multithreaded"] }
 bc-ur = "^0.14.0"
 bc-envelope = { version = "^0.35.1", features = ["multithreaded"] }
 bc-envelope-pattern = "^0.6.0"
-bc-components = "^0.26.0"
+bc-components = { version = "^0.26.0", features = ["ssh-agent"] }
 bc-rand = "^0.4.1"
 bc-xid = "^0.14.1"
 provenance-mark = "^0.14.0"

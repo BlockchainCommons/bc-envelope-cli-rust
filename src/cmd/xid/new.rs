@@ -1,12 +1,13 @@
 use anyhow::Result;
 use bc_components::URI;
-use bc_xid::XIDDocument;
+use bc_xid::{GenesisMarkOptions, InceptionKeyOptions, XIDDocument};
 use clap::Args;
 
 use super::{
     key_args::{KeyArgs, KeyArgsLike},
     password_args::WritePasswordArgs,
     private_options::PrivateOptions,
+    generator_options::GeneratorOptions,
     utils::{InputKey, update_key, xid_document_to_ur_string_with_password},
     xid_privilege::XIDPrivilege,
 };
@@ -17,6 +18,10 @@ use super::{
 pub struct CommandArgs {
     #[command(flatten)]
     key_args: KeyArgs,
+
+    /// Whether to include, omit, or elide the provenance mark generator.
+    #[arg(long = "generator", default_value = "include")]
+    generator_opts: GeneratorOptions,
 
     #[command(flatten)]
     password_args: WritePasswordArgs,
@@ -49,12 +54,14 @@ impl crate::exec::Exec for CommandArgs {
         let keys = self.read_key()?;
 
         let mut xid_document = match &keys {
-            InputKey::Private(private_key_base) => {
-                XIDDocument::new_with_private_key_base(private_key_base.clone())
-            }
-            InputKey::Public(public_keys) => {
-                XIDDocument::new(public_keys.clone())
-            }
+            InputKey::Private(private_key_base) => XIDDocument::new(
+                InceptionKeyOptions::PrivateKeyBase(private_key_base.clone()),
+                GenesisMarkOptions::None,
+            ),
+            InputKey::Public(public_keys) => XIDDocument::new(
+                InceptionKeyOptions::PublicKeys(public_keys.clone()),
+                GenesisMarkOptions::None,
+            ),
         };
 
         let mut key = xid_document.keys().iter().next().unwrap().clone();

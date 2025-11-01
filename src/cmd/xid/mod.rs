@@ -6,6 +6,7 @@ pub mod method;
 pub mod new;
 pub mod password_args;
 pub mod private_options;
+pub mod generator_options;
 pub mod service;
 pub mod utils;
 pub mod xid_privilege;
