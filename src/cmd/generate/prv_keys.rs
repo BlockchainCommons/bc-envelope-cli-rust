@@ -23,64 +23,38 @@ enum EncapsulationSchemeArg {
     X25519,
 }
 
-/// Generate a private key base.
+/// Generate private keys.
 ///
-/// Generated randomly, or deterministically if a seed is provided.
+/// Derives private keys from a seed, private key base, or generates them
+/// randomly. The input can be a ur:seed, ur:envelope, or ur:crypto-prvkey-base.
 #[derive(Debug, Args)]
 #[group(skip)]
 pub struct CommandArgs {
-    /// The seed from which to derive the private key base (ur:seed or
-    /// ur:envelope).
-    #[arg(long, short)]
-    seed: Option<String>,
+    /// Optional input from which to derive the private keys.
+    /// Can be a seed (ur:seed or ur:envelope) or a private key base
+    /// (ur:crypto-prvkey-base). If not provided, generates random private
+    /// keys.
+    #[arg(name = "INPUT")]
+    input: Option<String>,
 
     /// The signature scheme to use for the signing key.
-    #[arg(long)]
-    signing: Option<SigningSchemeArg>,
+    #[arg(long, default_value = "schnorr")]
+    signing: SigningSchemeArg,
 
     /// The encapsulation scheme to use for the encryption key.
-    #[arg(long)]
-    encryption: Option<EncapsulationSchemeArg>,
+    #[arg(long, default_value = "x25519")]
+    encryption: EncapsulationSchemeArg,
 }
 
 impl crate::exec::Exec for CommandArgs {
     fn exec(&self) -> Result<String> {
-        // If either signing or encryption scheme is specified, generate
-        // PrivateKeys
-        if self.signing.is_some() || self.encryption.is_some() {
-            self.generate_private_keys()
-        } else {
-            // Otherwise, generate PrivateKeyBase (legacy behavior)
-            self.generate_private_key_base()
-        }
-    }
-}
-
-impl CommandArgs {
-    fn generate_private_key_base(&self) -> Result<String> {
-        if let Some(seed_ur) = &self.seed {
-            let seed = parse_seed_input(seed_ur)?;
-            let private_key_base =
-                bc_components::PrivateKeyBase::new_with_provider(seed);
-            Ok(private_key_base.ur_string())
-        } else {
-            let private_key_base = bc_components::PrivateKeyBase::new();
-            Ok(private_key_base.ur_string())
-        }
-    }
-
-    fn generate_private_keys(&self) -> Result<String> {
-        let private_key_base = if let Some(seed_ur) = &self.seed {
-            let seed = parse_seed_input(seed_ur)?;
-            bc_components::PrivateKeyBase::new_with_provider(seed)
+        let private_key_base = if let Some(input_ur) = &self.input {
+            parse_input(input_ur)?
         } else {
             bc_components::PrivateKeyBase::new()
         };
 
-        // Determine the signing scheme to use (default to Schnorr)
-        let signing_scheme = self.signing.unwrap_or(SigningSchemeArg::Schnorr);
-
-        let private_keys = match signing_scheme {
+        let private_keys = match self.signing {
             SigningSchemeArg::Schnorr => {
                 private_key_base.schnorr_private_keys()
             }
@@ -115,11 +89,22 @@ impl CommandArgs {
     }
 }
 
-fn parse_seed_input(input: &str) -> Result<bc_components::Seed> {
-    match bc_components::Seed::from_ur_string(input) {
-        Ok(seed) => Ok(seed),
-        Err(_) => seed_from_envelope(input),
+fn parse_input(input: &str) -> Result<bc_components::PrivateKeyBase> {
+    // Try parsing as PrivateKeyBase first
+    if let Ok(private_key_base) =
+        bc_components::PrivateKeyBase::from_ur_string(input)
+    {
+        return Ok(private_key_base);
     }
+
+    // Try parsing as Seed
+    if let Ok(seed) = bc_components::Seed::from_ur_string(input) {
+        return Ok(bc_components::PrivateKeyBase::new_with_provider(seed));
+    }
+
+    // Try parsing as Envelope containing a Seed
+    seed_from_envelope(input)
+        .map(bc_components::PrivateKeyBase::new_with_provider)
 }
 
 fn seed_from_envelope(input: &str) -> Result<bc_components::Seed> {

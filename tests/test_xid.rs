@@ -846,7 +846,7 @@ fn test_xid_delegate() {
     //         XID(61b1f3c7) [
     //             'key': PublicKeys(eebd4add,
     // SigningPublicKey(SchnorrPublicKey(8684e3e4)),
-    // EncapsulationPublicKey(X25519PublicKey(0995c476))) [                 
+    // EncapsulationPublicKey(X25519PublicKey(0995c476))) [
     // 'allow': 'All'                 'nickname': "Carol"
     //             ]
     //         ]
@@ -857,7 +857,7 @@ fn test_xid_delegate() {
     //         XID(f1199a75) [
     //             'key': PublicKeys(e2c18423,
     // SigningPublicKey(SchnorrPublicKey(f0638394)),
-    // EncapsulationPublicKey(X25519PublicKey(4af6be52))) [                 
+    // EncapsulationPublicKey(X25519PublicKey(4af6be52))) [
     // 'allow': 'All'                 'nickname': "Bob"
     //             ]
     //         ]
@@ -971,7 +971,7 @@ fn test_xid_delegate() {
     //     XID(61b1f3c7) [
     //         'key': PublicKeys(eebd4add,
     // SigningPublicKey(SchnorrPublicKey(8684e3e4)),
-    // EncapsulationPublicKey(X25519PublicKey(0995c476))) [             
+    // EncapsulationPublicKey(X25519PublicKey(0995c476))) [
     // 'allow': 'All'             'nickname': "Carol"
     //         ]
     //     ]
@@ -1124,7 +1124,7 @@ fn test_xid_delegate() {
     //         XID(f1199a75) [
     //             'key': PublicKeys(e2c18423,
     // SigningPublicKey(SchnorrPublicKey(f0638394)),
-    // EncapsulationPublicKey(X25519PublicKey(4af6be52))) [                 
+    // EncapsulationPublicKey(X25519PublicKey(4af6be52))) [
     // 'allow': 'All'                 'nickname': "Bob"
     //             ]
     //         ]
@@ -1407,7 +1407,7 @@ fn test_xid_service() {
     //         XID(f1199a75) [
     //             'key': PublicKeys(e2c18423,
     // SigningPublicKey(SchnorrPublicKey(f0638394)),
-    // EncapsulationPublicKey(X25519PublicKey(4af6be52))) [                 
+    // EncapsulationPublicKey(X25519PublicKey(4af6be52))) [
     // 'allow': 'All'                 'nickname': "Bob"
     //             ]
     //         ]
