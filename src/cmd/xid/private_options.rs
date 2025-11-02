@@ -19,9 +19,7 @@ pub enum PrivateOptions {
 
 impl PrivateOptions {
     /// Check if this option requires encryption.
-    pub fn is_encrypt(&self) -> bool {
-        matches!(self, PrivateOptions::Encrypt)
-    }
+    pub fn is_encrypt(&self) -> bool { matches!(self, PrivateOptions::Encrypt) }
 }
 
 impl From<PrivateOptions> for PrivateKeyOptions {

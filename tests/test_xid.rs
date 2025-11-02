@@ -309,13 +309,15 @@ fn test_xid_key_update() {
     // xid key add --nickname 'Bob' $BOB_PUBKEYS` $ envelope format $XID_DOC
 
     // XID(93a4d4e7) [
-    //     'key': PublicKeys(cab108a0, SigningPublicKey(SchnorrPublicKey(26712894)), EncapsulationPublicKey(X25519PublicKey(00b42db3))) [
-    //         'allow': 'All'
-    //         'nickname': "Alice"
+    //     'key': PublicKeys(cab108a0,
+    // SigningPublicKey(SchnorrPublicKey(26712894)),
+    // EncapsulationPublicKey(X25519PublicKey(00b42db3))) [         'allow':
+    // 'All'         'nickname': "Alice"
     //     ]
-    //     'key': PublicKeys(e2c18423, SigningPublicKey(SchnorrPublicKey(f0638394)), EncapsulationPublicKey(X25519PublicKey(4af6be52))) [
-    //         'allow': 'All'
-    //         'nickname': "Bob"
+    //     'key': PublicKeys(e2c18423,
+    // SigningPublicKey(SchnorrPublicKey(f0638394)),
+    // EncapsulationPublicKey(X25519PublicKey(4af6be52))) [         'allow':
+    // 'All'         'nickname': "Bob"
     //     ]
     // ]
 
@@ -403,16 +405,16 @@ fn test_xid_key_update() {
     // ```
     // $ envelope xid key at 0 $XID_DOC_UPDATED | envelope format
 
-    // PublicKeys(cab108a0, SigningPublicKey(SchnorrPublicKey(26712894)), EncapsulationPublicKey(X25519PublicKey(00b42db3))) [
-    //     'allow': 'All'
-    //     'nickname': "Alice"
+    // PublicKeys(cab108a0, SigningPublicKey(SchnorrPublicKey(26712894)),
+    // EncapsulationPublicKey(X25519PublicKey(00b42db3))) [     'allow':
+    // 'All'     'nickname': "Alice"
     // ]
 
     // $ envelope xid key at 1 $XID_DOC_UPDATED | envelope format
 
-    // PublicKeys(e2c18423, SigningPublicKey(SchnorrPublicKey(f0638394)), EncapsulationPublicKey(X25519PublicKey(4af6be52))) [
-    //     'allow': 'Encrypt'
-    //     'allow': 'Sign'
+    // PublicKeys(e2c18423, SigningPublicKey(SchnorrPublicKey(f0638394)),
+    // EncapsulationPublicKey(X25519PublicKey(4af6be52))) [     'allow':
+    // 'Encrypt'     'allow': 'Sign'
     //     'nickname': "Bob"
     // ]
     // ```
@@ -620,9 +622,10 @@ fn test_xid_method() {
     // XID(93a4d4e7) [
     //     'dereferenceVia':
     // URI(btc:5e54156cfe0e62d9a56c72b84a5c40b84e2fd7dfe786c7d5c667e11ab85c45c6)     'dereferenceVia': URI(https://resolver.example.com/)
-    //     'key': PublicKeys(cab108a0, SigningPublicKey(SchnorrPublicKey(26712894)), EncapsulationPublicKey(X25519PublicKey(00b42db3))) [
-    //         'allow': 'All'
-    //         'nickname': "Alice"
+    //     'key': PublicKeys(cab108a0,
+    // SigningPublicKey(SchnorrPublicKey(26712894)),
+    // EncapsulationPublicKey(X25519PublicKey(00b42db3))) [         'allow':
+    // 'All'         'nickname': "Alice"
     //     ]
     // ]
     // ```
@@ -762,7 +765,7 @@ fn test_xid_delegate() {
     //       means it will have to be resolved to be used.
     //
     // ```
-    //
+    // 
     // $ ALICE_XID_DOC=`envelope xid new --nickname 'Alice' $ALICE_PUBKEYS`
 
     let alice_xid_doc =
@@ -841,9 +844,10 @@ fn test_xid_delegate() {
     //     ]
     //     'delegate': {
     //         XID(61b1f3c7) [
-    //             'key': PublicKeys(eebd4add, SigningPublicKey(SchnorrPublicKey(8684e3e4)), EncapsulationPublicKey(X25519PublicKey(0995c476))) [
-    //                 'allow': 'All'
-    //                 'nickname': "Carol"
+    //             'key': PublicKeys(eebd4add,
+    // SigningPublicKey(SchnorrPublicKey(8684e3e4)),
+    // EncapsulationPublicKey(X25519PublicKey(0995c476))) [                 
+    // 'allow': 'All'                 'nickname': "Carol"
     //             ]
     //         ]
     //     } [
@@ -851,18 +855,20 @@ fn test_xid_delegate() {
     //     ]
     //     'delegate': {
     //         XID(f1199a75) [
-    //             'key': PublicKeys(e2c18423, SigningPublicKey(SchnorrPublicKey(f0638394)), EncapsulationPublicKey(X25519PublicKey(4af6be52))) [
-    //                 'allow': 'All'
-    //                 'nickname': "Bob"
+    //             'key': PublicKeys(e2c18423,
+    // SigningPublicKey(SchnorrPublicKey(f0638394)),
+    // EncapsulationPublicKey(X25519PublicKey(4af6be52))) [                 
+    // 'allow': 'All'                 'nickname': "Bob"
     //             ]
     //         ]
     //     } [
     //         'allow': 'Encrypt'
     //         'allow': 'Sign'
     //     ]
-    //     'key': PublicKeys(cab108a0, SigningPublicKey(SchnorrPublicKey(26712894)), EncapsulationPublicKey(X25519PublicKey(00b42db3))) [
-    //         'allow': 'All'
-    //         'nickname': "Alice"
+    //     'key': PublicKeys(cab108a0,
+    // SigningPublicKey(SchnorrPublicKey(26712894)),
+    // EncapsulationPublicKey(X25519PublicKey(00b42db3))) [         'allow':
+    // 'All'         'nickname': "Alice"
     //     ]
     // ]
     // ```
@@ -963,9 +969,10 @@ fn test_xid_delegate() {
     //
     // {
     //     XID(61b1f3c7) [
-    //         'key': PublicKeys(eebd4add, SigningPublicKey(SchnorrPublicKey(8684e3e4)), EncapsulationPublicKey(X25519PublicKey(0995c476))) [
-    //             'allow': 'All'
-    //             'nickname': "Carol"
+    //         'key': PublicKeys(eebd4add,
+    // SigningPublicKey(SchnorrPublicKey(8684e3e4)),
+    // EncapsulationPublicKey(X25519PublicKey(0995c476))) [             
+    // 'allow': 'All'             'nickname': "Carol"
     //         ]
     //     ]
     // } [
@@ -1115,18 +1122,20 @@ fn test_xid_delegate() {
     //     ]
     //     'delegate': {
     //         XID(f1199a75) [
-    //             'key': PublicKeys(e2c18423, SigningPublicKey(SchnorrPublicKey(f0638394)), EncapsulationPublicKey(X25519PublicKey(4af6be52))) [
-    //                 'allow': 'All'
-    //                 'nickname': "Bob"
+    //             'key': PublicKeys(e2c18423,
+    // SigningPublicKey(SchnorrPublicKey(f0638394)),
+    // EncapsulationPublicKey(X25519PublicKey(4af6be52))) [                 
+    // 'allow': 'All'                 'nickname': "Bob"
     //             ]
     //         ]
     //     } [
     //         'allow': 'Encrypt'
     //         'allow': 'Sign'
     //     ]
-    //     'key': PublicKeys(cab108a0, SigningPublicKey(SchnorrPublicKey(26712894)), EncapsulationPublicKey(X25519PublicKey(00b42db3))) [
-    //         'allow': 'All'
-    //         'nickname': "Alice"
+    //     'key': PublicKeys(cab108a0,
+    // SigningPublicKey(SchnorrPublicKey(26712894)),
+    // EncapsulationPublicKey(X25519PublicKey(00b42db3))) [         'allow':
+    // 'All'         'nickname': "Alice"
     //     ]
     // ]
     // ```
@@ -1201,9 +1210,10 @@ fn test_xid_delegate() {
     //         'allow': 'Encrypt'
     //         'allow': 'Sign'
     //     ]
-    //     'key': PublicKeys(cab108a0, SigningPublicKey(SchnorrPublicKey(26712894)), EncapsulationPublicKey(X25519PublicKey(00b42db3))) [
-    //         'allow': 'All'
-    //         'nickname': "Alice"
+    //     'key': PublicKeys(cab108a0,
+    // SigningPublicKey(SchnorrPublicKey(26712894)),
+    // EncapsulationPublicKey(X25519PublicKey(00b42db3))) [         'allow':
+    // 'All'         'nickname': "Alice"
     //     ]
     // ]
     // ```
@@ -1395,18 +1405,20 @@ fn test_xid_service() {
     // XID(93a4d4e7) [
     //     'delegate': {
     //         XID(f1199a75) [
-    //             'key': PublicKeys(e2c18423, SigningPublicKey(SchnorrPublicKey(f0638394)), EncapsulationPublicKey(X25519PublicKey(4af6be52))) [
-    //                 'allow': 'All'
-    //                 'nickname': "Bob"
+    //             'key': PublicKeys(e2c18423,
+    // SigningPublicKey(SchnorrPublicKey(f0638394)),
+    // EncapsulationPublicKey(X25519PublicKey(4af6be52))) [                 
+    // 'allow': 'All'                 'nickname': "Bob"
     //             ]
     //         ]
     //     } [
     //         'allow': 'Encrypt'
     //         'allow': 'Sign'
     //     ]
-    //     'key': PublicKeys(cab108a0, SigningPublicKey(SchnorrPublicKey(26712894)), EncapsulationPublicKey(X25519PublicKey(00b42db3))) [
-    //         'allow': 'All'
-    //         'nickname': "Alice"
+    //     'key': PublicKeys(cab108a0,
+    // SigningPublicKey(SchnorrPublicKey(26712894)),
+    // EncapsulationPublicKey(X25519PublicKey(00b42db3))) [         'allow':
+    // 'All'         'nickname': "Alice"
     //     ]
     //     'service': URI(https://messaging.example.com) [
     //         'allow': 'Encrypt'
@@ -1651,14 +1663,16 @@ fn test_xid_key_private_flag() {
     assert!(formatted_public.contains("PublicKeys"));
     assert!(formatted_public.contains("ENCRYPTED")); // Public key envelope includes encrypted assertion
 
-    // Test 2: xid key all --private without password (returns encrypted envelope)
+    // Test 2: xid key all --private without password (returns encrypted
+    // envelope)
     let encrypted =
         run_cli(&["xid", "key", "all", "--private", &xid_encrypted]).unwrap();
     let formatted_encrypted = run_cli_stdin(&["format"], &encrypted).unwrap();
     assert!(formatted_encrypted.contains("ENCRYPTED"));
     assert!(formatted_encrypted.contains("hasSecret"));
 
-    // Test 3: xid key all --private with correct password (returns ur:crypto-prvkeys)
+    // Test 3: xid key all --private with correct password (returns
+    // ur:crypto-prvkeys)
     let decrypted = run_cli(&[
         "xid",
         "key",
@@ -1713,7 +1727,8 @@ fn test_xid_key_private_flag() {
         run_cli_stdin(&["format"], &inception_encrypted).unwrap();
     assert!(formatted_inception.contains("ENCRYPTED"));
 
-    // Test 7: xid key find name --private with password (returns ur:crypto-prvkeys)
+    // Test 7: xid key find name --private with password (returns
+    // ur:crypto-prvkeys)
     let found_by_name = run_cli(&[
         "xid",
         "key",

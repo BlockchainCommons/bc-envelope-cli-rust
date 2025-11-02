@@ -113,15 +113,17 @@ pub fn get_private_key_ur(
         None => bail!("No private key present in this key"),
         Some(envelope) => {
             // Try to extract PrivateKeys from the subject
-            // If successful, we have decrypted keys - return as ur:crypto-prvkeys
-            // If it fails, we have an encrypted envelope - return as ur:envelope
+            // If successful, we have decrypted keys - return as
+            // ur:crypto-prvkeys If it fails, we have an encrypted
+            // envelope - return as ur:envelope
             match PrivateKeys::try_from(envelope.subject()) {
                 Ok(private_keys) => {
                     // Successfully extracted PrivateKeys - return the raw UR
                     Ok(private_keys.ur_string())
                 }
                 Err(_) => {
-                    // Subject is not PrivateKeys (it's ENCRYPTED) - return the envelope
+                    // Subject is not PrivateKeys (it's ENCRYPTED) - return the
+                    // envelope
                     Ok(envelope.ur_string())
                 }
             }

@@ -31,31 +31,19 @@ pub struct CommandArgs {
 }
 
 impl KeyArgsLike for CommandArgs {
-    fn nickname(&self) -> &str {
-        self.key_args.nickname()
-    }
+    fn nickname(&self) -> &str { self.key_args.nickname() }
 
-    fn private_opts(&self) -> PrivateOptions {
-        self.key_args.private_opts()
-    }
+    fn private_opts(&self) -> PrivateOptions { self.key_args.private_opts() }
 
-    fn endpoints(&self) -> &[URI] {
-        self.key_args.endpoints()
-    }
+    fn endpoints(&self) -> &[URI] { self.key_args.endpoints() }
 
-    fn permissions(&self) -> &[XIDPrivilege] {
-        self.key_args.permissions()
-    }
+    fn permissions(&self) -> &[XIDPrivilege] { self.key_args.permissions() }
 
-    fn keys(&self) -> Option<&str> {
-        self.key_args.keys()
-    }
+    fn keys(&self) -> Option<&str> { self.key_args.keys() }
 }
 
 impl EnvelopeArgsLike for CommandArgs {
-    fn envelope(&self) -> Option<&str> {
-        self.envelope_args.envelope()
-    }
+    fn envelope(&self) -> Option<&str> { self.envelope_args.envelope() }
 }
 
 impl XIDDocumentReadable for CommandArgs {}

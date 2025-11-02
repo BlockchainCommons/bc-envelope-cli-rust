@@ -18,8 +18,9 @@ pub struct CommandArgs {
     /// Return the private key instead of the public key.
     ///
     /// For unencrypted keys, returns the PrivateKeys UR.
-    /// For encrypted keys without --password, returns the encrypted envelope UR.
-    /// For encrypted keys with --password, returns the decrypted PrivateKeys UR.
+    /// For encrypted keys without --password, returns the encrypted envelope
+    /// UR. For encrypted keys with --password, returns the decrypted
+    /// PrivateKeys UR.
     #[arg(long)]
     private: bool,
 
@@ -31,9 +32,7 @@ pub struct CommandArgs {
 }
 
 impl EnvelopeArgsLike for CommandArgs {
-    fn envelope(&self) -> Option<&str> {
-        self.envelope_args.envelope()
-    }
+    fn envelope(&self) -> Option<&str> { self.envelope_args.envelope() }
 }
 
 impl XIDDocumentReadable for CommandArgs {}

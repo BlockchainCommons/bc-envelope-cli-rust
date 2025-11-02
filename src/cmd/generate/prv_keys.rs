@@ -1,7 +1,27 @@
 use anyhow::Result;
 use bc_envelope::prelude::*;
-use clap::Args;
+use clap::{Args, ValueEnum};
 use dcbor::prelude::Date;
+
+/// Supported signature schemes for private key generation.
+#[derive(Debug, Clone, Copy, ValueEnum)]
+#[value(rename_all = "kebab-case")]
+enum SigningSchemeArg {
+    Schnorr,
+    Ecdsa,
+    Ed25519,
+    SshEd25519,
+    SshDsa,
+    SshEcdsaP256,
+    SshEcdsaP384,
+}
+
+/// Supported encapsulation schemes for private key generation.
+#[derive(Debug, Clone, Copy, ValueEnum)]
+#[value(rename_all = "kebab-case")]
+enum EncapsulationSchemeArg {
+    X25519,
+}
 
 /// Generate a private key base.
 ///
@@ -13,10 +33,31 @@ pub struct CommandArgs {
     /// ur:envelope).
     #[arg(long, short)]
     seed: Option<String>,
+
+    /// The signature scheme to use for the signing key.
+    #[arg(long)]
+    signing: Option<SigningSchemeArg>,
+
+    /// The encapsulation scheme to use for the encryption key.
+    #[arg(long)]
+    encryption: Option<EncapsulationSchemeArg>,
 }
 
 impl crate::exec::Exec for CommandArgs {
     fn exec(&self) -> Result<String> {
+        // If either signing or encryption scheme is specified, generate
+        // PrivateKeys
+        if self.signing.is_some() || self.encryption.is_some() {
+            self.generate_private_keys()
+        } else {
+            // Otherwise, generate PrivateKeyBase (legacy behavior)
+            self.generate_private_key_base()
+        }
+    }
+}
+
+impl CommandArgs {
+    fn generate_private_key_base(&self) -> Result<String> {
         if let Some(seed_ur) = &self.seed {
             let seed = parse_seed_input(seed_ur)?;
             let private_key_base =
@@ -26,6 +67,51 @@ impl crate::exec::Exec for CommandArgs {
             let private_key_base = bc_components::PrivateKeyBase::new();
             Ok(private_key_base.ur_string())
         }
+    }
+
+    fn generate_private_keys(&self) -> Result<String> {
+        let private_key_base = if let Some(seed_ur) = &self.seed {
+            let seed = parse_seed_input(seed_ur)?;
+            bc_components::PrivateKeyBase::new_with_provider(seed)
+        } else {
+            bc_components::PrivateKeyBase::new()
+        };
+
+        // Determine the signing scheme to use (default to Schnorr)
+        let signing_scheme = self.signing.unwrap_or(SigningSchemeArg::Schnorr);
+
+        let private_keys = match signing_scheme {
+            SigningSchemeArg::Schnorr => {
+                private_key_base.schnorr_private_keys()
+            }
+            SigningSchemeArg::Ecdsa => private_key_base.ecdsa_private_keys(),
+            SigningSchemeArg::Ed25519 => bc_components::PrivateKeys::with_keys(
+                private_key_base.ed25519_signing_private_key(),
+                bc_components::EncapsulationPrivateKey::X25519(
+                    private_key_base.x25519_private_key(),
+                ),
+            ),
+            SigningSchemeArg::SshEd25519 => private_key_base
+                .ssh_private_keys(ssh_key::Algorithm::Ed25519, "")?,
+            SigningSchemeArg::SshDsa => private_key_base
+                .ssh_private_keys(ssh_key::Algorithm::Dsa, "")?,
+            SigningSchemeArg::SshEcdsaP256 => private_key_base
+                .ssh_private_keys(
+                    ssh_key::Algorithm::Ecdsa {
+                        curve: ssh_key::EcdsaCurve::NistP256,
+                    },
+                    "",
+                )?,
+            SigningSchemeArg::SshEcdsaP384 => private_key_base
+                .ssh_private_keys(
+                    ssh_key::Algorithm::Ecdsa {
+                        curve: ssh_key::EcdsaCurve::NistP384,
+                    },
+                    "",
+                )?,
+        };
+
+        Ok(private_keys.ur_string())
     }
 }
 

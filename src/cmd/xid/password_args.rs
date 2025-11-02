@@ -69,9 +69,7 @@ impl ReadPasswordArgs {
 
     /// Check if password arguments were provided.
     #[allow(dead_code)]
-    pub fn has_password(&self) -> bool {
-        self.password.is_some()
-    }
+    pub fn has_password(&self) -> bool { self.password.is_some() }
 }
 
 /// Arguments for writing an encrypted XID document.
@@ -87,7 +85,8 @@ pub struct WritePasswordArgs {
     #[arg(long = "encrypt-password", num_args(0..=1), value_name = "PASSWORD")]
     pub encrypt_password: Option<Option<String>>,
 
-    /// Use the `SSH_ASKPASS` environment variable to read the encryption password.
+    /// Use the `SSH_ASKPASS` environment variable to read the encryption
+    /// password.
     #[arg(long = "encrypt-askpass", requires = "encrypt_password", help = ASKPASS_HELP, long_help = ASKPASS_LONG_HELP)]
     pub encrypt_askpass: bool,
 
@@ -115,14 +114,10 @@ impl WritePasswordArgs {
 
     /// Check if encryption password arguments were provided.
     #[allow(dead_code)]
-    pub fn has_password(&self) -> bool {
-        self.encrypt_password.is_some()
-    }
+    pub fn has_password(&self) -> bool { self.encrypt_password.is_some() }
 
     /// Get the key derivation method.
-    pub fn method(&self) -> KeyDerivationMethod {
-        self.encrypt_method.into()
-    }
+    pub fn method(&self) -> KeyDerivationMethod { self.encrypt_method.into() }
 }
 
 /// Combined arguments for reading and writing encrypted XID documents.
@@ -154,19 +149,13 @@ impl ReadWritePasswordArgs {
 
     /// Check if decryption password was provided.
     #[allow(dead_code)]
-    pub fn has_read_password(&self) -> bool {
-        self.read.has_password()
-    }
+    pub fn has_read_password(&self) -> bool { self.read.has_password() }
 
     /// Check if encryption password was provided.
     #[allow(dead_code)]
-    pub fn has_write_password(&self) -> bool {
-        self.write.has_password()
-    }
+    pub fn has_write_password(&self) -> bool { self.write.has_password() }
 
     /// Get the encryption method.
     #[allow(dead_code)]
-    pub fn encrypt_method(&self) -> KeyDerivationMethod {
-        self.write.method()
-    }
+    pub fn encrypt_method(&self) -> KeyDerivationMethod { self.write.method() }
 }

@@ -4,10 +4,10 @@ use bc_xid::{GenesisMarkOptions, InceptionKeyOptions, XIDDocument};
 use clap::Args;
 
 use super::{
+    generator_options::GeneratorOptions,
     key_args::{KeyArgs, KeyArgsLike},
     password_args::WritePasswordArgs,
     private_options::PrivateOptions,
-    generator_options::GeneratorOptions,
     utils::{InputKey, update_key, xid_document_to_ur_string_with_password},
     xid_privilege::XIDPrivilege,
 };
@@ -28,25 +28,15 @@ pub struct CommandArgs {
 }
 
 impl KeyArgsLike for CommandArgs {
-    fn nickname(&self) -> &str {
-        self.key_args.nickname()
-    }
+    fn nickname(&self) -> &str { self.key_args.nickname() }
 
-    fn private_opts(&self) -> PrivateOptions {
-        self.key_args.private_opts()
-    }
+    fn private_opts(&self) -> PrivateOptions { self.key_args.private_opts() }
 
-    fn endpoints(&self) -> &[URI] {
-        self.key_args.endpoints()
-    }
+    fn endpoints(&self) -> &[URI] { self.key_args.endpoints() }
 
-    fn permissions(&self) -> &[XIDPrivilege] {
-        self.key_args.permissions()
-    }
+    fn permissions(&self) -> &[XIDPrivilege] { self.key_args.permissions() }
 
-    fn keys(&self) -> Option<&str> {
-        self.key_args.keys()
-    }
+    fn keys(&self) -> Option<&str> { self.key_args.keys() }
 }
 
 impl crate::exec::Exec for CommandArgs {
