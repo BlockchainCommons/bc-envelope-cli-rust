@@ -29,18 +29,18 @@ Help is available for the tool and its subcommands.
 ```
 envelope --help
 
-A tool for manipulating the Gordian Envelope data type
-
-Usage: envelope <COMMAND>
-
+│ A tool for manipulating the Gordian Envelope data type
+│
+│ Usage: envelope <COMMAND>
+│
 │ Commands:
 │   assertion   Work with the envelope's assertions
 │   attachment  Work with the envelope's attachments
 │   compress    Compress the envelope or its subject
-│   decrypt     Decrypt the envelope's subject using one of the following: - A symmetric key (ur:crypto-key) (the content key) that was used to encrypt the subject, - A password that was used to lock the content key, - A recipient's private key (ur:crypto-prvkey-base) that was used to lock the content key, - An SSH identity that was used to lock the content key
+│   decrypt     Decrypt the envelope's subject
 │   digest      Print the envelope's digest
 │   elide       Elide a subset of elements
-│   encrypt     Encrypt the envelope's subject using the provided key or password
+│   encrypt     Encrypt the envelope's subject
 │   export      Import the given object to UR form
 │   extract     Extract the subject of the input envelope
 │   format      Print the envelope in textual format
@@ -55,6 +55,7 @@ Usage: envelope <COMMAND>
 │   subject     Create an envelope with the given subject
 │   decompress  Decompress the envelope or its subject
 │   verify      Verify a signature on the envelope using the provided verifiers
+│   walk        Walk an envelope's nodes
 │   xid         Work with Extensible Identifiers (XID)
 │   help        Print this message or the help of the given subcommand(s)
 │
@@ -100,14 +101,14 @@ Or your can output the annotated CBOR diagnostic annotation of the envelope:
 ```
 envelope format --type diag $ALICE_KNOWS_BOB
 
-│ 200(   / envelope /
-│    [
-│       201("Alice"),   / leaf /
-│       {
-│          201("knows"):   / leaf /
-│          201("Bob")   / leaf /
-│       }
-│    ]
+│ 200(
+│     [
+│         201("Alice"),
+│         {
+│             201("knows"):
+│             201("Bob")
+│         }
+│     ]
 │ )
 ```
 
@@ -194,8 +195,8 @@ envelope format --type mermaid $ALICE_KNOWS_BOB
 │ style 4 stroke:teal,stroke-width:4px
 │ linkStyle 0 stroke:red,stroke-width:2px
 │ linkStyle 1 stroke-width:2px
-│ linkStyle 2 stroke:green,stroke-width:2px
-│ linkStyle 3 stroke:blue,stroke-width:2px
+│ linkStyle 2 stroke:cyan,stroke-width:2px
+│ linkStyle 3 stroke:magenta,stroke-width:2px
 ```
 
 When passed to a Mermaid renderer, this will produce a diagram that looks like this:
@@ -215,8 +216,8 @@ style 3 stroke:teal,stroke-width:4px
 style 4 stroke:teal,stroke-width:4px
 linkStyle 0 stroke:red,stroke-width:2px
 linkStyle 1 stroke-width:2px
-linkStyle 2 stroke:green,stroke-width:2px
-linkStyle 3 stroke:blue,stroke-width:2px
+linkStyle 2 stroke:cyan,stroke-width:2px
+linkStyle 3 stroke:magenta,stroke-width:2px
 ```
 
 Mermaid output has several options, including the `--theme` option to specify the color theme of the diagram. For example, to use a dark theme, you can run:
@@ -238,8 +239,8 @@ envelope format --type mermaid --theme dark $ALICE_KNOWS_BOB
 │ style 4 stroke:teal,stroke-width:4px
 │ linkStyle 0 stroke:red,stroke-width:2px
 │ linkStyle 1 stroke-width:2px
-│ linkStyle 2 stroke:green,stroke-width:2px
-│ linkStyle 3 stroke:blue,stroke-width:2px
+│ linkStyle 2 stroke:cyan,stroke-width:2px
+│ linkStyle 3 stroke:magenta,stroke-width:2px
 ```
 
 You can also specify the orientation of the diagram using the `--orientation` option. For example, to display the diagram from top to bottom, you can run:
@@ -261,8 +262,8 @@ envelope format --type mermaid --theme dark --orientation top-to-bottom $ALICE_K
 │ style 4 stroke:teal,stroke-width:4px
 │ linkStyle 0 stroke:red,stroke-width:2px
 │ linkStyle 1 stroke-width:2px
-│ linkStyle 2 stroke:green,stroke-width:2px
-│ linkStyle 3 stroke:blue,stroke-width:2px
+│ linkStyle 2 stroke:cyan,stroke-width:2px
+│ linkStyle 3 stroke:magenta,stroke-width:2px
 ```
 
 Like tree output, the Mermaid output can also be configured to hide the `NODE` element and its digests using the `--hide-nodes` option. We'll also demonstrate the `--monochrome` option, which produces a diagram with a single color for all elements. You can combine `--monochrone` and `--theme`.
@@ -609,25 +610,25 @@ envelope decrypt --key $KEY $WRAPPED_ENCRYPTED |   # Decrypt the envelope
 
 ## Signatures
 
-Similar to how you can encrypt an envelope's subject, you can also cryptographically sign the subject by adding an assertion. Since signing uses public key cryptography, we first need a private/public key pair known as a PrivateKeyBase. This can be used to sign and decrypt messages encrypted with the corresponding public key
+Similar to how you can encrypt an envelope's subject, you can also cryptographically sign the subject by adding an assertion. Since signing uses public key cryptography, we first need a set of private and public keys that can be used for signing, verification, encryption, and decryption.
 
 ```
 envelope generate prvkeys
 
-│ ur:crypto-prvkey-base/hdcxhdvsaelylaaesfqdwzghfmsswfrlzsfgytbbnecpkshekstbhdwzrkktasknztkecycaotda
+│ ur:crypto-prvkeys/lftansgohdcxindkbyjtgtjetacylsbbbzlufnrduewpsawfwdleganehtcmdsdaylvdksoebwpstansgehdcxoxbadivdwzjofhdaiememeswdncacmbypfaysrtidphkrfpyqzfwbzhemdiebaktielgzmlf
 ```
 
 The above generation is random. If you wish to use a `seed` as your starting point:
 
 ```
 SEED=ur:seed/oyadgdmdeefejoaonnatcycefxjedrfyaspkiakionamgl
-PRVKEYS=`envelope generate prvkeys --seed $SEED`
+PRVKEYS=`envelope generate prvkeys $SEED`
 echo $PRVKEYS
 
-│ ur:crypto-prvkey-base/gdmdeefejoaonnatcycefxjedrfyaspkiawdioolhs
+│ ur:crypto-prvkeys/lftansgohdcxasfymwaxcpktaowpatotolckatgrhnceveasueskwereprcyfrmstpfgflaahnwltansgehdcxsftngernmnplghvectctjnctwzonotgopfosylmokphdessnzmldgodewphpsedsgewlmthh
 ```
 
-Of course, we'll also want to distribute the public key, so the signature can be verified:
+Of course, we'll also want to distribute the public keys, so the signature can be verified:
 
 ```
 PUBKEYS=`envelope generate pubkeys $PRVKEYS`

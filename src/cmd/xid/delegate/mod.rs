@@ -13,7 +13,7 @@ use clap::{Args, Subcommand};
 
 use super::xid_privilege::XIDPrivilege;
 
-/// Work with a XID document's keys.
+/// Work with a XID document's delegates.
 #[derive(Debug, Args)]
 #[group(skip)]
 pub struct CommandArgs {

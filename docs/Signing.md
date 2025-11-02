@@ -11,15 +11,12 @@ The `envelope` tool can sign and verify envelopes using several different algori
     - [Derivations](#derivations)
     - [Signers and Verifiers](#signers-and-verifiers)
     - [Seed](#seed)
-    - [Private Key Base](#private-key-base)
-    - [X25519 Keys](#x25519-keys)
+    - [PrivateKeys](#privatekeys)
     - [PublicKeys](#publickeys)
-    - [Signing Private Key](#signing-private-key)
-    - [Signing Public Key](#signing-public-key)
     - [Signature](#signature)
   - [Basic Signing](#basic-signing)
   - [Signing with SSH](#signing-with-ssh)
-    - [Generating an SSH Signing Key from a Private Key Base](#generating-an-ssh-signing-key-from-a-private-key-base)
+    - [Generating the SSH Keys](#generating-the-ssh-keys)
     - [Importing an SSH Signing Key from an Existing Key File](#importing-an-ssh-signing-key-from-an-existing-key-file)
     - [Signing with the SSH Key](#signing-with-the-ssh-key)
     - [Generating an SSH Verifier from an SSH Signing Key](#generating-an-ssh-verifier-from-an-ssh-signing-key)
@@ -32,7 +29,7 @@ The `envelope` tool can sign and verify envelopes using several different algori
 
 ## Signing Algorithms
 
-Envelopes may be signed by several algorithms. The default is Schnorr, which is appropriate for most cases, but ECDSA, Ed25519, and several SSH variants are also supported for special purposes.
+Envelopes may be signed by several algorithms. The default is Schnorr, which is appropriate for most cases, but ECDSA, Ed25519, several SSH variants, and ML-KEM (a post-quantum algorithm) are also supported.
 
 | Algorithm        | Description          |
 | ---------------- | -------------------- |
@@ -40,38 +37,20 @@ Envelopes may be signed by several algorithms. The default is Schnorr, which is 
 | `ecdsa`          | ECDSA                |
 | `ed25519`        | Ed25519              |
 | `ssh-ed25519`    | SSH-Ed25519          |
-| `ssh-rsa-sha256` | SSH-RSA SHA-256      |
-| `ssh-rsa-sha512` | SSH-RSA SHA-512      |
 | `ssh-dsa`        | SSH-DSA              |
 | `ssh-ecdsa-p256` | SSH-ECDSA NIST P-256 |
 | `ssh-ecdsa-p384` | SSH-ECDSA NIST P-384 |
-
-**Note:** The `ssh-ecdsa-p521` variant is not currently supported because of a [bug in the `ssh-key` crate](https://github.com/RustCrypto/SSH/issues/232).
+| `mlkem`          | ML-KEM               |
 
 ## Signing Primitives
 
-| Type                | UR type                  | Signer | Verifier | Note                                                           |
-| ------------------- | ------------------------ | ------ | -------- | -------------------------------------------------------------- |
-| Seed                | `ur:seed`                |        |          | Used to derive other objects.                                  |
-| Private key base    | `ur:prvkeys`             | ✅      | ✅        | Directly signs and verifies Schnorr only.                      |
-| `PublicKeys`        | `ur:pubkeys`             |        | ✅        | Contains a signing public key and an encapsulation public key. |
-| Signing private key | `ur:signing-private-key` | ✅      | ✅        | Supports Schnorr, ECDSA, Ed25519, and SSH variants.            |
-| Signing public key  | `ur:signing-public-key`  |        | ✅        | Supports Schnorr, ECDSA, Ed25519, and SSH variants.            |
+| Type          | UR type             | Signer | Verifier | Note                            |
+| ------------- | ------------------- | ------ | -------- | ------------------------------- |
+| Seed          | `ur:seed`           |        |          | Used to derive other objects.   |
+| `PrivateKeys` | `ur:crypto-prvkeys` | ✅      |          | Contains a signing private key. |
+| `PublicKeys`  | `ur:crypto-pubkeys` |        | ✅        | Contains a signing public key.  |
 
 ### Derivations
-
-```mermaid
-graph LR
-        Seed --> PrivateKeyBase
-        random([Random]) --> PrivateKeyBase
-        PrivateKeyBase --> SigningPrivateKey
-        PrivateKeyBase --> SigningPublicKey
-        PrivateKeyBase --> X25519PrivateKey
-        X25519PrivateKey --> X25519PublicKey
-        PrivateKeyBase --> PublicKeys
-        PublicKeys --> SigningPublicKey
-        PublicKeys --> X25519PublicKey
-```
 
 ### Signers and Verifiers
 
@@ -85,27 +64,13 @@ A cryptographic seed (`ur:seed`) is a sequence of random numbers from which othe
 
 A seed is neither a signer nor a verifier. It is used solely for the purpose of deriving other objects. The `envelope` tool can derive a private key base from a seed or generate a random private key base.
 
-### Private Key Base
+### PrivateKeys
 
-A private key base (`ur:prvkeys`) is private key material from which other private keys may be derived. A private key base may be generated randomly or derived from a seed.
-
-When used as a signer, the `envelope` tool derives a Schnorr signing private key to make the actual signature. When used as a verifier, the `envelope` tool derives a Schnorr signing public key to verify the signature.
-
-### X25519 Keys
-
-*X25519 keys* (private and public) are not used for signing, but are mentioned here to distinguish them from *signing keys*. X25519 keys are used to perform key agreement for public key encryption. Like signing keys, they are derived from key material provided by a private key base.
+A `PrivateKeys` (`ur:crypto-prvkeys`) contains a signing private key. It can be generated from a sed. The signing private key may support any of the signing algorithms listed above. The purpose of `PrivateKeys` is to provide a single structure for both signing and decryption to the owner of the private key.
 
 ### PublicKeys
 
-A `PublicKeys` (`ur:pubkeys`) contains a signing public key and an encapsulation public key. The signing public key is used to verify signatures from a sender, and the encapsulation public key is used to encrypt messages to the same entity as recipient. The signing public key may support any of the signing algorithms listed above. The purpose of `PublicKeys` is to provide a single structure for both signature verification and encryption to the owner of the public key.
-
-### Signing Private Key
-
-A signing private key (`ur:signing-private-key`) is a private key used to sign messages. It is derived from a private key base. A signing private key supports a single signing algorithm, and may also be used as a verifier.
-
-### Signing Public Key
-
-A signing public key (`ur:signing-public-key`) is a public key used to verify signatures. It is derived from a signing private key or a `PublicKeys`. A signing public key supports a single signing algorithm.
+A `PublicKeys` (`ur:crypto-pubkeys`) contains a signing public key. The signing public key is used to verify signatures from a sender. The signing public key may support any of the signing algorithms listed above. The purpose of `PublicKeys` is to provide a single structure for both signature verification and encryption to the owner of the public key.
 
 ### Signature
 
@@ -124,38 +89,40 @@ envelope format $ALICE_KNOWS_BOB
 
 The `envelope` tool can add a signature to a message using a private key base or a signing private key. The signature is added as an assertion on the subject of the envelope.
 
-To generate a private key base randomly:
+To generate a set of private keys and their associated public keys, we can use the `generate keypairs` command. This will produce a `ur:crypto-prvkeys` and a `ur:crypto-pubkeys` on a single line, separated by a space:
 
 ```
-envelope generate prvkeys
+envelope generate keypairs
 
-│ ur:crypto-prvkey-base/hdcxhdvsaelylaaesfqdwzghfmsswfrlzsfgytbbnecpkshekstbhdwzrkktasknztkecycaotda
+│ ur:crypto-prvkeys/lftansgohdcxidykjlbzsgwnzsfelbmtlkhechlotbuoueeyiosblkcfztvtnsbahylskibzrogrtansgehdcxadmkvdlbgawsgsgddiaabwwkveptdlahdrcholmupareghtdetseeehsrlwzhkjycxztmslb ur:crypto-pubkeys/lftanshfhdcxmhltemlgfpgamyhdetbsmywmksmyrhtbsowlhlvedyhthsbndtcmgawmfwidzswltansgrhdcxwdhfeesatsnnplpttdrohslslynlskaowpahzechcnjowyrkbyonemckpllghdfgmntydmly
+```
+
+To separate both of these out into their own variables, we can use command substitution:
+
+```
+envelope generate keypairs | read PRVKEYS PUBKEYS
+
+echo $PRVKEYS
+│ ur:crypto-prvkeys/lftansgohdcxlkmdcscaayplntderopyzcbdrfioutfgticwjlbzuowfdwjybalelsrtvygllkpdtansgehdcxenwswpqzjyylflreztutmwwsotaacynlkedkplpkkncttyzsmetpyljlcygyldsscsbyjork
+
+echo $PUBKEYS
+
+│ ur:crypto-pubkeys/lftanshfhdcxcxatbyrpyapstsroaaskkettlsmkwztbamnnctemlffgecwdwfuyrpgdrycylkrytansgrhdcxythkcsenrdiehgsnoxfyaofntluyhlnnwkhpothnndglldjztipajnollgwtwzftsadkbwwm
 ```
 
 Cryptographic seeds can also be used as a starting point. For more about seeds, see the [Gordian Seed Tool iOS app](https://apps.apple.com/us/app/gordian-seed-tool/id1545088229) or the [`seedtool` command line tool](https://github.com/BlockchainCommons/seedtool-cli-rust).
 
-If you wish to use a seed to generate a private key base:
+If you wish to use a seed to generate a set of private keys, you can do so like this:
 
 ```
 SEED=ur:seed/oyadgdmdeefejoaonnatcycefxjedrfyaspkiakionamgl
-PRVKEYS=`envelope generate prvkeys --seed $SEED`
+PRVKEYS=`envelope generate prvkeys ur:seed/oyadgdmdeefejoaonnatcycefxjedrfyaspkiakionamgl`
 echo $PRVKEYS
 
-│ ur:crypto-prvkey-base/gdmdeefejoaonnatcycefxjedrfyaspkiawdioolhs
+│ ur:crypto-prvkeys/lftansgohdcxasfymwaxcpktaowpatotolckatgrhnceveasueskwereprcyfrmstpfgflaahnwltansgehdcxsftngernmnplghvectctjnctwzonotgopfosylmokphdessnzmldgodewphpsedsgewlmthh
 ```
 
-We can use the private key base as-is to sign an envelope using Schnorr. We can also use it to derive the actual Schnorr signing private key:
-
-```
-SIGNER=`envelope generate signer $PRVKEYS`
-echo $SIGNER
-
-│ ur:signing-private-key/hdcxasfymwaxcpktaowpatotolckatgrhnceveasueskwereprcyfrmstpfgflaahnwlbewlqdga
-```
-
-Later we'll see how to derive signing private keys of other types, like SSH.
-
-Of course, we'll also want to distribute the `PublicKeys`, so the signature can be verified:
+From there, we can derive the corresponding public keys:
 
 ```
 PUBKEYS=`envelope generate pubkeys $PRVKEYS`
@@ -164,25 +131,35 @@ echo $PUBKEYS
 │ ur:crypto-pubkeys/lftanshfhdcxweplrnkpsruepkaeahnetppsteaojtdlgudetlyksrlbzoiduoglpemujydnsrattansgrhdcximbgoskbjpgtluwededpjywdlkfwksjpglsrfdcaurdahycfasmtylihpfrsfgkblomttisr
 ```
 
-Recall that a `PublicKeys` actually contains two public keys: one for verifying signatures and one for encryption to a recipient. The signing public key can be extracted from the `PublicKeys`:
+As suggested by their names `ur:crypto-prvkeys` and `ur:crypto-pubkeys` each contain more than one key: a signing key and an encryption key (also called an *encapsulation key*). And each of these keys is "tuned" to a particular algorithm. By default, the signing key is a Schnorr key, and the encryption key is an X25519 key. To see the types of keys, we can convert them to an envelope and then show the formatted output:
 
 ```
-VERIFIER=`envelope generate verifier $PUBKEYS`
-echo $VERIFIER
+envelope subject type ur $PRVKEYS | envelope format
 
-│ ur:signing-public-key/hdcxweplrnkpsruepkaeahnetppsteaojtdlgudetlyksrlbzoiduoglpemujydnsratyadyptla
+│ PrivateKeys(20083bdd, SigningPrivateKey(bba0298a, SchnorrPrivateKey(9993e6c0)), EncapsulationPrivateKey(8b45d46d, X25519PrivateKey(8b45d46d)))
 ```
 
-Or the signing public key can be derived from the signing private key:
+If we look at the output hierarchically, we can see that a `PrivateKeys` contains both a `SigningPrivateKey` and an `EncapsulationPrivateKey`. The particular kind of signing private key is `SchnorrPrivateKey`, and the particular kind of encapsulation private key is `X25519PrivateKey`. Each of these objects has its own unique identifier:
 
 ```
-VERIFIER=`envelope generate verifier $SIGNER`
-echo $VERIFIER
-
-│ ur:signing-public-key/hdcxweplrnkpsruepkaeahnetppsteaojtdlgudetlyksrlbzoiduoglpemujydnsratyadyptla
+PrivateKeys: 20083bdd
+  SigningPrivateKey: bba0298a
+    SchnorrPrivateKey: 9993e6c0
+  EncapsulationPrivateKey: 8b45d46d
+    X25519PrivateKey: 8b45d46d
 ```
 
-Again: So far we're just using Schnorr, the default. If the signer is of type Schnorr, the verifier will be as well. If the signer is of type SSH, the verifier will be as well.
+The `ur:crypto-pubkeys` has the same structure, but with public keys instead of private keys:
+
+```
+envelope subject type ur $PUBKEYS | envelope format
+
+│ PublicKeys(866d11d2, SigningPublicKey(7612fa81, SchnorrPublicKey(386ce8c0)), EncapsulationPublicKey(c8fc78a2, X25519PublicKey(c8fc78a2)))
+```
+
+We can use the private keys to sign an envelope using Schnorr.
+
+Later we'll see how to produce signing private keys of other types, like SSH.
 
 Now we can sign our envelope:
 
@@ -239,24 +216,46 @@ Note that signing uses randomness. So even if you sign the same envelope twice w
 
 ## Signing with SSH
 
-Specific applications may want to sign envelopes using SSH (Secure Shell) keys. The `envelope` tool supports several SSH key types, including Ed25519, RSA, DSA, and ECDSA. The following example demonstrates how to sign an envelope using an Ed25519 key.
+Specific applications may want to sign envelopes using SSH (Secure Shell) keys. The `envelope` tool supports several SSH key types, including Ed25519, RSA, DSA, ECDSA, and ML-DSA. The following example demonstrates how to sign an envelope using an Ed25519 key.
 
-First, we can't sign directly with a private key base, since it has no inherent type and is therefore only usable for signing with the Schnorr algorithm. So we need to acquire a signing private key of the appropriate type. This can be done by generating it from a private key base, or by importing it from an existing SSH key file.
+### Generating the SSH Keys
 
-### Generating an SSH Signing Key from a Private Key Base
+First we generate a `ur:crypto-prvkeys` containing an SSH signing private key:
+
+```
+SSH_PRVKEYS=`envelope generate prvkeys --signing ssh-ed25519`
+echo $SSH_PRVKEYS
+
+│ ur:crypto-prvkeys/lftansgotanehnkkadlsdpdpdpdpdpfwfeflgaglcxgwgdfeglgugufdcxgdgmgahffpghfecxgrfehkdpdpdpdpdpbkideofwjzidjtglknhsfxehjphthdjejyieimfefpfpfpfpfpfwfleckoidjngofpfpfpfpfeidjneskphtgyfpfpfpfpfpfpfpfpfpfwfpfpfpfpgtktfpfpfpfpjykniaeyiojyhthgbkgykkglghgoksgwgyfpfpfpfxfxhkgyieemiohfinfpgtimhfjsgmjngskojljtdnfwiakpgegefxgleyeyjtfliefldnecgmgdihhtgaenioidfpfpfpfpgaiohgecksjlkofgkpiahsbkgsktfpfpfpfpjykniaeyiojyhthggykkglghgoksgwgyfpfpfpfxfxhkgyieemiohfinfpgtimhfjsgmjngskojljtdnfwiakpgegefxgleyeyjtfliefldnecgmgdihhtgaenioidfpbkfpfpfpfefwflihdngaimgakoesesgafgfgkseyeegmhdjyfdfdgmfdfeehjzenfyioeniojegmecisdldyflgrhfhkehdyecisfweokpfwhggafpkkglhgjoflhkkpdniniyeefgkkeebkjejegaeoidhsiahtdyidemjzfeesecjeimjsfwjkfpfpfpfpfpfpfefxfpktgyfgbkdpdpdpdpdpfeglfycxgwgdfeglgugufdcxgdgmgahffpghfecxgrfehkdpdpdpdpdpbktansgehdcxcyvtgsksmolttnfsnyrkspbnreclmdjehyfgfzjpmehgdlgmbzuehhintkceltfhpsvlnyks
+```
+
+Then we derive the corresponding `ur:crypto-pubkeys` containing the SSH signing public key:
 
 Although it isn't required, it is best practice to include a comment when generating an SSH key. This comment is included in the public key and can be used to identify the key's owner.
 
 ```
-SSH_SIGNER=`envelope generate signer --type ssh-ed25519 --comment "wolf@Wolfs-MacBook-Pro.local" $PRVKEYS`
-echo $SSH_SIGNER
+SSH_PUBKEYS=`envelope generate pubkeys $SSH_PRVKEYS --comment "wolf@Wolfs-MacBook-Pro.local"`
+echo $SSH_PUBKEYS
 
-│ ur:signing-private-key/tanehnkkadotdpdpdpdpdpfwfeflgaglcxgwgdfeglgugufdcxgdgmgahffpghfecxgrfehkdpdpdpdpdpbkideofwjzidjtglknhsfxehjphthdjejyieimfefpfpfpfpfpfwfleckoidjngofpfpfpfpfeidjneskphtgyfpfpfpfpfpfpfpfpfpfwfpfpfpfpgtktfpfpfpfpjykniaeyiojyhthgbkgykkglghgoksgwgyfpfpfpfxfxioidiajnhdhsiseyetjshtdyetiofehtjygmjtgaksjzeckoimjyfxetjygokkiajyesgskpeegwisfggrfgktfpfpfpgrfxhdihetgwiyjzeokofybkjtktfpfpfpfpjykniaeyiojyhthggykkglghgoksgwgyfpfpfpfxfxioidiajnhdhsiseyetjshtdyetiofehtjygmjtgaksjzeckoimjyfxetjygokkiajyesgskpeegwisfggrfgktbkfpfpfpfefyishtfejsknhdeefwgafpgsdlktgakkdlfdidfgfpihjyhtenfghkiojlgrkphtimgheofweojtgdgokpghfpgrfwjykkhtiejsfdidkkjojtghkkfpgmjnehfliaimflhdbkjndngwdygskkehghgekkeodykpemioenfegojlhdfpfpfpfpfdfdiekoidflhtfphfeyesjkhtjtgtjyghhgfgimgyjneskohskkehgyiajnetkpidflesimhkhgktfwbkdpdpdpdpdpfeglfycxgwgdfeglgugufdcxgdgmgahffpghfecxgrfehkdpdpdpdpdpbkptlelymy
+│ ur:crypto-pubkeys/lftanshftanehsksjnjkjkisdpihieeyececehescxfpfpfpfpfxeoglknhsfxehjzhtfygaehglghfeecfpfpfpfpgageisfweokpfwhggafpkkglhgjoflhkkpdniniyeefgkkeejejegaeoidhsiahtdyidemjzfeesecjeimjsfwjkcxktjljziyfzhgjljziyjkdpgthsiafwjljljedpgdjpjldmjzjliahsjztansgrhdcxrlpskbchtposhlwzwyaasagspdweksswpkzczetehkfylysgbsbddttlpdwploftaorhfsgs
 ```
 
 ### Importing an SSH Signing Key from an Existing Key File
 
 If you have an existing SSH key file, you can import it into the `envelope` tool. The following example demonstrates how to import an Ed25519 key from an existing file. In this example, the key is stored in a file named `test_ed25519` and is encrypted with the password `test`. You can either provide the encryption password using the `--password` command-line argument or by typing it when prompted.
+
+```
+cat ./ssh_objects/test_ed25519
+
+│ -----BEGIN OPENSSH PRIVATE KEY-----
+│ b3BlbnNzaC1rZXktdjEAAAAACmFlczI1Ni1jdHIAAAAGYmNyeXB0AAAAGAAAABAAFiGpGp
+│ tFlJLG9vpkh+AcAAAAGAAAAAEAAAAzAAAAC3NzaC1lZDI1NTE5AAAAIFuMSVOimmADR7iC
+│ nLS7wO5GKTzybWCBkZWnO2d4KoBgAAAAoOtDEwxXcRHJWAxcYY5iJVdBCl5UGfLYYPK+Gb
+│ ybsn7Oz1WlEL4RVorR854HqXRwch5BQ5d3KXYm5vEj5kiu4cHLOHqkFoSRrwY7F7yOwgYr
+│ fNPS6xZvrhxx2spEtB95QROjGbgjEa1tNI4vXYArmK70tlpaEgsFMLfuXVZmlUZZS2M2eh
+│ 2L7leSuWLZDPVlVSsNqEXD/bVVGHGw3c1Tf8Y=
+│ -----END OPENSSH PRIVATE KEY-----
+```
 
 ```
 SSH_SIGNER=`envelope import <./ssh_objects/test_ed25519`
@@ -265,6 +264,8 @@ echo $SSH_SIGNER
 
 │ ur:signing-private-key/tanehnkkadotdpdpdpdpdpfwfeflgaglcxgwgdfeglgugufdcxgdgmgahffpghfecxgrfehkdpdpdpdpdpbkideofwjzidjtglknhsfxehjphthdjejyieimfefpfpfpfpfpfwfleckoidjngofpfpfpfpfeidjneskphtgyfpfpfpfpfpfpfpfpfpfwfpfpfpfpgtktfpfpfpfpjykniaeyiojyhthgbkgykkglghgoksgwgyfpfpfpfxfwidimfejzghjljojoiofpdyiheeiojokkdykpetfykpgminjeetetjnehioiohtflhfjoknjyjtihfxjsfphkfpfpfpfpgrfpkoecimimgwgsdnhkeebkkniofpfpfpfpjykniaeyiojyhthggykkglghgoksgwgyfpfpfpfxfwidimfejzghjljojoiofpdyiheeiojokkdykpetfykpgminjeetetjnehioiohtflhfjoknjyjtihfxjsfphkfpbkfpfpfpfefpemdldlecgrhkkokoenfgjliminktjsdngrfeisgaksgmjnfpiejeksjeeciogthdgseejkjojsknfwiogagtehkpgtguhfgwinjnjnfpfygmeminfxjtgsguemktgwecflbkgrghknkkidhgfxfwjehthgjtgweyieeegrjlfwiofpfpfpfpfdfdiekoidflhtfphfeyesjkhtjtgtjyghhgfgimgyjneskohskkehgyiajnetkpidflesimhkhgktfwbkdpdpdpdpdpfeglfycxgwgdfeglgugufdcxgdgmgahffpghfecxgrfehkdpdpdpdpdpbkgtctcyrd
 ```
+
+Note that this is just the signing private key, not the full `ur:crypto-prvkeys` structure. However, it can still be used as a signer for signing envelopes.
 
 ### Signing with the SSH Key
 
@@ -282,18 +283,18 @@ envelope format $SSH_SIGNED
 │         "knows": "Bob"
 │     ]
 │ } [
-│     'signed': Signature
+│     'signed': Signature(SshEd25519)
 │ ]
 ```
 
-This signed envelope looks just like the one we signed with Schnorr. The difference is that the signature was made with an SSH key, and must be verified with the corresponding SSH verifier.
+This signed envelope looks just like the one we signed with Schnorr, except the signature type is `Signature(SshEd25519)`. Since the signature was made with an SSH key, it must be verified with the corresponding SSH verifier.
 
 ### Generating an SSH Verifier from an SSH Signing Key
 
 To verify the signature, we need to generate an SSH verifier from the SSH public key. The following example demonstrates how to generate an SSH verifier from the Ed25519 key we generated earlier.
 
 ```
-SSH_VERIFIER=`envelope generate verifier $SSH_SIGNER`
+SSH_VERIFIER=`envelope generate pubkeys $SSH_SIGNER`
 echo $SSH_VERIFIER
 
 │ ur:signing-public-key/tanehsksjnjkjkisdpihieeyececehescxfpfpfpfpfxeoglknhsfxehjzhtfygaehglghfeecfpfpfpfpgafgkpgtguhfgwinjnjnfpfygmeminfxjtgsguemktgwecflgrghknkkidhgfxfwjehthgjtgweyieeegrjlfwiocxktjljziyfzhgjljziyjkdpgthsiafwjljljedpgdjpjldmjzjliahsjzmybngyfs
@@ -333,12 +334,12 @@ If desired, the private key can be encrypted with a password. To encrypt, add th
 envelope export --encrypt --password "test" $SSH_SIGNER
 
 │ -----BEGIN OPENSSH PRIVATE KEY-----
-│ b3BlbnNzaC1rZXktdjEAAAAACmFlczI1Ni1jdHIAAAAGYmNyeXB0AAAAGAAAABAIMtmOvv
-│ zzr7yu5OT+C6tOAAAAEAAAAAEAAAAzAAAAC3NzaC1lZDI1NTE5AAAAIFuMSVOimmADR7iC
-│ nLS7wO5GKTzybWCBkZWnO2d4KoBgAAAAoP7dlfXGRYBRsJgg0D2L9M/SUwyIjLXzhZajj0
-│ a0jRjueShpPOZ/r8HK99Jrq7IeCzxcmBqdZZxEPkDHPRNzVvZZRUYDFtNiszqsaZoLlf+r
-│ nGTfaTzo72XxjVCzlRG2QwDBj3WeSfi3IijauuJtopdwz+OmMNNwJG6Ba4fcbATInXtHlk
-│ UNt/6cpHT7g7Y6BKJBfAXCVato3ThQqbRlunE=
+│ b3BlbnNzaC1rZXktdjEAAAAACmFlczI1Ni1jdHIAAAAGYmNyeXB0AAAAGAAAABAkeiUPXe
+│ 5luC/l0qmvQKmjAAAAEAAAAAEAAAAzAAAAC3NzaC1lZDI1NTE5AAAAIFuMSVOimmADR7iC
+│ nLS7wO5GKTzybWCBkZWnO2d4KoBgAAAAoNnC0+/P6YpAqW+Q9veI09QztWUUuOPJUriP7S
+│ 9tGQ25b3+MT3j4KUD6UUaE88LrmXPtNJNBWsZswpdpNEiqJahDAkeH/elnQft15jFB5Alf
+│ /GUsxHcPxlHu+I590t/j3mRVVVfzKw/+d+pJdm8VfgZH+j5Zn66bVa5xoxVhVa51IBK7st
+│ BYyNv4/ibNLxYpOt4aCpaqoOmdFflYAjy36j8=
 │ -----END OPENSSH PRIVATE KEY-----
 ```
 
@@ -347,7 +348,7 @@ envelope export --encrypt --password "test" $SSH_SIGNER
 The following example demonstrates how to export an SSH public key to stdout. The public key can be saved to a file by redirecting the output to a file.
 
 ```
-envelope export $SSH_VERIFER
+envelope export $SSH_VERIFIER
 
 │ ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIFuMSVOimmADR7iCnLS7wO5GKTzybWCBkZWnO2d4KoBg wolf@Wolfs-MacBook-Pro.local
 ```

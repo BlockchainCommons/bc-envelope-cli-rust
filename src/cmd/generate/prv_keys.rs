@@ -2,6 +2,7 @@ use anyhow::Result;
 use bc_envelope::prelude::*;
 use clap::{Args, ValueEnum};
 use dcbor::prelude::Date;
+// use ssh_key::HashAlg; // Disabled due to RSA being unsupported
 
 /// Supported signature schemes for private key generation.
 #[derive(Debug, Clone, Copy, ValueEnum)]
@@ -14,6 +15,9 @@ enum SigningSchemeArg {
     SshDsa,
     SshEcdsaP256,
     SshEcdsaP384,
+    // Disabled due to tests not working correctly for undiagnosed reasons.
+    // SshRsaSha256,
+    // SshRsaSha512,
 }
 
 /// Supported encapsulation schemes for private key generation.
@@ -83,6 +87,14 @@ impl crate::exec::Exec for CommandArgs {
                     },
                     "",
                 )?,
+            // Disabled due to tests not working correctly for undiagnosed
+            // reasons. SigningSchemeArg::SshRsaSha256 =>
+            // private_key_base
+            //     .ssh_private_keys(ssh_key::Algorithm::Rsa { hash:
+            // Some(HashAlg::Sha256) }, "")?,
+            // SigningSchemeArg::SshRsaSha512 => private_key_base
+            //     .ssh_private_keys(ssh_key::Algorithm::Rsa { hash:
+            // Some(HashAlg::Sha512) }, "")?,
         };
 
         Ok(private_keys.ur_string())

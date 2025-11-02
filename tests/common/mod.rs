@@ -51,6 +51,7 @@ pub const ALICE_SEED: &str =
     "ur:seed/oyadgdlfwfdwlphlfsghcphfcsaybekkkbaejkhphdfndy";
 pub const ALICE_PRVKEY_BASE: &str =
     "ur:crypto-prvkey-base/gdlfwfdwlphlfsghcphfcsaybekkkbaejksfnynsct";
+pub const ALICE_PRVKEYS: &str = "ur:crypto-prvkeys/lftansgohdcxdntswmjerdqdoxhnguzsdrhfcmjsfewkhkvezohkeycpasdysrvdgypeoemtgywztansgehdcxisespmvlhflnweksvyfnmhvofysnhyztpyhlftluweaoemenurstreckoybbfroektnncyls";
 pub const ALICE_PUBKEYS: &str = "ur:crypto-pubkeys/lftanshfhdcxrdhgfsfsfsosrloebgwmfrfhsnlskegsjydecawybniadyzovehncacnlbmdbesstansgrhdcxytgefrmnbzftltcmcnaspaimhftbjehlatjklkhktidrpmjobslewkfretcaetbnwksorlbd";
 
 pub const BOB_ARID: &str = "ur:arid/hdcxdkreprfslewefgdwhtfnaosfgajpehhyrlcyjzheurrtamfsvolnaxwkioplgansesiabtdr";
@@ -65,6 +66,7 @@ pub const CAROL_SEED: &str =
     "ur:seed/oyadgdlpjypepycsvodtihcecwvsyljlzevwcnmepllulo";
 pub const CAROL_PRVKEY_BASE: &str =
     "ur:crypto-prvkey-base/gdlpjypepycsvodtihcecwvsyljlzevwcnamjzdnos";
+pub const CAROL_PRVKEYS: &str = "ur:crypto-prvkeys/lftansgohdcxmorsytadihzswmckyltauyolecmevychhlwmtylbhsmdptfdrtuewnjtdkmnmkretansgehdcxhentsejphsfwclylihbwroaoisptaskegrimyldebecsdrrtbdlrrslazeursspmldtkmdds";
 pub const CAROL_PUBKEYS: &str = "ur:crypto-pubkeys/lftanshfhdcxeckpgwvyasletilffeeekbtyjlzeimmtkslkpadrtnnytontpyfyeocnecstktkttansgrhdcxoyndtbndhspebgtewmgrgrgriygmvwckkkaysfzozclbgendfmhfjliorteenlbwsbkbotbs";
 
 pub const DAVE_PRVKEY_BASE: &str = "ur:crypto-prvkey-base/hdcxjtgrwefxlpihpmvtzoprdpfrbaghgmfmdyjsiafzaewlenmktesweocpluwepekgdyutaejy";

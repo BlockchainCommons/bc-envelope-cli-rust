@@ -4,12 +4,13 @@ use clap::Args;
 
 /// Convert private keys to public keys.
 ///
-/// Takes a ur:crypto-prvkeys and converts it to ur:crypto-pubkeys.
+/// Takes a ur:crypto-prvkeys or ur:signing-private-key and converts it to
+/// ur:crypto-pubkeys or ur:signing-public-key.
 #[derive(Debug, Args)]
 #[group(skip)]
 pub struct CommandArgs {
-    /// The private keys to convert (ur:crypto-prvkeys).
-    /// If not provided, reads from stdin.
+    /// The private keys to convert (ur:crypto-prvkeys or
+    /// ur:signing-private-key). If not provided, reads from stdin.
     #[arg(name = "PRVKEYS")]
     prv_keys: Option<String>,
 
@@ -35,27 +36,52 @@ impl CommandArgs {
 
 impl crate::exec::Exec for CommandArgs {
     fn exec(&self) -> Result<String> {
-        let private_keys =
-            bc_components::PrivateKeys::from_ur_string(self.read_prv_keys()?)?;
+        let ur_string = self.read_prv_keys()?;
 
-        let mut public_keys = private_keys.public_keys()?;
+        // Try to parse as PrivateKeys first
+        if let Ok(private_keys) =
+            bc_components::PrivateKeys::from_ur_string(&ur_string)
+        {
+            let mut public_keys = private_keys.public_keys()?;
 
-        // If a comment is provided and the signing key is SSH, update the
-        // comment
-        if !self.comment.is_empty() {
-            if let bc_components::SigningPublicKey::SSH(ssh_key) =
-                public_keys.signing_public_key()
-            {
-                // Create a new SSH key with the updated comment
-                let mut new_ssh_key = ssh_key.clone();
-                new_ssh_key.set_comment(&self.comment);
-                public_keys = bc_components::PublicKeys::new(
-                    bc_components::SigningPublicKey::SSH(new_ssh_key),
-                    public_keys.enapsulation_public_key().clone(),
-                );
+            // If a comment is provided and the signing key is SSH, update the
+            // comment
+            if !self.comment.is_empty() {
+                if let bc_components::SigningPublicKey::SSH(ssh_key) =
+                    public_keys.signing_public_key()
+                {
+                    // Create a new SSH key with the updated comment
+                    let mut new_ssh_key = ssh_key.clone();
+                    new_ssh_key.set_comment(&self.comment);
+                    public_keys = bc_components::PublicKeys::new(
+                        bc_components::SigningPublicKey::SSH(new_ssh_key),
+                        public_keys.enapsulation_public_key().clone(),
+                    );
+                }
             }
-        }
 
-        Ok(public_keys.ur_string())
+            Ok(public_keys.ur_string())
+        } else if let Ok(signing_private_key) =
+            bc_components::SigningPrivateKey::from_ur_string(&ur_string)
+        {
+            // Try to derive the public key from the signing private key
+            let mut signing_public_key = signing_private_key.public_key()?;
+
+            // If a comment is provided and the signing key is SSH, update the
+            // comment
+            if !self.comment.is_empty() {
+                if let bc_components::SigningPublicKey::SSH(ref mut ssh_key) =
+                    signing_public_key
+                {
+                    ssh_key.set_comment(&self.comment);
+                }
+            }
+
+            Ok(signing_public_key.ur_string())
+        } else {
+            bail!(
+                "invalid private key: must be ur:crypto-prvkeys or ur:signing-private-key"
+            )
+        }
     }
 }

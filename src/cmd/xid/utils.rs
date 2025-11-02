@@ -1,5 +1,5 @@
 use anyhow::{Result, bail};
-use bc_components::URI;
+use bc_components::{PrivateKeys, URI};
 use bc_envelope::{Envelope, PrivateKeyBase, PublicKeys};
 use bc_ur::prelude::*;
 use bc_xid::{
@@ -16,31 +16,67 @@ use crate::envelope_args::EnvelopeArgsLike;
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub enum InputKey {
     Public(PublicKeys),
-    Private(PrivateKeyBase),
+    PrivateBase(PrivateKeyBase),
+    PrivateKeys(PrivateKeys),
+    PrivateAndPublicKeys(PrivateKeys, PublicKeys),
 }
 
 pub fn read_key(key: Option<&str>) -> Result<InputKey> {
-    let mut key_string = String::new();
-    if key.is_none() {
-        std::io::stdin().read_line(&mut key_string)?;
-        key_string = key_string.trim().to_string();
+    let key_string = if let Some(key_str) = key {
+        key_str.to_string()
     } else {
-        key_string = key.as_ref().unwrap().to_string();
-    }
+        // Read from stdin
+        let mut input = String::new();
+        std::io::stdin().read_line(&mut input)?;
+        input.trim().to_string()
+    };
+
     if key_string.is_empty() {
         bail!("No key provided");
     }
-    let input_key =
-        if let Ok(public_keys) = PublicKeys::from_ur_string(&key_string) {
-            InputKey::Public(public_keys)
-        } else if let Ok(private_key_base) =
-            PrivateKeyBase::from_ur_string(&key_string)
+
+    // Check if the input contains two space-separated URs
+    let parts: Vec<&str> = key_string.split_whitespace().collect();
+
+    if parts.len() == 2 {
+        // Try to parse as two separate keys
+        if let (Ok(key1), Ok(key2)) =
+            (parse_single_key(parts[0]), parse_single_key(parts[1]))
         {
-            InputKey::Private(private_key_base)
-        } else {
-            bail!("Invalid public or private key base");
-        };
-    Ok(input_key)
+            // Ensure we have exactly one PrivateKeys and one PublicKeys
+            match (&key1, &key2) {
+                (InputKey::PrivateKeys(prv), InputKey::Public(pub_keys))
+                | (InputKey::Public(pub_keys), InputKey::PrivateKeys(prv)) => {
+                    return Ok(InputKey::PrivateAndPublicKeys(
+                        prv.clone(),
+                        pub_keys.clone(),
+                    ));
+                }
+                _ => {
+                    bail!(
+                        "When providing two keys, one must be crypto-prvkeys and one must be crypto-pubkeys"
+                    )
+                }
+            }
+        }
+    }
+
+    // Single key or the two-key parse failed - parse as single key
+    parse_single_key(&key_string)
+}
+
+fn parse_single_key(key_string: &str) -> Result<InputKey> {
+    if let Ok(public_keys) = PublicKeys::from_ur_string(key_string) {
+        Ok(InputKey::Public(public_keys))
+    } else if let Ok(private_key_base) =
+        PrivateKeyBase::from_ur_string(key_string)
+    {
+        Ok(InputKey::PrivateBase(private_key_base))
+    } else if let Ok(private_keys) = PrivateKeys::from_ur_string(key_string) {
+        Ok(InputKey::PrivateKeys(private_keys))
+    } else {
+        bail!("Invalid public keys, private key base, or private keys")
+    }
 }
 
 pub fn read_public_key(key: Option<&str>) -> Result<PublicKeys> {

@@ -1,6 +1,6 @@
 use anyhow::{Result, bail};
 use bc_components::{
-    PrivateKeyBase, Signer, SigningOptions, SigningPrivateKey,
+    PrivateKeyBase, PrivateKeys, Signer, SigningOptions, SigningPrivateKey,
 };
 use bc_envelope::prelude::*;
 use clap::Args;
@@ -14,7 +14,8 @@ use crate::envelope_args::{EnvelopeArgs, EnvelopeArgsLike};
 #[group(skip)]
 pub struct CommandArgs {
     /// The signer to sign the envelope subject with. May be a private key base
-    /// (ur:prvkeys) or a signing private key (ur:signing-private-key).
+    /// (ur:crypto-prvkey-base), private keys (ur:crypto-prvkeys), or a signing
+    /// private key (ur:signing-private-key).
     ///
     /// Multiple signers may be provided.
     #[arg(long, short)]
@@ -47,11 +48,14 @@ impl crate::exec::Exec for CommandArgs {
             bail!("at least one signer must be provided");
         }
         let mut private_key_bases: Vec<PrivateKeyBase> = Vec::new();
+        let mut private_keys: Vec<PrivateKeys> = Vec::new();
         let mut signing_private_keys: Vec<SigningPrivateKey> = Vec::new();
         let mut signing_options: Vec<Option<SigningOptions>> = Vec::new();
         for s in &self.signer {
             if let Ok(key) = PrivateKeyBase::from_ur_string(s) {
                 private_key_bases.push(key);
+            } else if let Ok(key) = PrivateKeys::from_ur_string(s) {
+                private_keys.push(key);
             } else if let Ok(key) = SigningPrivateKey::from_ur_string(s) {
                 if key.is_ssh() {
                     let namespace = self.namespace.clone();
@@ -75,6 +79,16 @@ impl crate::exec::Exec for CommandArgs {
         )> = Vec::new();
         for key in private_key_bases.iter() {
             signers.push((key as &dyn Signer, None, None));
+        }
+        for key in private_keys.iter() {
+            let options = if key.signing_private_key().is_ssh() {
+                let namespace = self.namespace.clone();
+                let hash_alg = self.hash_type.to_ssh_hash_alg();
+                Some(SigningOptions::Ssh { namespace, hash_alg })
+            } else {
+                None
+            };
+            signers.push((key as &dyn Signer, options, None));
         }
         for i in 0..signing_private_keys.len() {
             signers.push((

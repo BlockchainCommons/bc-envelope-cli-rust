@@ -16,7 +16,9 @@ pub trait KeyArgsLike {
     fn permissions(&self) -> &[XIDPrivilege];
     fn keys(&self) -> Option<&str>;
 
-    fn read_key(&self) -> Result<InputKey> { read_key(self.keys()) }
+    fn read_key(&self) -> Result<InputKey> {
+        read_key(self.keys())
+    }
 
     fn read_public_key(&self) -> Result<PublicKeys> {
         read_public_key(self.keys())
@@ -48,18 +50,29 @@ pub struct KeyArgs {
     permissions: Vec<XIDPrivilege>,
 
     /// The key to process. If omitted, the key will be read from stdin.
+    /// Can also be two space-separated URs for paired private and public keys.
     #[arg(name = "KEYS")]
     keys: Option<String>,
 }
 
 impl KeyArgsLike for KeyArgs {
-    fn nickname(&self) -> &str { &self.nickname }
+    fn nickname(&self) -> &str {
+        &self.nickname
+    }
 
-    fn private_opts(&self) -> PrivateOptions { self.private_opts }
+    fn private_opts(&self) -> PrivateOptions {
+        self.private_opts
+    }
 
-    fn endpoints(&self) -> &[URI] { &self.endpoints }
+    fn endpoints(&self) -> &[URI] {
+        &self.endpoints
+    }
 
-    fn permissions(&self) -> &[XIDPrivilege] { &self.permissions }
+    fn permissions(&self) -> &[XIDPrivilege] {
+        &self.permissions
+    }
 
-    fn keys(&self) -> Option<&str> { self.keys.as_deref() }
+    fn keys(&self) -> Option<&str> {
+        self.keys.as_deref()
+    }
 }

@@ -96,7 +96,7 @@ There is no output because the proof succeeded.
 A verifiable credential is constructed such that elements that might be elided are also salted, making correlation between digest and message much more difficult. Other assertions like `.issuer` and `.controller` are left unsalted.
 
 ```
-BOARD_PRVKEY_BASE="ur:crypto-prvkey-base/hdcxynlntpsbfrbgjkcetpzorohgsafsihcnhyrtoebzwegtvyzolbgtdaskcsldfgadtldmrkld"
+BOARD_PRVKEYS="ur:crypto-prvkeys/lftansgohdcxmtveftkkuovlgrpdpyyldmtetbftptrddmztislgvttyplmtentkistpvazooymhtansgehdcxaszmletdcsoyrdctjlfnimcwcknsrnbelglamywtdtiymkrketftjzsghkktaydmbbsncmkp"
 CREDENTIAL=`envelope subject type arid 4676635a6e6068c2ef3ffd8ff726dd401fd341036e920f136a1d8af5e829496d |
     envelope assertion add pred-obj known isA string "Certificate of Completion" |
     envelope assertion add pred-obj known issuer string "Example Electrical Engineering Board" |
@@ -112,7 +112,7 @@ CREDENTIAL=`envelope subject type arid 4676635a6e6068c2ef3ffd8ff726dd401fd341036
     envelope assertion add pred-obj string "professionalDevelopmentHours" number 15 |
     envelope assertion add pred-obj string "topics" cbor 82695375626a6563742031695375626a6563742032 |
     envelope subject type wrapped |
-    envelope sign --signer $BOARD_PRVKEY_BASE |
+    envelope sign --signer $BOARD_PRVKEYS |
     envelope assertion add pred-obj known note string "Signed by Example Electrical Engineering Board"`
 envelope format $CREDENTIAL
 

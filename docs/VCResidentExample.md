@@ -7,7 +7,7 @@ Envelopes can also be built to support verifiable credentials, supporting the co
 Here are the keys that the issuing entity uses to sign the credential:
 
 ```
-STATE_PRVKEY_BASE="ur:crypto-prvkey-base/gdfmmojswkjzuylpotrelrvdcpbdmsincshpiebwlp"
+STATE_PRVKEYS="ur:crypto-prvkeys/lftansgohdcxsfdaloaaqznbdizoztjocmpesffmjtrlltbbbzemadchjpwpyttdykgmqzgwtibetansgehdcxyawypymtvertbbluzcaxsbiamowthhsgrtihwynlsfbecftnhfmhzszccfhntlsffegefwsa"
 STATE_PUBKEYS="ur:crypto-pubkeys/lftanshfhdcxsegystjeisrshnyattgsswclpdmnsfzsgwcphgskdyuyahhecfrlhyvddsonbbsatansgrhdcxrfretiztzsoectchdsdizslpwyticsleonoxwliywfvsmhclrdplcplsfrnnptishywnpfdt"
 ```
 
@@ -65,15 +65,15 @@ JOHN_RESIDENT_CARD=`envelope subject type ur $JOHN_ARID | \
     envelope assertion add pred-obj known holder envelope $HOLDER | \
     envelope assertion add pred-obj known note string "The State of Example recognizes JOHN SMITH as a Permanent Resident." | \
     envelope subject type wrapped | \
-    envelope sign --signer $STATE_PRVKEY_BASE --note "Made by the State of Example."`
+    envelope sign --signer $STATE_PRVKEYS --note "Made by the State of Example."`
 
 envelope format $JOHN_RESIDENT_CARD
 
 │ {
-│     ARID(5c19ae9d) [
+│     ARID(b8ed3d5e) [
 │         'isA': "credential"
 │         "dateIssued": 2022-04-27
-│         'holder': ARID(5c19ae9d) [
+│         'holder': ARID(b8ed3d5e) [
 │             'isA': "Permanent Resident"
 │             'isA': "Person"
 │             "birthCountry": "bs" [
@@ -148,9 +148,9 @@ ELIDED_CARD=`envelope elide revealing "$TARGET" $JOHN_RESIDENT_CARD`
 envelope format $ELIDED_CARD
 
 │ {
-│     ARID(5c19ae9d) [
+│     ARID(b8ed3d5e) [
 │         'isA': "credential"
-│         'holder': ARID(5c19ae9d) [
+│         'holder': ARID(b8ed3d5e) [
 │             "familyName": "SMITH"
 │             "givenName": "JOHN"
 │             "image": "John Smith Smiling" [

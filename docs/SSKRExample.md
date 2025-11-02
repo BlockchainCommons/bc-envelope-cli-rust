@@ -28,8 +28,7 @@ envelope format $DAN_ENVELOPE
 Dan generates a public/private key pair that will allow him to recover his seed from any single share if he retains his private key.
 
 ```
-DAN_PRIVATE_KEY=`envelope generate prvkeys`
-DAN_PUBLIC_KEY=`envelope generate pubkeys $DAN_PRIVATE_KEY`
+envelope generate keypairs | read DAN_PRIVATE_KEY DAN_PUBLIC_KEY
 ```
 
 Dan splits the envelope into a single group 2-of-3. The output of the `envelope` tool contains the list of share envelopes separated by spaces. He then assigns this to a shell array.

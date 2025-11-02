@@ -30,7 +30,7 @@ impl From<PasswordDerivationType> for KeyDerivationMethod {
     }
 }
 
-/// Encrypt the envelope's subject using the provided key or password.
+/// Encrypt the envelope's subject.
 ///
 /// If the content key is not provided, an ephemerally-generated key is used.
 ///
@@ -38,8 +38,7 @@ impl From<PasswordDerivationType> for KeyDerivationMethod {
 ///     - If a password is provided, it is used to lock the content key.
 ///     - If an SSH identity is provided, it is used to lock the content key.
 ///     - If one or more recipients are provided, the envelope's subject is
-///       encrypted
-/// for those recipients using the content key.
+///       encrypted for those recipients using the content key.
 #[derive(Debug, Args)]
 #[group(skip)]
 pub struct CommandArgs {
@@ -94,7 +93,9 @@ pub struct CommandArgs {
 }
 
 impl EnvelopeArgsLike for CommandArgs {
-    fn envelope(&self) -> Option<&str> { self.envelope_args.envelope() }
+    fn envelope(&self) -> Option<&str> {
+        self.envelope_args.envelope()
+    }
 }
 
 impl crate::exec::Exec for CommandArgs {

@@ -49,27 +49,27 @@ PLAINTEXT_HELLO="Hello."
 
 ALICE_ARID="ur:arid/hdcxtygshybkzcecfhflpfdlhdonotoentnydmzsidmkindlldjztdmoeyishknybtbswtgwwpdi"
 ALICE_SEED="ur:seed/oyadgdlfwfdwlphlfsghcphfcsaybekkkbaejkhphdfndy"
-ALICE_PRVKEY_BASE="ur:crypto-prvkey-base/gdlfwfdwlphlfsghcphfcsaybekkkbaejksfnynsct"
+ALICE_PRVKEYS="ur:crypto-prvkeys/lftansgohdcxdntswmjerdqdoxhnguzsdrhfcmjsfewkhkvezohkeycpasdysrvdgypeoemtgywztansgehdcxisespmvlhflnweksvyfnmhvofysnhyztpyhlftluweaoemenurstreckoybbfroektnncyls"
 ALICE_PUBKEYS="ur:crypto-pubkeys/lftanshfhdcxrdhgfsfsfsosrloebgwmfrfhsnlskegsjydecawybniadyzovehncacnlbmdbesstansgrhdcxytgefrmnbzftltcmcnaspaimhftbjehlatjklkhktidrpmjobslewkfretcaetbnwksorlbd"
 
 BOB_ARID="ur:arid/hdcxdkreprfslewefgdwhtfnaosfgajpehhyrlcyjzheurrtamfsvolnaxwkioplgansesiabtdr"
 BOB_SEED="ur:seed/oyadgdcsknhkjkswgtecnslsjtrdfgimfyuykglfsfwtso"
-BOB_PRVKEY_BASE="ur:crypto-prvkey-base/gdcsknhkjkswgtecnslsjtrdfgimfyuykgbzbagdva"
+BOB_PRVKEYS="ur:crypto-prvkeys/lftansgohdcxhnlyeyzccpldfhsbmekkhspsmonlonctptenpkhettluhpzmteldssmejtdwbakttansgehdcxrkvapykpvalucwkgsalnmndefsfxfefsbwlujycebafybdqdpddwswswlktyzerfbeylotmk"
 BOB_PUBKEYS="ur:crypto-pubkeys/lftanshfhdcxndctnnflynethhhnwdkbhtehhdosmhgoclvefhjpehtaethkltsrmssnwfctfggdtansgrhdcxtipdbagmoertsklaflfhfewsptrlmhjpdeemkbdyktmtfwnninfrbnmwonetwphejzwnmhhf"
 
 CAROL_ARID="ur:arid/hdcxamstktdsdlplurgaoxfxdijyjysertlpehwstkwkskmnnsqdpfgwlbsertvatbbtcaryrdta"
 CAROL_SEED="ur:seed/oyadgdlpjypepycsvodtihcecwvsyljlzevwcnmepllulo"
-CAROL_PRVKEY_BASE="ur:crypto-prvkey-base/gdlpjypepycsvodtihcecwvsyljlzevwcnamjzdnos"
+CAROL_PRVKEYS="ur:crypto-prvkeys/lftansgohdcxmorsytadihzswmckyltauyolecmevychhlwmtylbhsmdptfdrtuewnjtdkmnmkretansgehdcxhentsejphsfwclylihbwroaoisptaskegrimyldebecsdrrtbdlrrslazeursspmldtkmdds"
 CAROL_PUBKEYS="ur:crypto-pubkeys/lftanshfhdcxeckpgwvyasletilffeeekbtyjlzeimmtkslkpadrtnnytontpyfyeocnecstktkttansgrhdcxoyndtbndhspebgtewmgrgrgriygmvwckkkaysfzozclbgendfmhfjliorteenlbwsbkbotbs"
 
 LEDGER_ARID="ur:arid/hdcxbatnhhvdnydnhfcfvlltwkmhlncydmjpbygomhdtqdqdintkmkzojyndterdnyhlvdnbenft"
 LEDGER_SEED="ur:seed/oyadgdtbjkknqdglgllupfhpimrtecytzopdcyjeoediae"
-LEDGER_PRVKEY_BASE="ur:crypto-prvkey-base/gdtbjkknqdglgllupfhpimrtecytzopdcyzthnltdl"
+LEDGER_PRVKEYS="ur:crypto-prvkeys/lftansgohdcxrscprndpsapluykpoxfdbnlgvagwmopykosrryhfoxryetdychfpsblfpactvacxtansgehdcxssprhtbyatpehdnleegyreswfecfeebzwkmhrlghlfryatlsmuglheaeamkikbjybagdbedl"
 LEDGER_PUBKEYS="ur:crypto-pubkeys/lftanshfhdcxmdoyskbbkshtkbgdmtqdmwtadiecmysksrfyoegdcfhnrkctrehfemwdtswdmugstansgrhdcxssdwgwtipdgazmaeftgeaddaiyectikbjebtckfzsbzoqdolrhwfwmihprgdecdtemryfdnt"
 
 STATE_ARID="ur:arid/hdcxaaenfsheytmseorfbsbzktrdrdfybkwntkeegetaveghzstattdertbswsihahvspllbghcp"
 STATE_SEED="ur:seed/oyadgdfmmojswkjzuylpotrelrvdcpbdmsincssfolqdpk"
-STATE_PRVKEY_BASE="ur:crypto-prvkey-base/gdfmmojswkjzuylpotrelrvdcpbdmsincshpiebwlp"
+STATE_PRVKEYS="ur:crypto-prvkeys/lftansgohdcxsfdaloaaqznbdizoztjocmpesffmjtrlltbbbzemadchjpwpyttdykgmqzgwtibetansgehdcxyawypymtvertbbluzcaxsbiamowthhsgrtihwynlsfbecftnhfmhzszccfhntlsffegefwsa"
 STATE_PUBKEYS="ur:crypto-pubkeys/lftanshfhdcxsegystjeisrshnyattgsswclpdmnsfzsgwcphgskdyuyahhecfrlhyvddsonbbsatansgrhdcxrfretiztzsoectchdsdizslpwyticsleonoxwliywfvsmhclrdplcplsfrnnptishywnpfdt"
 ```
 
@@ -103,10 +103,10 @@ This example demonstrates the signature of a plaintext message.
 Alice sends a signed plaintext message to Bob.
 
 ```
-SIGNED_ENVELOPE=`envelope subject type string $PLAINTEXT_HELLO | envelope sign --signer $ALICE_PRVKEY_BASE`
+SIGNED_ENVELOPE=`envelope subject type string $PLAINTEXT_HELLO | envelope sign --signer $ALICE_PRVKEYS`
 echo $SIGNED_ENVELOPE
 
-│ ur:envelope/lftpsoiyfdihjzjzjldmoyaxtpsotansghhdfztimhtswewlimbszsbnlrrsperkwznlmsehghlpbejooxdtdiyazmglcxiekblplrfrmwgajllnnnrfnbcxmswmgtaoykvdcnsalblgfhgekobsjzotsawsprhkeybshlidplgesr
+│ ur:envelope/lftpsoiyfdihjzjzjldmoyaxtpsotansghhdfzyllgzozckekpaawymwqztekphtuygsamincputweetahmtksjkghashhchjsrpjtkncletmsnedkdnlddpnynbldmwjzgmgenytaytbslbcmstneldchjlkotoemwfcyrsfnhpbt
 ```
 
 Alice ➡️ ☁️ ➡️ Bob
@@ -164,10 +164,10 @@ This example demonstrates a plaintext message signed by more than one party.
 Alice and Carol jointly send a signed plaintext message to Bob.
 
 ```
-MULTISIGNED_ENVELOPE=`envelope subject type string $PLAINTEXT_HELLO | envelope sign --signer $ALICE_PRVKEY_BASE --signer $CAROL_PRVKEY_BASE`
+MULTISIGNED_ENVELOPE=`envelope subject type string $PLAINTEXT_HELLO | envelope sign --signer $ALICE_PRVKEYS --signer $CAROL_PRVKEYS`
 echo $MULTISIGNED_ENVELOPE
 
-│ ur:envelope/lstpsoiyfdihjzjzjldmoyaxtpsotansghhdfzbgqdbglkfhjlrpimaawndiiortahtiethdrdotrkmerfaxatayoyjnkgmsmwgspegduehhswfnprtsayesrtrpjpvlmnaslpnsryqdflfhhypasgpaguidstfpbnhkmkoyaxtpsotansghhdfzksdedssrtdcywsneluvthelnadoxvydmfnfwrlfpwpqddltbetleoyvstalsykfgmngllonegrlefptivyglhttkvdeopkytyatpfrdibsvydseeurticnbkjtgeyncflsmdctrl
+│ ur:envelope/lstpsoiyfdihjzjzjldmoyaxtpsotansghhdfzlppavymhfhfhhentdepdgdvokosrwzhgmechrlhgiyjtihkitoiasrjzlpsocxntrfssytwlnyrnwscletbamofhaeiokknysshnrootnywpgwwtbeatdmvshsktcymnoyaxtpsotansghhdfzihpdfybkkggdksmemoescwbyvamebyhffwltahjzayfxjzwmiakksauyaecnknwngrsnsfsnztaxprhfvepdrflnspfsdawsptguhpksolzczowyjzltwzgwhshgpyyaenhycyzc
 ```
 
 Alice & Carol ➡️ ☁️ ➡️ Bob
@@ -216,7 +216,7 @@ Alice sends a message encrypted with the key to Bob.
 ENCRYPTED_ENVELOPE=`envelope subject type string $PLAINTEXT_HELLO | envelope encrypt --key $KEY`
 echo $ENCRYPTED_ENVELOPE
 
-│ ur:envelope/tansfwlrgrlubnrsgykoyntaskktbbrsgssbynrfkiosdtkpwmvsylytrngdwskgtdlarycsntpdvtvoguurgedlosprhddatansfphdcxlksojzuyktbykovsecbygebsldeninbdfptkwebtwzdpadglwetbgltnwdmwhlhksprsbghn
+│ ur:envelope/tansfwlrgrckhletctnsfndpctlygedmgsjogtsatildbaknadjzsbrpmegdjobzioskonnehhgmjnskpdbbgootyagthddatansfphdcxlksojzuyktbykovsecbygebsldeninbdfptkwebtwzdpadglwetbgltnwdmwhlhkfdderlpf
 ```
 
 Alice ➡️ ☁️ ➡️ Bob
@@ -260,7 +260,7 @@ ENCRYPTED_ENVELOPE=`envelope subject type string $PLAINTEXT_HELLO | envelope enc
 ```
 echo $ENCRYPTED_ENVELOPE
 
-│ ur:envelope/lftansfwlrgrlbhykttnrnluldfemointygsbkaorolupsehetkoytbtkslsgdrnolwmfyuednmocmmhwzbkytgldrlurdhddatansfphdcxlksojzuyktbykovsecbygebsldeninbdfptkwebtwzdpadglwetbgltnwdmwhlhkoybwtpsotanshptansfwlrhdcxfxpdnshtpresbdskveremkmdqdvyzmftckdyhtuocsjtlrtopfyljoykgensbemwgsluskplhsbzaewnryjteedmolgdqzlovdsssgknclrogtnyiolnmhdthfnthflfaxtansgmgdbsdimwlegesbvduymsutkbrdghdnghrsvotsndda
+│ ur:envelope/lftansfwlrgrdlvllyztmnqzhswmcwcxwfgsaeksaxpmctqdgstiimcpndhngdeyfmentbsnwejewysomtdrwnieckfztdhddatansfphdcxlksojzuyktbykovsecbygebsldeninbdfptkwebtwzdpadglwetbgltnwdmwhlhkoybwtpsotanshptansfwlrhdcxhghpgoadrsiskbascwlehgtdotispffyrkjzplwtdltpuertdkfzlevswnrdhndkgsjycmktfwperehestzmcsnsjkgdtowegeyauepeylotaxgoosgtbstebwishflfaxtansgmgdpdwmaymotieoutvlqzckjkkghfjnzsjtghnnbdkk
 ```
 
 Later, Alice decrypts the message using the same password.
@@ -328,7 +328,7 @@ Alice encrypts a message using her SSH agent.
 ENCRYPTED=`envelope subject type string $PLAINTEXT_HELLO | envelope encrypt --ssh-id alice@localhost`
 echo $ENCRYPTED
 
-│ ur:envelope/lftansfwlrgrzotttdghayfyfsdpnbiymtgsgartdytlptsntpielerenshfgdhyvowkcaatfmehrdfyweiebbieeekkgwhddatansfphdcxlksojzuyktbykovsecbygebsldeninbdfptkwebtwzdpadglwetbgltnwdmwhlhkoybwtpsotanshptansfwlrhdcxtirdvoqdberhinrewklahemotspkonuyzeytnebewpemjkrtylbndleoinynsppagslboeahutvtdlplynylwkbtingdnykofmmuhphnhsgacfihzobkgoaxwnkghddslsaatansgmgdmnceetcajllfrnkkotverohlpelrlrltjlhsjziniaihfzjzjliahsjzisjljkjydatkhenl
+│ ur:envelope/lftansfwlrgrwpeottcyckhykbeorotttbgsdwaxwdkowttkgukbtivwbwcfgdytnywnlgzooykolulrqzkkfhftecvwcxhddatansfphdcxlksojzuyktbykovsecbygebsldeninbdfptkwebtwzdpadglwetbgltnwdmwhlhkoybwtpsotanshptansfwlrhdcxsartotmkjyhffsfrmebgdyynganeayvtenchdpdyztfrbnluvdonlphslbzemnrhgssniepahyhywpkbmktsmolbqdgdlfbztkmwtpsenbmwwznyrppsbatlcsadhddslsaatansgmgdqzfsswfmjobnlysebwvtettntkkocswmjlhsjziniaihfzjzjliahsjzisjljkjyguzshpox
 ```
 
 ```
@@ -364,10 +364,10 @@ echo $KEY
 Alice signs a plaintext message, wraps it so her signature will also be encrypted, then encrypts it.
 
 ```
-SIGNED_ENCRYPTED=`envelope subject type string $PLAINTEXT_HELLO | envelope sign --signer $ALICE_PRVKEY_BASE | envelope subject type wrapped | envelope encrypt --key $KEY`
+SIGNED_ENCRYPTED=`envelope subject type string $PLAINTEXT_HELLO | envelope sign --signer $ALICE_PRVKEYS | envelope subject type wrapped | envelope encrypt --key $KEY`
 echo $SIGNED_ENCRYPTED
 
-│ ur:envelope/tansfwlrhdhgjszmsfgdynpmhdgtbwkemyoerflnfxmdesgridjzatlpzebnlahhjoldetecmtpabklkotckvacnvehgfwntvagttkwzgonemklnasiotblkwlgliaoxcskezetprhwyttcfnncfdsdtwzchfdvahgseutvwgagtsbpyvtwfjtqddigsckrnnyclwzpmbntprdntonmdgdsslfdnoefgkspfpdbyfpathyhncndawthddatansfphdcxpfzeltkkrpwsesbnnylrzceymdatdkpeiegowliossnyoxsrveieltftytnslgbyknbeuorl
+│ ur:envelope/tansfwlrhdhgjtlecaaonbtnjlaeqdbagmmnpssbmkkkjzfstnkbemreidiowsihrfyldnwtgrpeksamfhcyotfrpkretarhmdlutszmluticnlpemfwbybschplfngmptkbcyiajpdnrtgwjohejtstkplgaoiatdtoasaepetajntdkgcnztloykgsrdfgwpamrdcehpbkfrkgvdmegdhdaograsetteswjnnyhlihjklkehlpiahddatansfphdcxcyaeaawkzsmtbbmoclfzlalybkoyenzointavtprwecsdwwnwnclkefydedahtjeeewntlti
 ```
 
 Alice ➡️ ☁️ ➡️ Bob
@@ -431,10 +431,10 @@ echo $KEY
 Alice encrypts a plaintext message, then signs it.
 
 ```
-ENCRYPTED_SIGNED=`envelope subject type string $PLAINTEXT_HELLO | envelope encrypt --key $KEY | envelope sign --signer $ALICE_PRVKEY_BASE`
+ENCRYPTED_SIGNED=`envelope subject type string $PLAINTEXT_HELLO | envelope encrypt --key $KEY | envelope sign --signer $ALICE_PRVKEYS`
 echo $ENCRYPTED_SIGNED
 
-│ ur:envelope/lftansfwlrgrinhkwkbbdevduevosatkwlgsmyzoiadwotdmsonsplolptgmgdpesrrhvwvoosfxlpztsaisndtpbburcwhddatansfphdcxlksojzuyktbykovsecbygebsldeninbdfptkwebtwzdpadglwetbgltnwdmwhlhkoyaxtpsotansghhdfzjyqzbkfgiepyrfhlkbzclphdhgtnbbehadtoetrkgwdtcawsynrohkoscpssylcyylkifltakoztflptcyrswlsafeynrdmolurdftfnbnsfmsuoswwschsakghlrsylhysaaxad
+│ ur:envelope/lftansfwlrgrhpcsbdylrthemsdmfxdtnegswdidhpcasewdfmdrldrllbpdgdjnfydyrkbgcpltgogwiohhaewniyvthehddatansfphdcxlksojzuyktbykovsecbygebsldeninbdfptkwebtwzdpadglwetbgltnwdmwhlhkoyaxtpsotansghhdfzeececsnlwdbdfyjptslylejtcnyktokirshytbhloytdyajpecvatpmkahcaplrhnduodaaorhdewtfmeotawdlsihdsrlbklruywldktlvlltgapenlpfehecmonyrkayenvlnt
 ```
 
 Alice ➡️ ☁️ ➡️ Bob
@@ -469,7 +469,7 @@ Alice encrypts a message so that it can only be decrypted by Bob or Carol.
 ENVELOPE_TO=`envelope subject type string $PLAINTEXT_HELLO | envelope encrypt --recipient $BOB_PUBKEYS --recipient $CAROL_PUBKEYS`
 echo $ENVELOPE_TO
 
-│ ur:envelope/lstansfwlrgrgysgbseowfndfxwklfghjzgsfeahftztbggrjkssdewlmkcmgddmeszcnstepyctfzlacmpkpyimotrkrdhddatansfphdcxlksojzuyktbykovsecbygebsldeninbdfptkwebtwzdpadglwetbgltnwdmwhlhkoyahtpsotansgulftansfwlshddapypswkgedrfmmyketsnyjpnynnaasodmdtnylpyaemsbneaxseethhgersaopstniorshgsaolgsyltndscylkasfesamowyjzesgdbwaaztdizogundzcsfwemnskntdihngltansgrhdcxdlgegoneftkpvlfrpsiaprlnkgfechzclspdkbihwswtcpuodrtbfgwmehttswdroyahtpsotansgulftansfwlshddaprpebzghlnpmgtcyctkbfdframolfxdefrwlrsqzplenbdckuesojostctlsdlceasplrppfjtgsdpztcwwyzoctlbstndpsjlaygdrefhnerdfhgotinytblgcxcxdppdlsnttansgrhdcxsnlabgaychstbsrlsavetblbfxwlfsuyrnoxsfbzghhnwzpfwtpmtkfslkyklnieldcfgywf
+│ ur:envelope/lstansfwlrgrnegsuotnsgctlorfnywyldgsoycktaahemgshfpmhpfeesongdswjoktndvtfpbwcyglltfpbaecmyvyfghddatansfphdcxlksojzuyktbykovsecbygebsldeninbdfptkwebtwzdpadglwetbgltnwdmwhlhkoyahtpsotansgulftansfwlshddasatsbysstiwdaortcfdwprcejeadkbhkktoydyetqzfywdlykbsktopkonlrcwbaecdeihfmdigsmyfdfdhnskntihbgfwiagyghgdimatlyvweywddsuemsihfztnayvokgpstansgrhdcxcsgomtbklyzefdcsgyienycfjowmfhghgaadtajecewtdyrorybdtkstimhtglgsoyahtpsotansgulftansfwlshddaaofshlotwkayjpbybbdeflehftpetthkhdryiepkmorozmctjoishsdwtehsbzdtmnihuovycfgstakikkbyrorneyjegtlkiecegdaxlyceeelbdmlnbefmsfdwsocsremygstansgrhdcxgysgzstntydiutbzflpacacngwkkgeetgwpkskltwksahdadfrvwissoeemuayahgrgybbwl
 ```
 
 Alice ➡️ ☁️ ➡️ Bob
@@ -490,7 +490,7 @@ envelope format $ENVELOPE_TO
 Bob decrypts and reads the message.
 
 ```
-envelope decrypt $ENVELOPE_TO --recipient $BOB_PRVKEY_BASE | envelope extract string
+envelope decrypt $ENVELOPE_TO --recipient $BOB_PRVKEYS | envelope extract string
 
 │ Hello.
 ```
@@ -498,7 +498,7 @@ envelope decrypt $ENVELOPE_TO --recipient $BOB_PRVKEY_BASE | envelope extract st
 Carol decrypts and reads the message.
 
 ```
-envelope decrypt $ENVELOPE_TO --recipient $CAROL_PRVKEY_BASE | envelope extract string
+envelope decrypt $ENVELOPE_TO --recipient $CAROL_PRVKEYS | envelope extract string
 
 │ Hello.
 ```
@@ -506,7 +506,7 @@ envelope decrypt $ENVELOPE_TO --recipient $CAROL_PRVKEY_BASE | envelope extract 
 Alice didn't encrypt it to herself, so she can't read it.
 
 ```
-envelope decrypt $ENVELOPE_TO --recipient $ALICE_PRVKEY_BASE
+envelope decrypt $ENVELOPE_TO --recipient $ALICE_PRVKEYS
 
 │ Error: unknown recipient
 ```
@@ -518,10 +518,10 @@ This example demonstrates a signed, then encrypted message, sent to multiple par
 Alice signs a message, and then encrypts it so that it can only be decrypted by Bob or Carol.
 
 ```
-ENVELOPE_SIGNED_TO=`envelope subject type string $PLAINTEXT_HELLO | envelope sign --signer $ALICE_PRVKEY_BASE | envelope encrypt --recipient $BOB_PUBKEYS --recipient $CAROL_PUBKEYS`
+ENVELOPE_SIGNED_TO=`envelope subject type string $PLAINTEXT_HELLO | envelope sign --signer $ALICE_PRVKEYS | envelope encrypt --recipient $BOB_PUBKEYS --recipient $CAROL_PUBKEYS`
 echo $ENVELOPE_SIGNED_TO
 
-│ ur:envelope/lrtansfwlrgrbbsrpegwhtlyztatlfzeglgsmybsfttiknfpintpnyqztskpgdcevacyqdihasececdwcwimpskttbtnbkhddatansfphdcxlksojzuyktbykovsecbygebsldeninbdfptkwebtwzdpadglwetbgltnwdmwhlhkoyahtpsotansgulftansfwlshddaeclypmidwzjtatdrgunlyaghpkplmntnoetldrvlaepeemgdtkynaxwdaecmnsiyjspsmknywngswztktldnvtnlbeskmnonzorkgddsfzrflyiedybgcpsaghisjpchytdnvetansgrhdcxfwytuegmrozeyaeoasuotofrttndkktdoefygozeeeoxhncywlghbssklnemckfloyaxtpsotansghhdfzgannghwpfzwskbzehekidwihgrvafhjkynbzlftbmktbltveutwkaagtsorszsctwllezogodrtlzeisdrdndrglmsdisaosspcpihtdbawktabbfdmhnsesecemwdcmoyahtpsotansgulftansfwlshddahlfenbtsltgsamidbsldhhutlptpplemltpaeszeehctpttkfptlfprljnfrbbenamgegwcnaegsoykerhvygezcchjeetyapdssgdzobdwtmkfwlfrnzmztknoejtwmrnbgketansgrhdcxhliegdcxosbgnywsinjkaadtwttnjyylsrlsluwygtcnmtgyonwnronepklsbaaaiarklyeh
+│ ur:envelope/lrtansfwlrgrchhpcmhtryrfvwwpvlhyuogsbbpffrjyfelazootsemkptmngdfpvsinflmufytbotcswyjlamcytennfmhddatansfphdcxlksojzuyktbykovsecbygebsldeninbdfptkwebtwzdpadglwetbgltnwdmwhlhkoyahtpsotansgulftansfwlshddavdlojkpdhymkrliecmrhzoktfhmwjliokpdpbysftydnbyhlidclykmorovydidwmskpsotyzcgswyreyadapmbeoeinglgmftztgdfdbwsnjllfhtrspatoehoylgtkvlgrbntansgrhdcxdypmdngmketdktwltyutnbmozostbscnfpjptopkmdgdbgoesfatisgaietnroemoyaxtpsotansghhdfzkegyeyjnbwahcsvabngyfpzectgebbloveadflmtmospgyamsortvamylycnpfdtvecpfrzovtfsnbluonkirdglkiclnbbninditiykisdnghmusgqdvylrkifwietyoyahtpsotansgulftansfwlshddarshpynbbrkbkwegapklfhhgoeylubemydthelfmytkcsemprnycezetaflcpadhfatmhssjkotgshpskfggmvwjlfhvtynmtpfbwgdcyqdyadputjemekgbdpmvdtsbkrfpemwtansgrhdcxbwutskfzvsoeeyfyjsfmihcerhhsfppmaosnutptuytpdlbzaesozsfmykprhthdwprfrdtb
 ```
 
 Alice ➡️ ☁️ ➡️ Bob
@@ -543,7 +543,7 @@ envelope format $ENVELOPE_SIGNED_TO
 Bob verifies Alice's signature, then decrypts and reads the message
 
 ```
-envelope verify $ENVELOPE_SIGNED_TO --verifier $ALICE_PUBKEYS | envelope decrypt --recipient $BOB_PRVKEY_BASE | envelope extract string
+envelope verify $ENVELOPE_SIGNED_TO --verifier $ALICE_PUBKEYS | envelope decrypt --recipient $BOB_PRVKEYS | envelope extract string
 
 │ Hello.
 ```

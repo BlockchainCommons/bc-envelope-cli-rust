@@ -118,9 +118,9 @@ fn test_generate_prvkeys() -> Result<()> {
     bc_envelope::register_tags();
 
     let output1 = run_cli(&["generate", "prvkeys"])?;
-    let key1 = bc_components::PrivateKeyBase::from_ur_string(output1.trim())?;
+    let key1 = bc_components::PrivateKeys::from_ur_string(output1.trim())?;
     let output2 = run_cli(&["generate", "prvkeys"])?;
-    let key2 = bc_components::PrivateKeyBase::from_ur_string(output2.trim())?;
+    let key2 = bc_components::PrivateKeys::from_ur_string(output2.trim())?;
 
     assert_ne!(output1, output2);
     assert_ne!(key1, key2);
@@ -133,10 +133,9 @@ fn test_generate_prvkeys_from_seed() -> Result<()> {
         &[
             "generate",
             "prvkeys",
-            "--seed",
             "ur:seed/oyadgdkbehprpagrldhykpsnrodwcppfbwgmkemtaolbdt",
         ],
-        "ur:crypto-prvkey-base/gdkbehprpagrldhykpsnrodwcppfbwgmkeadrturam",
+        "ur:crypto-prvkeys/lftansgohdcxredidrnyhlnefzihclvepyfsvaemgsylfxamlstaprdnrsrkfmlukpaelrdtfgprtansgehdcxmybzpysoadgmcwoxlpensnfzwecspkihmkwlstvabzensbprnelssbfnqzbnfthlmycekeds",
     )
 }
 
@@ -146,10 +145,9 @@ fn test_generate_prvkeys_from_seed_envelope() -> Result<()> {
         &[
             "generate",
             "prvkeys",
-            "--seed",
             "ur:envelope/lftpsogdkbehprpagrldhykpsnrodwcppfbwgmkeoyadcsspmypsdnon",
         ],
-        "ur:crypto-prvkey-base/gdkbehprpagrldhykpsnrodwcppfbwgmkeadrturam",
+        "ur:crypto-prvkeys/lftansgohdcxredidrnyhlnefzihclvepyfsvaemgsylfxamlstaprdnrsrkfmlukpaelrdtfgprtansgehdcxmybzpysoadgmcwoxlpensnfzwecspkihmkwlstvabzensbprnelssbfnqzbnfthlmycekeds",
     )
 }
 
@@ -159,7 +157,7 @@ fn test_generate_pubkeys() -> Result<()> {
         &[
             "generate",
             "pubkeys",
-            "ur:crypto-prvkey-base/gdkbehprpagrldhykpsnrodwcppfbwgmkeadrturam",
+            "ur:crypto-prvkeys/lftansgohdcxredidrnyhlnefzihclvepyfsvaemgsylfxamlstaprdnrsrkfmlukpaelrdtfgprtansgehdcxmybzpysoadgmcwoxlpensnfzwecspkihmkwlstvabzensbprnelssbfnqzbnfthlmycekeds",
         ],
         "ur:crypto-pubkeys/lftanshfhdcxfpfwzcparpckfhvlidynjepsltsgjlprostpcmgehsmedtlbcktajodispgsfroytansgrhdcxenrytyrlpknyosfnfwlrwkdwsknduogwlyhdrfdrftflnnksbzsaierhbdrnrfbbfdvlwsca",
     )

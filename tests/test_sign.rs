@@ -6,7 +6,7 @@ use common::*;
 
 #[test]
 fn test_sign() -> Result<()> {
-    let prvkeys = "ur:crypto-prvkey-base/hdcxhsinuesrennenlhfaopycnrfrkdmfnsrvltowmtbmyfwdafxvwmthersktcpetdwfnbndeah";
+    let prvkeys = "ur:crypto-prvkeys/lftansgohdcxpfsndiahcxsfrhjoltglmebwwnnstovocffejytdbwihdkrtdykebkiebglbtteetansgehdcxvsdapeurgauovlbsvdfhvdcevywlptspfgnejpbksadehkhkfzehhfaysrsrbsdstbtagyeh";
     let signed =
         run_cli(&["sign", "--signer", prvkeys, ALICE_KNOWS_BOB_EXAMPLE])?;
     #[rustfmt::skip]
@@ -41,7 +41,7 @@ fn test_sign() -> Result<()> {
 
 #[test]
 fn test_sign_2() -> Result<()> {
-    let prvkeys = "ur:crypto-prvkey-base/hdcxhsinuesrennenlhfaopycnrfrkdmfnsrvltowmtbmyfwdafxvwmthersktcpetdwfnbndeah";
+    let prvkeys = "ur:crypto-prvkeys/lftansgohdcxpfsndiahcxsfrhjoltglmebwwnnstovocffejytdbwihdkrtdykebkiebglbtteetansgehdcxvsdapeurgauovlbsvdfhvdcevywlptspfgnejpbksadehkhkfzehhfaysrsrbsdstbtagyeh";
     let wrapped_signed = run_cli_piped(&[
         &["subject", "type", "wrapped", ALICE_KNOWS_BOB_EXAMPLE],
         &["sign", "--signer", prvkeys],
@@ -69,13 +69,7 @@ fn test_sign_2() -> Result<()> {
 fn test_sign_3() -> Result<()> {
     let e = run_cli_piped(&[
         &["subject", "type", "string", "Hello."],
-        &[
-            "sign",
-            "--signer",
-            ALICE_PRVKEY_BASE,
-            "--signer",
-            CAROL_PRVKEY_BASE,
-        ],
+        &["sign", "--signer", ALICE_PRVKEYS, "--signer", CAROL_PRVKEYS],
     ])?;
     #[rustfmt::skip]
     run_cli_expect(
@@ -87,5 +81,29 @@ fn test_sign_3() -> Result<()> {
             ]
         "#)
     )?;
+    Ok(())
+}
+
+#[test]
+fn test_sign_with_crypto_prvkeys() -> Result<()> {
+    // Test that the sign command accepts ur:crypto-prvkeys
+    let prvkeys = "ur:crypto-prvkeys/lftansgohdcxredidrnyhlnefzihclvepyfsvaemgsylfxamlstaprdnrsrkfmlukpaelrdtfgprtansgehdcxmybzpysoadgmcwoxlpensnfzwecspkihmkwlstvabzensbprnelssbfnqzbnfthlmycekeds";
+    let signed =
+        run_cli(&["sign", "--signer", prvkeys, ALICE_KNOWS_BOB_EXAMPLE])?;
+    #[rustfmt::skip]
+    run_cli_expect(
+        &["format", &signed],
+        indoc!(r#"
+            "Alice" [
+                "knows": "Bob"
+                'signed': Signature
+            ]
+        "#)
+    )?;
+
+    let pubkeys = run_cli(&["generate", "pubkeys", prvkeys])?;
+
+    run_cli(&["verify", &signed, "--verifier", &pubkeys])?;
+
     Ok(())
 }

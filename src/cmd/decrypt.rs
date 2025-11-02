@@ -1,5 +1,5 @@
 use anyhow::{Result, bail};
-use bc_components::{PrivateKeyBase, SymmetricKey};
+use bc_components::{PrivateKeyBase, PrivateKeys, SymmetricKey};
 use bc_envelope::prelude::*;
 use clap::Args;
 
@@ -9,12 +9,14 @@ use crate::{
     utils::read_password,
 };
 
-/// Decrypt the envelope's subject using one of the following:
+/// Decrypt the envelope's subject.
+///
+/// The subject can be decrypted using one of the following:
 ///     - A symmetric key (ur:crypto-key) (the content key) that was used to
 ///       encrypt the subject,
 ///     - A password that was used to lock the content key,
-///     - A recipient's private key (ur:crypto-prvkey-base) that was used to
-///       lock the content key,
+///     - A recipient's private key (ur:crypto-prvkey-base or ur:crypto-prvkeys)
+///       that was used to lock the content key,
 ///     - An SSH identity that was used to lock the content key.
 #[derive(Debug, Args)]
 #[group(skip)]
@@ -46,7 +48,7 @@ pub struct CommandArgs {
     askpass: bool,
 
     /// The recipient to whom the envelope's subject should be decrypted.
-    /// (ur:crypto-prvkey-base)
+    /// (ur:crypto-prvkey-base or ur:crypto-prvkeys)
     #[arg(
         long,
         short,
@@ -76,7 +78,9 @@ pub struct CommandArgs {
 }
 
 impl EnvelopeArgsLike for CommandArgs {
-    fn envelope(&self) -> Option<&str> { self.envelope_args.envelope() }
+    fn envelope(&self) -> Option<&str> {
+        self.envelope_args.envelope()
+    }
 }
 
 impl crate::exec::Exec for CommandArgs {
@@ -87,7 +91,11 @@ impl crate::exec::Exec for CommandArgs {
         if let Some(key_ur) = &self.key {
             // If a content key is provided, decrypt the subject using it
             let key = SymmetricKey::from_ur_string(key_ur)?;
-            Ok(envelope.decrypt_subject(&key)?.ur_string())
+            let decrypt_subject = envelope.decrypt_subject(&key);
+            match decrypt_subject {
+                Err(_) => bail!("decrypt failed"),
+                Ok(subject) => Ok(subject.ur_string()),
+            }
         } else if let Some(password) = &self.password {
             // If a password is provided, unlock the subject using it
             if !envelope.is_locked_with_password() {
@@ -101,11 +109,22 @@ impl crate::exec::Exec for CommandArgs {
             Ok(envelope.unlock_subject(password.as_bytes())?.ur_string())
         } else if let Some(recipient_ur) = &self.recipient {
             // If a recipient's private key is provided, decrypt the subject
-            // using it
-            let recipient = PrivateKeyBase::from_ur_string(recipient_ur)?;
-            Ok(envelope
-                .decrypt_subject_to_recipient(&recipient)?
-                .ur_string())
+            // using it. Try to parse as PrivateKeys first, then PrivateKeyBase.
+            if let Ok(recipient) = PrivateKeys::from_ur_string(recipient_ur) {
+                Ok(envelope
+                    .decrypt_subject_to_recipient(&recipient)?
+                    .ur_string())
+            } else if let Ok(recipient) =
+                PrivateKeyBase::from_ur_string(recipient_ur)
+            {
+                Ok(envelope
+                    .decrypt_subject_to_recipient(&recipient)?
+                    .ur_string())
+            } else {
+                bail!(
+                    "invalid recipient private key: must be ur:crypto-prvkeys or ur:crypto-prvkey-base"
+                )
+            }
         } else if let Some(ssh_id) = &self.ssh_id {
             // If an SSH identity is provided, decrypt the subject using the SSH
             // agent

@@ -28,15 +28,25 @@ pub struct CommandArgs {
 }
 
 impl KeyArgsLike for CommandArgs {
-    fn nickname(&self) -> &str { self.key_args.nickname() }
+    fn nickname(&self) -> &str {
+        self.key_args.nickname()
+    }
 
-    fn private_opts(&self) -> PrivateOptions { self.key_args.private_opts() }
+    fn private_opts(&self) -> PrivateOptions {
+        self.key_args.private_opts()
+    }
 
-    fn endpoints(&self) -> &[URI] { self.key_args.endpoints() }
+    fn endpoints(&self) -> &[URI] {
+        self.key_args.endpoints()
+    }
 
-    fn permissions(&self) -> &[XIDPrivilege] { self.key_args.permissions() }
+    fn permissions(&self) -> &[XIDPrivilege] {
+        self.key_args.permissions()
+    }
 
-    fn keys(&self) -> Option<&str> { self.key_args.keys() }
+    fn keys(&self) -> Option<&str> {
+        self.key_args.keys()
+    }
 }
 
 impl crate::exec::Exec for CommandArgs {
@@ -44,7 +54,7 @@ impl crate::exec::Exec for CommandArgs {
         let keys = self.read_key()?;
 
         let mut xid_document = match &keys {
-            InputKey::Private(private_key_base) => XIDDocument::new(
+            InputKey::PrivateBase(private_key_base) => XIDDocument::new(
                 InceptionKeyOptions::PrivateKeyBase(private_key_base.clone()),
                 GenesisMarkOptions::None,
             ),
@@ -52,6 +62,25 @@ impl crate::exec::Exec for CommandArgs {
                 InceptionKeyOptions::PublicKeys(public_keys.clone()),
                 GenesisMarkOptions::None,
             ),
+            InputKey::PrivateKeys(private_keys) => {
+                let public_keys = private_keys.public_keys()?;
+                XIDDocument::new(
+                    InceptionKeyOptions::PublicAndPrivateKeys(
+                        public_keys,
+                        private_keys.clone(),
+                    ),
+                    GenesisMarkOptions::None,
+                )
+            }
+            InputKey::PrivateAndPublicKeys(private_keys, public_keys) => {
+                XIDDocument::new(
+                    InceptionKeyOptions::PublicAndPrivateKeys(
+                        public_keys.clone(),
+                        private_keys.clone(),
+                    ),
+                    GenesisMarkOptions::None,
+                )
+            }
         };
 
         let mut key = xid_document.keys().iter().next().unwrap().clone();

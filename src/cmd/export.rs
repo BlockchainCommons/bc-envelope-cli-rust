@@ -21,7 +21,7 @@ pub struct CommandArgs {
     ///
     /// - An SSH `ur:signing-public-key` (exported to single-line text),
     ///
-    /// - A `ur:pubkeys` (`PublicKeys`) with an SSH public key (exported to
+    /// - A `ur:crypto-pubkeys` (`PublicKeys`) with an SSH public key (exported to
     ///   single-line text),
     ///
     /// - An SSH `ur:signature` signature (exported to PEM).
@@ -97,7 +97,7 @@ impl crate::exec::Exec for CommandArgs {
             }
         } else {
             bail!(
-                "Invalid object for export. Supported types are SSH `ur:signing-private-key`, SSH `ur:signing-public-key`, SSH `ur:pubkeys`, and `ur:signature`."
+                "Invalid object for export. Supported types are SSH `ur:signing-private-key`, SSH `ur:signing-public-key`, SSH `ur:crypto-pubkeys`, and `ur:signature`."
             );
         }
     }

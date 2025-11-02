@@ -32,19 +32,31 @@ pub struct CommandArgs {
 }
 
 impl KeyArgsLike for CommandArgs {
-    fn nickname(&self) -> &str { self.key_args.nickname() }
+    fn nickname(&self) -> &str {
+        self.key_args.nickname()
+    }
 
-    fn private_opts(&self) -> PrivateOptions { self.key_args.private_opts() }
+    fn private_opts(&self) -> PrivateOptions {
+        self.key_args.private_opts()
+    }
 
-    fn endpoints(&self) -> &[URI] { self.key_args.endpoints() }
+    fn endpoints(&self) -> &[URI] {
+        self.key_args.endpoints()
+    }
 
-    fn permissions(&self) -> &[XIDPrivilege] { self.key_args.permissions() }
+    fn permissions(&self) -> &[XIDPrivilege] {
+        self.key_args.permissions()
+    }
 
-    fn keys(&self) -> Option<&str> { self.key_args.keys() }
+    fn keys(&self) -> Option<&str> {
+        self.key_args.keys()
+    }
 }
 
 impl EnvelopeArgsLike for CommandArgs {
-    fn envelope(&self) -> Option<&str> { self.envelope_args.envelope() }
+    fn envelope(&self) -> Option<&str> {
+        self.envelope_args.envelope()
+    }
 }
 
 impl XIDDocumentReadable for CommandArgs {}
@@ -57,10 +69,20 @@ impl crate::exec::Exec for CommandArgs {
             self.read_xid_document_with_password(&self.password_args.read)?;
 
         let mut key = match &keys {
-            InputKey::Private(private_key_base) => {
+            InputKey::PrivateBase(private_key_base) => {
                 Key::new_with_private_key_base(private_key_base.clone())
             }
             InputKey::Public(public_keys) => Key::new(public_keys.clone()),
+            InputKey::PrivateKeys(private_keys) => {
+                let public_keys = private_keys.public_keys()?;
+                Key::new_with_private_keys(private_keys.clone(), public_keys)
+            }
+            InputKey::PrivateAndPublicKeys(private_keys, public_keys) => {
+                Key::new_with_private_keys(
+                    private_keys.clone(),
+                    public_keys.clone(),
+                )
+            }
         };
 
         update_key(

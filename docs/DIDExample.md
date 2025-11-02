@@ -13,13 +13,13 @@ ALICE_UNSIGNED_DOCUMENT=`envelope subject type ur $ALICE_ARID | \
     envelope assertion add pred-obj known controller ur $ALICE_ARID | \
     envelope assertion add pred-obj known key ur $ALICE_PUBKEYS`
 ALICE_SIGNED_DOCUMENT=`envelope subject type wrapped $ALICE_UNSIGNED_DOCUMENT | \
-    envelope sign --signer $ALICE_PRVKEY_BASE --note "Made by Alice."`
+    envelope sign --signer $ALICE_PRVKEYS --note "Made by Alice."`
 envelope format $ALICE_SIGNED_DOCUMENT
 
 │ {
 │     ARID(d44c5e0a) [
 │         'controller': ARID(d44c5e0a)
-│         'key': PublicKeys(cab108a0, SigningPublicKey(SchnorrPublicKey(26712894)), EncapsulationPublicKey(X25519PublicKey(00b42db3)))
+│         'key': PublicKeys(cab108a0, SigningPublicKey(93a4d4e7, SchnorrPublicKey(26712894)), EncapsulationPublicKey(00b42db3, X25519PublicKey(00b42db3)))
 │     ]
 │ } [
 │     'signed': {
@@ -51,7 +51,7 @@ ALICE_REGISTRATION=`envelope subject type ur $ALICE_ARID_UR | \
     envelope assertion add pred-obj known entity envelope $ALICE_SIGNED_DOCUMENT | \
     envelope assertion add pred-obj known dereferenceVia uri $ALICE_URI | \
     envelope subject type wrapped | \
-    envelope sign --signer $LEDGER_PRVKEY_BASE --note "Made by ExampleLedger."`
+    envelope sign --signer $LEDGER_PRVKEYS --note "Made by ExampleLedger."`
 envelope format $ALICE_REGISTRATION
 
 │ {
@@ -60,7 +60,7 @@ envelope format $ALICE_REGISTRATION
 │         'entity': {
 │             ARID(d44c5e0a) [
 │                 'controller': ARID(d44c5e0a)
-│                 'key': PublicKeys(cab108a0, SigningPublicKey(SchnorrPublicKey(26712894)), EncapsulationPublicKey(X25519PublicKey(00b42db3)))
+│                 'key': PublicKeys(cab108a0, SigningPublicKey(93a4d4e7, SchnorrPublicKey(26712894)), EncapsulationPublicKey(00b42db3, X25519PublicKey(00b42db3)))
 │             ]
 │         } [
 │             'signed': {
@@ -104,7 +104,7 @@ ALICE_CHALLENGE=`envelope generate nonce | \
     envelope assertion add pred-obj known note string "Challenge to Alice from Bob."`
 echo $ALICE_CHALLENGE
 
-│ ur:envelope/lftpsotansglgshevewshdtobktdemaslfdyrsoyaatpsokscefxishsjzjzihjtioihcxjyjlcxfpjziniaihcxiyjpjljncxfwjliddmbtcavsrl
+│ ur:envelope/lftpsotansglgsdpknfhrofmcfrkstpkrshfmooyaatpsokscefxishsjzjzihjtioihcxjyjlcxfpjziniaihcxiyjpjljncxfwjliddmhyhpzcwk
 ```
 
 ```
@@ -121,7 +121,7 @@ Alice responds by adding her registered URI to the nonce, and signing it.
 ALICE_RESPONSE=`envelope subject type wrapped $ALICE_CHALLENGE | \
     envelope assertion add pred-obj known dereferenceVia uri $ALICE_URI | \
     envelope subject type wrapped | \
-    envelope sign --signer $ALICE_PRVKEY_BASE --note "Made by Alice."`
+    envelope sign --signer $ALICE_PRVKEYS --note "Made by Alice."`
 envelope format $ALICE_RESPONSE
 
 │ {
@@ -133,8 +133,12 @@ envelope format $ALICE_RESPONSE
 │         'dereferenceVia': URI(https://exampleledger.com/arid/d44c5e0afd353f47b02f58a5a3a29d9a2efa6298692f896cd2923268599a0d0f)
 │     ]
 │ } [
-│     'signed': Signature [
-│         'note': "Made by Alice."
+│     'signed': {
+│         Signature [
+│             'note': "Made by Alice."
+│         ]
+│     } [
+│         'signed': Signature
 │     ]
 │ ]
 ```
@@ -145,7 +149,7 @@ ALICE_CHALLENGE_2=`envelope extract wrapped $ALICE_RESPONSE | \
     envelope extract wrapped`
 echo $ALICE_CHALLENGE_2
 
-│ ur:envelope/lftpsotansglgshevewshdtobktdemaslfdyrsoyaatpsokscefxishsjzjzihjtioihcxjyjlcxfpjziniaihcxiyjpjljncxfwjliddmbtcavsrl
+│ ur:envelope/lftpsotansglgsdpknfhrofmcfrkstpkrshfmooyaatpsokscefxishsjzjzihjtioihcxjyjlcxfpjziniaihcxiyjpjljncxfwjliddmhyhpzcwk
 ```
 
 `ALICE_CHALLENGE_2` is indeed the same as `ALICE_CHALLENGE`, above. Bob then extracts Alice's registered URI.
