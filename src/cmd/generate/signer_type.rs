@@ -1,6 +1,6 @@
 use anyhow::{Result, bail};
 use bc_components::{
-    EncapsulationPublicKey, PrivateKeyBase, PublicKeys, SigningPrivateKey,
+    PrivateKeyBase, SigningPrivateKey,
 };
 use clap::ValueEnum;
 use ssh_key::{Algorithm as SSHAlgorithm, EcdsaCurve, HashAlg};
@@ -92,20 +92,5 @@ impl SignerType {
             // private_key_base.ssh_signing_private_key(SSHAlgorithm::Ecdsa {
             // curve: EcdsaCurve::NistP521 }, ssh_comment),
         }
-    }
-
-    pub fn to_public_keys(
-        self,
-        private_key_base: &PrivateKeyBase,
-        ssh_comment: impl Into<String>,
-    ) -> Result<PublicKeys> {
-        let signing_private_key =
-            self.to_signing_private_key(private_key_base, ssh_comment)?;
-        Ok(PublicKeys::new(
-            signing_private_key.public_key()?,
-            EncapsulationPublicKey::X25519(
-                private_key_base.x25519_private_key().public_key(),
-            ),
-        ))
     }
 }
