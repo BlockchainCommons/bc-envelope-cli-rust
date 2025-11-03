@@ -23,7 +23,7 @@ cargo install bc-envelope-cli
 To install a specific version:
 
 ```bash
-cargo install bc-envelope-cli --version 0.25.0
+cargo install bc-envelope-cli --version 0.26.0
 ```
 
 ### From Source
@@ -82,6 +82,14 @@ See the [docs](docs/README.md) directory for more information.
 **NOTE:** The `envelope` tool does *not* have the same command line syntax as the Swift `envelope` tool.
 
 ## Version History
+
+### 0.26.0: November 3, 2025
+
+- Align to dependencies.
+- Replace generate signer/verifier commands with keypairs command.
+- Add signing and encryption options to generate prvkeys.
+- Add generator options to xid new command.
+- Update documentation.
 
 ### 0.24.0: October 20, 2025
 
