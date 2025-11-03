@@ -157,7 +157,7 @@ fn test_xid_new() {
             XID(93a4d4e7) [
                 'key': PublicKeys(cab108a0, SigningPublicKey(93a4d4e7, SchnorrPublicKey(26712894)), EncapsulationPublicKey(00b42db3, X25519PublicKey(00b42db3))) [
                     {
-                        'privateKey': PrivateKeys(8624d38b, SigningPrivateKey(096547df, ECPrivateKey(74343f20)), EncapsulationPrivateKey(d8e2032d, X25519PrivateKey(d8e2032d)))
+                        'privateKey': PrivateKeys(8624d38b, SigningPrivateKey(096547df, SchnorrPrivateKey(74343f20)), EncapsulationPrivateKey(d8e2032d, X25519PrivateKey(d8e2032d)))
                     } [
                         'salt': Salt
                     ]
@@ -765,7 +765,7 @@ fn test_xid_delegate() {
     //       means it will have to be resolved to be used.
     //
     // ```
-    // 
+    //
     // $ ALICE_XID_DOC=`envelope xid new --nickname 'Alice' $ALICE_PUBKEYS`
 
     let alice_xid_doc =
