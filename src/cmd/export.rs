@@ -21,8 +21,8 @@ pub struct CommandArgs {
     ///
     /// - An SSH `ur:signing-public-key` (exported to single-line text),
     ///
-    /// - A `ur:crypto-pubkeys` (`PublicKeys`) with an SSH public key (exported to
-    ///   single-line text),
+    /// - A `ur:crypto-pubkeys` (`PublicKeys`) with an SSH public key (exported
+    ///   to single-line text),
     ///
     /// - An SSH `ur:signature` signature (exported to PEM).
     ///

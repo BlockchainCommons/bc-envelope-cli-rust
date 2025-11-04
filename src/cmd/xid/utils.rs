@@ -193,14 +193,61 @@ pub fn xid_document_to_ur_string(
 }
 
 /// Convert an XID document to a UR string with password encryption support.
+/// If encrypting private keys, also encrypts the generator with the same password.
 pub fn xid_document_to_ur_string_with_password(
     xid_document: &XIDDocument,
     private_opts: PrivateOptions,
     password_args: &WritePasswordArgs,
 ) -> Result<String> {
-    let options = if private_opts.is_encrypt() {
+    use bc_xid::MarkGeneratorOptions;
+
+    let (private_key_options, generator_options) = if private_opts.is_encrypt()
+    {
         // Read the encryption password
         let password = password_args.read_password("Encryption password:")?;
+        let private_key_options = PrivateKeyOptions::Encrypt {
+            method: password_args.method(),
+            password: password.clone().into_bytes(),
+        };
+        // Encrypt the generator with the same password
+        let generator_options = MarkGeneratorOptions::Encrypt {
+            method: password_args.method(),
+            password: password.into_bytes(),
+        };
+        (private_key_options, generator_options)
+    } else {
+        // Include private keys and generator in plaintext based on private_opts
+        let private_key_options = PrivateKeyOptions::from(private_opts);
+        let generator_options = MarkGeneratorOptions::Include;
+        (private_key_options, generator_options)
+    };
+
+    let unsigned_envelope = xid_document
+        .to_unsigned_envelope_opt_with_generator(
+            private_key_options,
+            generator_options,
+        );
+    Ok(envelope_to_xid_ur_string(&unsigned_envelope))
+}
+
+/// Convert an XID document to a UR string with password encryption and
+/// generator options support.
+pub fn xid_document_to_ur_string_with_options(
+    xid_document: &XIDDocument,
+    private_opts: PrivateOptions,
+    password_args: &WritePasswordArgs,
+    generator_opts: super::generator_options::GeneratorOptions,
+    shared_password: Option<String>,
+) -> Result<String> {
+    use bc_xid::MarkGeneratorOptions;
+
+    let private_key_options = if private_opts.is_encrypt() {
+        // Use shared password if available, otherwise read it
+        let password = if let Some(ref pwd) = shared_password {
+            pwd.clone()
+        } else {
+            password_args.read_password("Encryption password:")?
+        };
         PrivateKeyOptions::Encrypt {
             method: password_args.method(),
             password: password.into_bytes(),
@@ -209,6 +256,25 @@ pub fn xid_document_to_ur_string_with_password(
         PrivateKeyOptions::from(private_opts)
     };
 
-    let unsigned_envelope = xid_document.to_unsigned_envelope_opt(options);
+    let generator_options = if generator_opts.is_encrypt() {
+        // Use shared password if available, otherwise read it
+        let password = if let Some(ref pwd) = shared_password {
+            pwd.clone()
+        } else {
+            password_args.read_password("Generator password:")?
+        };
+        MarkGeneratorOptions::Encrypt {
+            method: password_args.method(),
+            password: password.into_bytes(),
+        }
+    } else {
+        MarkGeneratorOptions::from(generator_opts)
+    };
+
+    let unsigned_envelope = xid_document
+        .to_unsigned_envelope_opt_with_generator(
+            private_key_options,
+            generator_options,
+        );
     Ok(envelope_to_xid_ur_string(&unsigned_envelope))
 }

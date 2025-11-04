@@ -23,8 +23,8 @@ pub struct CommandArgs {
     threshold: usize,
 
     /// The verifier(s). May be a private key base (ur:prvkeys), `PublicKeys`
-    /// (ur:crypto-pubkeys) signing private key (ur:signing-private-key), or a signing
-    /// public key (ur:signing-public-key).
+    /// (ur:crypto-pubkeys) signing private key (ur:signing-private-key), or a
+    /// signing public key (ur:signing-public-key).
     ///
     /// Multiple verifiers may be provided.
     #[arg(long, short)]

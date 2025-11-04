@@ -4,10 +4,10 @@ use clap::ValueEnum;
 #[derive(ValueEnum, Copy, Clone, Debug, PartialEq, Eq, Default)]
 pub enum GeneratorOptions {
     /// Include the mark generator key in plaintext
-    #[default]
     Include,
 
-    /// Omit the mark generator
+    /// Omit the mark generator (no provenance mark will be created)
+    #[default]
     Omit,
 
     /// Elide the mark generator (maintains digest tree)
