@@ -1,4 +1,4 @@
-use bc_xid::PrivateKeyOptions;
+use bc_xid::XIDPrivateKeyOptions;
 use clap::ValueEnum;
 
 #[derive(ValueEnum, Copy, Clone, Debug, PartialEq, Eq, Default)]
@@ -22,16 +22,16 @@ impl PrivateOptions {
     pub fn is_encrypt(&self) -> bool { matches!(self, PrivateOptions::Encrypt) }
 }
 
-impl From<PrivateOptions> for PrivateKeyOptions {
+impl From<PrivateOptions> for XIDPrivateKeyOptions {
     fn from(options: PrivateOptions) -> Self {
         match options {
-            PrivateOptions::Omit => PrivateKeyOptions::Omit,
-            PrivateOptions::Include => PrivateKeyOptions::Include,
-            PrivateOptions::Elide => PrivateKeyOptions::Elide,
+            PrivateOptions::Omit => XIDPrivateKeyOptions::Omit,
+            PrivateOptions::Include => XIDPrivateKeyOptions::Include,
+            PrivateOptions::Elide => XIDPrivateKeyOptions::Elide,
             // The Encrypt variant needs additional parameters, so this is a
             // placeholder. Callers should use the password_args module to
             // construct the full PrivateKeyOptions::Encrypt variant.
-            PrivateOptions::Encrypt => PrivateKeyOptions::Omit,
+            PrivateOptions::Encrypt => XIDPrivateKeyOptions::Omit,
         }
     }
 }

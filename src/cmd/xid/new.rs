@@ -1,6 +1,6 @@
 use anyhow::Result;
 use bc_components::URI;
-use bc_xid::{GenesisMarkOptions, InceptionKeyOptions, XIDDocument};
+use bc_xid::{XIDGenesisMarkOptions, XIDInceptionKeyOptions, XIDDocument};
 use clap::Args;
 
 use super::{
@@ -71,13 +71,13 @@ impl crate::exec::Exec for CommandArgs {
 
         // Determine genesis mark options based on generator_opts
         let genesis_mark_opts = match self.generator_opts {
-            GeneratorOptions::Omit => GenesisMarkOptions::None,
+            GeneratorOptions::Omit => XIDGenesisMarkOptions::None,
             GeneratorOptions::Include | GeneratorOptions::Encrypt => {
                 // Use a random seed to initialize the provenance mark generator
                 let mut rng = bc_rand::SecureRandomNumberGenerator;
                 let random_seed =
                     provenance_mark::ProvenanceSeed::new_using(&mut rng);
-                GenesisMarkOptions::Seed(random_seed, None, None, None)
+                XIDGenesisMarkOptions::Seed(random_seed, None, None, None)
             }
             GeneratorOptions::Elide => {
                 anyhow::bail!(
@@ -88,17 +88,17 @@ impl crate::exec::Exec for CommandArgs {
 
         let mut xid_document = match &keys {
             InputKey::PrivateBase(private_key_base) => XIDDocument::new(
-                InceptionKeyOptions::PrivateKeyBase(private_key_base.clone()),
+                XIDInceptionKeyOptions::PrivateKeyBase(private_key_base.clone()),
                 genesis_mark_opts,
             ),
             InputKey::Public(public_keys) => XIDDocument::new(
-                InceptionKeyOptions::PublicKeys(public_keys.clone()),
+                XIDInceptionKeyOptions::PublicKeys(public_keys.clone()),
                 genesis_mark_opts,
             ),
             InputKey::PrivateKeys(private_keys) => {
                 let public_keys = private_keys.public_keys()?;
                 XIDDocument::new(
-                    InceptionKeyOptions::PublicAndPrivateKeys(
+                    XIDInceptionKeyOptions::PublicAndPrivateKeys(
                         public_keys,
                         private_keys.clone(),
                     ),
@@ -107,7 +107,7 @@ impl crate::exec::Exec for CommandArgs {
             }
             InputKey::PrivateAndPublicKeys(private_keys, public_keys) => {
                 XIDDocument::new(
-                    InceptionKeyOptions::PublicAndPrivateKeys(
+                    XIDInceptionKeyOptions::PublicAndPrivateKeys(
                         public_keys.clone(),
                         private_keys.clone(),
                     ),

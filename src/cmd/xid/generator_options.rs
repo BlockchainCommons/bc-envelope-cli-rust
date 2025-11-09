@@ -1,4 +1,4 @@
-use bc_xid::MarkGeneratorOptions;
+use bc_xid::XIDGeneratorOptions;
 use clap::ValueEnum;
 
 #[derive(ValueEnum, Copy, Clone, Debug, PartialEq, Eq, Default)]
@@ -24,16 +24,16 @@ impl GeneratorOptions {
     }
 }
 
-impl From<GeneratorOptions> for MarkGeneratorOptions {
+impl From<GeneratorOptions> for XIDGeneratorOptions {
     fn from(options: GeneratorOptions) -> Self {
         match options {
-            GeneratorOptions::Omit => MarkGeneratorOptions::Omit,
-            GeneratorOptions::Include => MarkGeneratorOptions::Include,
-            GeneratorOptions::Elide => MarkGeneratorOptions::Elide,
+            GeneratorOptions::Omit => XIDGeneratorOptions::Omit,
+            GeneratorOptions::Include => XIDGeneratorOptions::Include,
+            GeneratorOptions::Elide => XIDGeneratorOptions::Elide,
             // The Encrypt variant needs additional parameters, so this is a
             // placeholder. Callers should use the password_args module to
             // construct the full MarkGeneratorOptions::Encrypt variant.
-            GeneratorOptions::Encrypt => MarkGeneratorOptions::Omit,
+            GeneratorOptions::Encrypt => XIDGeneratorOptions::Omit,
         }
     }
 }
