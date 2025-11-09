@@ -8,6 +8,7 @@ use super::{
     key_args::{KeyArgs, KeyArgsLike},
     password_args::WritePasswordArgs,
     private_options::PrivateOptions,
+    signing_args::SigningArgs,
     utils::{InputKey, update_key, xid_document_to_ur_string},
     xid_privilege::XIDPrivilege,
 };
@@ -31,6 +32,9 @@ pub struct CommandArgs {
 
     #[command(flatten)]
     password_args: WritePasswordArgs,
+
+    #[command(flatten)]
+    signing_args: SigningArgs,
 }
 
 impl KeyArgsLike for CommandArgs {
@@ -118,12 +122,15 @@ impl crate::exec::Exec for CommandArgs {
         );
         xid_document.add_key(key)?;
 
+        let signing_options = self.signing_args.signing_options(None)?;
+
         xid_document_to_ur_string(
             &xid_document,
             self.private_opts(),
             Some(&self.password_args),
             Some(self.generator_opts),
             shared_password,
+            signing_options,
         )
     }
 }

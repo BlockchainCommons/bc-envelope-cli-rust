@@ -114,24 +114,28 @@ pub fn update_key(
 
 pub trait XIDDocumentReadable: EnvelopeArgsLike {
     fn read_xid_document(&self) -> Result<XIDDocument> {
-        let envelope = self.read_envelope()?;
-        Ok(XIDDocument::from_envelope(
-            &envelope,
-            None,
-            XIDVerifySignature::None,
-        )?)
+        self.read_xid_document_with_verify(XIDVerifySignature::None)
     }
 
-    fn read_xid_document_with_password(
+    fn read_xid_document_with_verify(
+        &self,
+        verify: XIDVerifySignature,
+    ) -> Result<XIDDocument> {
+        let envelope = self.read_envelope()?;
+        Ok(XIDDocument::from_envelope(&envelope, None, verify)?)
+    }
+
+    fn read_xid_document_with_password_and_verify(
         &self,
         password_args: &ReadPasswordArgs,
+        verify: XIDVerifySignature,
     ) -> Result<XIDDocument> {
         let envelope = self.read_envelope()?;
         let password = password_args.read_password("Decryption password:")?;
         Ok(XIDDocument::from_envelope(
             &envelope,
             password.as_deref().map(|s| s.as_bytes()),
-            XIDVerifySignature::None,
+            verify,
         )?)
     }
 }
@@ -192,14 +196,15 @@ pub fn envelope_to_xid_ur_string(envelope: &Envelope) -> String {
 /// Convert an XID document to a UR string.
 ///
 /// This is the consolidated function for all XIDDocument to UR string
-/// conversions. It handles private key options, generator options, and optional
-/// password encryption.
+/// conversions. It handles private key options, generator options, signing
+/// options, and optional password encryption.
 pub fn xid_document_to_ur_string(
     xid_document: &XIDDocument,
     private_opts: PrivateOptions,
     password_args: Option<&WritePasswordArgs>,
     generator_opts: Option<super::generator_options::GeneratorOptions>,
     shared_password: Option<String>,
+    signing_options: XIDSigningOptions,
 ) -> Result<String> {
     use bc_xid::XIDGeneratorOptions;
 
@@ -252,7 +257,7 @@ pub fn xid_document_to_ur_string(
     let envelope = xid_document.to_envelope(
         private_key_options,
         generator_options,
-        XIDSigningOptions::default(),
+        signing_options,
     )?;
     Ok(envelope_to_xid_ur_string(&envelope))
 }

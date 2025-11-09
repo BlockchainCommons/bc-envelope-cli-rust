@@ -7,7 +7,9 @@ use super::service_args::{ServiceArgs, ServiceArgsLike};
 use crate::{
     cmd::xid::{
         private_options::PrivateOptions,
+        signing_args::SigningArgs,
         utils::{XIDDocumentReadable, xid_document_to_ur_string},
+        verify_args::VerifyArgs,
         xid_privilege::XIDPrivilege,
     },
     envelope_args::{EnvelopeArgs, EnvelopeArgsLike},
@@ -19,6 +21,12 @@ use crate::{
 pub struct CommandArgs {
     #[command(flatten)]
     service_args: ServiceArgs,
+
+    #[command(flatten)]
+    verify_args: VerifyArgs,
+
+    #[command(flatten)]
+    signing_args: SigningArgs,
 
     #[command(flatten)]
     envelope_args: EnvelopeArgs,
@@ -50,7 +58,9 @@ impl crate::exec::Exec for CommandArgs {
     fn exec(&self) -> Result<String> {
         let uri = self.read_uri()?;
 
-        let mut xid_document = self.read_xid_document()?;
+        let mut xid_document = self.read_xid_document_with_verify(
+            self.verify_args.verify_signature(),
+        )?;
 
         let mut service = Service::new(uri);
 
@@ -83,12 +93,15 @@ impl crate::exec::Exec for CommandArgs {
         xid_document.check_service_consistency(&service)?;
         xid_document.add_service(service)?;
 
+        let signing_options = self.signing_args.signing_options(None)?;
+
         xid_document_to_ur_string(
             &xid_document,
             PrivateOptions::Include,
             None,
             None,
             None,
+            signing_options,
         )
     }
 }

@@ -8,7 +8,9 @@ pub mod new;
 pub mod password_args;
 pub mod private_options;
 pub mod service;
+pub mod signing_args;
 pub mod utils;
+pub mod verify_args;
 pub mod xid_privilege;
 
 use anyhow::Result;

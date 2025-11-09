@@ -7,7 +7,9 @@ use crate::{
         key_args::{KeyArgs, KeyArgsLike},
         password_args::ReadWritePasswordArgs,
         private_options::PrivateOptions,
+        signing_args::SigningArgs,
         utils::{XIDDocumentReadable, update_key, xid_document_to_ur_string},
+        verify_args::VerifyArgs,
         xid_privilege::XIDPrivilege,
     },
     envelope_args::{EnvelopeArgs, EnvelopeArgsLike},
@@ -22,6 +24,12 @@ pub struct CommandArgs {
 
     #[command(flatten)]
     password_args: ReadWritePasswordArgs,
+
+    #[command(flatten)]
+    verify_args: VerifyArgs,
+
+    #[command(flatten)]
+    signing_args: SigningArgs,
 
     #[command(flatten)]
     envelope_args: EnvelopeArgs,
@@ -49,8 +57,11 @@ impl crate::exec::Exec for CommandArgs {
     fn exec(&self) -> Result<String> {
         let public_keys = self.read_public_key()?;
 
-        let mut xid_document =
-            self.read_xid_document_with_password(&self.password_args.read)?;
+        let mut xid_document = self
+            .read_xid_document_with_password_and_verify(
+                &self.password_args.read,
+                self.verify_args.verify_signature(),
+            )?;
 
         let mut key = xid_document
             .find_key_by_public_keys(&public_keys)
@@ -66,12 +77,17 @@ impl crate::exec::Exec for CommandArgs {
         );
         xid_document.add_key(key)?;
 
+        let signing_options = self
+            .signing_args
+            .signing_options(Some(&self.password_args.read))?;
+
         xid_document_to_ur_string(
             &xid_document,
             self.private_opts(),
             Some(&self.password_args.write),
             None,
             None,
+            signing_options,
         )
     }
 }

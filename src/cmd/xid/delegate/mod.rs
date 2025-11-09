@@ -7,7 +7,7 @@ pub mod remove;
 pub mod update;
 
 use anyhow::Result;
-use bc_xid::{Delegate, HasPermissions, Privilege, XIDDocument};
+use bc_xid::{Delegate, HasPermissions, Privilege, XIDDocument, XIDSigningOptions};
 use clap::{Args, Subcommand};
 
 use super::xid_privilege::XIDPrivilege;
@@ -66,12 +66,12 @@ pub fn xid_document_to_unsigned_envelope_ur_string(
     use super::{
         private_options::PrivateOptions, utils::xid_document_to_ur_string,
     };
-
     xid_document_to_ur_string(
         &xid_document,
         PrivateOptions::Include,
         None,
         None,
         None,
+        XIDSigningOptions::None,
     )
 }
