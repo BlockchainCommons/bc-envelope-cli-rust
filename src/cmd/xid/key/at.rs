@@ -55,7 +55,11 @@ impl crate::exec::Exec for CommandArgs {
         } else {
             // Return public key (original behavior)
             let envelope = self.read_envelope()?;
-            XIDDocument::from_envelope(&envelope, None, XIDVerifySignature::None)?; // Validation only
+            XIDDocument::from_envelope(
+                &envelope,
+                None,
+                XIDVerifySignature::None,
+            )?; // Validation only
             let key_assertions =
                 envelope.assertions_with_predicate(known_values::KEY);
             let key_assertion = key_assertions

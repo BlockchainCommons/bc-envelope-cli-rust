@@ -34,9 +34,12 @@ impl crate::exec::Exec for CommandArgs {
         let mut xid_document = self.read_xid_document()?;
         xid_document.remove_service(&uri)?;
 
-        Ok(xid_document_to_ur_string(
+        xid_document_to_ur_string(
             &xid_document,
             PrivateOptions::Include,
-        ))
+            None,
+            None,
+            None,
+        )
     }
 }

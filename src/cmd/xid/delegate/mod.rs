@@ -7,8 +7,7 @@ pub mod remove;
 pub mod update;
 
 use anyhow::Result;
-use bc_ur::prelude::*;
-use bc_xid::{Delegate, HasPermissions, XIDGeneratorOptions, XIDPrivateKeyOptions, Privilege, XIDSigningOptions, XIDDocument};
+use bc_xid::{Delegate, HasPermissions, Privilege, XIDDocument};
 use clap::{Args, Subcommand};
 
 use super::xid_privilege::XIDPrivilege;
@@ -61,15 +60,18 @@ fn add_delegate_permissions(
     }
 }
 
-fn xid_document_to_unsigned_envelope_ur_string(
+pub fn xid_document_to_unsigned_envelope_ur_string(
     xid_document: XIDDocument,
-) -> String {
-    let unsigned_envelope = xid_document.to_envelope(
-        XIDPrivateKeyOptions::default(),
-        XIDGeneratorOptions::default(),
-        XIDSigningOptions::default(),
-    ).unwrap();
-    UR::new("xid", unsigned_envelope.to_cbor())
-        .unwrap()
-        .string()
+) -> Result<String> {
+    use super::{
+        private_options::PrivateOptions, utils::xid_document_to_ur_string,
+    };
+
+    xid_document_to_ur_string(
+        &xid_document,
+        PrivateOptions::Include,
+        None,
+        None,
+        None,
+    )
 }

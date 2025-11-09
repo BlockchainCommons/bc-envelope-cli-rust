@@ -51,6 +51,6 @@ impl crate::exec::Exec for CommandArgs {
         let mut xid_document = self.read_xid_document()?;
         xid_document.add_delegate(delegate)?;
 
-        Ok(xid_document_to_unsigned_envelope_ur_string(xid_document))
+        xid_document_to_unsigned_envelope_ur_string(xid_document)
     }
 }

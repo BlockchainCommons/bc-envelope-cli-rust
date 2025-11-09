@@ -10,7 +10,7 @@ use crate::{
         private_options::PrivateOptions,
         utils::{
             InputKey, XIDDocumentReadable, update_key,
-            xid_document_to_ur_string_with_password,
+            xid_document_to_ur_string,
         },
         xid_privilege::XIDPrivilege,
     },
@@ -82,10 +82,12 @@ impl crate::exec::Exec for CommandArgs {
 
         xid_document.add_key(key)?;
 
-        xid_document_to_ur_string_with_password(
+        xid_document_to_ur_string(
             &xid_document,
             self.private_opts(),
-            &self.password_args.write,
+            Some(&self.password_args.write),
+            None,
+            None,
         )
     }
 }

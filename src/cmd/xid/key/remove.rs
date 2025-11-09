@@ -6,8 +6,7 @@ use crate::{
         password_args::ReadWritePasswordArgs,
         private_options::PrivateOptions,
         utils::{
-            XIDDocumentReadable, read_public_key,
-            xid_document_to_ur_string_with_password,
+            XIDDocumentReadable, read_public_key, xid_document_to_ur_string,
         },
     },
     envelope_args::{EnvelopeArgs, EnvelopeArgsLike},
@@ -45,10 +44,12 @@ impl crate::exec::Exec for CommandArgs {
             self.read_xid_document_with_password(&self.password_args.read)?;
         xid_document.remove_key(&public_keys)?;
 
-        xid_document_to_ur_string_with_password(
+        xid_document_to_ur_string(
             &xid_document,
             self.private_opts,
-            &self.password_args.write,
+            Some(&self.password_args.write),
+            None,
+            None,
         )
     }
 }

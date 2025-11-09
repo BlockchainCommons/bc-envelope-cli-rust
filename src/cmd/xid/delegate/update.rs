@@ -52,6 +52,6 @@ impl crate::exec::Exec for CommandArgs {
         add_delegate_permissions(&mut delegate, &self.permissions);
         xid_document.add_delegate(delegate)?;
 
-        Ok(xid_document_to_unsigned_envelope_ur_string(xid_document))
+        xid_document_to_unsigned_envelope_ur_string(xid_document)
     }
 }

@@ -98,9 +98,12 @@ impl crate::exec::Exec for CommandArgs {
         xid_document.check_service_consistency(&service)?;
         xid_document.add_service(service)?;
 
-        Ok(xid_document_to_ur_string(
+        xid_document_to_ur_string(
             &xid_document,
             PrivateOptions::Include,
-        ))
+            None,
+            None,
+            None,
+        )
     }
 }
