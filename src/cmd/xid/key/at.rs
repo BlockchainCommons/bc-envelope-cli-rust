@@ -1,7 +1,7 @@
 use anyhow::{Result, anyhow};
 use bc_envelope::known_values;
 use bc_ur::prelude::*;
-use bc_xid::XIDDocument;
+use bc_xid::{XIDDocument, XIDVerifySignature};
 use clap::Args;
 
 use crate::{
@@ -55,7 +55,7 @@ impl crate::exec::Exec for CommandArgs {
         } else {
             // Return public key (original behavior)
             let envelope = self.read_envelope()?;
-            XIDDocument::from_unsigned_envelope(&envelope)?; // Validation only
+            XIDDocument::from_envelope(&envelope, None, XIDVerifySignature::None)?; // Validation only
             let key_assertions =
                 envelope.assertions_with_predicate(known_values::KEY);
             let key_assertion = key_assertions

@@ -1,7 +1,7 @@
 use anyhow::Result;
 use bc_envelope::known_values;
 use bc_ur::prelude::*;
-use bc_xid::XIDDocument;
+use bc_xid::{XIDDocument, XIDVerifySignature};
 use clap::Args;
 
 use crate::{
@@ -33,7 +33,9 @@ pub struct CommandArgs {
 }
 
 impl EnvelopeArgsLike for CommandArgs {
-    fn envelope(&self) -> Option<&str> { self.envelope_args.envelope() }
+    fn envelope(&self) -> Option<&str> {
+        self.envelope_args.envelope()
+    }
 }
 
 impl XIDDocumentReadable for CommandArgs {}
@@ -53,7 +55,11 @@ impl crate::exec::Exec for CommandArgs {
         } else {
             // Return public keys (original behavior)
             let envelope = self.read_envelope()?;
-            XIDDocument::from_unsigned_envelope(&envelope)?; // Validation only
+            XIDDocument::from_envelope(
+                &envelope,
+                None,
+                XIDVerifySignature::None,
+            )?; // Validation only
             let key_assertions =
                 envelope.assertions_with_predicate(known_values::KEY);
             let keys = key_assertions

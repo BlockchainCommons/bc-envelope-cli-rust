@@ -4,7 +4,7 @@ use bc_envelope::{Envelope, PrivateKeyBase, PublicKeys};
 use bc_ur::prelude::*;
 use bc_xid::{
     HasNickname, HasPermissions, Key, XIDDocument, XIDGeneratorOptions,
-    XIDPrivateKeyOptions, XIDSigningOptions,
+    XIDPrivateKeyOptions, XIDSigningOptions, XIDVerifySignature,
 };
 
 use super::{
@@ -115,7 +115,11 @@ pub fn update_key(
 pub trait XIDDocumentReadable: EnvelopeArgsLike {
     fn read_xid_document(&self) -> Result<XIDDocument> {
         let envelope = self.read_envelope()?;
-        Ok(XIDDocument::from_unsigned_envelope(&envelope)?)
+        Ok(XIDDocument::from_envelope(
+            &envelope,
+            None,
+            XIDVerifySignature::None,
+        )?)
     }
 
     fn read_xid_document_with_password(
@@ -124,9 +128,10 @@ pub trait XIDDocumentReadable: EnvelopeArgsLike {
     ) -> Result<XIDDocument> {
         let envelope = self.read_envelope()?;
         let password = password_args.read_password("Decryption password:")?;
-        Ok(XIDDocument::from_unsigned_envelope_with_password(
+        Ok(XIDDocument::from_envelope(
             &envelope,
             password.as_deref().map(|s| s.as_bytes()),
+            XIDVerifySignature::None,
         )?)
     }
 }

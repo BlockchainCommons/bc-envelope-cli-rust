@@ -1,7 +1,7 @@
 use anyhow::{Result, anyhow};
 use bc_components::URI;
 use bc_envelope::known_values;
-use bc_xid::XIDDocument;
+use bc_xid::{XIDDocument, XIDVerifySignature};
 use clap::Args;
 
 use crate::{
@@ -29,7 +29,7 @@ impl XIDDocumentReadable for CommandArgs {}
 impl crate::exec::Exec for CommandArgs {
     fn exec(&self) -> Result<String> {
         let envelope = self.read_envelope()?;
-        XIDDocument::from_unsigned_envelope(&envelope)?; // Validation only
+        XIDDocument::from_envelope(&envelope, None, XIDVerifySignature::None)?; // Validation only
         let method_assertions =
             envelope.assertions_with_predicate(known_values::DEREFERENCE_VIA);
         let method_assertion = method_assertions
