@@ -31,10 +31,7 @@ pub struct SigningArgs {
 
 impl Default for SigningArgs {
     fn default() -> Self {
-        Self {
-            sign: SigningOption::None,
-            signing_key: None,
-        }
+        Self { sign: SigningOption::None, signing_key: None }
     }
 }
 
@@ -66,15 +63,15 @@ impl SigningArgs {
 
                 // Use the same password that unlocks the XID document
                 let password = if let Some(pwd_args) = password_args {
-                    pwd_args
-                        .read_password("Password:")?
-                        .ok_or_else(|| {
-                            anyhow::anyhow!(
-                                "Password required to decrypt signing key"
-                            )
-                        })?
+                    pwd_args.read_password("Password:")?.ok_or_else(|| {
+                        anyhow::anyhow!(
+                            "Password required to decrypt signing key"
+                        )
+                    })?
                 } else {
-                    bail!("Encrypted signing key requires password (use --password)");
+                    bail!(
+                        "Encrypted signing key requires password (use --password)"
+                    );
                 };
 
                 let decrypted_envelope =

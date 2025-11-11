@@ -64,18 +64,17 @@ impl crate::exec::Exec for CommandArgs {
 
         let mut service = Service::new(uri);
 
-        if let Some(name) = self.name() {
-            if !name.is_empty() {
-                service.set_name(name)?;
-            }
+        if let Some(name) = self.name()
+            && !name.is_empty()
+        {
+            service.set_name(name)?;
         }
 
-        if let Some(capability) = self.capability() {
-            if !capability.is_empty() {
-                service.set_capability(capability);
-            }
+        if let Some(capability) = self.capability()
+            && !capability.is_empty()
+        {
+            service.set_capability(capability);
         }
-
         for privilege in self.permissions() {
             service.add_allow((*privilege).into());
         }

@@ -177,10 +177,10 @@ impl CommandArgs {
                 let mut ur_type: Option<String> = self.ur_type.clone();
                 // If there is a known_tag and it has a name, then use that as
                 // the ur_type.
-                if let Some(known_tag) = known_tag {
-                    if let Some(name) = known_tag.name() {
-                        ur_type = Some(name.to_string());
-                    }
+                if let Some(known_tag) = known_tag
+                    && let Some(name) = known_tag.name()
+                {
+                    ur_type = Some(name.to_string());
                 }
                 // If there is no ur_type, then error.
                 if ur_type.is_none() {

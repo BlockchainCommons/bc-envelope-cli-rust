@@ -177,12 +177,13 @@ pub fn get_private_key_ur(
     }
 }
 pub fn read_uri(uri: Option<&URI>) -> Result<URI> {
-    let mut uri_string = String::new();
-    if uri.is_none() {
-        std::io::stdin().read_line(&mut uri_string)?;
+    let uri_string = if let Some(u) = uri {
+        u.to_string()
     } else {
-        uri_string = uri.as_ref().unwrap().to_string();
-    }
+        let mut input = String::new();
+        std::io::stdin().read_line(&mut input)?;
+        input
+    };
     if uri_string.is_empty() {
         bail!("No URI provided");
     }

@@ -46,18 +46,17 @@ impl crate::exec::Exec for CommandArgs {
 
             // If a comment is provided and the signing key is SSH, update the
             // comment
-            if !self.comment.is_empty() {
-                if let bc_components::SigningPublicKey::SSH(ssh_key) =
+            if !self.comment.is_empty()
+                && let bc_components::SigningPublicKey::SSH(ssh_key) =
                     public_keys.signing_public_key()
-                {
-                    // Create a new SSH key with the updated comment
-                    let mut new_ssh_key = ssh_key.clone();
-                    new_ssh_key.set_comment(&self.comment);
-                    public_keys = bc_components::PublicKeys::new(
-                        bc_components::SigningPublicKey::SSH(new_ssh_key),
-                        public_keys.enapsulation_public_key().clone(),
-                    );
-                }
+            {
+                // Create a new SSH key with the updated comment
+                let mut new_ssh_key = ssh_key.clone();
+                new_ssh_key.set_comment(&self.comment);
+                public_keys = bc_components::PublicKeys::new(
+                    bc_components::SigningPublicKey::SSH(new_ssh_key),
+                    public_keys.enapsulation_public_key().clone(),
+                );
             }
 
             Ok(public_keys.ur_string())
@@ -69,12 +68,11 @@ impl crate::exec::Exec for CommandArgs {
 
             // If a comment is provided and the signing key is SSH, update the
             // comment
-            if !self.comment.is_empty() {
-                if let bc_components::SigningPublicKey::SSH(ref mut ssh_key) =
+            if !self.comment.is_empty()
+                && let bc_components::SigningPublicKey::SSH(ref mut ssh_key) =
                     signing_public_key
-                {
-                    ssh_key.set_comment(&self.comment);
-                }
+            {
+                ssh_key.set_comment(&self.comment);
             }
 
             Ok(signing_public_key.ur_string())

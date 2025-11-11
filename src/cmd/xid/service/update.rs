@@ -70,16 +70,12 @@ impl crate::exec::Exec for CommandArgs {
 
         xid_document.take_service(&uri);
 
-        if let Some(name) = self.name() {
-            if !name.is_empty() {
-                service.set_name(name)?;
-            }
+        if let Some(name) = self.name().filter(|n| !n.is_empty()) {
+            service.set_name(name)?;
         }
 
-        if let Some(capability) = self.capability() {
-            if !capability.is_empty() {
-                service.set_capability(capability);
-            }
+        if let Some(capability) = self.capability().filter(|c| !c.is_empty()) {
+            service.set_capability(capability);
         }
 
         if !self.permissions().is_empty() {

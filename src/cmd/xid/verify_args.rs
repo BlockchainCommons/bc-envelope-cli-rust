@@ -1,5 +1,5 @@
-use clap::{Args, ValueEnum};
 use bc_xid::XIDVerifySignature;
+use clap::{Args, ValueEnum};
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, ValueEnum, Default)]
 pub enum VerifyOption {
@@ -27,15 +27,9 @@ pub struct VerifyArgs {
 }
 
 impl Default for VerifyArgs {
-    fn default() -> Self {
-        Self {
-            verify: VerifyOption::None,
-        }
-    }
+    fn default() -> Self { Self { verify: VerifyOption::None } }
 }
 
 impl VerifyArgs {
-    pub fn verify_signature(&self) -> XIDVerifySignature {
-        self.verify.into()
-    }
+    pub fn verify_signature(&self) -> XIDVerifySignature { self.verify.into() }
 }

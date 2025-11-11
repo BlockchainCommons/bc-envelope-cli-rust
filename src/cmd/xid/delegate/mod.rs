@@ -7,7 +7,9 @@ pub mod remove;
 pub mod update;
 
 use anyhow::Result;
-use bc_xid::{Delegate, HasPermissions, Privilege, XIDDocument, XIDSigningOptions};
+use bc_xid::{
+    Delegate, HasPermissions, Privilege, XIDDocument, XIDSigningOptions,
+};
 use clap::{Args, Subcommand};
 
 use super::xid_privilege::XIDPrivilege;
