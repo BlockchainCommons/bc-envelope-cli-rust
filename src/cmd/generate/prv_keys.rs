@@ -50,7 +50,7 @@ pub struct CommandArgs {
     encryption: EncapsulationSchemeArg,
 }
 
-impl crate::exec::Exec for CommandArgs {
+impl crate::Exec for CommandArgs {
     fn exec(&self) -> Result<String> {
         let private_key_base = if let Some(input_ur) = &self.input {
             parse_input(input_ur)?

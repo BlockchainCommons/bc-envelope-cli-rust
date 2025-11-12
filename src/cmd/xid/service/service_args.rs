@@ -5,7 +5,7 @@ use bc_ur::URDecodable;
 use bc_xid::XIDDocument;
 use clap::Args;
 
-use crate::cmd::xid::{XIDPrivilege, read_uri};
+use crate::xid::{XIDPrivilege, read_uri};
 
 pub trait ServiceArgsLike {
     fn uri(&self) -> Option<&URI>;

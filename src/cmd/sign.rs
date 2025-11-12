@@ -7,7 +7,7 @@ use clap::Args;
 use known_values::NOTE;
 
 use super::generate::HashType;
-use crate::envelope_args::{EnvelopeArgs, EnvelopeArgsLike};
+use crate::{EnvelopeArgs, EnvelopeArgsLike};
 
 /// Sign the envelope subject with the provided signer(s).
 #[derive(Debug, Args)]
@@ -41,7 +41,7 @@ impl EnvelopeArgsLike for CommandArgs {
     fn envelope(&self) -> Option<&str> { self.envelope_args.envelope() }
 }
 
-impl crate::exec::Exec for CommandArgs {
+impl crate::Exec for CommandArgs {
     fn exec(&self) -> Result<String> {
         let envelope = self.read_envelope()?;
         if self.signer.is_empty() {

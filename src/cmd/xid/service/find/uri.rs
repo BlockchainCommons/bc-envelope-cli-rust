@@ -4,10 +4,7 @@ use bc_envelope::EnvelopeEncodable;
 use bc_ur::prelude::*;
 use clap::Args;
 
-use crate::{
-    cmd::xid::XIDDocumentReadable,
-    envelope_args::{EnvelopeArgs, EnvelopeArgsLike},
-};
+use crate::{EnvelopeArgs, EnvelopeArgsLike, xid::XIDDocumentReadable};
 
 /// Find the XID document's keys by assigned name.
 #[derive(Debug, Args)]
@@ -25,7 +22,7 @@ impl EnvelopeArgsLike for CommandArgs {
 
 impl XIDDocumentReadable for CommandArgs {}
 
-impl crate::exec::Exec for CommandArgs {
+impl crate::Exec for CommandArgs {
     fn exec(&self) -> Result<String> {
         let xid_document = self.read_xid_document()?;
 

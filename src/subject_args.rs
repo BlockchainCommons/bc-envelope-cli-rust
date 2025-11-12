@@ -1,7 +1,7 @@
 use anyhow::{Result, bail};
 use clap::Args;
 
-use crate::data_types::DataType;
+use crate::DataType;
 
 pub trait SubjectArgsLike {
     fn subject_type(&self) -> DataType;

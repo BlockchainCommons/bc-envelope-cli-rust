@@ -2,10 +2,7 @@ use anyhow::Result;
 use bc_components::KeyDerivationMethod;
 use clap::Args;
 
-use crate::{
-    cmd::{ASKPASS_HELP, ASKPASS_LONG_HELP},
-    utils::read_password,
-};
+use crate::{ASKPASS_HELP, ASKPASS_LONG_HELP, read_password};
 
 /// Password derivation method for encrypting/decrypting XID private keys.
 #[derive(Debug, Clone, Copy, clap::ValueEnum, Default)]

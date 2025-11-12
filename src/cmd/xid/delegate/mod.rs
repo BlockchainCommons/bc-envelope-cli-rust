@@ -13,7 +13,7 @@ use bc_xid::{
 use clap::{Args, Subcommand};
 
 use super::XIDPrivilege;
-use crate::cmd::xid::{PrivateOptions, xid_document_to_ur_string};
+use crate::xid::{PrivateOptions, xid_document_to_ur_string};
 
 /// Work with a XID document's delegates.
 #[derive(Debug, Args)]
@@ -34,7 +34,7 @@ enum SubCommands {
     Update(update::CommandArgs),
 }
 
-impl crate::exec::Exec for CommandArgs {
+impl crate::Exec for CommandArgs {
     fn exec(&self) -> Result<String> {
         match &self.command {
             SubCommands::Add(args) => args.exec(),

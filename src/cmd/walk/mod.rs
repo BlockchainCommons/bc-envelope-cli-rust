@@ -10,7 +10,7 @@ use anyhow::Result;
 use bc_envelope::prelude::*;
 use clap::{Args, Subcommand};
 
-use crate::envelope_args::{EnvelopeArgs, EnvelopeArgsLike};
+use crate::{EnvelopeArgs, EnvelopeArgsLike};
 
 /// Walk an envelope's nodes.
 #[derive(Debug, Args)]
@@ -40,7 +40,7 @@ impl EnvelopeArgsLike for CommandArgs {
     fn envelope(&self) -> Option<&str> { self.envelope_args.envelope() }
 }
 
-impl crate::exec::Exec for CommandArgs {
+impl crate::Exec for CommandArgs {
     fn exec(&self) -> Result<String> {
         match &self.command {
             Some(WalkCommands::Matching(args)) => args

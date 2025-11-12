@@ -4,8 +4,8 @@ use bc_ur::prelude::*;
 use clap::{Args, ValueEnum};
 
 use crate::{
-    cmd::xid::{VerifyArgs, XIDDocumentReadable},
-    envelope_args::{EnvelopeArgs, EnvelopeArgsLike},
+    EnvelopeArgs, EnvelopeArgsLike,
+    xid::{VerifyArgs, XIDDocumentReadable},
 };
 
 #[derive(ValueEnum, Copy, Clone, Debug, PartialEq, Eq, Default)]
@@ -46,7 +46,7 @@ impl EnvelopeArgsLike for CommandArgs {
 
 impl XIDDocumentReadable for CommandArgs {}
 
-impl crate::exec::Exec for CommandArgs {
+impl crate::Exec for CommandArgs {
     fn exec(&self) -> Result<String> {
         let xid_document = self.read_xid_document_with_verify(
             self.verify_args.verify_signature(),

@@ -5,8 +5,8 @@ use bc_xid::{XIDDocument, XIDVerifySignature};
 use clap::Args;
 
 use crate::{
-    cmd::xid::{ReadPasswordArgs, XIDDocumentReadable, get_private_key_ur},
-    envelope_args::{EnvelopeArgs, EnvelopeArgsLike},
+    EnvelopeArgs, EnvelopeArgsLike,
+    xid::{ReadPasswordArgs, XIDDocumentReadable, get_private_key_ur},
 };
 
 /// Retrieve the XID Document's key at the given index
@@ -38,7 +38,7 @@ impl EnvelopeArgsLike for CommandArgs {
 
 impl XIDDocumentReadable for CommandArgs {}
 
-impl crate::exec::Exec for CommandArgs {
+impl crate::Exec for CommandArgs {
     fn exec(&self) -> Result<String> {
         if self.private {
             // Return private key

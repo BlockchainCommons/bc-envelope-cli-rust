@@ -3,11 +3,11 @@ use bc_components::URI;
 use clap::Args;
 
 use crate::{
-    cmd::xid::{
+    EnvelopeArgs, EnvelopeArgsLike,
+    xid::{
         PrivateOptions, SigningArgs, VerifyArgs, XIDDocumentReadable, read_uri,
         xid_document_to_ur_string,
     },
-    envelope_args::{EnvelopeArgs, EnvelopeArgsLike},
 };
 
 /// Remove the given service from the XID document.
@@ -34,7 +34,7 @@ impl EnvelopeArgsLike for CommandArgs {
 
 impl XIDDocumentReadable for CommandArgs {}
 
-impl crate::exec::Exec for CommandArgs {
+impl crate::Exec for CommandArgs {
     fn exec(&self) -> Result<String> {
         let uri = read_uri(self.uri.as_ref())?;
         let mut xid_document = self.read_xid_document_with_verify(

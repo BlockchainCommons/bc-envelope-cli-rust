@@ -12,7 +12,7 @@ pub struct CommandArgs {
     hex: bool,
 }
 
-impl crate::exec::Exec for CommandArgs {
+impl crate::Exec for CommandArgs {
     fn exec(&self) -> Result<String> {
         let arid = ARID::new();
         if self.hex {

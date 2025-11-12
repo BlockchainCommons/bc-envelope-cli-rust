@@ -18,7 +18,7 @@ enum AddCommands {
     Components(components::CommandArgs),
 }
 
-impl crate::exec::Exec for CommandArgs {
+impl crate::Exec for CommandArgs {
     fn exec(&self) -> Result<String> {
         match &self.command {
             AddCommands::Envelope(args) => args.exec(),

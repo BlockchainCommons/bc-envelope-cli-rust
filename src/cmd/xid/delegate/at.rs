@@ -4,10 +4,7 @@ use bc_ur::prelude::*;
 use bc_xid::{XIDDocument, XIDVerifySignature};
 use clap::Args;
 
-use crate::{
-    cmd::xid::XIDDocumentReadable,
-    envelope_args::{EnvelopeArgs, EnvelopeArgsLike},
-};
+use crate::{EnvelopeArgs, EnvelopeArgsLike, xid::XIDDocumentReadable};
 
 /// Retrieve the XID document's delegate at the specified index.
 #[derive(Debug, Args)]
@@ -26,7 +23,7 @@ impl EnvelopeArgsLike for CommandArgs {
 
 impl XIDDocumentReadable for CommandArgs {}
 
-impl crate::exec::Exec for CommandArgs {
+impl crate::Exec for CommandArgs {
     fn exec(&self) -> Result<String> {
         let envelope = self.read_envelope()?;
         XIDDocument::from_envelope(&envelope, None, XIDVerifySignature::None)?; // Validation only

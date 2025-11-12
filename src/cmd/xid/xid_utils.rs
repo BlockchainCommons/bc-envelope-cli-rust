@@ -10,7 +10,7 @@ use bc_xid::{
 use super::{
     PrivateOptions, ReadPasswordArgs, WritePasswordArgs, XIDPrivilege,
 };
-use crate::{cmd::xid::GeneratorOptions, envelope_args::EnvelopeArgsLike};
+use crate::{EnvelopeArgsLike, xid::GeneratorOptions};
 
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub enum InputKey {

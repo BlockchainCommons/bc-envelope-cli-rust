@@ -5,7 +5,7 @@ use bc_components::{
 use bc_envelope::prelude::*;
 use clap::Args;
 
-use crate::envelope_args::{EnvelopeArgs, EnvelopeArgsLike};
+use crate::{EnvelopeArgs, EnvelopeArgsLike};
 
 /// Verify a signature on the envelope using the provided verifiers.
 ///
@@ -38,7 +38,7 @@ impl EnvelopeArgsLike for CommandArgs {
     fn envelope(&self) -> Option<&str> { self.envelope_args.envelope() }
 }
 
-impl crate::exec::Exec for CommandArgs {
+impl crate::Exec for CommandArgs {
     fn exec(&self) -> Result<String> {
         let envelope = self.read_envelope()?;
         if self.verifier.is_empty() {

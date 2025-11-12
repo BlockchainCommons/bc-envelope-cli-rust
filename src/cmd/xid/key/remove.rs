@@ -2,11 +2,11 @@ use anyhow::Result;
 use clap::Args;
 
 use crate::{
-    cmd::xid::{
+    EnvelopeArgs, EnvelopeArgsLike,
+    xid::{
         PrivateOptions, ReadWritePasswordArgs, SigningArgs, VerifyArgs,
         XIDDocumentReadable, read_public_key, xid_document_to_ur_string,
     },
-    envelope_args::{EnvelopeArgs, EnvelopeArgsLike},
 };
 
 /// Remove the given key from the XID document.
@@ -40,7 +40,7 @@ impl EnvelopeArgsLike for CommandArgs {
 
 impl XIDDocumentReadable for CommandArgs {}
 
-impl crate::exec::Exec for CommandArgs {
+impl crate::Exec for CommandArgs {
     fn exec(&self) -> Result<String> {
         let public_keys = read_public_key(self.keys.as_deref())?;
         let mut xid_document = self

@@ -8,7 +8,7 @@ use ssh_key::{
 };
 
 use super::{ASKPASS_HELP, ASKPASS_LONG_HELP};
-use crate::utils::{read_argument, read_password};
+use crate::{read_argument, read_password};
 
 /// Import the given object to UR form.
 #[derive(Debug, Args)]
@@ -35,7 +35,7 @@ pub struct CommandArgs {
     askpass: bool,
 }
 
-impl crate::exec::Exec for CommandArgs {
+impl crate::Exec for CommandArgs {
     fn exec(&self) -> Result<String> {
         let object = read_argument(self.object.as_deref())?;
         let result = if let Ok(ssh_private_key) =

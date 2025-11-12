@@ -4,7 +4,7 @@ use bc_envelope::known_values;
 use bc_xid::{XIDDocument, XIDVerifySignature};
 use clap::Args;
 
-use crate::envelope_args::{EnvelopeArgs, EnvelopeArgsLike};
+use crate::{EnvelopeArgs, EnvelopeArgsLike};
 
 /// Retrieve all the XID document's resolution methods.
 #[derive(Debug, Args)]
@@ -18,7 +18,7 @@ impl EnvelopeArgsLike for CommandArgs {
     fn envelope(&self) -> Option<&str> { self.envelope_args.envelope() }
 }
 
-impl crate::exec::Exec for CommandArgs {
+impl crate::Exec for CommandArgs {
     fn exec(&self) -> Result<String> {
         let envelope = self.read_envelope()?;
         XIDDocument::from_envelope(&envelope, None, XIDVerifySignature::None)?; // Validation only

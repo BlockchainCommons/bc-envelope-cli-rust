@@ -29,7 +29,7 @@ enum SubCommands {
     Update(update::CommandArgs),
 }
 
-impl crate::exec::Exec for CommandArgs {
+impl crate::Exec for CommandArgs {
     fn exec(&self) -> Result<String> {
         match &self.command {
             SubCommands::Add(args) => args.exec(),

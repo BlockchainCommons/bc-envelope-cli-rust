@@ -2,7 +2,7 @@ use anyhow::{Result, anyhow};
 use bc_envelope::prelude::*;
 use clap::Args;
 
-use crate::utils::read_envelope;
+use crate::read_envelope;
 
 /// Get the attachment at the specified index.
 #[derive(Debug, Args)]
@@ -12,7 +12,7 @@ pub struct CommandArgs {
     envelope: Option<String>,
 }
 
-impl crate::exec::Exec for CommandArgs {
+impl crate::Exec for CommandArgs {
     fn exec(&self) -> Result<String> {
         let envelope = read_envelope(self.envelope.as_deref())?;
         let attachments = &envelope.attachments()?;

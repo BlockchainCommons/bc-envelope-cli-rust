@@ -2,10 +2,7 @@ use anyhow::Result;
 use bc_envelope::prelude::*;
 use clap::Args;
 
-use crate::{
-    data_types::DataType,
-    pred_obj_args::{PredObjArgs, PredObjArgsLike},
-};
+use crate::{DataType, PredObjArgs, PredObjArgsLike};
 
 /// Create an envelope with the given assertion (predicate and object).
 #[derive(Debug, Args)]
@@ -24,7 +21,7 @@ impl PredObjArgsLike for CommandArgs {
     fn obj_tag(&self) -> Option<u64> { self.assertion_args.obj_tag() }
 }
 
-impl crate::exec::Exec for CommandArgs {
+impl crate::Exec for CommandArgs {
     fn exec(&self) -> Result<String> {
         Ok(self.assertion_envelope()?.ur_string())
     }

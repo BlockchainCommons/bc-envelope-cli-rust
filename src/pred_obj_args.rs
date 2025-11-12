@@ -2,7 +2,7 @@ use anyhow::Result;
 use bc_envelope::prelude::*;
 use clap::Args;
 
-use crate::data_types::{DataType, parse_data_type_to_envelope};
+use crate::{DataType, parse_data_type_to_envelope};
 
 pub trait PredObjArgsLike {
     fn pred_type(&self) -> DataType;

@@ -8,7 +8,7 @@ use clap::Args;
 #[group(skip)]
 pub struct CommandArgs {}
 
-impl crate::exec::Exec for CommandArgs {
+impl crate::Exec for CommandArgs {
     fn exec(&self) -> Result<String> {
         let nonce = Nonce::new();
         Ok(nonce.ur_string())

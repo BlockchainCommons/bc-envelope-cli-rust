@@ -47,7 +47,7 @@ pub struct CommandArgs {
     encryption: EncapsulationSchemeArg,
 }
 
-impl crate::exec::Exec for CommandArgs {
+impl crate::Exec for CommandArgs {
     fn exec(&self) -> Result<String> {
         let (signing_private_key, signing_public_key) = match self.signing {
             SigningSchemeArg::Schnorr => SignatureScheme::Schnorr.keypair(),

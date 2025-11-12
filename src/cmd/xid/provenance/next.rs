@@ -6,12 +6,11 @@ use dcbor::Date;
 use provenance_mark::ProvenanceMarkGenerator;
 
 use crate::{
-    cmd::xid::{
+    EnvelopeArgs, EnvelopeArgsLike, parse_ur_to_cbor,
+    xid::{
         GeneratorOptions, PrivateOptions, ReadWritePasswordArgs, SigningArgs,
         VerifyArgs, XIDDocumentReadable, xid_document_to_ur_string,
     },
-    data_types::parse_ur_to_cbor,
-    envelope_args::{EnvelopeArgs, EnvelopeArgsLike},
 };
 
 /// Advance the provenance mark to the next state.
@@ -56,7 +55,7 @@ impl EnvelopeArgsLike for CommandArgs {
 
 impl XIDDocumentReadable for CommandArgs {}
 
-impl crate::exec::Exec for CommandArgs {
+impl crate::Exec for CommandArgs {
     fn exec(&self) -> Result<String> {
         let mut xid_document = self
             .read_xid_document_with_password_and_verify(

@@ -5,11 +5,11 @@ use clap::Args;
 
 use super::service_args::{ServiceArgs, ServiceArgsLike};
 use crate::{
-    cmd::xid::{
+    EnvelopeArgs, EnvelopeArgsLike,
+    xid::{
         PrivateOptions, SigningArgs, VerifyArgs, XIDDocumentReadable,
         XIDPrivilege, xid_document_to_ur_string,
     },
-    envelope_args::{EnvelopeArgs, EnvelopeArgsLike},
 };
 
 /// Updates the permissions, delegates, keys, capability identifer, or name of a
@@ -52,7 +52,7 @@ impl EnvelopeArgsLike for CommandArgs {
 
 impl XIDDocumentReadable for CommandArgs {}
 
-impl crate::exec::Exec for CommandArgs {
+impl crate::Exec for CommandArgs {
     fn exec(&self) -> Result<String> {
         let uri = self.read_uri()?;
 

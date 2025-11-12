@@ -5,7 +5,7 @@ use bc_components::SymmetricKey;
 use bc_envelope::prelude::*;
 use clap::{Args, ValueEnum};
 
-use crate::utils::parse_digests;
+use crate::parse_digests;
 
 /// The action to take on the elements.
 #[derive(ValueEnum, Copy, Clone, Debug, PartialEq, Eq)]

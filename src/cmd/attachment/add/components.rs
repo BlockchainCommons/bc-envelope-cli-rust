@@ -2,10 +2,7 @@ use anyhow::Result;
 use bc_envelope::prelude::*;
 use clap::Args;
 
-use crate::{
-    envelope_args::{EnvelopeArgs, EnvelopeArgsLike},
-    utils::read_envelope,
-};
+use crate::{EnvelopeArgs, EnvelopeArgsLike, read_envelope};
 
 /// Add an attachment to the given envelope by specifying its components.
 ///
@@ -31,7 +28,7 @@ impl EnvelopeArgsLike for CommandArgs {
     fn envelope(&self) -> Option<&str> { self.envelope_args.envelope() }
 }
 
-impl crate::exec::Exec for CommandArgs {
+impl crate::Exec for CommandArgs {
     fn exec(&self) -> Result<String> {
         let envelope = self.read_envelope()?;
         let payload = read_envelope(Some(&self.payload))?;

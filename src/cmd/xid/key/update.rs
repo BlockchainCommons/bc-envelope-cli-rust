@@ -3,12 +3,12 @@ use bc_components::URI;
 use clap::Args;
 
 use crate::{
-    cmd::xid::{
+    EnvelopeArgs, EnvelopeArgsLike,
+    xid::{
         KeyArgs, KeyArgsLike, PrivateOptions, ReadWritePasswordArgs,
         SigningArgs, VerifyArgs, XIDDocumentReadable, XIDPrivilege, update_key,
         xid_document_to_ur_string,
     },
-    envelope_args::{EnvelopeArgs, EnvelopeArgsLike},
 };
 
 /// Updates the permissions, endpoints, or name of a key in a XID document.
@@ -49,7 +49,7 @@ impl EnvelopeArgsLike for CommandArgs {
 
 impl XIDDocumentReadable for CommandArgs {}
 
-impl crate::exec::Exec for CommandArgs {
+impl crate::Exec for CommandArgs {
     fn exec(&self) -> Result<String> {
         let public_keys = self.read_public_key()?;
 

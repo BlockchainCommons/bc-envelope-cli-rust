@@ -15,7 +15,7 @@ pub struct CommandArgs {
     hex: Option<String>,
 }
 
-impl crate::exec::Exec for CommandArgs {
+impl crate::Exec for CommandArgs {
     fn exec(&self) -> Result<String> {
         let seed;
         if let Some(hex) = &self.hex {

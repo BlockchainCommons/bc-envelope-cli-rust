@@ -16,7 +16,7 @@ pub struct CommandArgs {
     data: Option<String>,
 }
 
-impl crate::exec::Exec for CommandArgs {
+impl crate::Exec for CommandArgs {
     fn exec(&self) -> Result<String> {
         let mut data = Vec::new();
         if let Some(ref d) = self.data {

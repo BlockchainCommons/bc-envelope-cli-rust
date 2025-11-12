@@ -4,7 +4,7 @@ use bc_envelope_pattern::{
 };
 use clap::Args;
 
-use crate::envelope_args::{EnvelopeArgs, EnvelopeArgsLike};
+use crate::{EnvelopeArgs, EnvelopeArgsLike};
 
 /// Match the envelope subject against a pattern.
 #[derive(Debug, Args)]
@@ -45,7 +45,7 @@ impl EnvelopeArgsLike for CommandArgs {
     fn envelope(&self) -> Option<&str> { self.envelope_args.envelope() }
 }
 
-impl crate::exec::Exec for CommandArgs {
+impl crate::Exec for CommandArgs {
     fn exec(&self) -> Result<String> {
         let envelope = self.read_envelope()?;
         let pattern = Pattern::parse(&self.pattern)

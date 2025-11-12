@@ -1,7 +1,7 @@
 use anyhow::Result;
 use clap::Args;
 
-use crate::envelope_args::{EnvelopeArgs, EnvelopeArgsLike};
+use crate::{EnvelopeArgs, EnvelopeArgsLike};
 
 /// Print the count of the envelope's assertions.
 #[derive(Debug, Args)]
@@ -15,7 +15,7 @@ impl EnvelopeArgsLike for CommandArgs {
     fn envelope(&self) -> Option<&str> { self.envelope_args.envelope() }
 }
 
-impl crate::exec::Exec for CommandArgs {
+impl crate::Exec for CommandArgs {
     fn exec(&self) -> Result<String> {
         let envelope = self.read_envelope()?;
         Ok(envelope.assertions().len().to_string())

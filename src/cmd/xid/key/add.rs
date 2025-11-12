@@ -4,12 +4,12 @@ use bc_xid::Key;
 use clap::Args;
 
 use crate::{
-    cmd::xid::{
+    EnvelopeArgs, EnvelopeArgsLike,
+    xid::{
         InputKey, KeyArgs, KeyArgsLike, PrivateOptions, ReadWritePasswordArgs,
         SigningArgs, VerifyArgs, XIDDocumentReadable, XIDPrivilege, update_key,
         xid_document_to_ur_string,
     },
-    envelope_args::{EnvelopeArgs, EnvelopeArgsLike},
 };
 
 /// Add a key to the XID document.
@@ -50,7 +50,7 @@ impl EnvelopeArgsLike for CommandArgs {
 
 impl XIDDocumentReadable for CommandArgs {}
 
-impl crate::exec::Exec for CommandArgs {
+impl crate::Exec for CommandArgs {
     fn exec(&self) -> Result<String> {
         let keys = self.read_key()?;
 

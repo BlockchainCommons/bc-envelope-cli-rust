@@ -3,8 +3,7 @@ use bc_envelope::prelude::*;
 use clap::Args;
 
 use crate::{
-    data_types::{DataType, parse_data_type_to_envelope},
-    subject_args::{SubjectArgs, SubjectArgsLike},
+    DataType, SubjectArgs, SubjectArgsLike, parse_data_type_to_envelope,
 };
 
 /// Create an envelope with the given subject.
@@ -25,7 +24,7 @@ impl SubjectArgsLike for CommandArgs {
     fn ur_tag(&self) -> Option<u64> { self.subject_args.ur_tag() }
 }
 
-impl crate::exec::Exec for CommandArgs {
+impl crate::Exec for CommandArgs {
     fn exec(&self) -> Result<String> {
         Ok(parse_data_type_to_envelope(
             self.subject_type(),

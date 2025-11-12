@@ -3,9 +3,8 @@ use bc_envelope::prelude::*;
 use clap::Args;
 
 use crate::{
-    data_types::{DataType, parse_data_type_to_envelope},
-    envelope_args::{EnvelopeArgs, EnvelopeArgsLike},
-    subject_args::{SubjectArgs, SubjectArgsLike},
+    DataType, EnvelopeArgs, EnvelopeArgsLike, SubjectArgs, SubjectArgsLike,
+    parse_data_type_to_envelope,
 };
 
 /// Find all assertions having the given object.
@@ -33,7 +32,7 @@ impl EnvelopeArgsLike for CommandArgs {
     fn envelope(&self) -> Option<&str> { self.envelope_args.envelope() }
 }
 
-impl crate::exec::Exec for CommandArgs {
+impl crate::Exec for CommandArgs {
     fn exec(&self) -> Result<String> {
         let envelope = self.read_envelope()?;
         let object = parse_data_type_to_envelope(

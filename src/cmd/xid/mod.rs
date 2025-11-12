@@ -43,7 +43,7 @@ enum SubCommands {
     Service(service::CommandArgs),
 }
 
-impl crate::exec::Exec for CommandArgs {
+impl crate::Exec for CommandArgs {
     fn exec(&self) -> Result<String> {
         match &self.command {
             SubCommands::New(args) => args.exec(),

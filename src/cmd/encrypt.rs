@@ -4,10 +4,7 @@ use bc_envelope::prelude::*;
 use clap::Args;
 
 use super::{ASKPASS_HELP, ASKPASS_LONG_HELP};
-use crate::{
-    envelope_args::{EnvelopeArgs, EnvelopeArgsLike},
-    utils::read_password,
-};
+use crate::{EnvelopeArgs, EnvelopeArgsLike, read_password};
 
 /// The password-based key derivation algorithms supported for encryption.
 #[derive(Debug, Clone, Copy, clap::ValueEnum)]
@@ -96,7 +93,7 @@ impl EnvelopeArgsLike for CommandArgs {
     fn envelope(&self) -> Option<&str> { self.envelope_args.envelope() }
 }
 
-impl crate::exec::Exec for CommandArgs {
+impl crate::Exec for CommandArgs {
     fn exec(&self) -> Result<String> {
         let envelope = self.read_envelope()?;
 

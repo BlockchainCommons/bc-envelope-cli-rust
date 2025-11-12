@@ -2,7 +2,7 @@ use anyhow::Result;
 use bc_envelope::prelude::*;
 use clap::Args;
 
-use crate::utils::read_envelope;
+use crate::read_envelope;
 
 /// Get the payload of the attachment.
 #[derive(Debug, Args)]
@@ -12,7 +12,7 @@ pub struct CommandArgs {
     attachment: Option<String>,
 }
 
-impl crate::exec::Exec for CommandArgs {
+impl crate::Exec for CommandArgs {
     fn exec(&self) -> Result<String> {
         let attachment = read_envelope(self.attachment.as_deref())?;
         Ok(attachment.attachment_payload()?.ur_string())

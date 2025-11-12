@@ -4,11 +4,11 @@ use bc_ur::prelude::*;
 use clap::Args;
 
 use crate::{
-    cmd::xid::{
+    EnvelopeArgs, EnvelopeArgsLike,
+    xid::{
         ReadPasswordArgs, XIDDocumentReadable, get_private_key_ur,
         read_public_key,
     },
-    envelope_args::{EnvelopeArgs, EnvelopeArgsLike},
 };
 
 /// Find the XID document's keys by their public key.
@@ -41,7 +41,7 @@ impl EnvelopeArgsLike for CommandArgs {
 
 impl XIDDocumentReadable for CommandArgs {}
 
-impl crate::exec::Exec for CommandArgs {
+impl crate::Exec for CommandArgs {
     fn exec(&self) -> Result<String> {
         let public_keys = read_public_key(self.keys.as_deref())?;
         let xid_document = self.read_xid_document()?;

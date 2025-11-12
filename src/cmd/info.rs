@@ -7,7 +7,7 @@ use bc_envelope::prelude::*;
 use clap::Args;
 use ssh_key::{HashAlg, public::KeyData};
 
-use crate::utils::read_argument;
+use crate::read_argument;
 
 /// Provide type and other information about the object.
 #[derive(Debug, Args)]
@@ -18,7 +18,7 @@ pub struct CommandArgs {
     object: Option<String>,
 }
 
-impl crate::exec::Exec for CommandArgs {
+impl crate::Exec for CommandArgs {
     fn exec(&self) -> Result<String> {
         let mut result = Vec::<String>::new();
 

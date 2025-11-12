@@ -9,7 +9,7 @@ use super::{
     WritePasswordArgs, XIDPrivilege, generator_options::GeneratorOptions,
     update_key, xid_document_to_ur_string,
 };
-use crate::data_types::parse_ur_to_cbor;
+use crate::parse_ur_to_cbor;
 
 /// Create a new XID document from an inception key
 #[derive(Debug, Args)]
@@ -63,7 +63,7 @@ impl KeyArgsLike for CommandArgs {
     fn keys(&self) -> Option<&str> { self.key_args.keys() }
 }
 
-impl crate::exec::Exec for CommandArgs {
+impl crate::Exec for CommandArgs {
     fn exec(&self) -> Result<String> {
         let keys = self.read_key()?;
 

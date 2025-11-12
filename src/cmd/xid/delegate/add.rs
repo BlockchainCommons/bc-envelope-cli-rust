@@ -7,8 +7,8 @@ use super::{
     add_delegate_permissions, xid_document_to_unsigned_envelope_ur_string,
 };
 use crate::{
-    cmd::xid::{XIDDocumentReadable, XIDPrivilege},
-    envelope_args::{EnvelopeArgs, EnvelopeArgsLike},
+    EnvelopeArgs, EnvelopeArgsLike,
+    xid::{XIDDocumentReadable, XIDPrivilege},
 };
 
 /// Add a delegate to the XID document.
@@ -37,7 +37,7 @@ impl EnvelopeArgsLike for CommandArgs {
 
 impl XIDDocumentReadable for CommandArgs {}
 
-impl crate::exec::Exec for CommandArgs {
+impl crate::Exec for CommandArgs {
     fn exec(&self) -> Result<String> {
         let delegate_xid = XIDDocument::from_ur_string(&self.delegate)?;
         let mut delegate = Delegate::new(delegate_xid);

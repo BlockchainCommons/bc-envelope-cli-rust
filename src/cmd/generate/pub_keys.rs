@@ -34,7 +34,7 @@ impl CommandArgs {
     }
 }
 
-impl crate::exec::Exec for CommandArgs {
+impl crate::Exec for CommandArgs {
     fn exec(&self) -> Result<String> {
         let ur_string = self.read_prv_keys()?;
 

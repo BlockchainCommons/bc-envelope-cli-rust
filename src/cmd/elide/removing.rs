@@ -3,7 +3,7 @@ use bc_envelope::prelude::*;
 use clap::Args;
 
 use super::elide_args::{Action, ElideArgs, ElideArgsLike};
-use crate::envelope_args::{EnvelopeArgs, EnvelopeArgsLike};
+use crate::{EnvelopeArgs, EnvelopeArgsLike};
 
 /// Elide all objects in the target.
 #[derive(Debug, Args)]
@@ -28,7 +28,7 @@ impl EnvelopeArgsLike for CommandArgs {
     fn envelope(&self) -> Option<&str> { self.envelope_args.envelope() }
 }
 
-impl crate::exec::Exec for CommandArgs {
+impl crate::Exec for CommandArgs {
     fn exec(&self) -> Result<String> {
         let envelope = self.read_envelope()?;
         let result_envelope = self.run(envelope, false)?;

@@ -3,10 +3,7 @@ use bc_components::URI;
 use bc_ur::prelude::*;
 use clap::Args;
 
-use crate::{
-    cmd::xid::XIDDocumentReadable,
-    envelope_args::{EnvelopeArgs, EnvelopeArgsLike},
-};
+use crate::{EnvelopeArgs, EnvelopeArgsLike, xid::XIDDocumentReadable};
 
 /// Add a resolution method to a XID document
 #[derive(Debug, Args)]
@@ -26,7 +23,7 @@ impl EnvelopeArgsLike for CommandArgs {
 
 impl XIDDocumentReadable for CommandArgs {}
 
-impl crate::exec::Exec for CommandArgs {
+impl crate::Exec for CommandArgs {
     fn exec(&self) -> Result<String> {
         let mut xid_document = self.read_xid_document()?;
         xid_document.add_resolution_method(self.method.clone());

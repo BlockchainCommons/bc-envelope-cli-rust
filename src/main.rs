@@ -2,25 +2,31 @@
 
 #[doc(hidden)]
 mod cmd;
+pub use cmd::*;
 #[doc(hidden)]
 mod data_types;
+pub use data_types::*;
 #[doc(hidden)]
 mod envelope_args;
+pub use envelope_args::*;
 #[doc(hidden)]
 mod exec;
+pub use exec::*;
 #[doc(hidden)]
 mod pred_obj_args;
+pub use pred_obj_args::*;
 #[doc(hidden)]
 mod styles;
 #[doc(hidden)]
 mod subject_args;
+pub use subject_args::*;
 #[doc(hidden)]
 mod utils;
-
 use anyhow::Result;
 use clap::{Parser, Subcommand};
+pub use utils::*;
 
-use crate::exec::Exec;
+use crate::Exec;
 
 /// A tool for manipulating the Gordian Envelope data type.
 #[derive(Debug, Parser)]
@@ -36,29 +42,29 @@ struct Cli {
 #[derive(Debug, Subcommand)]
 #[doc(hidden)]
 enum MainCommands {
-    Assertion(cmd::assertion::CommandArgs),
-    Attachment(cmd::attachment::CommandArgs),
-    Compress(cmd::compress::CommandArgs),
-    Decrypt(cmd::decrypt::CommandArgs),
-    Digest(cmd::digest::CommandArgs),
-    Elide(cmd::elide::CommandArgs),
-    Encrypt(cmd::encrypt::CommandArgs),
-    Export(cmd::export::CommandArgs),
-    Extract(cmd::extract::CommandArgs),
-    Format(cmd::format::CommandArgs),
-    Generate(cmd::generate::CommandArgs),
-    Import(cmd::import::CommandArgs),
-    Info(cmd::info::CommandArgs),
-    Match(cmd::pattern::CommandArgs),
-    Proof(cmd::proof::CommandArgs),
-    Salt(cmd::salt::CommandArgs),
-    Sign(cmd::sign::CommandArgs),
-    Sskr(cmd::sskr::CommandArgs),
-    Subject(cmd::subject::CommandArgs),
-    Decompress(cmd::decompress::CommandArgs),
-    Verify(cmd::verify::CommandArgs),
-    Walk(cmd::walk::CommandArgs),
-    Xid(cmd::xid::CommandArgs),
+    Assertion(assertion::CommandArgs),
+    Attachment(attachment::CommandArgs),
+    Compress(compress::CommandArgs),
+    Decrypt(decrypt::CommandArgs),
+    Digest(digest::CommandArgs),
+    Elide(elide::CommandArgs),
+    Encrypt(encrypt::CommandArgs),
+    Export(export::CommandArgs),
+    Extract(extract::CommandArgs),
+    Format(format::CommandArgs),
+    Generate(generate::CommandArgs),
+    Import(import::CommandArgs),
+    Info(info::CommandArgs),
+    Match(pattern::CommandArgs),
+    Proof(proof::CommandArgs),
+    Salt(salt::CommandArgs),
+    Sign(sign::CommandArgs),
+    Sskr(sskr::CommandArgs),
+    Subject(subject::CommandArgs),
+    Decompress(decompress::CommandArgs),
+    Verify(verify::CommandArgs),
+    Walk(walk::CommandArgs),
+    Xid(xid::CommandArgs),
 }
 
 #[doc(hidden)]

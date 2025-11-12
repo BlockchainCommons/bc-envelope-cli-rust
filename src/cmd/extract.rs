@@ -3,7 +3,7 @@ use bc_components::{ARID, Digest, URI, UUID, XID, tags::TAG_ENVELOPE};
 use bc_envelope::prelude::*;
 use clap::{Args, ValueEnum};
 
-use crate::envelope_args::{EnvelopeArgs, EnvelopeArgsLike};
+use crate::{EnvelopeArgs, EnvelopeArgsLike};
 
 #[derive(ValueEnum, Copy, Clone, Debug, PartialEq, Eq)]
 pub enum SubjectType {
@@ -86,7 +86,7 @@ impl EnvelopeArgsLike for CommandArgs {
     fn envelope(&self) -> Option<&str> { self.envelope_args.envelope() }
 }
 
-impl crate::exec::Exec for CommandArgs {
+impl crate::Exec for CommandArgs {
     fn exec(&self) -> Result<String> {
         let envelope = self.read_envelope()?;
         let string = match self.subject_type {

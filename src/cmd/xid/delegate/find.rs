@@ -4,10 +4,7 @@ use bc_ur::prelude::*;
 use bc_xid::XIDDocument;
 use clap::Args;
 
-use crate::{
-    cmd::xid::XIDDocumentReadable,
-    envelope_args::{EnvelopeArgs, EnvelopeArgsLike},
-};
+use crate::{EnvelopeArgs, EnvelopeArgsLike, xid::XIDDocumentReadable};
 
 /// Find a delegate in the XID document.
 #[derive(Debug, Args)]
@@ -26,7 +23,7 @@ impl EnvelopeArgsLike for CommandArgs {
 
 impl XIDDocumentReadable for CommandArgs {}
 
-impl crate::exec::Exec for CommandArgs {
+impl crate::Exec for CommandArgs {
     fn exec(&self) -> Result<String> {
         let target_xid_document =
             XIDDocument::from_ur_string(self.delegate.as_str())?;

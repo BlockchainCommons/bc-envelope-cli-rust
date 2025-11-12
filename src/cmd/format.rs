@@ -2,7 +2,7 @@ use anyhow::Result;
 use bc_envelope::prelude::*;
 use clap::{Args, ValueEnum};
 
-use crate::envelope_args::{EnvelopeArgs, EnvelopeArgsLike};
+use crate::{EnvelopeArgs, EnvelopeArgsLike};
 
 /// Print the envelope in textual format.
 #[derive(Debug, Args)]
@@ -125,7 +125,7 @@ impl From<MermaidThemeType> for MermaidTheme {
     }
 }
 
-impl crate::exec::Exec for CommandArgs {
+impl crate::Exec for CommandArgs {
     fn exec(&self) -> Result<String> {
         let e = self.read_envelope()?;
         let output = match self.format_type {

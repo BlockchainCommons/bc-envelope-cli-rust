@@ -10,7 +10,7 @@ pub struct CommandArgs {
     shares: Vec<String>,
 }
 
-impl crate::exec::Exec for CommandArgs {
+impl crate::Exec for CommandArgs {
     fn exec(&self) -> Result<String> {
         // If envelopes is empty, read them from stdin, one per line.
         let mut shares = self.shares.clone();

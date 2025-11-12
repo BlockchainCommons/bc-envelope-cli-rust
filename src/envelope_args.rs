@@ -2,7 +2,7 @@ use anyhow::Result;
 use bc_envelope::prelude::*;
 use clap::Args;
 
-use crate::utils::read_envelope;
+use crate::read_envelope;
 
 pub trait EnvelopeArgsLike {
     fn envelope(&self) -> Option<&str>;
