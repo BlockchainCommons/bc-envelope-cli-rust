@@ -5,7 +5,7 @@ use clap::Args;
 
 use super::xid_document_to_unsigned_envelope_ur_string;
 use crate::{
-    cmd::xid::utils::XIDDocumentReadable,
+    cmd::xid::XIDDocumentReadable,
     envelope_args::{EnvelopeArgs, EnvelopeArgsLike},
 };
 

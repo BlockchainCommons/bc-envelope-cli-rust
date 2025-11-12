@@ -7,7 +7,7 @@ use super::{
     add_delegate_permissions, xid_document_to_unsigned_envelope_ur_string,
 };
 use crate::{
-    cmd::xid::{utils::XIDDocumentReadable, xid_privilege::XIDPrivilege},
+    cmd::xid::{XIDDocumentReadable, XIDPrivilege},
     envelope_args::{EnvelopeArgs, EnvelopeArgsLike},
 };
 

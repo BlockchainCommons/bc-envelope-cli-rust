@@ -6,11 +6,8 @@ use clap::Args;
 use super::service_args::{ServiceArgs, ServiceArgsLike};
 use crate::{
     cmd::xid::{
-        private_options::PrivateOptions,
-        signing_args::SigningArgs,
-        utils::{XIDDocumentReadable, xid_document_to_ur_string},
-        verify_args::VerifyArgs,
-        xid_privilege::XIDPrivilege,
+        PrivateOptions, SigningArgs, VerifyArgs, XIDDocumentReadable,
+        XIDPrivilege, xid_document_to_ur_string,
     },
     envelope_args::{EnvelopeArgs, EnvelopeArgsLike},
 };

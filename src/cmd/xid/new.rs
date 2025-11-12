@@ -2,16 +2,14 @@ use anyhow::Result;
 use bc_components::URI;
 use bc_xid::{XIDDocument, XIDGenesisMarkOptions, XIDInceptionKeyOptions};
 use clap::Args;
+use dcbor::Date;
 
 use super::{
-    generator_options::GeneratorOptions,
-    key_args::{KeyArgs, KeyArgsLike},
-    password_args::WritePasswordArgs,
-    private_options::PrivateOptions,
-    signing_args::SigningArgs,
-    utils::{InputKey, update_key, xid_document_to_ur_string},
-    xid_privilege::XIDPrivilege,
+    InputKey, KeyArgs, KeyArgsLike, PrivateOptions, SigningArgs,
+    WritePasswordArgs, XIDPrivilege, generator_options::GeneratorOptions,
+    update_key, xid_document_to_ur_string,
 };
+use crate::data_types::parse_ur_to_cbor;
 
 /// Create a new XID document from an inception key
 #[derive(Debug, Args)]
@@ -29,6 +27,22 @@ pub struct CommandArgs {
     /// private keys.
     #[arg(long = "generator", default_value = "omit")]
     generator_opts: GeneratorOptions,
+
+    /// Date for the genesis provenance mark (ISO 8601 format, e.g.,
+    /// "2024-01-15"). Only used when --generator is 'include' or
+    /// 'encrypt'. If not provided, the current date is used.
+    #[arg(long)]
+    date: Option<String>,
+
+    /// Additional info to attach to the genesis mark (as any UR type).
+    /// Only used when --generator is 'include' or 'encrypt'.
+    /// Accepts any UR (ur:envelope, ur:digest, ur:arid, etc.)
+    #[arg(long)]
+    info: Option<String>,
+
+    /// The integer CBOR tag for the info UR if it's an unknown type.
+    #[arg(long)]
+    ur_tag: Option<u64>,
 
     #[command(flatten)]
     password_args: WritePasswordArgs,
@@ -67,11 +81,25 @@ impl crate::exec::Exec for CommandArgs {
         let genesis_mark_opts = match self.generator_opts {
             GeneratorOptions::Omit => XIDGenesisMarkOptions::None,
             GeneratorOptions::Include | GeneratorOptions::Encrypt => {
+                // Parse optional date parameter
+                let date = if let Some(date_str) = &self.date {
+                    Some(Date::from_string(date_str)?)
+                } else {
+                    None
+                };
+
+                // Parse optional info parameter - convert any UR to CBOR
+                let info = if let Some(info_str) = &self.info {
+                    Some(parse_ur_to_cbor(info_str, self.ur_tag)?)
+                } else {
+                    None
+                };
+
                 // Use a random seed to initialize the provenance mark generator
                 let mut rng = bc_rand::SecureRandomNumberGenerator;
                 let random_seed =
                     provenance_mark::ProvenanceSeed::new_using(&mut rng);
-                XIDGenesisMarkOptions::Seed(random_seed, None, None, None)
+                XIDGenesisMarkOptions::Seed(random_seed, None, date, info)
             }
             GeneratorOptions::Elide => {
                 anyhow::bail!(

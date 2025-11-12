@@ -4,6 +4,8 @@ pub mod matching;
 pub mod replace;
 pub mod unelide;
 
+use std::collections::HashSet;
+
 use anyhow::Result;
 use bc_envelope::prelude::*;
 use clap::{Args, Subcommand};
@@ -73,14 +75,12 @@ impl crate::exec::Exec for CommandArgs {
     }
 }
 
-fn parse_target_digests(
-    target: &[String],
-) -> Result<Option<std::collections::HashSet<Digest>>> {
+fn parse_target_digests(target: &[String]) -> Result<Option<HashSet<Digest>>> {
     if target.is_empty() {
         return Ok(None);
     }
 
-    let mut digests = std::collections::HashSet::new();
+    let mut digests = HashSet::new();
     for ur_string in target {
         let digest = Digest::from_ur_string(ur_string)?;
         digests.insert(digest);
@@ -88,9 +88,7 @@ fn parse_target_digests(
     Ok(Some(digests))
 }
 
-fn output_digests(
-    digests: std::collections::HashSet<Digest>,
-) -> Result<String> {
+fn output_digests(digests: HashSet<Digest>) -> Result<String> {
     let mut ordered_digests = digests.iter().cloned().collect::<Vec<_>>();
     ordered_digests.sort();
     let output = ordered_digests

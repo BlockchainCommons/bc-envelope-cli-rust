@@ -8,11 +8,9 @@ use bc_xid::{
 };
 
 use super::{
-    password_args::{ReadPasswordArgs, WritePasswordArgs},
-    private_options::PrivateOptions,
-    xid_privilege::XIDPrivilege,
+    PrivateOptions, ReadPasswordArgs, WritePasswordArgs, XIDPrivilege,
 };
-use crate::envelope_args::EnvelopeArgsLike;
+use crate::{cmd::xid::GeneratorOptions, envelope_args::EnvelopeArgsLike};
 
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub enum InputKey {
@@ -203,7 +201,7 @@ pub fn xid_document_to_ur_string(
     xid_document: &XIDDocument,
     private_opts: PrivateOptions,
     password_args: Option<&WritePasswordArgs>,
-    generator_opts: Option<super::generator_options::GeneratorOptions>,
+    generator_opts: Option<GeneratorOptions>,
     shared_password: Option<String>,
     signing_options: XIDSigningOptions,
 ) -> Result<String> {

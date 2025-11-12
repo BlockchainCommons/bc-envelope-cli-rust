@@ -5,8 +5,8 @@ use clap::Args;
 
 use crate::{
     cmd::xid::{
-        password_args::ReadPasswordArgs,
-        utils::{XIDDocumentReadable, get_private_key_ur, read_public_key},
+        ReadPasswordArgs, XIDDocumentReadable, get_private_key_ur,
+        read_public_key,
     },
     envelope_args::{EnvelopeArgs, EnvelopeArgsLike},
 };

@@ -4,7 +4,7 @@ use bc_ur::prelude::*;
 use clap::Args;
 
 use crate::{
-    cmd::xid::utils::XIDDocumentReadable,
+    cmd::xid::XIDDocumentReadable,
     envelope_args::{EnvelopeArgs, EnvelopeArgsLike},
 };
 

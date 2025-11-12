@@ -3,13 +3,8 @@ use clap::Args;
 
 use crate::{
     cmd::xid::{
-        password_args::ReadWritePasswordArgs,
-        private_options::PrivateOptions,
-        signing_args::SigningArgs,
-        utils::{
-            XIDDocumentReadable, read_public_key, xid_document_to_ur_string,
-        },
-        verify_args::VerifyArgs,
+        PrivateOptions, ReadWritePasswordArgs, SigningArgs, VerifyArgs,
+        XIDDocumentReadable, read_public_key, xid_document_to_ur_string,
     },
     envelope_args::{EnvelopeArgs, EnvelopeArgsLike},
 };

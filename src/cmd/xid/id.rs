@@ -4,7 +4,7 @@ use bc_ur::prelude::*;
 use clap::{Args, ValueEnum};
 
 use crate::{
-    cmd::xid::{utils::XIDDocumentReadable, verify_args::VerifyArgs},
+    cmd::xid::{VerifyArgs, XIDDocumentReadable},
     envelope_args::{EnvelopeArgs, EnvelopeArgsLike},
 };
 

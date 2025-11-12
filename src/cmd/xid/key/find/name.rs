@@ -5,10 +5,7 @@ use bc_xid::HasNickname;
 use clap::Args;
 
 use crate::{
-    cmd::xid::{
-        password_args::ReadPasswordArgs,
-        utils::{XIDDocumentReadable, get_private_key_ur},
-    },
+    cmd::xid::{ReadPasswordArgs, XIDDocumentReadable, get_private_key_ur},
     envelope_args::{EnvelopeArgs, EnvelopeArgsLike},
 };
 

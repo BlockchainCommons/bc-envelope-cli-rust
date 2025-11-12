@@ -205,3 +205,43 @@ fn parse_wrapped_envelope(s: &str) -> Result<Envelope> {
     let envelope = Envelope::from_ur_string(s)?;
     Ok(envelope.wrap())
 }
+
+/// Parse any UR into CBOR for use as structured data (e.g., provenance mark
+/// info).
+///
+/// This function converts any UR type into a CBOR value:
+/// - For known UR types (envelope, digest, etc.), looks up the CBOR tag from
+///   the tag store
+/// - For unknown UR types, requires cbor_tag_value parameter
+/// - Returns the UR's CBOR content wrapped in the appropriate CBOR tag
+///
+/// # Arguments
+/// * `s` - UR string (e.g., "ur:envelope/...", "ur:digest/...", etc.)
+/// * `cbor_tag_value` - Optional CBOR tag value for unknown UR types
+///
+/// # Returns
+/// Tagged CBOR value suitable for embedding in other structures
+pub fn parse_ur_to_cbor(s: &str, cbor_tag_value: Option<u64>) -> Result<CBOR> {
+    let ur = UR::from_ur_string(s)?;
+
+    // Look up the CBOR tag for this UR type
+    let cbor_tag = with_format_context!(|context: &FormatContext| {
+        let store = context.tags();
+        if let Some(tag) = store.tag_for_name(ur.ur_type_str()) {
+            Some(tag)
+        } else {
+            cbor_tag_value.map(Tag::with_value)
+        }
+    });
+
+    if let Some(cbor_tag) = cbor_tag {
+        // Get the CBOR content from the UR and wrap it in the tag
+        let cbor = ur.cbor();
+        Ok(CBOR::to_tagged_value(cbor_tag, cbor))
+    } else {
+        bail!(
+            "Unknown UR type: '{}'. Use --ur-tag to specify the CBOR tag value.",
+            ur.ur_type_str()
+        )
+    }
+}

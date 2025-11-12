@@ -1749,3 +1749,461 @@ fn test_xid_key_private_flag() {
         run_cli(&["xid", "key", "all", "--private", &xid_unencrypted]).unwrap();
     assert!(unencrypted_private.starts_with("ur:crypto-prvkeys/"));
 }
+
+#[test]
+fn test_xid_next_with_embedded_generator() {
+    bc_envelope::register_tags();
+    provenance_mark::register_tags();
+
+    // Create XID document with genesis mark and embedded generator
+    let xid_doc =
+        run_cli(&["xid", "new", ALICE_PRVKEY_BASE, "--generator", "include"])
+            .unwrap();
+
+    // Verify initial state - sequence should be 0
+    let format_output = run_cli(&["format", &xid_doc]).unwrap();
+    assert!(format_output.contains("ProvenanceMark"));
+
+    // Advance to next mark without explicit date
+    let xid_doc2 = run_cli(&["xid", "provenance", "next", &xid_doc]).unwrap();
+
+    // Verify the document changed
+    assert_ne!(xid_doc, xid_doc2);
+
+    // Advance again with explicit date and info
+    let xid_doc3 = run_cli(&[
+        "xid",
+        "provenance",
+        "next",
+        &xid_doc2,
+        "--date",
+        "2025-01-15",
+        "--info",
+        HELLO_ENVELOPE_UR,
+    ])
+    .unwrap();
+
+    // Verify the document changed again
+    assert_ne!(xid_doc2, xid_doc3);
+
+    // Format and check structure
+    let format_output = run_cli(&["format", &xid_doc3]).unwrap();
+    assert!(format_output.contains("ProvenanceMark"));
+}
+
+#[test]
+fn test_xid_next_with_provided_generator() {
+    bc_envelope::register_tags();
+    provenance_mark::register_tags();
+
+    // Create XID document with genesis mark but NO embedded generator
+    let xid_no_gen =
+        run_cli(&["xid", "new", ALICE_PRVKEY_BASE, "--generator", "omit"])
+            .unwrap();
+
+    // Try to advance without generator (should fail - no provenance mark when
+    // omitted)
+    let result = run_cli_raw(&["xid", "provenance", "next", &xid_no_gen]);
+    assert!(
+        result.is_err(),
+        "Should fail when no provenance mark exists"
+    );
+}
+
+#[test]
+fn test_xid_next_error_no_provenance() {
+    bc_envelope::register_tags();
+    provenance_mark::register_tags();
+
+    // Create XID document WITHOUT genesis mark (default is omit)
+    let xid_doc = run_cli(&["xid", "new", ALICE_PRVKEY_BASE]).unwrap();
+
+    // Try to advance (should fail - no provenance mark)
+    let result = run_cli_raw(&["xid", "provenance", "next", &xid_doc]);
+    assert!(
+        result.is_err(),
+        "Should fail when no provenance mark exists"
+    );
+}
+
+#[test]
+fn test_xid_next_with_encrypted_generator() {
+    bc_envelope::register_tags();
+    provenance_mark::register_tags();
+
+    let password = "encryption_pass";
+
+    // Create XID document with encrypted generator
+    let xid_doc = run_cli(&[
+        "xid",
+        "new",
+        ALICE_PRVKEY_BASE,
+        "--generator",
+        "encrypt",
+        "--encrypt-password",
+        password,
+    ])
+    .unwrap();
+
+    // Try to advance without password (should fail - generator is encrypted)
+    let result = run_cli_raw(&[
+        "xid",
+        "provenance",
+        "next",
+        &xid_doc,
+        "--date",
+        "2025-01-02",
+    ]);
+    assert!(
+        result.is_err(),
+        "Should fail when encrypted generator accessed without password"
+    );
+
+    // Advance with correct password
+    let xid_doc2 = run_cli(&[
+        "xid",
+        "provenance",
+        "next",
+        &xid_doc,
+        "--password",
+        password,
+        "--encrypt-password",
+        password,
+        "--date",
+        "2025-01-02",
+    ])
+    .unwrap();
+
+    // Verify the document changed
+    assert_ne!(xid_doc, xid_doc2);
+
+    // After decryption and re-encryption with password, the generator is still
+    // accessible with the password
+    let xid_doc3 = run_cli(&[
+        "xid",
+        "provenance",
+        "next",
+        &xid_doc2,
+        "--password",
+        password,
+        "--encrypt-password",
+        password,
+        "--date",
+        "2025-01-03",
+    ])
+    .unwrap();
+    assert_ne!(xid_doc2, xid_doc3);
+}
+
+#[test]
+fn test_xid_next_preserves_structure() {
+    bc_envelope::register_tags();
+    provenance_mark::register_tags();
+
+    // Create XID document with genesis mark
+    let xid_doc =
+        run_cli(&["xid", "new", ALICE_PRVKEY_BASE, "--generator", "include"])
+            .unwrap();
+
+    // Get the XID (should remain unchanged)
+    let xid_before = run_cli(&["xid", "id", &xid_doc]).unwrap();
+
+    // Advance provenance mark
+    let xid_doc2 = run_cli(&[
+        "xid",
+        "provenance",
+        "next",
+        &xid_doc,
+        "--date",
+        "2025-01-02",
+    ])
+    .unwrap();
+
+    // Verify XID is unchanged
+    let xid_after = run_cli(&["xid", "id", &xid_doc2]).unwrap();
+    assert_eq!(xid_before, xid_after, "XID should remain unchanged");
+
+    // Verify the provenance mark did change
+    assert_ne!(xid_doc, xid_doc2, "Document should have changed");
+}
+
+#[test]
+fn test_xid_new_with_genesis_mark_date_and_info() {
+    bc_envelope::register_tags();
+    provenance_mark::register_tags();
+
+    // Create XID document with genesis mark, custom date, and info as an
+    // envelope
+    let xid_doc = run_cli(&[
+        "xid",
+        "new",
+        ALICE_PRVKEY_BASE,
+        "--generator",
+        "include",
+        "--date",
+        "2025-01-15",
+        "--info",
+        HELLO_ENVELOPE_UR,
+    ])
+    .unwrap();
+
+    // Verify the document was created
+    assert!(xid_doc.starts_with("ur:xid/"));
+
+    // Format and check that it has a provenance mark
+    let format_output = run_cli(&["format", &xid_doc]).unwrap();
+    assert!(format_output.contains("ProvenanceMark"));
+    assert!(format_output.contains("provenanceGenerator"));
+
+    // Create another document without date/info to verify they're different
+    let xid_doc2 =
+        run_cli(&["xid", "new", ALICE_PRVKEY_BASE, "--generator", "include"])
+            .unwrap();
+
+    // The documents should be different (different marks due to date/info)
+    assert_ne!(xid_doc, xid_doc2);
+}
+
+#[test]
+fn test_xid_new_with_genesis_mark_info_as_digest() {
+    bc_envelope::register_tags();
+    provenance_mark::register_tags();
+
+    // Create XID document with genesis mark and info as a digest
+    let xid_doc = run_cli(&[
+        "xid",
+        "new",
+        ALICE_PRVKEY_BASE,
+        "--generator",
+        "include",
+        "--info",
+        DIGEST_EXAMPLE,
+    ])
+    .unwrap();
+
+    // Verify the document was created
+    assert!(xid_doc.starts_with("ur:xid/"));
+
+    // Verify it has a provenance mark
+    let format_output = run_cli(&["format", &xid_doc]).unwrap();
+    assert!(format_output.contains("ProvenanceMark"));
+
+    // Create another with different info to verify they differ
+    let xid_doc2 = run_cli(&[
+        "xid",
+        "new",
+        ALICE_PRVKEY_BASE,
+        "--generator",
+        "include",
+        "--info",
+        ARID,
+    ])
+    .unwrap();
+
+    assert_ne!(xid_doc, xid_doc2);
+}
+
+#[test]
+fn test_xid_new_with_genesis_mark_info_as_arid() {
+    bc_envelope::register_tags();
+    provenance_mark::register_tags();
+
+    // Create XID document with genesis mark and info as an ARID
+    let xid_doc = run_cli(&[
+        "xid",
+        "new",
+        ALICE_PRVKEY_BASE,
+        "--generator",
+        "include",
+        "--info",
+        ARID,
+    ])
+    .unwrap();
+
+    // Verify the document was created
+    assert!(xid_doc.starts_with("ur:xid/"));
+
+    // Verify it has a provenance mark
+    let format_output = run_cli(&["format", &xid_doc]).unwrap();
+    assert!(format_output.contains("ProvenanceMark"));
+
+    // Create one without info to ensure they're different
+    let xid_doc2 =
+        run_cli(&["xid", "new", ALICE_PRVKEY_BASE, "--generator", "include"])
+            .unwrap();
+
+    assert_ne!(xid_doc, xid_doc2);
+}
+
+#[test]
+fn test_xid_next_with_info_as_envelope() {
+    bc_envelope::register_tags();
+    provenance_mark::register_tags();
+
+    // Create XID document with genesis mark
+    let xid_doc =
+        run_cli(&["xid", "new", ALICE_PRVKEY_BASE, "--generator", "include"])
+            .unwrap();
+
+    // Advance with info as an envelope
+    let xid_doc2 = run_cli(&[
+        "xid",
+        "provenance",
+        "next",
+        &xid_doc,
+        "--date",
+        "2025-01-20",
+        "--info",
+        HELLO_ENVELOPE_UR,
+    ])
+    .unwrap();
+
+    // Verify the document changed
+    assert_ne!(xid_doc, xid_doc2);
+
+    // Verify both have provenance marks
+    let format_output = run_cli(&["format", &xid_doc2]).unwrap();
+    assert!(format_output.contains("ProvenanceMark"));
+
+    // Advance again without info to verify different result
+    let xid_doc3 = run_cli(&[
+        "xid",
+        "provenance",
+        "next",
+        &xid_doc,
+        "--date",
+        "2025-01-20",
+    ])
+    .unwrap();
+
+    // Should be different from xid_doc2 since info differs
+    assert_ne!(xid_doc2, xid_doc3);
+}
+
+#[test]
+fn test_xid_next_with_info_as_digest() {
+    bc_envelope::register_tags();
+    provenance_mark::register_tags();
+
+    // Create XID document with genesis mark
+    let xid_doc =
+        run_cli(&["xid", "new", ALICE_PRVKEY_BASE, "--generator", "include"])
+            .unwrap();
+
+    // Advance with info as a digest
+    let xid_doc2 = run_cli(&[
+        "xid",
+        "provenance",
+        "next",
+        &xid_doc,
+        "--date",
+        "2025-01-20",
+        "--info",
+        DIGEST_EXAMPLE,
+    ])
+    .unwrap();
+
+    // Verify the document changed
+    assert_ne!(xid_doc, xid_doc2);
+
+    // Advance with different info to verify difference
+    let xid_doc3 = run_cli(&[
+        "xid",
+        "provenance",
+        "next",
+        &xid_doc,
+        "--date",
+        "2025-01-20",
+        "--info",
+        ARID,
+    ])
+    .unwrap();
+
+    assert_ne!(xid_doc2, xid_doc3);
+}
+
+#[test]
+fn test_xid_next_with_info_as_arid() {
+    bc_envelope::register_tags();
+    provenance_mark::register_tags();
+
+    // Create XID document with genesis mark
+    let xid_doc =
+        run_cli(&["xid", "new", ALICE_PRVKEY_BASE, "--generator", "include"])
+            .unwrap();
+
+    // Advance with info as an ARID
+    let xid_doc2 = run_cli(&[
+        "xid",
+        "provenance",
+        "next",
+        &xid_doc,
+        "--date",
+        "2025-01-20",
+        "--info",
+        ARID,
+    ])
+    .unwrap();
+
+    // Verify the document changed
+    assert_ne!(xid_doc, xid_doc2);
+
+    // Verify provenance mark exists
+    let format_output = run_cli(&["format", &xid_doc2]).unwrap();
+    assert!(format_output.contains("ProvenanceMark"));
+}
+
+#[test]
+fn test_xid_next_with_multiple_advances_and_different_info() {
+    bc_envelope::register_tags();
+    provenance_mark::register_tags();
+
+    // Create XID document with genesis mark
+    let xid_doc = run_cli(&[
+        "xid",
+        "new",
+        ALICE_PRVKEY_BASE,
+        "--generator",
+        "include",
+        "--date",
+        "2025-01-01",
+        "--info",
+        HELLO_ENVELOPE_UR,
+    ])
+    .unwrap();
+
+    // Advance with digest info
+    let xid_doc2 = run_cli(&[
+        "xid",
+        "provenance",
+        "next",
+        &xid_doc,
+        "--date",
+        "2025-01-10",
+        "--info",
+        DIGEST_EXAMPLE,
+    ])
+    .unwrap();
+
+    // Advance again with ARID info
+    let xid_doc3 = run_cli(&[
+        "xid",
+        "provenance",
+        "next",
+        &xid_doc2,
+        "--date",
+        "2025-01-20",
+        "--info",
+        ARID,
+    ])
+    .unwrap();
+
+    // Verify all documents are different
+    assert_ne!(xid_doc, xid_doc2);
+    assert_ne!(xid_doc2, xid_doc3);
+    assert_ne!(xid_doc, xid_doc3);
+
+    // Verify the final document has a provenance mark
+    let final_format = run_cli(&["format", &xid_doc3]).unwrap();
+    assert!(final_format.contains("ProvenanceMark"));
+}

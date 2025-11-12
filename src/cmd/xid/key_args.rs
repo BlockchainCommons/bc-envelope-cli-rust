@@ -4,9 +4,7 @@ use bc_envelope::PublicKeys;
 use clap::Args;
 
 use super::{
-    private_options::PrivateOptions,
-    utils::{InputKey, read_key, read_public_key},
-    xid_privilege::XIDPrivilege,
+    InputKey, PrivateOptions, XIDPrivilege, read_key, read_public_key,
 };
 
 pub trait KeyArgsLike {

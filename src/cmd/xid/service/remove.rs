@@ -4,10 +4,8 @@ use clap::Args;
 
 use crate::{
     cmd::xid::{
-        private_options::PrivateOptions,
-        signing_args::SigningArgs,
-        utils::{XIDDocumentReadable, read_uri, xid_document_to_ur_string},
-        verify_args::VerifyArgs,
+        PrivateOptions, SigningArgs, VerifyArgs, XIDDocumentReadable, read_uri,
+        xid_document_to_ur_string,
     },
     envelope_args::{EnvelopeArgs, EnvelopeArgsLike},
 };

@@ -5,7 +5,7 @@ use bc_xid::{XIDDocument, XIDVerifySignature};
 use clap::Args;
 
 use crate::{
-    cmd::xid::utils::XIDDocumentReadable,
+    cmd::xid::XIDDocumentReadable,
     envelope_args::{EnvelopeArgs, EnvelopeArgsLike},
 };
 
