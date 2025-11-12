@@ -143,6 +143,8 @@ pub fn read_envelope(envelope: Option<&str>) -> Result<Envelope> {
             let doc = XIDDocument::from(xid);
             Ok(doc.into_envelope())
         } else {
+            // Look up the envelope tag associated with the UR type string
+            //
             todo!();
         }
     } else {

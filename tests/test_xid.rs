@@ -1,5 +1,6 @@
 use indoc::indoc;
 mod common;
+use bc_ur::prelude::*;
 use common::*;
 
 const XID_DOC: &str = "ur:xid/tpsplftpsotanshdhdcxjsdigtwneocmnybadpdlzobysbstmekteypspeotcfldynlpsfolsbintyjkrhfnoyaylftpsotansgylftanshfhdcxhslkfzemaylrwttynsdlghrydpmdfzvdglndloimaahykorefddtsguogmvlahqztansgrhdcxetlewzvlwyfdtobeytidosbamkswaomwwfyabakssakggegychesmerkcatekpcxoycsfncsfggmplgshd";
@@ -2206,4 +2207,87 @@ fn test_xid_next_with_multiple_advances_and_different_info() {
     // Verify the final document has a provenance mark
     let final_format = run_cli(&["format", &xid_doc3]).unwrap();
     assert!(final_format.contains("ProvenanceMark"));
+}
+
+#[test]
+fn test_xid_provenance_get_with_mark() {
+    bc_envelope::register_tags();
+    provenance_mark::register_tags();
+
+    // Create XID document with provenance mark
+    let xid_doc =
+        run_cli(&["xid", "new", ALICE_PRVKEY_BASE, "--generator", "include"])
+            .unwrap();
+
+    // Extract the provenance mark
+    let provenance_ur =
+        run_cli(&["xid", "provenance", "get", &xid_doc]).unwrap();
+
+    // Verify it's a valid provenance UR
+    assert!(
+        provenance_ur.starts_with("ur:provenance/"),
+        "Expected provenance UR, got: {}",
+        provenance_ur
+    );
+
+    // Verify we can parse it back
+    let mark = provenance_mark::ProvenanceMark::from_ur_string(&provenance_ur)
+        .unwrap();
+    assert_eq!(mark.seq(), 0, "Genesis mark should have seq 0");
+}
+
+#[test]
+fn test_xid_provenance_get_without_mark() {
+    bc_envelope::register_tags();
+    provenance_mark::register_tags();
+
+    // Create XID document WITHOUT provenance mark
+    let xid_doc = run_cli(&["xid", "new", ALICE_PRVKEY_BASE]).unwrap();
+
+    // Try to extract provenance mark - should return empty
+    let provenance_ur =
+        run_cli(&["xid", "provenance", "get", &xid_doc]).unwrap();
+
+    // Should be empty when no provenance mark exists
+    assert_eq!(
+        provenance_ur, "",
+        "Should return empty string when no provenance mark exists"
+    );
+}
+
+#[test]
+fn test_xid_provenance_get_after_next() {
+    bc_envelope::register_tags();
+    provenance_mark::register_tags();
+
+    // Create XID document with provenance mark
+    let xid_doc =
+        run_cli(&["xid", "new", ALICE_PRVKEY_BASE, "--generator", "include"])
+            .unwrap();
+
+    // Advance to next mark
+    let xid_doc2 = run_cli(&[
+        "xid",
+        "provenance",
+        "next",
+        &xid_doc,
+        "--date",
+        "2025-01-15",
+    ])
+    .unwrap();
+
+    // Extract the provenance mark from the advanced document
+    let provenance_ur =
+        run_cli(&["xid", "provenance", "get", &xid_doc2]).unwrap();
+
+    // Verify it's a valid provenance UR
+    assert!(provenance_ur.starts_with("ur:provenance/"));
+
+    // Verify the sequence number increased
+    let mark = provenance_mark::ProvenanceMark::from_ur_string(&provenance_ur)
+        .unwrap();
+    assert_eq!(mark.seq(), 1, "Advanced mark should have seq 1");
+
+    // Verify the date matches
+    assert_eq!(mark.date().to_string(), "2025-01-15", "Date should match");
 }
