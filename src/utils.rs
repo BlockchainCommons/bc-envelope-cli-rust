@@ -156,7 +156,7 @@ pub fn parse_digest(target: &str) -> Result<Digest> {
     let ur = UR::from_ur_string(target)?;
     let digest = match ur.ur_type_str() {
         "digest" => Digest::from_ur(&ur)?,
-        "envelope" => Envelope::from_ur(&ur)?.digest().into_owned(),
+        "envelope" => Envelope::from_ur(&ur)?.digest(),
         _ => {
             bail!("Invalid digest type: {}", ur.ur_type_str());
         }

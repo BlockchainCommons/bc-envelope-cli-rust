@@ -38,9 +38,9 @@ impl crate::Exec for CommandArgs {
     fn exec(&self) -> Result<String> {
         let envelope = self.read_envelope()?;
         let digests: HashSet<Digest> = match self.depth {
-            Depth::Top => vec![envelope.digest().into_owned()]
-                .into_iter()
-                .collect::<HashSet<_>>(),
+            Depth::Top => {
+                vec![envelope.digest()].into_iter().collect::<HashSet<_>>()
+            }
             Depth::Shallow => envelope.shallow_digests(),
             Depth::Deep => envelope.deep_digests(),
         };

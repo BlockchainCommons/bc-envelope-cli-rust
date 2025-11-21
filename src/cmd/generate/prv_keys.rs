@@ -135,8 +135,7 @@ fn seed_from_envelope(input: &str) -> Result<bc_components::Seed> {
         .extract_optional_object_for_predicate::<String>(known_values::NOTE)?
         .unwrap_or_default();
     let creation_date = envelope
-        .extract_optional_object_for_predicate::<Date>(known_values::DATE)?
-        .map(|date| date.as_ref().clone());
+        .extract_optional_object_for_predicate::<Date>(known_values::DATE)?;
 
     bc_components::Seed::new_opt(
         data,
