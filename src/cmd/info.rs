@@ -7,7 +7,7 @@ use bc_envelope::prelude::*;
 use clap::Args;
 use ssh_key::{HashAlg, public::KeyData};
 
-use crate::read_argument;
+use crate::{envelope_from_ur, read_argument};
 
 /// Provide type and other information about the object.
 #[derive(Debug, Args)]
@@ -43,15 +43,20 @@ impl crate::Exec for CommandArgs {
         }
 
         let object = read_argument(self.object.as_deref())?;
-        if object.trim().strip_prefix("ur:").is_some() {
+        let object = object.trim().to_string();
+        if object.strip_prefix("ur:").is_some() {
             let ur = UR::from_ur_string(&object)?;
             let ur_type = ur.ur_type_str();
+            let cbor_size = ur.cbor().to_cbor_data().len();
             add(&mut result, "Format", format!("ur:{}", ur_type));
+            add(&mut result, "CBOR Size", cbor_size.to_string());
+
+            if envelope_from_ur(&ur).is_ok() {
+                add(&mut result, "Description", "Gordian Envelope");
+                return Ok(result.join("\n"));
+            }
+
             match ur_type {
-                "envelope" => {
-                    let _envelope = Envelope::from_ur(&ur)?;
-                    add(&mut result, "Description", "Gordian Envelope");
-                }
                 "seed" => {
                     let _seed = Seed::from_ur(&ur)?;
                     add(&mut result, "Description", "Cryptographic Seed");

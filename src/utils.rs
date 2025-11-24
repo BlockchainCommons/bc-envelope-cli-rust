@@ -118,6 +118,21 @@ pub fn read_argument(argument: Option<&str>) -> Result<String> {
     Ok(string)
 }
 
+pub fn envelope_from_ur(ur: &UR) -> Result<Envelope> {
+    if let Ok(envelope) = Envelope::from_ur(ur) {
+        return Ok(envelope);
+    }
+    if let Ok(envelope) = Envelope::from_tagged_cbor(ur.cbor()) {
+        return Ok(envelope);
+    }
+    if ur.ur_type_str() == "xid" {
+        let xid = XID::from_untagged_cbor(ur.cbor())?;
+        let doc = XIDDocument::from(xid);
+        return Ok(doc.into_envelope());
+    }
+    bail!("Invalid envelope");
+}
+
 pub fn read_envelope(envelope: Option<&str>) -> Result<Envelope> {
     let ur_string = if let Some(env) = envelope {
         env.to_string()
@@ -126,30 +141,12 @@ pub fn read_envelope(envelope: Option<&str>) -> Result<Envelope> {
         std::io::stdin().read_line(&mut s)?;
         s
     };
+    let ur_string = ur_string.trim();
     if ur_string.is_empty() {
         bail!("No envelope provided");
     }
-    // Just try to parse the envelope as a ur:envelope string first
-    if let Ok(envelope) = Envelope::from_ur_string(ur_string.trim()) {
-        Ok(envelope)
-        // If that fails, try to parse the envelope as a ur:<any> string
-    } else if let Ok(ur) = UR::from_ur_string(ur_string.trim()) {
-        let cbor = ur.cbor();
-        // Try to parse the CBOR into an envelope
-        if let Ok(envelope) = Envelope::from_tagged_cbor(cbor) {
-            Ok(envelope)
-        } else if ur.ur_type_str() == "xid" {
-            let xid = XID::from_untagged_cbor(ur.cbor())?;
-            let doc = XIDDocument::from(xid);
-            Ok(doc.into_envelope())
-        } else {
-            // Look up the envelope tag associated with the UR type string
-            //
-            todo!();
-        }
-    } else {
-        bail!("Invalid envelope");
-    }
+    Envelope::from_ur_string(ur_string)
+        .or_else(|_| envelope_from_ur(&UR::from_ur_string(ur_string)?))
 }
 
 pub fn parse_digest(target: &str) -> Result<Digest> {
