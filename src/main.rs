@@ -32,6 +32,7 @@ use crate::Exec;
 #[derive(Debug, Parser)]
 #[command(author, version)]
 #[command(propagate_version = true)]
+#[command(infer_subcommands = true)]
 #[command(styles=styles::get_styles())]
 #[doc(hidden)]
 struct Cli {
@@ -69,6 +70,8 @@ enum MainCommands {
 
 #[doc(hidden)]
 fn main() -> Result<()> {
+    bc_components::register_tags();
+    bc_envelope::register_tags();
     provenance_mark::register_tags();
 
     let cli = Cli::parse();
