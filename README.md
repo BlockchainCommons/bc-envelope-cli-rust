@@ -23,7 +23,7 @@ cargo install bc-envelope-cli
 To install a specific version:
 
 ```bash
-cargo install bc-envelope-cli --version 0.27.0
+cargo install bc-envelope-cli --version 0.28.0
 ```
 
 ### From Source
@@ -83,6 +83,13 @@ See the [docs](docs/README.md) directory for more information.
 
 ## Version History
 
+### 0.28.0: December 4, 2025
+
+- Align to dependencies.
+- Support abbreviated commands.
+- Add CBOR size to info command.
+- Refactor envelope parsing logic.
+
 ### 0.27.0: November 12, 2025
 
 - Add XID provenance mark support ('xid provenance get' and 'xid provenance next' commands).
@@ -119,8 +126,6 @@ See the [docs](docs/README.md) directory for more information.
 ### 0.23.0: September 26, 2025
 
 - Added support for ur:envelope seed format to the 'generate prvkeys --seed' command.
-
-## Version History
 
 ### 0.25.0: October 21, 2025
 

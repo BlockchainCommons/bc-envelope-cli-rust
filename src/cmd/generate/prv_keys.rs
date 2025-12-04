@@ -121,7 +121,7 @@ fn parse_input(input: &str) -> Result<bc_components::PrivateKeyBase> {
 
 fn seed_from_envelope(input: &str) -> Result<bc_components::Seed> {
     let envelope = Envelope::from_ur_string(input)?;
-    envelope.check_type(&known_values::SEED_TYPE)?;
+    envelope.check_type_value(&known_values::SEED_TYPE)?;
 
     let data = envelope
         .subject()
