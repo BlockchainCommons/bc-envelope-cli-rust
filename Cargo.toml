@@ -26,14 +26,14 @@ name = "envelope"
 path = "src/main.rs"
 
 [dependencies]
-dcbor = { version = "^0.23.3", features = ["multithreaded"] }
-bc-ur = "^0.16.0"
-bc-envelope = { version = "^0.37.0", features = ["multithreaded"] }
-bc-envelope-pattern = "^0.8.0"
-bc-components = { version = "^0.28.0", features = ["ssh-agent"] }
+dcbor = { version = "^0.24.0", features = ["multithreaded"] }
+bc-ur = "^0.17.0"
+bc-envelope = { version = "^0.38.0", features = ["multithreaded"] }
+bc-envelope-pattern = "^0.9.0"
+bc-components = { version = "^0.29.0", features = ["ssh-agent"] }
 bc-rand = "^0.4.2"
-bc-xid = "^0.16.0"
-provenance-mark = "^0.16.0"
+bc-xid = "^0.17.0"
+provenance-mark = "^0.17.0"
 
 clap = { version = "^4.4.3", features = ["derive", "unstable-styles"] }
 anyhow = "^1.0.0"
