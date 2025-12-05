@@ -1,7 +1,6 @@
 #![allow(dead_code)]
 
 use anyhow::{Result, bail};
-use assert_cmd::Command;
 
 /// A macro to assert that two values are equal, printing them if they are not,
 /// including newlines and indentation they may contain. This macro is useful
@@ -73,8 +72,7 @@ pub const DAVE_PRVKEY_BASE: &str = "ur:crypto-prvkey-base/hdcxjtgrwefxlpihpmvtzo
 pub const DAVE_PUBKEYS: &str = "ur:crypto-pubkeys/lftanshfhdcxbwbdwmehecntwdwdfgeyotrhplcejyglaacpotqzbtjslfoybdpyhpdpbasrytpatansgrhdcxptsnuebzqzwdhtlanbhyweprpytkpfntvyfpmomykkasfeltwyceuoieaysngrjtjndrescf";
 
 pub fn run_cli_raw_stdin(args: &[&str], stdin: &str) -> Result<String> {
-    let output = Command::cargo_bin("envelope")
-        .unwrap()
+    let output = assert_cmd::cargo::cargo_bin_cmd!("envelope")
         .args(args)
         .write_stdin(stdin)
         .assert();

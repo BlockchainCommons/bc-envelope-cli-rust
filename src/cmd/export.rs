@@ -54,7 +54,7 @@ impl crate::Exec for CommandArgs {
         {
             if let Some(ssh_private_key) = signing_private_key.to_ssh() {
                 if self.encrypt {
-                    let mut rng = bc_rand::SecureRandomNumberGenerator;
+                    let mut rng = rand::rngs::OsRng;
                     let password = read_password(
                         "Key encryption password: ",
                         self.password.as_deref(),

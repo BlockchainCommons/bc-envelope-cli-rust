@@ -39,6 +39,7 @@ clap = { version = "^4.4.3", features = ["derive", "unstable-styles"] }
 anyhow = "^1.0.0"
 anstyle = "^1.0.1"
 hex = "^0.4.3"
+rand = "0.8"  # For OsRng that implements rand_core 0.6 CryptoRng (required by ssh-key 0.6)
 regex = "^1.11.1"
 ssh-key = { version = "=0.6.7", default-features = false, features = [
     "dsa",
@@ -49,7 +50,7 @@ ssh-key = { version = "=0.6.7", default-features = false, features = [
     "encryption",
 ] }
 rpassword = "7.3.1"
-which = "7.0.3"
+which = "^8.0.0"
 
 [dev-dependencies]
 assert_cmd = "^2.0.12"
