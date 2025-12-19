@@ -1,3 +1,4 @@
+mod attachment;
 mod delegate;
 pub mod generator_options;
 pub use generator_options::*;
@@ -41,6 +42,7 @@ enum SubCommands {
     Method(method::CommandArgs),
     Delegate(delegate::CommandArgs),
     Service(service::CommandArgs),
+    Attachment(attachment::CommandArgs),
 }
 
 impl crate::Exec for CommandArgs {
@@ -53,6 +55,7 @@ impl crate::Exec for CommandArgs {
             SubCommands::Method(args) => args.exec(),
             SubCommands::Delegate(args) => args.exec(),
             SubCommands::Service(args) => args.exec(),
+            SubCommands::Attachment(args) => args.exec(),
         }
     }
 }

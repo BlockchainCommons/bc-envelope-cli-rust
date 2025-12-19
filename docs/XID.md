@@ -1832,23 +1832,36 @@ When using `--sign inception`, the inception key must be available in the XID do
 
 ## Working with Attachments
 
-XID documents are envelopes, so the standard `attachment` commands work seamlessly with them. Attachments provide a standardized way to add discoverable third-party metadata to XID documents.
+Attachments provide a standardized way to add discoverable third-party metadata to XID documents. While XID documents are envelopes and can use the general `envelope attachment` commands, the `envelope xid attachment` commands are strongly recommended for working with signed XID documents.
 
-### Adding an Attachment to a XID Document
+### Why Use XID Attachment Commands?
 
-Create a XID document and a payload for the attachment:
+The XID-specific attachment commands (`envelope xid attachment`) differ from the general attachment commands in one key way: *signature handling*.
+
+| Feature                                       | `envelope attachment` | `envelope xid attachment` |
+| --------------------------------------------- | --------------------- | ------------------------- |
+| Works with any envelope                       | ✓                     | Only XID documents        |
+| Preserves all document content                | ✓                     | ✓                         |
+| Signature verification (`--verify inception`) | ✗                     | ✓                         |
+| Re-signing (`--sign inception`)               | ✗                     | ✓                         |
+
+Both command sets preserve the complete XID document structure, including private keys and existing assertions. The critical difference is that `xid attachment` commands support verifying and updating signatures when modifying signed documents.
+
+**Use `xid attachment` for:** Signed XID documents (most production use cases)
+
+**Use `envelope attachment` for:** Unsigned XID documents where signature handling isn't needed
+
+The remainder of this section demonstrates the recommended `xid attachment` commands.
+
+### Adding Attachments
+
+Create a XID document and add an attachment with full private key preservation:
 
 ```
 ALICE_PRVKEYS=ur:crypto-prvkeys/lftansgohdcxtapslfasrhbtamlslubtmwrdfxettbclaotnfrtowzmydpcyjlgdqzurgrcamsgatansgehdcxhlembaflbsgobydmwfwywfaxyacpatpefmcpbsuoghatsgpfrslshyfmhluymsdakobgenfs
 XID_DOC=`envelope xid new $ALICE_PRVKEYS --nickname "Alice"`
 PAYLOAD=`envelope subject type string "Alice's contact info"`
-```
-
-Add the attachment using the standard `attachment add` command:
-
-```
-XID_WITH_ATTACHMENT=`envelope attachment add components "com.example.contacts" --conforms-to "https://example.com/contact-schema/v1" $PAYLOAD $XID_DOC`
-
+XID_WITH_ATTACHMENT=`envelope xid attachment add --vendor "com.example.contacts" --conforms-to "https://example.com/contact-schema/v1" --payload "$PAYLOAD" $XID_DOC`
 envelope format $XID_WITH_ATTACHMENT
 
 │ XID(37cf16a3) [
@@ -1870,102 +1883,156 @@ envelope format $XID_WITH_ATTACHMENT
 │ ]
 ```
 
-### Attachments Are Automatically Preserved
+Note that private keys are automatically preserved in the output.
 
-When you modify a XID document using XID commands, attachments are automatically preserved:
+### Working with Signed XID Documents
+
+When working with signed XID documents, use `--verify` and `--sign` to maintain cryptographic integrity:
 
 ```
-XID_MODIFIED=`envelope xid method add https://resolver.example.com $XID_WITH_ATTACHMENT`
+SIGNED_XID=`envelope xid new $ALICE_PRVKEYS --nickname "Alice" --sign inception`
+XID_WITH_ATTACHMENT=`envelope xid attachment add --vendor "com.example.contacts" --conforms-to "https://example.com/contact-schema/v1" --payload "$PAYLOAD" --verify inception --sign inception $SIGNED_XID`
+envelope format $XID_WITH_ATTACHMENT
 
-envelope format $XID_MODIFIED
-
-│ XID(37cf16a3) [
-│     'attachment': {
-│         "Alice's contact info"
-│     } [
-│         'conformsTo': "https://example.com/contact-schema/v1"
-│         'vendor': "com.example.contacts"
+│ {
+│     XID(37cf16a3) [
+│         'attachment': {
+│             "Alice's contact info"
+│         } [
+│             'conformsTo': "https://example.com/contact-schema/v1"
+│             'vendor': "com.example.contacts"
+│         ]
+│         'key': PublicKeys(d7e77657, SigningPublicKey(37cf16a3, SchnorrPublicKey(145232a9)), EncapsulationPublicKey(4280739f, X25519PublicKey(4280739f))) [
+│             {
+│                 'privateKey': PrivateKeys(677c674f, SigningPrivateKey(dd2814a6, SchnorrPrivateKey(29acb360)), EncapsulationPrivateKey(39e66aca, X25519PrivateKey(39e66aca)))
+│             } [
+│                 'salt': Salt
+│             ]
+│             'allow': 'All'
+│             'nickname': "Alice"
+│         ]
 │     ]
-│     'dereferenceVia': URI(https://resolver.example.com)
-│     'key': PublicKeys(d7e77657, SigningPublicKey(37cf16a3, SchnorrPublicKey(145232a9)), EncapsulationPublicKey(4280739f, X25519PublicKey(4280739f))) [
-│         'allow': 'All'
-│         'nickname': "Alice"
-│     ]
+│ } [
+│     'signed': Signature
 │ ]
 ```
 
-The attachment remains present even after adding the resolution method.
+The workflow:
+1. `--verify inception` verifies the existing signature
+2. The attachment is added to the document
+3. `--sign inception` creates a new signature covering the modified document (including the attachment)
+4. Both private keys and the attachment are preserved
 
-### Enumerating and Querying Attachments
+### Attachments Persist Across XID Operations
 
-Use the standard attachment commands to work with XID document attachments:
+Attachments are automatically preserved when you perform other XID operations:
 
 ```
-envelope attachment count $XID_MODIFIED
+XID_WITH_METHOD=`envelope xid method add https://resolver.example.com --verify inception --sign inception $XID_WITH_ATTACHMENT`
+envelope format $XID_WITH_METHOD
+
+│ {
+│     XID(37cf16a3) [
+│         'attachment': {
+│             "Alice's contact info"
+│         } [
+│             'conformsTo': "https://example.com/contact-schema/v1"
+│             'vendor': "com.example.contacts"
+│         ]
+│         'dereferenceVia': URI(https://resolver.example.com)
+│         'key': PublicKeys(d7e77657, SigningPublicKey(37cf16a3, SchnorrPublicKey(145232a9)), EncapsulationPublicKey(4280739f, X25519PublicKey(4280739f))) [
+│             {
+│                 'privateKey': PrivateKeys(677c674f, SigningPrivateKey(dd2814a6, SchnorrPrivateKey(29acb360)), EncapsulationPrivateKey(39e66aca, X25519PrivateKey(39e66aca)))
+│             } [
+│                 'salt': Salt
+│             ]
+│             'allow': 'All'
+│             'nickname': "Alice"
+│         ]
+│     ]
+│ } [
+│     'signed': Signature
+│ ]
+```
+
+The attachment, private keys, and signature all remain intact.
+
+### Querying Attachments
+
+Count attachments in a XID document:
+
+```
+envelope xid attachment count $XID_WITH_METHOD
 
 │ 1
-```
-
-Add a second attachment:
-
-```
-SECOND_PAYLOAD=`envelope subject type string "Backup contact"`
-XID_TWO_ATTACHMENTS=`envelope attachment add components "com.example.backup" $SECOND_PAYLOAD $XID_MODIFIED`
-
-envelope attachment count $XID_TWO_ATTACHMENTS
-
-│ 2
-```
-
-List all attachments:
-
-```
-envelope attachment all $XID_TWO_ATTACHMENTS
-
-│ ur:envelope/oycseylstpsptpsojyfpjziniaihdijkcxiajljtjyhsiajycxinjtiyjloycseotpsojyiajljndmihkshsjnjojzihdmiajljtjyhsiajyjkoycseetpsoksdaisjyjyjojkftdldlihkshsjnjojzihdmiajljndliajljtjyhsiajydpjkiaisihjnhsdlkoehnbgyteiy
-│ ur:envelope/oycseylftpsptpsojtfwhsiajekpjocxiajljtjyhsiajyoycseotpsojpiajljndmihkshsjnjojzihdmidhsiajekpjowylogalk
 ```
 
 Find attachments by vendor:
 
 ```
-envelope attachment find --vendor "com.example.contacts" $XID_TWO_ATTACHMENTS | wc -l
+envelope xid attachment find --vendor "com.example.contacts" $XID_WITH_METHOD | envelope format
+
+│ 'attachment': {
+│     "Alice's contact info"
+│ } [
+│     'conformsTo': "https://example.com/contact-schema/v1"
+│     'vendor': "com.example.contacts"
+│ ]
+```
+
+List all attachments:
+
+```
+envelope xid attachment all $XID_WITH_METHOD
+```
+
+Get a specific attachment by index:
+
+```
+envelope xid attachment at 0 $XID_WITH_METHOD | envelope format
+```
+
+### Removing Attachments
+
+Remove an attachment while maintaining signature integrity:
+
+```
+ATTACHMENT=`envelope xid attachment find --vendor "com.example.contacts" $XID_WITH_METHOD`
+XID_NO_ATTACHMENT=`envelope xid attachment remove $ATTACHMENT --verify inception --sign inception $XID_WITH_METHOD`
+envelope xid attachment count $XID_NO_ATTACHMENT
+
+│ 0
+```
+
+The `--verify` and `--sign` options ensure secure removal with signature verification and renewal.
+
+### Complete Workflow Example
+
+This example demonstrates a complete workflow maintaining attachments, private keys, and signatures throughout:
+
+```
+# Create a signed XID document
+SIGNED_XID=`envelope xid new $ALICE_PRVKEYS --nickname "Alice" --sign inception`
+
+# Add an attachment with verification and re-signing
+XID_WITH_ATTACHMENT=`envelope xid attachment add --vendor "com.example.contacts" --conforms-to "https://example.com/contact-schema/v1" --payload "$PAYLOAD" --verify inception --sign inception $SIGNED_XID`
+
+# Add a resolution method, preserving attachment and signature
+XID_COMPLETE=`envelope xid method add https://resolver.example.com --verify inception --sign inception $XID_WITH_ATTACHMENT`
+
+# Add a service, still preserving everything
+ALICE_PUBKEYS=`envelope generate pubkeys $ALICE_PRVKEYS`
+XID_FINAL=`envelope xid service add https://example.com/api --key "$ALICE_PUBKEYS" --verify inception --sign inception $XID_COMPLETE`
+
+# Verify everything is preserved
+envelope xid attachment count $XID_FINAL
 
 │ 1
 ```
 
-### Attachments and Signed XID Documents
-
-When working with signed XID documents, be aware that attachments added after signing are not included in the signature. To include attachments in a signature, add them before signing:
-
-Create a XID document with an attachment:
-
-```
-UNSIGNED_XID=`envelope xid new $ALICE_PRVKEYS --nickname "Alice"`
-PAYLOAD=`envelope subject type string "Alice's contact info"`
-XID_WITH_ATTACHMENT=`envelope attachment add components "com.example.contacts" $PAYLOAD $UNSIGNED_XID`
-```
-
-Now sign the document with its attachment:
-
-```
-SIGNED_XID=`envelope xid new $ALICE_PRVKEYS --nickname "Alice"`
-SIGNED_WITH_ATTACHMENT=`envelope attachment add components "com.example.contacts" $PAYLOAD $SIGNED_XID | envelope sign --signer $ALICE_PRVKEYS`
-
-envelope format $SIGNED_WITH_ATTACHMENT
-
-│ XID(37cf16a3) [
-│     'attachment': {
-│         "Alice's contact info"
-│     } [
-│         'vendor': "com.example.contacts"
-│     ]
-│     'key': PublicKeys(d7e77657, SigningPublicKey(37cf16a3, SchnorrPublicKey(145232a9)), EncapsulationPublicKey(4280739f, X25519PublicKey(4280739f))) [
-│         'allow': 'All'
-│         'nickname': "Alice"
-│     ]
-│     'signed': Signature
-│ ]
-```
-
-Note: When using the general `envelope sign` command, the signature is added as an assertion rather than wrapping the envelope (as `--sign inception` does). For XID-specific signature verification with `--verify inception`, use the XID signing workflow which creates a wrapped, signed envelope.
+Throughout this workflow:
+- ✓ Private keys remain in the document
+- ✓ The attachment persists through all operations
+- ✓ The signature is verified before each modification
+- ✓ A new signature is created after each modification
+- ✓ All XID document operations maintain consistency

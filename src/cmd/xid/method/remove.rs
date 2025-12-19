@@ -1,9 +1,14 @@
 use anyhow::Result;
 use bc_components::URI;
-use bc_ur::prelude::*;
 use clap::Args;
 
-use crate::{EnvelopeArgs, EnvelopeArgsLike, xid::XIDDocumentReadable};
+use crate::{
+    EnvelopeArgs, EnvelopeArgsLike,
+    xid::{
+        PrivateOptions, SigningArgs, VerifyArgs, XIDDocumentReadable,
+        xid_document_to_ur_string,
+    },
+};
 
 /// Remove the given resolution method from the XID document.
 #[derive(Debug, Args)]
@@ -12,6 +17,12 @@ pub struct CommandArgs {
     /// The resolution method to remove
     #[arg(name = "URI")]
     method: URI,
+
+    #[command(flatten)]
+    verify_args: VerifyArgs,
+
+    #[command(flatten)]
+    signing_args: SigningArgs,
 
     #[command(flatten)]
     envelope_args: EnvelopeArgs,
@@ -25,8 +36,20 @@ impl XIDDocumentReadable for CommandArgs {}
 
 impl crate::Exec for CommandArgs {
     fn exec(&self) -> Result<String> {
-        let mut xid_document = self.read_xid_document()?;
+        let mut xid_document = self.read_xid_document_with_verify(
+            self.verify_args.verify_signature(),
+        )?;
         xid_document.remove_resolution_method(&self.method);
-        Ok(xid_document.ur_string())
+
+        let signing_options = self.signing_args.signing_options(None)?;
+
+        xid_document_to_ur_string(
+            &xid_document,
+            PrivateOptions::Include,
+            None,
+            None,
+            None,
+            signing_options,
+        )
     }
 }

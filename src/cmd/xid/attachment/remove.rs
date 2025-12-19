@@ -1,22 +1,24 @@
 use anyhow::Result;
-use bc_components::URI;
+use bc_envelope::prelude::*;
 use clap::Args;
 
 use crate::{
-    EnvelopeArgs, EnvelopeArgsLike,
+    EnvelopeArgs, EnvelopeArgsLike, read_envelope,
     xid::{
         PrivateOptions, SigningArgs, VerifyArgs, XIDDocumentReadable,
         xid_document_to_ur_string,
     },
 };
 
-/// Add a resolution method to a XID document
+/// Remove an attachment from a XID document.
+///
+/// The attachment to remove is identified by providing the exact attachment
+/// envelope.
 #[derive(Debug, Args)]
 #[group(skip)]
 pub struct CommandArgs {
-    /// The resolution method to add
-    #[arg(name = "URI")]
-    method: URI,
+    /// The attachment envelope to remove.
+    attachment: String,
 
     #[command(flatten)]
     verify_args: VerifyArgs,
@@ -39,7 +41,16 @@ impl crate::Exec for CommandArgs {
         let mut xid_document = self.read_xid_document_with_verify(
             self.verify_args.verify_signature(),
         )?;
-        xid_document.add_resolution_method(self.method.clone());
+
+        // Read the attachment to remove and get its digest
+        let attachment_to_remove = read_envelope(Some(&self.attachment))?;
+        attachment_to_remove.validate_attachment()?;
+        let digest = attachment_to_remove.digest();
+
+        // Remove from XID document using the Attachable trait
+        xid_document
+            .remove_attachment(digest)
+            .ok_or_else(|| anyhow::anyhow!("Attachment not found"))?;
 
         let signing_options = self.signing_args.signing_options(None)?;
 
