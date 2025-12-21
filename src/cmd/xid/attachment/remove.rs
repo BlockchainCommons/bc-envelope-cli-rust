@@ -5,7 +5,7 @@ use clap::Args;
 use crate::{
     EnvelopeArgs, EnvelopeArgsLike, read_envelope,
     xid::{
-        PrivateOptions, SigningArgs, VerifyArgs, XIDDocumentReadable,
+        OutputOptions, SigningArgs, VerifyArgs, XIDDocumentReadable,
         xid_document_to_ur_string,
     },
 };
@@ -19,6 +19,9 @@ use crate::{
 pub struct CommandArgs {
     /// The attachment envelope to remove.
     attachment: String,
+
+    #[command(flatten)]
+    output_opts: OutputOptions,
 
     #[command(flatten)]
     verify_args: VerifyArgs,
@@ -56,8 +59,7 @@ impl crate::Exec for CommandArgs {
 
         xid_document_to_ur_string(
             &xid_document,
-            PrivateOptions::Include,
-            None,
+            &self.output_opts,
             None,
             None,
             signing_options,

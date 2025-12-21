@@ -6,8 +6,9 @@ use clap::Args;
 use crate::{
     EnvelopeArgs, EnvelopeArgsLike,
     xid::{
-        InputKey, KeyArgs, KeyArgsLike, PrivateOptions, ReadWritePasswordArgs,
-        SigningArgs, VerifyArgs, XIDDocumentReadable, XIDPrivilege, update_key,
+        GeneratorOutputArgs, InputKey, KeyArgs, KeyArgsLike, OutputOptions,
+        PrivateOptions, ReadWritePasswordArgs, SigningArgs, VerifyArgs,
+        XIDDocumentReadable, XIDPrivilege, update_key,
         xid_document_to_ur_string,
     },
 };
@@ -18,6 +19,9 @@ use crate::{
 pub struct CommandArgs {
     #[command(flatten)]
     key_args: KeyArgs,
+
+    #[command(flatten)]
+    generator_args: GeneratorOutputArgs,
 
     #[command(flatten)]
     password_args: ReadWritePasswordArgs,
@@ -90,11 +94,15 @@ impl crate::Exec for CommandArgs {
             .signing_args
             .signing_options(Some(&self.password_args.read))?;
 
+        let output_opts = OutputOptions::new(
+            self.private_opts(),
+            self.generator_args.generator,
+        );
+
         xid_document_to_ur_string(
             &xid_document,
-            self.private_opts(),
+            &output_opts,
             Some(&self.password_args.write),
-            None,
             None,
             signing_options,
         )

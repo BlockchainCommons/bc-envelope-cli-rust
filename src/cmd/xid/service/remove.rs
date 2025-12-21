@@ -5,7 +5,7 @@ use clap::Args;
 use crate::{
     EnvelopeArgs, EnvelopeArgsLike,
     xid::{
-        PrivateOptions, SigningArgs, VerifyArgs, XIDDocumentReadable, read_uri,
+        OutputOptions, SigningArgs, VerifyArgs, XIDDocumentReadable, read_uri,
         xid_document_to_ur_string,
     },
 };
@@ -17,6 +17,9 @@ pub struct CommandArgs {
     /// The URI of the service to remove. If omitted, the URI will be will read
     /// from stdin.
     uri: Option<URI>,
+
+    #[command(flatten)]
+    output_opts: OutputOptions,
 
     #[command(flatten)]
     verify_args: VerifyArgs,
@@ -46,8 +49,7 @@ impl crate::Exec for CommandArgs {
 
         xid_document_to_ur_string(
             &xid_document,
-            PrivateOptions::Include,
-            None,
+            &self.output_opts,
             None,
             None,
             signing_options,

@@ -7,7 +7,7 @@ use super::service_args::{ServiceArgs, ServiceArgsLike};
 use crate::{
     EnvelopeArgs, EnvelopeArgsLike,
     xid::{
-        PrivateOptions, SigningArgs, VerifyArgs, XIDDocumentReadable,
+        OutputOptions, SigningArgs, VerifyArgs, XIDDocumentReadable,
         XIDPrivilege, xid_document_to_ur_string,
     },
 };
@@ -18,6 +18,9 @@ use crate::{
 pub struct CommandArgs {
     #[command(flatten)]
     service_args: ServiceArgs,
+
+    #[command(flatten)]
+    output_opts: OutputOptions,
 
     #[command(flatten)]
     verify_args: VerifyArgs,
@@ -93,8 +96,7 @@ impl crate::Exec for CommandArgs {
 
         xid_document_to_ur_string(
             &xid_document,
-            PrivateOptions::Include,
-            None,
+            &self.output_opts,
             None,
             None,
             signing_options,

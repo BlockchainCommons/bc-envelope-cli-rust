@@ -5,7 +5,7 @@ use clap::Args;
 use dcbor::Date;
 
 use super::{
-    InputKey, KeyArgs, KeyArgsLike, PrivateOptions, SigningArgs,
+    InputKey, KeyArgs, KeyArgsLike, OutputOptions, PrivateOptions, SigningArgs,
     WritePasswordArgs, XIDPrivilege, generator_options::GeneratorOptions,
     update_key, xid_document_to_ur_string,
 };
@@ -152,11 +152,13 @@ impl crate::Exec for CommandArgs {
 
         let signing_options = self.signing_args.signing_options(None)?;
 
+        let output_opts =
+            OutputOptions::new(self.private_opts(), self.generator_opts);
+
         xid_document_to_ur_string(
             &xid_document,
-            self.private_opts(),
+            &output_opts,
             Some(&self.password_args),
-            Some(self.generator_opts),
             shared_password,
             signing_options,
         )

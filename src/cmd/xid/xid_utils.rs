@@ -7,10 +7,8 @@ use bc_xid::{
     XIDSigningOptions, XIDVerifySignature,
 };
 
-use super::{
-    PrivateOptions, ReadPasswordArgs, WritePasswordArgs, XIDPrivilege,
-};
-use crate::{EnvelopeArgsLike, xid::GeneratorOptions};
+use super::{OutputOptions, ReadPasswordArgs, WritePasswordArgs, XIDPrivilege};
+use crate::EnvelopeArgsLike;
 
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub enum InputKey {
@@ -199,13 +197,15 @@ pub fn envelope_to_xid_ur_string(envelope: &Envelope) -> String {
 /// options, and optional password encryption.
 pub fn xid_document_to_ur_string(
     xid_document: &XIDDocument,
-    private_opts: PrivateOptions,
+    output_opts: &OutputOptions,
     password_args: Option<&WritePasswordArgs>,
-    generator_opts: Option<GeneratorOptions>,
     shared_password: Option<String>,
     signing_options: XIDSigningOptions,
 ) -> Result<String> {
     use bc_xid::XIDGeneratorOptions;
+
+    let private_opts = output_opts.private_opts();
+    let generator_opts = output_opts.generator_opts();
 
     let private_key_options = if private_opts.is_encrypt() {
         let password_args = password_args.ok_or_else(|| {
@@ -225,32 +225,22 @@ pub fn xid_document_to_ur_string(
         XIDPrivateKeyOptions::from(private_opts)
     };
 
-    let generator_options = if let Some(gen_opts) = generator_opts {
-        if gen_opts.is_encrypt() {
-            let password_args = password_args.ok_or_else(|| {
-                anyhow::anyhow!("Password args required for encryption")
-            })?;
-            // Use shared password if available, otherwise read it
-            let password = if let Some(ref pwd) = shared_password {
-                pwd.clone()
-            } else {
-                password_args.read_password("Generator password:")?
-            };
-            XIDGeneratorOptions::Encrypt {
-                method: password_args.method(),
-                password: password.into_bytes(),
-            }
+    let generator_options = if generator_opts.is_encrypt() {
+        let password_args = password_args.ok_or_else(|| {
+            anyhow::anyhow!("Password args required for encryption")
+        })?;
+        // Use shared password if available, otherwise read it
+        let password = if let Some(ref pwd) = shared_password {
+            pwd.clone()
         } else {
-            XIDGeneratorOptions::from(gen_opts)
+            password_args.read_password("Generator password:")?
+        };
+        XIDGeneratorOptions::Encrypt {
+            method: password_args.method(),
+            password: password.into_bytes(),
         }
     } else {
-        // Default behavior: Include generator in plaintext if encrypting
-        // private keys
-        if private_opts.is_encrypt() {
-            XIDGeneratorOptions::Include
-        } else {
-            XIDGeneratorOptions::default()
-        }
+        XIDGeneratorOptions::from(generator_opts)
     };
 
     let envelope = xid_document.to_envelope(

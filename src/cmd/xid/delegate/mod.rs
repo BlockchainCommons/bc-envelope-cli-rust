@@ -13,7 +13,7 @@ use bc_xid::{
 use clap::{Args, Subcommand};
 
 use super::XIDPrivilege;
-use crate::xid::{PrivateOptions, xid_document_to_ur_string};
+use crate::xid::{OutputOptions, xid_document_to_ur_string};
 
 /// Work with a XID document's delegates.
 #[derive(Debug, Args)]
@@ -65,11 +65,11 @@ fn add_delegate_permissions(
 
 pub fn xid_document_to_unsigned_envelope_ur_string(
     xid_document: XIDDocument,
+    output_opts: &OutputOptions,
 ) -> Result<String> {
     xid_document_to_ur_string(
         &xid_document,
-        PrivateOptions::Include,
-        None,
+        output_opts,
         None,
         None,
         XIDSigningOptions::None,

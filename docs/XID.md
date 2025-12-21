@@ -11,11 +11,11 @@ The `envelope` tool includes support for working with [XID Documents](https://gi
 - Transparent preservation of encrypted keys across document modifications
 
 - [`envelope` XID Support](#envelope-xid-support)
-  - [Future Work](#future-work)
   - [Import All Envelope URs](#import-all-envelope-urs)
   - [`xid` Subcommand](#xid-subcommand)
     - [`xid id`: Extract the Bare XID from a XID Document](#xid-id-extract-the-bare-xid-from-a-xid-document)
     - [`xid new`: Create New XID Documents From Public or Private Keys](#xid-new-create-new-xid-documents-from-public-or-private-keys)
+    - [`xid export`: Export with Controlled Private Key and Generator Handling](#xid-export-export-with-controlled-private-key-and-generator-handling)
     - [`xid key`: Work With XID Document Keys](#xid-key-work-with-xid-document-keys)
       - [`xid key add`: Add a New Key to an Existing XID Document](#xid-key-add-add-a-new-key-to-an-existing-xid-document)
       - [`xid key update`: Update an Existing Key in an Existing XID Document](#xid-key-update-update-an-existing-key-in-an-existing-xid-document)
@@ -56,6 +56,7 @@ The `envelope` tool includes support for working with [XID Documents](https://gi
     - [`xid provenance get`: Extract the Provenance Mark](#xid-provenance-get-extract-the-provenance-mark)
     - [`xid provenance next`: Advance the Provenance Mark](#xid-provenance-next-advance-the-provenance-mark)
   - [Working with Signed XID Documents](#working-with-signed-xid-documents)
+  - [Working with Attachments](#working-with-attachments)
 
 ## Import All Envelope URs
 
@@ -131,13 +132,16 @@ envelope xid --help
 │ Usage: envelope xid <COMMAND>
 │
 │ Commands:
-│   new       Create a new XID document from an inception key
-│   id        Validate the XID document and return its XID identifier
-│   key       Work with a XID document's keys
-│   method    Work a XID document's resolution methods
-│   delegate  Work with a XID document's delegates
-│   service   Work with a XID document's services
-│   help      Print this message or the help of the given subcommand(s)
+│   new         Create a new XID document from an inception key
+│   export      Export a XID document with specified output options
+│   provenance  Work with provenance marks
+│   id          Validate the XID document and return its XID identifier
+│   key         Work with a XID document's keys
+│   method      Work a XID document's resolution methods
+│   delegate    Work with a XID document's delegates
+│   service     Work with a XID document's services
+│   attachment  Work with a XID document's attachments
+│   help        Print this message or the help of the given subcommand(s)
 │
 │ Options:
 │   -h, --help     Print help
@@ -363,6 +367,227 @@ envelope xid new $ALICE_PUBKEYS \
 │     'key': PublicKeys(cab108a0, SigningPublicKey(93a4d4e7, SchnorrPublicKey(26712894)), EncapsulationPublicKey(00b42db3, X25519PublicKey(00b42db3))) [
 │         'allow': 'All'
 │         'nickname': "Alice's Key"
+│     ]
+│ ]
+```
+
+### `xid export`: Export with Controlled Private Key and Generator Handling
+
+The `xid export` command creates a version of a XID document with controlled handling of sensitive data. This is essential for creating publicly distributable versions of XID documents.
+
+#### Output Options
+
+All XID-modifying commands support `--private` and `--generator` options that control how sensitive data is handled in the output:
+
+| Option Value        | Private Keys       | Provenance Generator | Structure      |
+| ------------------- | ------------------ | -------------------- | -------------- |
+| `include` (default) | Plaintext          | Plaintext            | Full           |
+| `elide`             | ELIDED placeholder | ELIDED placeholder   | ELIDED markers |
+| `omit`              | Removed            | Removed              | Minimal        |
+| `encrypt`           | Encrypted          | Encrypted            | Full           |
+
+**When to use each option:**
+
+- **`include`**: Default. For internal use when you need full access to private keys.
+- **`elide`**: For public distribution. Preserves the merkle tree and signature without re-signing.
+- **`omit`**: Creates a minimal document without secrets or ELIDED markers. Requires re-signing.
+- **`encrypt`**: For secure storage. Protects secrets with a password.
+
+#### Basic Export Examples
+
+Create a XID document with private keys:
+
+```
+XID_DOC=`envelope xid new $ALICE_PRVKEYS --nickname "Alice"`
+envelope format $XID_DOC
+
+│ XID(93a4d4e7) [
+│     'key': PublicKeys(cab108a0, SigningPublicKey(93a4d4e7, SchnorrPublicKey(26712894)), EncapsulationPublicKey(00b42db3, X25519PublicKey(00b42db3))) [
+│         {
+│             'privateKey': PrivateKeys(8624d38b, SigningPrivateKey(096547df, SchnorrPrivateKey(74343f20)), EncapsulationPrivateKey(d8e2032d, X25519PrivateKey(d8e2032d)))
+│         } [
+│             'salt': Salt
+│         ]
+│         'allow': 'All'
+│         'nickname': "Alice"
+│     ]
+│ ]
+```
+
+Export with private keys elided (creates ELIDED placeholders):
+
+```
+envelope xid export --private elide $XID_DOC | envelope format
+
+│ XID(93a4d4e7) [
+│     'key': PublicKeys(cab108a0, SigningPublicKey(93a4d4e7, SchnorrPublicKey(26712894)), EncapsulationPublicKey(00b42db3, X25519PublicKey(00b42db3))) [
+│         'allow': 'All'
+│         'nickname': "Alice"
+│         ELIDED
+│     ]
+│ ]
+```
+
+Export with private keys omitted (removes them entirely):
+
+```
+envelope xid export --private omit $XID_DOC | envelope format
+
+│ XID(93a4d4e7) [
+│     'key': PublicKeys(cab108a0, SigningPublicKey(93a4d4e7, SchnorrPublicKey(26712894)), EncapsulationPublicKey(00b42db3, X25519PublicKey(00b42db3))) [
+│         'allow': 'All'
+│         'nickname': "Alice"
+│     ]
+│ ]
+```
+
+#### Exporting Documents with Provenance Marks
+
+When a XID document has a provenance mark, the `--generator` option controls how the generator is handled:
+
+```
+XID_WITH_PM=`envelope xid new $ALICE_PRVKEYS --nickname "Alice" --generator include`
+envelope xid export --private elide --generator elide $XID_WITH_PM | envelope format
+
+│ XID(93a4d4e7) [
+│     'key': PublicKeys(cab108a0, SigningPublicKey(93a4d4e7, SchnorrPublicKey(26712894)), EncapsulationPublicKey(00b42db3, X25519PublicKey(00b42db3))) [
+│         'allow': 'All'
+│         'nickname': "Alice"
+│         ELIDED
+│     ]
+│     'provenance': ProvenanceMark(c2e7f91e) [
+│         ELIDED
+│     ]
+│ ]
+```
+
+#### Complete Export Workflow with Encrypted Secrets
+
+This example demonstrates exporting a signed XID document that has encrypted private keys and an encrypted provenance mark generator.
+
+**Step 1:** Create a signed XID with encrypted secrets:
+
+```
+SIGNED_XID=`envelope xid new $ALICE_PRVKEYS --nickname "Alice" \
+    --private encrypt --encrypt-password "secret" \
+    --generator encrypt \
+    --sign inception`
+envelope format $SIGNED_XID
+
+│ {
+│     XID(93a4d4e7) [
+│         'key': PublicKeys(cab108a0, SigningPublicKey(93a4d4e7, SchnorrPublicKey(26712894)), EncapsulationPublicKey(00b42db3, X25519PublicKey(00b42db3))) [
+│             {
+│                 'privateKey': ENCRYPTED [
+│                     'hasSecret': EncryptedKey(Argon2id)
+│                 ]
+│             } [
+│                 'salt': Salt
+│             ]
+│             'allow': 'All'
+│             'nickname': "Alice"
+│         ]
+│         'provenance': ProvenanceMark(983ced7c) [
+│             {
+│                 'provenanceGenerator': ENCRYPTED [
+│                     'hasSecret': EncryptedKey(Argon2id)
+│                 ]
+│             } [
+│                 'salt': Salt
+│             ]
+│         ]
+│     ]
+│ } [
+│     'signed': Signature
+│ ]
+```
+
+**Step 2:** Export with elided secrets (preserves signature—no re-signing needed):
+
+```
+envelope xid export --private elide --generator elide $SIGNED_XID | envelope format
+
+│ {
+│     XID(93a4d4e7) [
+│         'key': PublicKeys(cab108a0, SigningPublicKey(93a4d4e7, SchnorrPublicKey(26712894)), EncapsulationPublicKey(00b42db3, X25519PublicKey(00b42db3))) [
+│             'allow': 'All'
+│             'nickname': "Alice"
+│             ELIDED
+│         ]
+│         'provenance': ProvenanceMark(...) [
+│             ELIDED
+│         ]
+│     ]
+│ } [
+│     'signed': Signature
+│ ]
+```
+
+The ELIDED placeholders show where secrets were hidden. The signature remains valid because elision preserves the merkle tree—the elided nodes' digests are retained.
+
+**Step 3:** Export with omitted secrets (requires re-signing because structure changes):
+
+```
+envelope xid export --private omit --generator omit \
+    --sign inception --password "secret" $SIGNED_XID | envelope format
+
+│ {
+│     XID(93a4d4e7) [
+│         'key': PublicKeys(cab108a0, SigningPublicKey(93a4d4e7, SchnorrPublicKey(26712894)), EncapsulationPublicKey(00b42db3, X25519PublicKey(00b42db3))) [
+│             'allow': 'All'
+│             'nickname': "Alice"
+│         ]
+│     ]
+│ } [
+│     'signed': Signature
+│ ]
+```
+
+The omitted version has no ELIDED markers and no provenance mark at all—the secrets and the provenance structure are completely removed. Omitting *always* requires re-signing because the merkle tree is modified.
+
+#### Working with Signed Documents
+
+Elision preserves signatures automatically:
+
+```
+SIGNED_XID=`envelope xid new $ALICE_PRVKEYS --nickname "Alice" --sign inception`
+envelope xid export --private elide $SIGNED_XID | envelope format
+
+│ {
+│     XID(93a4d4e7) [
+│         'key': PublicKeys(cab108a0, SigningPublicKey(93a4d4e7, SchnorrPublicKey(26712894)), EncapsulationPublicKey(00b42db3, X25519PublicKey(00b42db3))) [
+│             'allow': 'All'
+│             'nickname': "Alice"
+│             ELIDED
+│         ]
+│     ]
+│ } [
+│     'signed': Signature
+│ ]
+```
+
+The signature can be verified on the elided document:
+
+```
+envelope xid id --verify inception $ELIDED_XID
+
+│ ur:xid/hdcxmuoxtyvddifztyryhymkgolbmefhssmejsgaykcljtjnfmaelrrkvwayehbzfesspmwerowy
+```
+
+#### Output Options on Other Commands
+
+The `--private` and `--generator` options are available on all XID-modifying commands, not just `export`. This allows you to control output format when performing any operation:
+
+```
+# Add a method and elide private keys in one step
+envelope xid method add https://example.com --private elide $XID_DOC | envelope format
+
+│ XID(93a4d4e7) [
+│     'dereferenceVia': URI(https://example.com)
+│     'key': PublicKeys(cab108a0, SigningPublicKey(93a4d4e7, SchnorrPublicKey(26712894)), EncapsulationPublicKey(00b42db3, X25519PublicKey(00b42db3))) [
+│         'allow': 'All'
+│         'nickname': "Alice"
+│         ELIDED
 │     ]
 │ ]
 ```

@@ -5,7 +5,7 @@ use clap::Args;
 use crate::{
     EnvelopeArgs, EnvelopeArgsLike, read_envelope,
     xid::{
-        PrivateOptions, SigningArgs, VerifyArgs, XIDDocumentReadable,
+        OutputOptions, SigningArgs, VerifyArgs, XIDDocumentReadable,
         xid_document_to_ur_string,
     },
 };
@@ -33,6 +33,9 @@ pub struct CommandArgs {
     /// A pre-made attachment envelope. Alternative to vendor/payload.
     #[arg(long, conflicts_with_all = ["vendor", "conforms_to", "payload"])]
     attachment: Option<String>,
+
+    #[command(flatten)]
+    output_opts: OutputOptions,
 
     #[command(flatten)]
     verify_args: VerifyArgs,
@@ -89,8 +92,7 @@ impl crate::Exec for CommandArgs {
 
         xid_document_to_ur_string(
             &xid_document,
-            PrivateOptions::Include,
-            None,
+            &self.output_opts,
             None,
             None,
             signing_options,

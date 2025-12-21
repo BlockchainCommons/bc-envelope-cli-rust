@@ -4,7 +4,10 @@ use bc_xid::XIDDocument;
 use clap::Args;
 
 use super::xid_document_to_unsigned_envelope_ur_string;
-use crate::{EnvelopeArgs, EnvelopeArgsLike, xid::XIDDocumentReadable};
+use crate::{
+    EnvelopeArgs, EnvelopeArgsLike,
+    xid::{OutputOptions, XIDDocumentReadable},
+};
 
 /// Remove a delegate from the XID document.
 #[derive(Debug, Args)]
@@ -12,6 +15,9 @@ use crate::{EnvelopeArgs, EnvelopeArgsLike, xid::XIDDocumentReadable};
 pub struct CommandArgs {
     /// The XID of the delegate to remove. Can be a bare XID or a XID Document.
     delegate: String,
+
+    #[command(flatten)]
+    output_opts: OutputOptions,
 
     #[command(flatten)]
     envelope_args: EnvelopeArgs,
@@ -29,6 +35,9 @@ impl crate::Exec for CommandArgs {
             XIDDocument::from_ur_string(self.delegate.as_str())?;
         let mut xid_document = self.read_xid_document()?;
         xid_document.remove_delegate(&target_xid_document)?;
-        xid_document_to_unsigned_envelope_ur_string(xid_document)
+        xid_document_to_unsigned_envelope_ur_string(
+            xid_document,
+            &self.output_opts,
+        )
     }
 }

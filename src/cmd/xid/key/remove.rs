@@ -4,8 +4,9 @@ use clap::Args;
 use crate::{
     EnvelopeArgs, EnvelopeArgsLike,
     xid::{
-        PrivateOptions, ReadWritePasswordArgs, SigningArgs, VerifyArgs,
-        XIDDocumentReadable, read_public_key, xid_document_to_ur_string,
+        GeneratorOutputArgs, OutputOptions, PrivateOptions,
+        ReadWritePasswordArgs, SigningArgs, VerifyArgs, XIDDocumentReadable,
+        read_public_key, xid_document_to_ur_string,
     },
 };
 
@@ -20,6 +21,9 @@ pub struct CommandArgs {
     /// Whether to include, omit, elide, or encrypt private keys.
     #[arg(long = "private", default_value = "include")]
     private_opts: PrivateOptions,
+
+    #[command(flatten)]
+    generator_args: GeneratorOutputArgs,
 
     #[command(flatten)]
     password_args: ReadWritePasswordArgs,
@@ -54,11 +58,15 @@ impl crate::Exec for CommandArgs {
             .signing_args
             .signing_options(Some(&self.password_args.read))?;
 
+        let output_opts = OutputOptions::new(
+            self.private_opts,
+            self.generator_args.generator,
+        );
+
         xid_document_to_ur_string(
             &xid_document,
-            self.private_opts,
+            &output_opts,
             Some(&self.password_args.write),
-            None,
             None,
             signing_options,
         )

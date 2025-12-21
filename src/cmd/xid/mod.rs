@@ -1,5 +1,6 @@
 mod attachment;
 mod delegate;
+pub mod export;
 pub mod generator_options;
 pub use generator_options::*;
 pub mod id;
@@ -8,6 +9,8 @@ pub mod key_args;
 pub use key_args::*;
 pub mod method;
 pub mod new;
+pub mod output_options;
+pub use output_options::*;
 pub mod password_args;
 pub use password_args::*;
 pub mod private_options;
@@ -36,6 +39,7 @@ pub struct CommandArgs {
 #[derive(Debug, Subcommand)]
 enum SubCommands {
     New(new::CommandArgs),
+    Export(export::CommandArgs),
     Provenance(provenance::CommandArgs),
     Id(id::CommandArgs),
     Key(key::CommandArgs),
@@ -49,6 +53,7 @@ impl crate::Exec for CommandArgs {
     fn exec(&self) -> Result<String> {
         match &self.command {
             SubCommands::New(args) => args.exec(),
+            SubCommands::Export(args) => args.exec(),
             SubCommands::Provenance(args) => args.exec(),
             SubCommands::Id(args) => args.exec(),
             SubCommands::Key(args) => args.exec(),

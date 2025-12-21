@@ -8,7 +8,7 @@ use super::{
 };
 use crate::{
     EnvelopeArgs, EnvelopeArgsLike,
-    xid::{XIDDocumentReadable, XIDPrivilege},
+    xid::{OutputOptions, XIDDocumentReadable, XIDPrivilege},
 };
 
 /// Update a delegate in the XID document.
@@ -26,6 +26,9 @@ pub struct CommandArgs {
         num_args = 1
     )]
     permissions: Vec<XIDPrivilege>,
+
+    #[command(flatten)]
+    output_opts: OutputOptions,
 
     #[command(flatten)]
     envelope_args: EnvelopeArgs,
@@ -52,6 +55,9 @@ impl crate::Exec for CommandArgs {
         add_delegate_permissions(&mut delegate, &self.permissions);
         xid_document.add_delegate(delegate)?;
 
-        xid_document_to_unsigned_envelope_ur_string(xid_document)
+        xid_document_to_unsigned_envelope_ur_string(
+            xid_document,
+            &self.output_opts,
+        )
     }
 }

@@ -8,8 +8,9 @@ use provenance_mark::ProvenanceMarkGenerator;
 use crate::{
     EnvelopeArgs, EnvelopeArgsLike, parse_ur_to_cbor,
     xid::{
-        GeneratorOptions, PrivateOptions, ReadWritePasswordArgs, SigningArgs,
-        VerifyArgs, XIDDocumentReadable, xid_document_to_ur_string,
+        GeneratorOutputArgs, OutputOptions, PrivateOutputArgs,
+        ReadWritePasswordArgs, SigningArgs, VerifyArgs, XIDDocumentReadable,
+        xid_document_to_ur_string,
     },
 };
 
@@ -36,8 +37,14 @@ pub struct CommandArgs {
 
     /// External provenance mark generator (as ur:envelope).
     /// Required if the document does not have an embedded generator.
-    #[arg(long)]
-    generator: Option<String>,
+    #[arg(long = "external-generator")]
+    external_generator: Option<String>,
+
+    #[command(flatten)]
+    private_output_args: PrivateOutputArgs,
+
+    #[command(flatten)]
+    generator_output_args: GeneratorOutputArgs,
 
     #[command(flatten)]
     password_args: ReadWritePasswordArgs,
@@ -78,7 +85,7 @@ impl crate::Exec for CommandArgs {
         };
 
         // Determine if we should use embedded or provided generator
-        if let Some(generator_str) = &self.generator {
+        if let Some(generator_str) = &self.external_generator {
             // User provided a generator - use
             // next_provenance_mark_with_provided_generator
             let generator_envelope = Envelope::from_ur_string(generator_str)?;
@@ -108,26 +115,15 @@ impl crate::Exec for CommandArgs {
             .signing_args
             .signing_options(Some(&self.password_args.read))?;
 
-        // Determine generator options: preserve the generator if it exists
-        // Check if the document has a generator by trying to get it
-        let has_generator = xid_document.provenance_generator().is_some();
-
-        let generator_opts = if has_generator {
-            // Generator exists - keep it included (plaintext)
-            // Note: If it was encrypted, it's now decrypted after the next()
-            // call We re-encrypt it using the write password if
-            // specified
-            Some(GeneratorOptions::Include)
-        } else {
-            // No generator, omit it
-            Some(GeneratorOptions::Omit)
-        };
+        let output_opts = OutputOptions::new(
+            self.private_output_args.private,
+            self.generator_output_args.generator,
+        );
 
         xid_document_to_ur_string(
             &xid_document,
-            PrivateOptions::default(),
+            &output_opts,
             Some(&self.password_args.write),
-            generator_opts,
             self.password_args
                 .read
                 .read_password("Decryption password:")?,
