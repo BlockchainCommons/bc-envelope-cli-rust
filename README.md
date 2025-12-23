@@ -23,7 +23,7 @@ cargo install bc-envelope-cli
 To install a specific version:
 
 ```bash
-cargo install bc-envelope-cli --version 0.30.0
+cargo install bc-envelope-cli --version 0.31.0
 ```
 
 ### From Source
@@ -82,6 +82,13 @@ See the [docs](docs/README.md) directory for more information.
 **NOTE:** The `envelope` tool does *not* have the same command line syntax as the Swift `envelope` tool.
 
 ## Version History
+
+### 0.31.0: December 22, 2025
+
+- Add xid export command with controlled private key and generator handling
+- Add --private and --generator options to all XID-modifying commands
+- Improve documentation for XID export workflows
+- Add comprehensive tests for export functionality
 
 ### 0.30.0: December 19, 2025
 
