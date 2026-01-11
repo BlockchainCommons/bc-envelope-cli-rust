@@ -91,8 +91,8 @@ fn test_extract_envelope() -> Result<()> {
 fn test_extract_known() -> Result<()> {
     run_cli_expect(&["extract", "known", "ur:envelope/adonahurcw"], "'isA'")?;
     run_cli_expect(
-        &["extract", "known", "ur:envelope/cfdyfyfwfpwzms"],
-        "'12356'",
+        &["extract", "known", "ur:envelope/cyaebkdwdraxjlhemh"],
+        "'666666'",
     )
 }
 

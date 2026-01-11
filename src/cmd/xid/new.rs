@@ -5,9 +5,9 @@ use clap::Args;
 use dcbor::Date;
 
 use super::{
-    InputKey, KeyArgs, KeyArgsLike, OutputOptions, PrivateOptions, SigningArgs,
-    WritePasswordArgs, XIDPrivilege, generator_options::GeneratorOptions,
-    update_key, xid_document_to_ur_string,
+    InputKey, KeyArgs, KeyArgsLike, OutputOptions, PrivateOptions,
+    ReadWritePasswordArgs, SigningArgs, XIDPrivilege,
+    generator_options::GeneratorOptions, update_key, xid_document_to_ur_string,
 };
 use crate::parse_ur_to_cbor;
 
@@ -45,7 +45,7 @@ pub struct CommandArgs {
     ur_tag: Option<u64>,
 
     #[command(flatten)]
-    password_args: WritePasswordArgs,
+    password_args: ReadWritePasswordArgs,
 
     #[command(flatten)]
     signing_args: SigningArgs,
@@ -72,7 +72,11 @@ impl crate::Exec for CommandArgs {
         let shared_password = if self.generator_opts.is_encrypt()
             || self.private_opts().is_encrypt()
         {
-            Some(self.password_args.read_password("Encryption password:")?)
+            Some(
+                self.password_args
+                    .write
+                    .read_password("Encryption password:")?,
+            )
         } else {
             None
         };
@@ -150,7 +154,9 @@ impl crate::Exec for CommandArgs {
         );
         xid_document.add_key(key)?;
 
-        let signing_options = self.signing_args.signing_options(None)?;
+        let signing_options = self
+            .signing_args
+            .signing_options(Some(&self.password_args.read))?;
 
         let output_opts =
             OutputOptions::new(self.private_opts(), self.generator_opts);
@@ -158,7 +164,7 @@ impl crate::Exec for CommandArgs {
         xid_document_to_ur_string(
             &xid_document,
             &output_opts,
-            Some(&self.password_args),
+            Some(&self.password_args.write),
             shared_password,
             signing_options,
         )

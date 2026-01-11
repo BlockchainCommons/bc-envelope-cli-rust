@@ -7,8 +7,8 @@ use super::service_args::{ServiceArgs, ServiceArgsLike};
 use crate::{
     EnvelopeArgs, EnvelopeArgsLike,
     xid::{
-        OutputOptions, SigningArgs, VerifyArgs, XIDDocumentReadable,
-        XIDPrivilege, xid_document_to_ur_string,
+        OutputOptions, ReadWritePasswordArgs, SigningArgs, VerifyArgs,
+        XIDDocumentReadable, XIDPrivilege, xid_document_to_ur_string,
     },
 };
 
@@ -22,6 +22,9 @@ pub struct CommandArgs {
 
     #[command(flatten)]
     output_opts: OutputOptions,
+
+    #[command(flatten)]
+    password_args: ReadWritePasswordArgs,
 
     #[command(flatten)]
     verify_args: VerifyArgs,
@@ -59,9 +62,11 @@ impl crate::Exec for CommandArgs {
     fn exec(&self) -> Result<String> {
         let uri = self.read_uri()?;
 
-        let mut xid_document = self.read_xid_document_with_verify(
-            self.verify_args.verify_signature(),
-        )?;
+        let mut xid_document = self
+            .read_xid_document_with_password_and_verify(
+                &self.password_args.read,
+                self.verify_args.verify_signature(),
+            )?;
 
         let mut service = xid_document
             .find_service_by_uri(&uri)
@@ -104,12 +109,14 @@ impl crate::Exec for CommandArgs {
         xid_document.check_service_consistency(&service)?;
         xid_document.add_service(service)?;
 
-        let signing_options = self.signing_args.signing_options(None)?;
+        let signing_options = self
+            .signing_args
+            .signing_options(Some(&self.password_args.read))?;
 
         xid_document_to_ur_string(
             &xid_document,
             &self.output_opts,
-            None,
+            Some(&self.password_args.write),
             None,
             signing_options,
         )

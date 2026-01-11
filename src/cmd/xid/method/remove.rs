@@ -5,8 +5,8 @@ use clap::Args;
 use crate::{
     EnvelopeArgs, EnvelopeArgsLike,
     xid::{
-        OutputOptions, SigningArgs, VerifyArgs, XIDDocumentReadable,
-        xid_document_to_ur_string,
+        OutputOptions, ReadWritePasswordArgs, SigningArgs, VerifyArgs,
+        XIDDocumentReadable, xid_document_to_ur_string,
     },
 };
 
@@ -20,6 +20,9 @@ pub struct CommandArgs {
 
     #[command(flatten)]
     output_opts: OutputOptions,
+
+    #[command(flatten)]
+    password_args: ReadWritePasswordArgs,
 
     #[command(flatten)]
     verify_args: VerifyArgs,
@@ -39,17 +42,21 @@ impl XIDDocumentReadable for CommandArgs {}
 
 impl crate::Exec for CommandArgs {
     fn exec(&self) -> Result<String> {
-        let mut xid_document = self.read_xid_document_with_verify(
-            self.verify_args.verify_signature(),
-        )?;
+        let mut xid_document = self
+            .read_xid_document_with_password_and_verify(
+                &self.password_args.read,
+                self.verify_args.verify_signature(),
+            )?;
         xid_document.remove_resolution_method(&self.method);
 
-        let signing_options = self.signing_args.signing_options(None)?;
+        let signing_options = self
+            .signing_args
+            .signing_options(Some(&self.password_args.read))?;
 
         xid_document_to_ur_string(
             &xid_document,
             &self.output_opts,
-            None,
+            Some(&self.password_args.write),
             None,
             signing_options,
         )
