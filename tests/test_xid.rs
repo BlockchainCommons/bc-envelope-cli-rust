@@ -766,7 +766,7 @@ fn test_xid_delegate() {
     //       means it will have to be resolved to be used.
     //
     // ```
-    // 
+    //
     // $ ALICE_XID_DOC=`envelope xid new --nickname 'Alice' $ALICE_PUBKEYS`
 
     let alice_xid_doc =
@@ -1117,7 +1117,7 @@ fn test_xid_delegate() {
     //     'delegate': {
     //         XID(61b1f3c7)
     //     } [
-    //         'allow': 'Auth'
+    //         'allow': 'Authorize'
     //         'allow': 'Encrypt'
     //         'allow': 'Sign'
     //     ]
@@ -1154,7 +1154,7 @@ fn test_xid_delegate() {
                 'delegate': {
                     XID(61b1f3c7)
                 } [
-                    'allow': 'Auth'
+                    'allow': 'Authorize'
                     'allow': 'Encrypt'
                     'allow': 'Sign'
                 ]
@@ -1207,7 +1207,7 @@ fn test_xid_delegate() {
     //     'delegate': {
     //         XID(61b1f3c7)
     //     } [
-    //         'allow': 'Auth'
+    //         'allow': 'Authorize'
     //         'allow': 'Encrypt'
     //         'allow': 'Sign'
     //     ]
@@ -1232,7 +1232,7 @@ fn test_xid_delegate() {
                 'delegate': {
                     XID(61b1f3c7)
                 } [
-                    'allow': 'Auth'
+                    'allow': 'Authorize'
                     'allow': 'Encrypt'
                     'allow': 'Sign'
                 ]
