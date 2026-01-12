@@ -6,7 +6,9 @@ use clap::Args;
 
 use crate::{
     EnvelopeArgs, EnvelopeArgsLike,
-    xid::{ReadPasswordArgs, VerifyArgs, XIDDocumentReadable, get_private_key_ur},
+    xid::{
+        ReadPasswordArgs, VerifyArgs, XIDDocumentReadable, get_private_key_ur,
+    },
 };
 
 /// Retrieve the XID Document's key at the given index
@@ -45,8 +47,9 @@ impl crate::Exec for CommandArgs {
     fn exec(&self) -> Result<String> {
         if self.private {
             // Return private key
-            let xid_document = self
-                .read_xid_document_with_verify(self.verify_args.verify_signature())?;
+            let xid_document = self.read_xid_document_with_verify(
+                self.verify_args.verify_signature(),
+            )?;
             let key = xid_document
                 .keys()
                 .iter()

@@ -1,7 +1,10 @@
 use anyhow::Result;
 use clap::Args;
 
-use crate::{EnvelopeArgs, EnvelopeArgsLike, xid::{VerifyArgs, XIDDocumentReadable}};
+use crate::{
+    EnvelopeArgs, EnvelopeArgsLike,
+    xid::{VerifyArgs, XIDDocumentReadable},
+};
 
 /// Print the count of the XID document's keys.
 #[derive(Debug, Args)]
@@ -22,8 +25,9 @@ impl XIDDocumentReadable for CommandArgs {}
 
 impl crate::Exec for CommandArgs {
     fn exec(&self) -> Result<String> {
-        let xid_document = self
-            .read_xid_document_with_verify(self.verify_args.verify_signature())?;
+        let xid_document = self.read_xid_document_with_verify(
+            self.verify_args.verify_signature(),
+        )?;
         Ok(xid_document.keys().len().to_string())
     }
 }

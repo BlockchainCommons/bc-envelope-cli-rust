@@ -766,7 +766,7 @@ fn test_xid_delegate() {
     //       means it will have to be resolved to be used.
     //
     // ```
-    //
+    // 
     // $ ALICE_XID_DOC=`envelope xid new --nickname 'Alice' $ALICE_PUBKEYS`
 
     let alice_xid_doc =

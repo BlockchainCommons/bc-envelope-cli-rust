@@ -47,8 +47,9 @@ impl XIDDocumentReadable for CommandArgs {}
 impl crate::Exec for CommandArgs {
     fn exec(&self) -> Result<String> {
         let public_keys = read_public_key(self.keys.as_deref())?;
-        let xid_document = self
-            .read_xid_document_with_verify(self.verify_args.verify_signature())?;
+        let xid_document = self.read_xid_document_with_verify(
+            self.verify_args.verify_signature(),
+        )?;
 
         let keys = xid_document.keys();
         if self.private {

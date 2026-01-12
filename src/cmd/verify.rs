@@ -24,8 +24,9 @@ pub struct CommandArgs {
 
     /// The verifier(s). May be a private key base (ur:prvkeys), `PublicKeys`
     /// (ur:crypto-pubkeys), signing private key (ur:signing-private-key), or a
-    /// signing public key (ur:signing-public-key). Also accepts envelope-wrapped
-    /// keys (ur:envelope) where the subject is one of these key types.
+    /// signing public key (ur:signing-public-key). Also accepts
+    /// envelope-wrapped keys (ur:envelope) where the subject is one of
+    /// these key types.
     ///
     /// Multiple verifiers may be provided.
     #[arg(long, short)]
@@ -62,16 +63,27 @@ impl crate::Exec for CommandArgs {
                 // Handle envelope-wrapped keys (e.g., from `xid key at`)
                 // by extracting the key from the envelope's subject
                 let key_envelope = Envelope::from_ur_string(v)?;
-                if let Ok(key) = key_envelope.extract_subject::<PrivateKeyBase>() {
+                if let Ok(key) =
+                    key_envelope.extract_subject::<PrivateKeyBase>()
+                {
                     private_key_bases.push(key);
-                } else if let Ok(key) = key_envelope.extract_subject::<PublicKeys>() {
+                } else if let Ok(key) =
+                    key_envelope.extract_subject::<PublicKeys>()
+                {
                     public_keys_vec.push(key);
-                } else if let Ok(key) = key_envelope.extract_subject::<SigningPrivateKey>() {
+                } else if let Ok(key) =
+                    key_envelope.extract_subject::<SigningPrivateKey>()
+                {
                     signing_private_keys.push(key);
-                } else if let Ok(key) = key_envelope.extract_subject::<SigningPublicKey>() {
+                } else if let Ok(key) =
+                    key_envelope.extract_subject::<SigningPublicKey>()
+                {
                     signing_public_keys.push(key);
                 } else {
-                    bail!("envelope does not contain a valid verifier key: {}", v);
+                    bail!(
+                        "envelope does not contain a valid verifier key: {}",
+                        v
+                    );
                 }
             } else {
                 bail!("invalid verifier: {}", v);
