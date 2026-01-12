@@ -26,9 +26,15 @@ impl SubjectArgsLike for CommandArgs {
 
 impl crate::Exec for CommandArgs {
     fn exec(&self) -> Result<String> {
+        // Unit type takes no value - handle it specially
+        let value = if self.subject_type() == DataType::Unit {
+            None
+        } else {
+            Some(self.read_subject_value()?)
+        };
         Ok(parse_data_type_to_envelope(
             self.subject_type(),
-            Some(self.read_subject_value()?).as_deref(),
+            value.as_deref(),
             self.ur_tag(),
         )?
         .ur_string())

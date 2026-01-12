@@ -37,6 +37,9 @@ pub enum DataType {
     /// UTF-8 String
     String,
 
+    /// Unit Known Value (deliberate emptiness, no value)
+    Unit,
+
     /// Uniform Resource (UR)
     Ur,
 
@@ -55,6 +58,11 @@ pub fn parse_data_type_to_envelope(
     s: Option<&str>,
     ur_cbor_tag_value: Option<u64>,
 ) -> Result<Envelope> {
+    // Unit is special: it takes no value and represents deliberate emptiness
+    if data_type == DataType::Unit {
+        return Ok(Envelope::unit());
+    }
+
     if let Some(s) = s {
         match data_type {
             DataType::Arid => parse_arid(s),
@@ -67,6 +75,7 @@ pub fn parse_data_type_to_envelope(
             DataType::Known => parse_known_value(s),
             DataType::Number => parse_number(s),
             DataType::String => parse_string(s),
+            DataType::Unit => unreachable!(),
             DataType::Ur => parse_ur(s, ur_cbor_tag_value),
             DataType::Uri => parse_uri(s),
             DataType::Uuid => parse_uuid(s),
