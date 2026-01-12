@@ -23,7 +23,7 @@ cargo install bc-envelope-cli
 To install a specific version:
 
 ```bash
-cargo install bc-envelope-cli --version 0.31.0
+cargo install bc-envelope-cli --version 0.31.1
 ```
 
 ### From Source
@@ -83,7 +83,15 @@ See the [docs](docs/README.md) directory for more information.
 
 ## Version History
 
-### 0.31.0: January 12, 2025
+### 0.31.1: January 12, 2026
+
+- Add `--verify` flag to read-only XID key commands (`key all`, `key at`, `key count`, `key find inception`, `key find name`, `key find public`) for signature verification
+- Support envelope-wrapped keys in `verify` command, allowing keys extracted from XID documents to be used directly
+- Add `unit` subject type to create envelopes representing deliberate emptiness
+- Fix handling of signed envelopes in XID key retrieval commands
+- Fix README
+
+### 0.31.0: January 12, 2026
 
 - Add `xid export` command with controlled private key and generator handling.
 - Add `--private` and `--generator` options to all XID-modifying commands.
