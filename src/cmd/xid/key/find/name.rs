@@ -6,7 +6,7 @@ use clap::Args;
 
 use crate::{
     EnvelopeArgs, EnvelopeArgsLike,
-    xid::{ReadPasswordArgs, XIDDocumentReadable, get_private_key_ur},
+    xid::{ReadPasswordArgs, VerifyArgs, XIDDocumentReadable, get_private_key_ur},
 };
 
 /// Find the XID document's keys by assigned name.
@@ -28,6 +28,9 @@ pub struct CommandArgs {
     password_args: ReadPasswordArgs,
 
     #[command(flatten)]
+    verify_args: VerifyArgs,
+
+    #[command(flatten)]
     envelope_args: EnvelopeArgs,
 }
 
@@ -39,7 +42,8 @@ impl XIDDocumentReadable for CommandArgs {}
 
 impl crate::Exec for CommandArgs {
     fn exec(&self) -> Result<String> {
-        let xid_document = self.read_xid_document()?;
+        let xid_document = self
+            .read_xid_document_with_verify(self.verify_args.verify_signature())?;
 
         let keys = xid_document.keys();
         if self.private {
