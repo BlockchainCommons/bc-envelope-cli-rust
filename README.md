@@ -83,19 +83,12 @@ See the [docs](docs/README.md) directory for more information.
 
 ## Version History
 
-### 0.31.0: January 12, 2026
+### 0.31.0: January 12, 2025
 
-- Initial tagged release of the `envelope` CLI tool
-- Support for Gordian Envelope manipulation and transformation
-- Comprehensive XID document support with keys, services, methods, and attachments
-- Envelope signing and verification with multiple key types
-- SSKR split and combine operations
-- Pattern matching and extraction capabilities
-- Provenance mark support for XID documents
-- SSH key generation and SSH agent integration
-- Envelope compression and decompression
-- Walk command for navigating envelope nodes
-- Extensive format support (CBOR, UR, diagnostic notation)
+- Add `xid export` command with controlled private key and generator handling.
+- Add `--private` and `--generator` options to all XID-modifying commands.
+- Improve documentation for XID export workflows.
+- Add comprehensive tests for export functionality.
 
 ### 0.30.0: December 19, 2025
 
