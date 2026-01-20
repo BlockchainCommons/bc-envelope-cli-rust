@@ -16,6 +16,7 @@ pub use password_args::*;
 pub mod private_options;
 pub use private_options::*;
 pub mod provenance;
+pub mod resolution;
 pub mod service;
 pub mod signing_args;
 pub use signing_args::*;
@@ -46,6 +47,7 @@ enum SubCommands {
     Method(method::CommandArgs),
     Delegate(delegate::CommandArgs),
     Service(service::CommandArgs),
+    Resolution(resolution::CommandArgs),
     Attachment(attachment::CommandArgs),
 }
 
@@ -60,6 +62,7 @@ impl crate::Exec for CommandArgs {
             SubCommands::Method(args) => args.exec(),
             SubCommands::Delegate(args) => args.exec(),
             SubCommands::Service(args) => args.exec(),
+            SubCommands::Resolution(args) => args.exec(),
             SubCommands::Attachment(args) => args.exec(),
         }
     }
