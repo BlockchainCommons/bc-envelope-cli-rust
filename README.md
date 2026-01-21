@@ -23,7 +23,7 @@ cargo install bc-envelope-cli
 To install a specific version:
 
 ```bash
-cargo install bc-envelope-cli --version 0.31.2
+cargo install bc-envelope-cli --version 0.32.0
 ```
 
 ### From Source
@@ -82,6 +82,15 @@ See the [docs](docs/README.md) directory for more information.
 **NOTE:** The `envelope` tool does *not* have the same command line syntax as the Swift `envelope` tool.
 
 ## Version History
+
+### 0.32.0: January 20, 2026
+
+- Add `xid resolution` subcommand for managing `dereferenceVia` assertions
+- Support envelope-wrapped keys in `verify` command
+- Add `--verify` flag to read-only XID key commands
+- Add read/write password arguments to XID commands
+- Add `unit` subject type
+- Align to dependencies (bc-envelope-pattern, bc-xid, provenance-mark)
 
 ### 0.31.2: January 12, 2026
 
