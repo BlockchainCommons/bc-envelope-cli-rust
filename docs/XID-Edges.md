@@ -46,6 +46,33 @@ envelope format "$EDGE"
 
 In this self-description edge, Alice is both the source (claimant) and the target (subject of the claim).
 
+## Using Known Values for Ontological Concepts
+
+The example above uses a plain string (`string "foaf:Person"`) for the `'isA'` claim type. This works, but Gordian Envelope supports *known values* — compact integer-based identifiers that map to ontological concepts from standard vocabularies like FOAF, Schema.org, Dublin Core, and others.
+
+When known values are available, you can use `known` instead of `string` for the `'isA'` object:
+
+```
+EDGE=$(envelope subject type string "self-description")
+EDGE=$(envelope assertion add pred-obj known isA known "foaf:Person" "$EDGE")
+EDGE=$(envelope assertion add pred-obj known source ur "$ALICE_XID" "$EDGE")
+EDGE=$(envelope assertion add pred-obj known target ur "$ALICE_XID" "$EDGE")
+
+envelope format "$EDGE"
+
+│ "self-description" [
+│     'isA': 'foaf:Person'
+│     'source': XID(93a4d4e7)
+│     'target': XID(93a4d4e7)
+│ ]
+```
+
+Notice that the output shows `'foaf:Person'` (single-quoted known value) rather than `"foaf:Person"` (double-quoted string). Known values are encoded as integers in the envelope, making them more compact and unambiguous than strings.
+
+> **Note:**
+>
+> Known values are resolved from JSON registry files in `~/.known-values/`. If the registry files for a given ontology are not installed, using `known "foaf:Person"` will produce an error. The remainder of this tutorial uses strings for portability, but known values are preferred when the registries are available.
+
 ## Adding Edges to XID Documents
 
 Use `xid edge add` to add an edge to a XID document:
