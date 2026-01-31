@@ -89,6 +89,7 @@ fn test_assertion_add() -> Result<()> {
         ],
         ALICE_KNOWS_BOB_EXAMPLE,
     )?;
+    // expected-text-output-rubric:
     #[rustfmt::skip]
     run_cli_expect(
         &["format", ALICE_KNOWS_BOB_EXAMPLE],
@@ -119,6 +120,7 @@ fn test_assertion_add_2() -> Result<()> {
         ],
         ALICE_KNOWS_BOB_EXAMPLE,
     )?;
+    // expected-text-output-rubric:
     #[rustfmt::skip]
     run_cli_expect(
         &["format", ALICE_KNOWS_BOB_EXAMPLE],
@@ -263,6 +265,7 @@ fn test_assertion_create() -> Result<()> {
         "Bob",
     ])?;
 
+    // expected-text-output-rubric:
     #[rustfmt::skip]
     run_cli_expect(
         &["format", &assertion],

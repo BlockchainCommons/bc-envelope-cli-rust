@@ -9,6 +9,7 @@ fn test_compress_1() -> Result<()> {
     let compressed =
         run_cli(&["compress", "--subject", ALICE_KNOWS_BOB_EXAMPLE])?;
 
+    // expected-text-output-rubric:
     #[rustfmt::skip]
     run_cli_expect(
         &["format", &compressed],

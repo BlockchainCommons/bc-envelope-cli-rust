@@ -33,6 +33,8 @@ fn test_xid_export_elide_preserves_signature() {
     run_cli(&["xid", "id", "--verify", "inception", &elided_xid]).unwrap();
 
     // Verify the format shows ELIDED and signature
+    // expected-text-output-rubric:
+    #[rustfmt::skip]
     run_cli_expect(
         &["format", &elided_xid],
         indoc! {r#"
@@ -119,6 +121,8 @@ fn test_xid_export_omit_can_be_resigned() {
         .unwrap();
 
     // Verify format shows no ELIDED markers and no private keys
+    // expected-text-output-rubric:
+    #[rustfmt::skip]
     run_cli_expect(
         &["format", &omitted_resigned_xid],
         indoc! {r#"
@@ -364,6 +368,8 @@ fn test_xid_export_no_elided_when_omitted() {
         run_cli(&["xid", "export", "--private", "omit", &xid]).unwrap();
 
     // Verify format shows no ELIDED markers and no private keys
+    // expected-text-output-rubric:
+    #[rustfmt::skip]
     run_cli_expect(
         &["format", &omitted],
         indoc! {r#"

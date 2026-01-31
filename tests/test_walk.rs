@@ -6,6 +6,7 @@ use indoc::indoc;
 #[test]
 fn test_walk_basic() -> Result<()> {
     // The output should contain all node digests space-separated
+    // expected-text-output-rubric:
     #[rustfmt::skip]
     run_cli_expect(
         &["walk", ALICE_KNOWS_BOB_EXAMPLE],
@@ -31,6 +32,7 @@ fn test_walk_matching_elided() -> Result<()> {
     ])?;
 
     // Verify the elided format
+    // expected-text-output-rubric:
     #[rustfmt::skip]
     run_cli_expect(
         &["format", &elided],
@@ -68,6 +70,7 @@ fn test_walk_unelide() -> Result<()> {
     let unelided = run_cli(&["walk", &elided, "unelide", &knows_assertion])?;
 
     // Should be equivalent to original
+    // expected-text-output-rubric:
     #[rustfmt::skip]
     run_cli_expect(
         &["format", &unelided],
@@ -88,6 +91,7 @@ fn test_walk_decrypt() -> Result<()> {
         run_cli(&["encrypt", "--key", &key, ALICE_KNOWS_BOB_EXAMPLE])?;
 
     // Verify encryption (subject is encrypted, assertions remain)
+    // expected-text-output-rubric:
     #[rustfmt::skip]
     run_cli_expect(
         &["format", &encrypted],
@@ -102,6 +106,7 @@ fn test_walk_decrypt() -> Result<()> {
     let decrypted = run_cli(&["walk", &encrypted, "decrypt", &key])?;
 
     // Should be equivalent to original
+    // expected-text-output-rubric:
     #[rustfmt::skip]
     run_cli_expect(
         &["format", &decrypted],
@@ -130,6 +135,7 @@ fn test_walk_decompress() -> Result<()> {
     let decompressed = run_cli(&["walk", &compressed, "decompress"])?;
 
     // Should be equivalent to original
+    // expected-text-output-rubric:
     #[rustfmt::skip]
     run_cli_expect(
         &["format", &decompressed],
@@ -176,6 +182,7 @@ fn test_walk_replace_basic() -> Result<()> {
     ])?;
 
     // Verify the before state
+    // expected-text-output-rubric:
     #[rustfmt::skip]
     run_cli_expect(
         &["format", &envelope],
@@ -201,6 +208,7 @@ fn test_walk_replace_basic() -> Result<()> {
     ])?;
 
     // Verify the after state
+    // expected-text-output-rubric:
     #[rustfmt::skip]
     run_cli_expect(
         &["format", &modified],
@@ -221,6 +229,7 @@ fn test_walk_replace_subject() -> Result<()> {
     let carol = run_cli(&["subject", "type", "string", "Carol"])?;
 
     // Verify the before state
+    // expected-text-output-rubric:
     #[rustfmt::skip]
     run_cli_expect(
         &["format", ALICE_KNOWS_BOB_EXAMPLE],
@@ -245,6 +254,7 @@ fn test_walk_replace_subject() -> Result<()> {
     ])?;
 
     // Verify the after state
+    // expected-text-output-rubric:
     #[rustfmt::skip]
     run_cli_expect(
         &["format", &modified],
@@ -282,6 +292,7 @@ fn test_walk_replace_elided() -> Result<()> {
     let elided = run_cli(&["elide", "removing", &bob_digest, &envelope])?;
 
     // Verify the elided state
+    // expected-text-output-rubric:
     #[rustfmt::skip]
     run_cli_expect(
         &["format", &elided],
@@ -304,6 +315,7 @@ fn test_walk_replace_elided() -> Result<()> {
     ])?;
 
     // Verify the after state
+    // expected-text-output-rubric:
     #[rustfmt::skip]
     run_cli_expect(
         &["format", &modified],
@@ -337,6 +349,7 @@ fn test_walk_replace_multiple_targets() -> Result<()> {
     ])?;
 
     // Verify the before state
+    // expected-text-output-rubric:
     #[rustfmt::skip]
     run_cli_expect(
         &["format", &envelope],
@@ -361,6 +374,7 @@ fn test_walk_replace_multiple_targets() -> Result<()> {
     ])?;
 
     // Verify the after state
+    // expected-text-output-rubric:
     #[rustfmt::skip]
     run_cli_expect(
         &["format", &modified],

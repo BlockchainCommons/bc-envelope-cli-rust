@@ -7,6 +7,7 @@ use common::*;
 #[test]
 fn test_sskr_1() -> Result<()> {
     let result = run_cli(&["sskr", "split", ALICE_KNOWS_BOB_EXAMPLE])?;
+    // expected-text-output-rubric:
     #[rustfmt::skip]
     run_cli_expect(
         &["format", &result],

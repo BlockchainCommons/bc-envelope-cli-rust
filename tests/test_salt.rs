@@ -8,6 +8,7 @@ use common::*;
 fn test_salt() -> Result<()> {
     let salted = run_cli(&["salt", ALICE_KNOWS_BOB_EXAMPLE])?;
 
+    // expected-text-output-rubric:
     #[rustfmt::skip]
     run_cli_expect(
         &["format", &salted],

@@ -207,6 +207,7 @@ fn test_bool_subject() -> Result<()> {
 fn test_wrapped_envelope_subject() -> Result<()> {
     let e = run_cli(&["subject", "type", "wrapped", HELLO_ENVELOPE_UR])?;
     assert_eq!(e, "ur:envelope/tpsptpsoiyfdihjzjzjldmdnjyfzse");
+    // expected-text-output-rubric:
     #[rustfmt::skip]
     assert_eq!(
         run_cli_raw(&["format", &e])?,
@@ -325,6 +326,7 @@ fn test_string_subject() -> Result<()> {
 fn test_envelope_ur_subject() -> Result<()> {
     let e = run_cli(&["subject", "type", "ur", HELLO_ENVELOPE_UR])?;
     assert_eq!(e, "ur:envelope/tpsptpsoiyfdihjzjzjldmdnjyfzse");
+    // expected-text-output-rubric:
     #[rustfmt::skip]
     assert_eq!(
         run_cli_raw(&["format", &e])?,

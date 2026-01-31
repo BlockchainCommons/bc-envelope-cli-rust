@@ -62,6 +62,7 @@ fn envelope_v1_v2() -> Result<String> {
 #[test]
 fn test_attachment_create() -> Result<()> {
     let attachment = attachment_v1()?;
+    // expected-text-output-rubric:
     #[rustfmt::skip]
     run_cli_expect(
         &["format", &attachment],
@@ -80,6 +81,7 @@ fn test_attachment_create() -> Result<()> {
 #[test]
 fn test_attachment_create_no_conformance() -> Result<()> {
     let attachment = attachment_v1_no_conformance()?;
+    // expected-text-output-rubric:
     #[rustfmt::skip]
     run_cli_expect(
         &["format", &attachment],
@@ -113,6 +115,7 @@ fn test_attachment_queries() -> Result<()> {
 
 #[test]
 fn test_attachment_add_components() -> Result<()> {
+    // expected-text-output-rubric:
     #[rustfmt::skip]
     run_cli_raw_piped_expect_stdin(
         &[
@@ -144,6 +147,7 @@ fn test_attachment_add_components() -> Result<()> {
 
 #[test]
 fn test_attachment_add_envelope() -> Result<()> {
+    // expected-text-output-rubric:
     #[rustfmt::skip]
     run_cli_expect_stdin(
         &["format", &envelope_v1_v2()?],

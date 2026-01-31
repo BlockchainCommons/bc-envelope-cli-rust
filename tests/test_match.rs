@@ -30,6 +30,8 @@ fn test_match_traversal_pattern() {
     )
     .unwrap();
 
+    // expected-text-output-rubric:
+    #[rustfmt::skip]
     let expected = indoc! {r#"
         ea3bd24e NODE ""Alice"" [ "isA": "Person" ]
             242b24ff ASSERTION "isA": "Person"
@@ -44,6 +46,8 @@ fn test_match_traversal_pattern() {
     )
     .unwrap();
 
+    // expected-text-output-rubric:
+    #[rustfmt::skip]
     let expected_obj = indoc! {r#"
         ea3bd24e NODE ""Alice"" [ "isA": "Person" ]
             242b24ff ASSERTION "isA": "Person"
@@ -57,6 +61,8 @@ fn test_match_traversal_pattern() {
         &alice_with_assertion,
     )
     .unwrap();
+    // expected-text-output-rubric:
+    #[rustfmt::skip]
     let expected_deep = indoc! {r#"
     ea3bd24e NODE ""Alice"" [ "isA": "Person" ]
         242b24ff ASSERTION "isA": "Person"

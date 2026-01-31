@@ -31,6 +31,7 @@ fn test_elide_1() -> Result<()> {
         elided,
         "ur:envelope/lftpsoihfpjziniaihoyhdcxuykitdcegyinqzlrlgdrcwsbbkihcemtchsntabdpldtbzjepkwsrkdrlernykrdtpsoiafwjlidgraehkfp"
     );
+    // expected-text-output-rubric:
     #[rustfmt::skip]
     run_cli_expect(
         &["format", &elided],
@@ -56,6 +57,7 @@ fn test_elide_2() -> Result<()> {
         elided,
         "ur:envelope/lftpsoihfpjziniaihoyhdcxuykitdcegyinqzlrlgdrcwsbbkihcemtchsntabdpldtbzjepkwsrkdrlernykrdtpsoiafwjlidgraehkfp"
     );
+    // expected-text-output-rubric:
     #[rustfmt::skip]
     run_cli_expect(
         &["format", &elided],

@@ -82,6 +82,7 @@ fn test_keys(
     ])
     .unwrap();
 
+    // expected-text-output-rubric:
     #[rustfmt::skip]
     let expected_format = indoc!(r#"
         "Alice" [

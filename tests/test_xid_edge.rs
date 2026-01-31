@@ -2,6 +2,7 @@ mod common;
 use common::*;
 
 use anyhow::Result;
+use indoc::indoc;
 
 fn make_edge(subject: &str, is_a: &str, source_xid: &str, target_xid: &str) -> Result<String> {
     let edge = run_cli(&["subject", "type", "string", subject])?;
@@ -31,6 +32,18 @@ fn bob_xid() -> Result<String> {
 #[test]
 fn test_xid_edge_count_empty() -> Result<()> {
     let xid_doc = make_xid_doc()?;
+
+    // expected-text-output-rubric:
+    #[rustfmt::skip]
+    run_cli_expect(&["format", &xid_doc],
+        indoc! {r#"
+            XID(93a4d4e7) [
+                'key': PublicKeys(cab108a0, SigningPublicKey(93a4d4e7, SchnorrPublicKey(26712894)), EncapsulationPublicKey(00b42db3, X25519PublicKey(00b42db3))) [
+                    'allow': 'All'
+                ]
+            ]
+        "#}
+    )?;
     run_cli_expect(&["xid", "edge", "count", &xid_doc], "0")?;
     Ok(())
 }
@@ -43,6 +56,24 @@ fn test_xid_edge_add_unsigned() -> Result<()> {
     let edge = make_edge("credential-1", "foaf:Person", &xid, &xid)?;
 
     let xid_doc = run_cli(&["xid", "edge", "add", &edge, &xid_doc])?;
+
+    // expected-text-output-rubric:
+    #[rustfmt::skip]
+    run_cli_expect(&["format", &xid_doc],
+        indoc! {r#"
+            XID(93a4d4e7) [
+                'edge': "credential-1" [
+                    'isA': "foaf:Person"
+                    'source': XID(93a4d4e7)
+                    'target': XID(93a4d4e7)
+                ]
+                'key': PublicKeys(cab108a0, SigningPublicKey(93a4d4e7, SchnorrPublicKey(26712894)), EncapsulationPublicKey(00b42db3, X25519PublicKey(00b42db3))) [
+                    'allow': 'All'
+                ]
+            ]
+        "#}
+    )?;
+
     run_cli_expect(&["xid", "edge", "count", &xid_doc], "1")?;
     Ok(())
 }
@@ -59,6 +90,32 @@ fn test_xid_edge_add_with_signing() -> Result<()> {
         "--sign", "inception",
         &xid_doc,
     ])?;
+
+    // expected-text-output-rubric:
+    #[rustfmt::skip]
+    run_cli_expect(&["format", &xid_doc],
+        indoc! {r#"
+            {
+                XID(93a4d4e7) [
+                    'edge': "credential-1" [
+                        'isA': "foaf:Person"
+                        'source': XID(93a4d4e7)
+                        'target': XID(93a4d4e7)
+                    ]
+                    'key': PublicKeys(cab108a0, SigningPublicKey(93a4d4e7, SchnorrPublicKey(26712894)), EncapsulationPublicKey(00b42db3, X25519PublicKey(00b42db3))) [
+                        {
+                            'privateKey': PrivateKeys(8624d38b, SigningPrivateKey(096547df, SchnorrPrivateKey(74343f20)), EncapsulationPrivateKey(d8e2032d, X25519PrivateKey(d8e2032d)))
+                        } [
+                            'salt': Salt
+                        ]
+                        'allow': 'All'
+                    ]
+                ]
+            } [
+                'signed': Signature
+            ]
+        "#}
+    )?;
 
     run_cli_expect(&["xid", "edge", "count", &xid_doc], "1")?;
 
@@ -80,9 +137,12 @@ fn test_xid_edge_all() -> Result<()> {
 
     run_cli_expect(&["xid", "edge", "count", &xid_doc], "2")?;
 
-    let all = run_cli(&["xid", "edge", "all", &xid_doc])?;
-    let lines: Vec<&str> = all.trim().split('\n').collect();
-    assert_eq!(lines.len(), 2);
+    // expected-text-output-rubric:
+    #[rustfmt::skip]
+    run_cli_expect(&["xid", "edge", "all", &xid_doc], indoc! {r#"
+        ur:envelope/lrtpsoiyihieioihdpeyoycfaorntpsotanshdhdcxmuoxtyvddifztyryhymkgolbmefhssmejsgaykcljtjnfmaelrrkvwayehbzfessoyadtpsojzjkiaisihjnhsftghisinjtiooycfaorstpsotanshdhdcxmuoxtyvddifztyryhymkgolbmefhssmejsgaykcljtjnfmaelrrkvwayehbzfessmofwweat
+        ur:envelope/lrtpsoiyihieioihdpehoycfaorntpsotanshdhdcxmuoxtyvddifztyryhymkgolbmefhssmejsgaykcljtjnfmaelrrkvwayehbzfessoycfaorstpsotanshdhdcxmuoxtyvddifztyryhymkgolbmefhssmejsgaykcljtjnfmaelrrkvwayehbzfessoyadtpsojeiyjlhsiyftgdihjpjkjljtonihgllp
+    "#})?;
     Ok(())
 }
 
@@ -97,12 +157,37 @@ fn test_xid_edge_at() -> Result<()> {
     let xid_doc = run_cli(&["xid", "edge", "add", &edge1, &xid_doc])?;
     let xid_doc = run_cli(&["xid", "edge", "add", &edge2, &xid_doc])?;
 
-    // Should be able to get edge at index 0 and 1
-    let at0 = run_cli(&["xid", "edge", "at", "0", &xid_doc])?;
-    assert!(!at0.is_empty());
+    // expected-text-output-rubric:
+    #[rustfmt::skip]
+    run_cli_expect(&["xid", "edge", "at", "0", &xid_doc],
+        "ur:envelope/lrtpsoiyihieioihdpeyoycfaorntpsotanshdhdcxmuoxtyvddifztyryhymkgolbmefhssmejsgaykcljtjnfmaelrrkvwayehbzfessoyadtpsojzjkiaisihjnhsftghisinjtiooycfaorstpsotanshdhdcxmuoxtyvddifztyryhymkgolbmefhssmejsgaykcljtjnfmaelrrkvwayehbzfessmofwweat"
+    )?;
 
-    let at1 = run_cli(&["xid", "edge", "at", "1", &xid_doc])?;
-    assert!(!at1.is_empty());
+    // expected-text-output-rubric:
+    #[rustfmt::skip]
+    run_cli_expect(&["format", &run_cli(&["xid", "edge", "at", "0", &xid_doc])?], indoc! {r#"
+        "edge-2" [
+            'isA': "schema:Thing"
+            'source': XID(93a4d4e7)
+            'target': XID(93a4d4e7)
+        ]
+    "#})?;
+
+    // expected-text-output-rubric:
+    #[rustfmt::skip]
+    run_cli_expect(&["xid", "edge", "at", "1", &xid_doc],
+        "ur:envelope/lrtpsoiyihieioihdpehoycfaorntpsotanshdhdcxmuoxtyvddifztyryhymkgolbmefhssmejsgaykcljtjnfmaelrrkvwayehbzfessoycfaorstpsotanshdhdcxmuoxtyvddifztyryhymkgolbmefhssmejsgaykcljtjnfmaelrrkvwayehbzfessoyadtpsojeiyjlhsiyftgdihjpjkjljtonihgllp"
+    )?;
+
+    // expected-text-output-rubric:
+    #[rustfmt::skip]
+    run_cli_expect(&["format", &run_cli(&["xid", "edge", "at", "1", &xid_doc])?], indoc! {r#"
+        "edge-1" [
+            'isA': "foaf:Person"
+            'source': XID(93a4d4e7)
+            'target': XID(93a4d4e7)
+        ]
+    "#})?;
 
     // Index 2 should fail
     assert!(run_cli(&["xid", "edge", "at", "2", &xid_doc]).is_err());
@@ -161,9 +246,12 @@ fn test_xid_edge_find_by_is_a() -> Result<()> {
     let xid_doc = run_cli(&["xid", "edge", "add", &edge2, &xid_doc])?;
 
     let is_a_env = run_cli(&["subject", "type", "string", "foaf:Person"])?;
-    let found = run_cli(&["xid", "edge", "find", "--is-a", &is_a_env, &xid_doc])?;
-    let lines: Vec<&str> = found.trim().split('\n').collect();
-    assert_eq!(lines.len(), 1);
+
+    // expected-text-output-rubric:
+    #[rustfmt::skip]
+    run_cli_expect(&["xid", "edge", "find", "--is-a", &is_a_env, &xid_doc],
+        "ur:envelope/lrtpsoiyihieioihdpehoycfaorntpsotanshdhdcxmuoxtyvddifztyryhymkgolbmefhssmejsgaykcljtjnfmaelrrkvwayehbzfessoycfaorstpsotanshdhdcxmuoxtyvddifztyryhymkgolbmefhssmejsgaykcljtjnfmaelrrkvwayehbzfessoyadtpsojeiyjlhsiyftgdihjpjkjljtonihgllp"
+    )?;
     Ok(())
 }
 
@@ -181,9 +269,12 @@ fn test_xid_edge_find_by_target() -> Result<()> {
 
     // Find by Bob's target
     let target_env = run_cli(&["subject", "type", "ur", &bob])?;
-    let found = run_cli(&["xid", "edge", "find", "--target", &target_env, &xid_doc])?;
-    let lines: Vec<&str> = found.trim().split('\n').collect();
-    assert_eq!(lines.len(), 1);
+
+    // expected-text-output-rubric:
+    #[rustfmt::skip]
+    run_cli_expect(&["xid", "edge", "find", "--target", &target_env, &xid_doc],
+        "ur:envelope/lrtpsoinjejtjlktjkdpidjlidoycfaorstpsotanshdhdcxwncfnykphhsekedagdsfqdihoysadpzmimrpgtrnlesansjtdshtkedyhlwdmngloycfaorntpsotanshdhdcxmuoxtyvddifztyryhymkgolbmefhssmejsgaykcljtjnfmaelrrkvwayehbzfessoyadtpsojojkiaisihjnhsftiajljzjzihhsiokpihcyfncxca"
+    )?;
     Ok(())
 }
 
@@ -199,9 +290,12 @@ fn test_xid_edge_find_by_subject() -> Result<()> {
     let xid_doc = run_cli(&["xid", "edge", "add", &edge2, &xid_doc])?;
 
     let subj_env = run_cli(&["subject", "type", "string", "self-desc"])?;
-    let found = run_cli(&["xid", "edge", "find", "--subject", &subj_env, &xid_doc])?;
-    let lines: Vec<&str> = found.trim().split('\n').collect();
-    assert_eq!(lines.len(), 1);
+
+    // expected-text-output-rubric:
+    #[rustfmt::skip]
+    run_cli_expect(&["xid", "edge", "find", "--subject", &subj_env, &xid_doc],
+        "ur:envelope/lrtpsoinjkihjziydpieihjkiaoycfaorntpsotanshdhdcxmuoxtyvddifztyryhymkgolbmefhssmejsgaykcljtjnfmaelrrkvwayehbzfessoycfaorstpsotanshdhdcxmuoxtyvddifztyryhymkgolbmefhssmejsgaykcljtjnfmaelrrkvwayehbzfessoyadtpsojeiyjlhsiyftgdihjpjkjljtwsfnbepd"
+    )?;
     Ok(())
 }
 
@@ -218,17 +312,42 @@ fn test_xid_edge_find_combined() -> Result<()> {
     let xid_doc = run_cli(&["xid", "edge", "add", &edge2, &xid_doc])?;
     let xid_doc = run_cli(&["xid", "edge", "add", &edge3, &xid_doc])?;
 
+    // expected-text-output-rubric:
+    #[rustfmt::skip]
+    run_cli_expect(
+        &["format", &xid_doc],
+        indoc! {r#"
+            XID(93a4d4e7) [
+                'edge': "other" [
+                    'isA': "schema:Thing"
+                    'source': XID(93a4d4e7)
+                    'target': XID(93a4d4e7)
+                ]
+                'edge': "self-desc" [
+                    'isA': "foaf:Person"
+                    'source': XID(93a4d4e7)
+                    'target': XID(93a4d4e7)
+                ]
+                'edge': "self-thing" [
+                    'isA': "foaf:Person"
+                    'source': XID(93a4d4e7)
+                    'target': XID(93a4d4e7)
+                ]
+                'key': PublicKeys(cab108a0, SigningPublicKey(93a4d4e7, SchnorrPublicKey(26712894)), EncapsulationPublicKey(00b42db3, X25519PublicKey(00b42db3))) [
+                    'allow': 'All'
+                ]
+            ]
+        "#}
+    )?;
+
     // Find by isA "foaf:Person" AND subject "self-desc"
     let is_a_env = run_cli(&["subject", "type", "string", "foaf:Person"])?;
     let subj_env = run_cli(&["subject", "type", "string", "self-desc"])?;
-    let found = run_cli(&[
-        "xid", "edge", "find",
-        "--is-a", &is_a_env,
-        "--subject", &subj_env,
-        &xid_doc,
-    ])?;
-    let lines: Vec<&str> = found.trim().split('\n').collect();
-    assert_eq!(lines.len(), 1);
+    // expected-text-output-rubric:
+    #[rustfmt::skip]
+    run_cli_expect(&["xid", "edge", "find", "--is-a", &is_a_env, "--subject", &subj_env, &xid_doc],
+        "ur:envelope/lrtpsoinjkihjziydpieihjkiaoycfaorntpsotanshdhdcxmuoxtyvddifztyryhymkgolbmefhssmejsgaykcljtjnfmaelrrkvwayehbzfessoycfaorstpsotanshdhdcxmuoxtyvddifztyryhymkgolbmefhssmejsgaykcljtjnfmaelrrkvwayehbzfessoyadtpsojeiyjlhsiyftgdihjpjkjljtwsfnbepd"
+    )?;
     Ok(())
 }
 
@@ -240,13 +359,22 @@ fn test_xid_edge_format() -> Result<()> {
     let edge = make_edge("credential-1", "foaf:Person", &xid, &xid)?;
     let xid_doc = run_cli(&["xid", "edge", "add", &edge, &xid_doc])?;
 
-    let formatted = run_cli(&["format", &xid_doc])?;
-    assert!(formatted.contains("'edge'"));
-    assert!(formatted.contains("'isA'"));
-    assert!(formatted.contains("'source'"));
-    assert!(formatted.contains("'target'"));
-    assert!(formatted.contains("\"credential-1\""));
-    assert!(formatted.contains("\"foaf:Person\""));
+    // expected-text-output-rubric:
+    #[rustfmt::skip]
+    run_cli_expect(&["format", &xid_doc],
+        indoc! {r#"
+            XID(93a4d4e7) [
+                'edge': "credential-1" [
+                    'isA': "foaf:Person"
+                    'source': XID(93a4d4e7)
+                    'target': XID(93a4d4e7)
+                ]
+                'key': PublicKeys(cab108a0, SigningPublicKey(93a4d4e7, SchnorrPublicKey(26712894)), EncapsulationPublicKey(00b42db3, X25519PublicKey(00b42db3))) [
+                    'allow': 'All'
+                ]
+            ]
+        "#}
+    )?;
     Ok(())
 }
 
@@ -264,6 +392,22 @@ fn test_xid_edge_persists_across_operations() -> Result<()> {
         "xid", "method", "add", "https://example.com/resolve", &xid_doc,
     ])?;
     run_cli_expect(&["xid", "edge", "count", &xid_doc], "1")?;
+
+    // expected-text-output-rubric:
+    #[rustfmt::skip]
+    run_cli_expect(&["format", &xid_doc], indoc! {r#"
+        XID(93a4d4e7) [
+            'dereferenceVia': URI(https://example.com/resolve)
+            'edge': "credential-1" [
+                'isA': "foaf:Person"
+                'source': XID(93a4d4e7)
+                'target': XID(93a4d4e7)
+            ]
+            'key': PublicKeys(cab108a0, SigningPublicKey(93a4d4e7, SchnorrPublicKey(26712894)), EncapsulationPublicKey(00b42db3, X25519PublicKey(00b42db3))) [
+                'allow': 'All'
+            ]
+        ]
+    "#})?;
 
     Ok(())
 }

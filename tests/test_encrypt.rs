@@ -8,6 +8,7 @@ fn test_encrypt_key() {
     let encrypted =
         run_cli(&["encrypt", "--key", KEY_EXAMPLE, ALICE_KNOWS_BOB_EXAMPLE])
             .unwrap();
+    // expected-text-output-rubric:
     #[rustfmt::skip]
     run_cli_expect(
         &["format", &encrypted],
@@ -29,6 +30,7 @@ fn test_encrypt_password() {
         &["encrypt", "--password", "password"],
     ])
     .unwrap();
+    // expected-text-output-rubric:
     #[rustfmt::skip]
     run_cli_expect(
         &["format", &encrypted],

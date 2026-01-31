@@ -16,6 +16,7 @@ fn test_xid_resolution_basic() {
     let xid_doc =
         run_cli(&["xid", "new", "--nickname", "Alice", ALICE_PUBKEYS]).unwrap();
 
+    // expected-text-output-rubric:
     #[rustfmt::skip]
     run_cli_expect(
         &["format", &xid_doc],
@@ -43,6 +44,7 @@ fn test_xid_resolution_basic() {
     .unwrap();
 
     // Verify the XID document now has the resolution method.
+    // expected-text-output-rubric:
     #[rustfmt::skip]
     run_cli_expect(
         &["format", &xid_doc],
@@ -98,6 +100,7 @@ fn test_xid_resolution_multiple() {
             .unwrap();
 
     // Verify the XID document has both resolution methods.
+    // expected-text-output-rubric:
     #[rustfmt::skip]
     run_cli_expect(
         &["format", &xid_doc],
@@ -145,6 +148,7 @@ fn test_xid_resolution_remove() {
             .unwrap();
 
     // Verify both resolution methods are present.
+    // expected-text-output-rubric:
     #[rustfmt::skip]
     run_cli_expect(
         &["format", &xid_doc],
@@ -168,6 +172,7 @@ fn test_xid_resolution_remove() {
             .unwrap();
 
     // Verify only the first method remains.
+    // expected-text-output-rubric:
     #[rustfmt::skip]
     run_cli_expect(
         &["format", &xid_doc],
@@ -272,6 +277,7 @@ fn test_xid_resolution_with_signature() {
     .unwrap();
 
     // Verify initial signed structure with encrypted private key.
+    // expected-text-output-rubric:
     #[rustfmt::skip]
     run_cli_expect(
         &["format", &xid_doc],
@@ -317,6 +323,7 @@ fn test_xid_resolution_with_signature() {
     .unwrap();
 
     // Verify the signed document now has the resolution method.
+    // expected-text-output-rubric:
     #[rustfmt::skip]
     run_cli_expect(
         &["format", &xid_doc],
@@ -396,6 +403,7 @@ fn test_xid_resolution_preserved_after_other_operations() {
     .unwrap();
 
     // Verify resolution method is still present along with both keys.
+    // expected-text-output-rubric:
     #[rustfmt::skip]
     run_cli_expect(
         &["format", &xid_doc],

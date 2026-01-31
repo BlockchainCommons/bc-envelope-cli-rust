@@ -14,6 +14,7 @@ fn test_format() -> Result<()> {
 }
 
 #[test]
+// expected-text-output-rubric:
 #[rustfmt::skip]
 fn test_format_envelope() -> Result<()> {
     let output = run_cli_raw(&["format", ENVELOPE])?;
@@ -59,6 +60,7 @@ fn test_format_cbor() -> Result<()> {
 #[test]
 fn test_format_diag() -> Result<()> {
     let output: String = run_cli_raw(&["format", "--type", "diag", ENVELOPE])?;
+    // expected-text-output-rubric:
     #[rustfmt::skip]
     assert_eq!(
         output,
@@ -174,6 +176,7 @@ fn test_format_diag() -> Result<()> {
 #[test]
 fn test_format_tree() -> Result<()> {
     let output: String = run_cli_raw(&["format", "--type", "tree", ENVELOPE])?;
+    // expected-text-output-rubric:
     #[rustfmt::skip]
     assert_eq!(
         output,

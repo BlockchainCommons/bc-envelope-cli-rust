@@ -44,6 +44,7 @@ fn test_xid_sign_inception() {
     assert!(verified_id.starts_with("ur:xid/"));
 
     // Verify the document has both keys
+    // expected-text-output-rubric:
     #[rustfmt::skip]
     run_cli_piped_expect(
         &[
@@ -98,6 +99,7 @@ fn test_xid_sign_with_external_key() {
     .unwrap();
 
     // The document should now have a signature
+    // expected-text-output-rubric:
     #[rustfmt::skip]
     run_cli_piped_expect(
         &[
@@ -148,6 +150,7 @@ fn test_xid_sign_service_operations() {
     run_cli(&["xid", "id", "--verify", "inception", &with_service]).unwrap();
 
     // Verify the service was added and document is signed
+    // expected-text-output-rubric:
     #[rustfmt::skip]
     run_cli_piped_expect(
         &[
@@ -191,6 +194,7 @@ fn test_xid_sign_service_operations() {
     run_cli(&["xid", "id", "--verify", "inception", &without_service]).unwrap();
 
     // Verify the service was removed and document is still signed
+    // expected-text-output-rubric:
     #[rustfmt::skip]
     run_cli_piped_expect(
         &[
@@ -227,6 +231,7 @@ fn test_xid_new_with_signing() {
     assert!(verified_id.starts_with("ur:xid/"));
 
     // Check the format includes the signature
+    // expected-text-output-rubric:
     #[rustfmt::skip]
     run_cli_piped_expect(
         &[
@@ -275,6 +280,7 @@ fn test_xid_verify_and_sign_chaining() {
     run_cli(&["xid", "id", "--verify", "inception", &xid2]).unwrap();
 
     // Verify xid2 has the expected structure
+    // expected-text-output-rubric:
     #[rustfmt::skip]
     run_cli_piped_expect(
         &[
@@ -319,6 +325,7 @@ fn test_xid_verify_and_sign_chaining() {
     run_cli(&["xid", "id", "--verify", "inception", &xid3]).unwrap();
 
     // Verify xid3 has the expected structure with all three keys
+    // expected-text-output-rubric:
     #[rustfmt::skip]
     run_cli_piped_expect(
         &[
@@ -379,6 +386,7 @@ fn test_xid_sign_with_encrypted_private_keys() {
     .unwrap();
 
     // The document should have a signature
+    // expected-text-output-rubric:
     #[rustfmt::skip]
     run_cli_piped_expect(
         &[
@@ -432,6 +440,7 @@ fn test_xid_sign_with_encrypted_signing_private_key() {
     .unwrap();
 
     // Verify it has a signature
+    // expected-text-output-rubric:
     #[rustfmt::skip]
     run_cli_piped_expect(
         &[

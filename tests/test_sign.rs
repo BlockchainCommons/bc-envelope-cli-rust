@@ -9,6 +9,7 @@ fn test_sign() -> Result<()> {
     let prvkeys = "ur:crypto-prvkeys/lftansgohdcxpfsndiahcxsfrhjoltglmebwwnnstovocffejytdbwihdkrtdykebkiebglbtteetansgehdcxvsdapeurgauovlbsvdfhvdcevywlptspfgnejpbksadehkhkfzehhfaysrsrbsdstbtagyeh";
     let signed =
         run_cli(&["sign", "--signer", prvkeys, ALICE_KNOWS_BOB_EXAMPLE])?;
+    // expected-text-output-rubric:
     #[rustfmt::skip]
     run_cli_expect(
         &["format", &signed],
@@ -46,6 +47,7 @@ fn test_sign_2() -> Result<()> {
         &["subject", "type", "wrapped", ALICE_KNOWS_BOB_EXAMPLE],
         &["sign", "--signer", prvkeys],
     ])?;
+    // expected-text-output-rubric:
     #[rustfmt::skip]
     run_cli_expect(
         &["format", &wrapped_signed],
@@ -71,6 +73,7 @@ fn test_sign_3() -> Result<()> {
         &["subject", "type", "string", "Hello."],
         &["sign", "--signer", ALICE_PRVKEYS, "--signer", CAROL_PRVKEYS],
     ])?;
+    // expected-text-output-rubric:
     #[rustfmt::skip]
     run_cli_expect(
         &["format", &e],
@@ -90,6 +93,7 @@ fn test_sign_with_crypto_prvkeys() -> Result<()> {
     let prvkeys = "ur:crypto-prvkeys/lftansgohdcxredidrnyhlnefzihclvepyfsvaemgsylfxamlstaprdnrsrkfmlukpaelrdtfgprtansgehdcxmybzpysoadgmcwoxlpensnfzwecspkihmkwlstvabzensbprnelssbfnqzbnfthlmycekeds";
     let signed =
         run_cli(&["sign", "--signer", prvkeys, ALICE_KNOWS_BOB_EXAMPLE])?;
+    // expected-text-output-rubric:
     #[rustfmt::skip]
     run_cli_expect(
         &["format", &signed],
