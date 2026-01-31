@@ -71,7 +71,11 @@ Notice that the output shows `'foaf:Person'` (single-quoted known value) rather 
 
 > **Note:**
 >
-> Known values are resolved from JSON registry files in `~/.known-values/`. If the registry files for a given ontology are not installed, using `known "foaf:Person"` will produce an error. The remainder of this tutorial uses strings for portability, but known values are preferred when the registries are available.
+> Some known values are built in to the `envelope` tool, and you've already seen some used above, like `'isA'`, `'source'`, and `'target'`. Many available known values are not built in and are resolved from JSON registry files in `~/.known-values/`. If the registry files for a given ontology are not installed, using `known "foaf:Person"` will produce an error.
+>
+> The remainder of this tutorial uses strings for portability, but known values are preferred when the registries are available.
+> - [BCR-2023-002](https://github.com/BlockchainCommons/Research/blob/master/papers/bcr-2023-002-known-value.md) describes the known values system in detail.
+> - The JSON registry files can be found [here](https://github.com/BlockchainCommons/Research/tree/master/known-value-assignments/json).
 
 ## Adding Edges to XID Documents
 
