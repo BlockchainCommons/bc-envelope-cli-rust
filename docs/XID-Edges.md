@@ -152,6 +152,18 @@ Multiple filters narrow the results. Only edges matching all criteria are return
 envelope xid edge find --is-a "$IS_A" --subject "$SUBJ" "$XID_DOC"
 ```
 
+## Edges Persist Across Operations
+
+Once added, edges persist through other XID document operations:
+
+```
+XID_DOC=$(envelope xid method add "https://example.com/resolve" "$XID_DOC")
+
+envelope xid edge count "$XID_DOC"
+
+│ 2
+```
+
 ## Removing Edges
 
 ```
@@ -188,18 +200,6 @@ The edge is included in the signature, so modifying or removing edges requires r
 
 ```
 XID_DOC=$(envelope xid edge remove "$EDGE" --verify inception --sign inception "$XID_DOC")
-```
-
-## Edges Persist Across Operations
-
-Once added, edges persist through other XID document operations:
-
-```
-XID_DOC=$(envelope xid method add "https://example.com/resolve" --sign inception "$XID_DOC")
-
-envelope xid edge count "$XID_DOC"
-
-│ 1
 ```
 
 ## Relationship Edges

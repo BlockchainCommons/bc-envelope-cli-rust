@@ -231,7 +231,7 @@ envelope format $ALICE_XID_DOC_UPDATED
 │     'delegate': {
 │         XID(61b1f3c7)
 │     } [
-│         'allow': 'Auth'
+│         'allow': 'Authorize'
 │         'allow': 'Encrypt'
 │         'allow': 'Sign'
 │     ]
@@ -269,7 +269,7 @@ envelope format $ALICE_XID_DOC_UPDATED
 │     'delegate': {
 │         XID(61b1f3c7)
 │     } [
-│         'allow': 'Auth'
+│         'allow': 'Authorize'
 │         'allow': 'Encrypt'
 │         'allow': 'Sign'
 │     ]

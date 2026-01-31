@@ -20,7 +20,9 @@ envelope xid --help
 │   method      Work a XID document's resolution methods
 │   delegate    Work with a XID document's delegates
 │   service     Work with a XID document's services
+│   resolution  Work with a XID document's resolution methods (dereferenceVia)
 │   attachment  Work with a XID document's attachments
+│   edge        Work with a XID document's edges
 │   help        Print this message or the help of the given subcommand(s)
 │
 │ Options:

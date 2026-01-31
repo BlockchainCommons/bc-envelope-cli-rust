@@ -164,13 +164,14 @@ envelope xid export --private omit --generator omit \
 │             'allow': 'All'
 │             'nickname': "Alice"
 │         ]
+│         'provenance': ProvenanceMark(...)
 │     ]
 │ } [
 │     'signed': Signature
 │ ]
 ```
 
-The omitted version has no ELIDED markers and no provenance mark at all—the secrets and the provenance structure are completely removed. Omitting *always* requires re-signing because the merkle tree is modified.
+The omitted version has no ELIDED markers and the provenance generator is completely removed—only the provenance mark itself (which is public) is retained. Omitting *always* requires re-signing because the merkle tree is modified.
 
 ## Working with Signed Documents
 
