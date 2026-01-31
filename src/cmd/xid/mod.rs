@@ -1,5 +1,6 @@
 mod attachment;
 mod delegate;
+mod edge;
 pub mod export;
 pub mod generator_options;
 pub use generator_options::*;
@@ -49,6 +50,7 @@ enum SubCommands {
     Service(service::CommandArgs),
     Resolution(resolution::CommandArgs),
     Attachment(attachment::CommandArgs),
+    Edge(edge::CommandArgs),
 }
 
 impl crate::Exec for CommandArgs {
@@ -64,6 +66,7 @@ impl crate::Exec for CommandArgs {
             SubCommands::Service(args) => args.exec(),
             SubCommands::Resolution(args) => args.exec(),
             SubCommands::Attachment(args) => args.exec(),
+            SubCommands::Edge(args) => args.exec(),
         }
     }
 }

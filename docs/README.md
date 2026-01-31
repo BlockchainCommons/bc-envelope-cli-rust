@@ -12,6 +12,7 @@ The following docs exemplify the basic functionality of the `envelope` tool. The
 * [Attachments](Attachments.md) — Standardized third-party attachments for envelopes.
 * [Signing Envelopes](Signing.md) — Signing and verifying signatures on envelopes.
 * [XID Documents](XID.md) — Working with XIDs and XID documents.
+* [XID Edges](XID-Edges.md) — Working with verifiable claims (edges) on XID documents.
 * [Pattern Matching](PatternMatching.md) - Using patterns to match on parts of envelopes
     * [Envelope Pattern Expression Syntax](envelope_patex.md) - The syntax for envelope patterns used in pattern matching.
 

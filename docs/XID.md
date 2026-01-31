@@ -57,6 +57,7 @@ The `envelope` tool includes support for working with [XID Documents](https://gi
     - [`xid provenance next`: Advance the Provenance Mark](#xid-provenance-next-advance-the-provenance-mark)
   - [Working with Signed XID Documents](#working-with-signed-xid-documents)
   - [Working with Attachments](#working-with-attachments)
+  - [Working with Edges](XID-Edges.md)
 
 ## Import All Envelope URs
 
