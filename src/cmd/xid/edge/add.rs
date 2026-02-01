@@ -53,9 +53,9 @@ impl crate::Exec for CommandArgs {
         let edge_envelope = read_envelope(Some(&self.edge))?;
 
         // Validate edge structure
-        edge_envelope.validate_edge().map_err(|e| {
-            anyhow::anyhow!("Invalid edge envelope: {}", e)
-        })?;
+        edge_envelope
+            .validate_edge()
+            .map_err(|e| anyhow::anyhow!("Invalid edge envelope: {}", e))?;
 
         // Add edge using the Edgeable trait
         xid_document.add_edge(edge_envelope);

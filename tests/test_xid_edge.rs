@@ -1,20 +1,49 @@
 mod common;
-use common::*;
-
 use anyhow::Result;
+use common::*;
 use indoc::indoc;
 
-fn make_edge(subject: &str, is_a: &str, source_xid: &str, target_xid: &str) -> Result<String> {
+fn make_edge(
+    subject: &str,
+    is_a: &str,
+    source_xid: &str,
+    target_xid: &str,
+) -> Result<String> {
     let edge = run_cli(&["subject", "type", "string", subject])?;
-    let edge = run_cli(&["assertion", "add", "pred-obj", "known", "isA", "string", is_a, &edge])?;
-    let edge = run_cli(&["assertion", "add", "pred-obj", "known", "source", "ur", source_xid, &edge])?;
-    let edge = run_cli(&["assertion", "add", "pred-obj", "known", "target", "ur", target_xid, &edge])?;
+    let edge = run_cli(&[
+        "assertion",
+        "add",
+        "pred-obj",
+        "known",
+        "isA",
+        "string",
+        is_a,
+        &edge,
+    ])?;
+    let edge = run_cli(&[
+        "assertion",
+        "add",
+        "pred-obj",
+        "known",
+        "source",
+        "ur",
+        source_xid,
+        &edge,
+    ])?;
+    let edge = run_cli(&[
+        "assertion",
+        "add",
+        "pred-obj",
+        "known",
+        "target",
+        "ur",
+        target_xid,
+        &edge,
+    ])?;
     Ok(edge)
 }
 
-fn make_xid_doc() -> Result<String> {
-    run_cli(&["xid", "new", ALICE_PUBKEYS])
-}
+fn make_xid_doc() -> Result<String> { run_cli(&["xid", "new", ALICE_PUBKEYS]) }
 
 fn make_xid_doc_with_private_keys() -> Result<String> {
     run_cli(&["xid", "new", ALICE_PRVKEYS])
@@ -86,8 +115,12 @@ fn test_xid_edge_add_with_signing() -> Result<()> {
     let edge = make_edge("credential-1", "foaf:Person", &xid, &xid)?;
 
     let xid_doc = run_cli(&[
-        "xid", "edge", "add", &edge,
-        "--sign", "inception",
+        "xid",
+        "edge",
+        "add",
+        &edge,
+        "--sign",
+        "inception",
         &xid_doc,
     ])?;
 
@@ -217,15 +250,24 @@ fn test_xid_edge_remove_with_signing() -> Result<()> {
     let edge = make_edge("credential-1", "foaf:Person", &xid, &xid)?;
 
     let xid_doc = run_cli(&[
-        "xid", "edge", "add", &edge,
-        "--sign", "inception",
+        "xid",
+        "edge",
+        "add",
+        &edge,
+        "--sign",
+        "inception",
         &xid_doc,
     ])?;
 
     let xid_doc = run_cli(&[
-        "xid", "edge", "remove", &edge,
-        "--verify", "inception",
-        "--sign", "inception",
+        "xid",
+        "edge",
+        "remove",
+        &edge,
+        "--verify",
+        "inception",
+        "--sign",
+        "inception",
         &xid_doc,
     ])?;
 
@@ -389,7 +431,11 @@ fn test_xid_edge_persists_across_operations() -> Result<()> {
 
     // Add a resolution method — edge should survive
     let xid_doc = run_cli(&[
-        "xid", "method", "add", "https://example.com/resolve", &xid_doc,
+        "xid",
+        "method",
+        "add",
+        "https://example.com/resolve",
+        &xid_doc,
     ])?;
     run_cli_expect(&["xid", "edge", "count", &xid_doc], "1")?;
 
@@ -421,8 +467,12 @@ fn test_xid_edge_with_signed_xid() -> Result<()> {
 
     // Add edge with verify + sign
     let xid_doc = run_cli(&[
-        "xid", "edge", "add", &edge,
-        "--sign", "inception",
+        "xid",
+        "edge",
+        "add",
+        &edge,
+        "--sign",
+        "inception",
         &xid_doc,
     ])?;
 
@@ -432,9 +482,14 @@ fn test_xid_edge_with_signed_xid() -> Result<()> {
 
     // Add another operation with verify + sign, edge should persist
     let xid_doc = run_cli(&[
-        "xid", "method", "add", "https://example.com/resolve",
-        "--verify", "inception",
-        "--sign", "inception",
+        "xid",
+        "method",
+        "add",
+        "https://example.com/resolve",
+        "--verify",
+        "inception",
+        "--sign",
+        "inception",
         &xid_doc,
     ])?;
 
