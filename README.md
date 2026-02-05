@@ -23,7 +23,7 @@ cargo install bc-envelope-cli
 To install a specific version:
 
 ```bash
-cargo install bc-envelope-cli --version 0.33.0
+cargo install bc-envelope-cli --version 0.34.0
 ```
 
 ### From Source
@@ -82,6 +82,14 @@ See the [docs](docs/README.md) directory for more information.
 **NOTE:** The `envelope` tool does *not* have the same command line syntax as the Swift `envelope` tool.
 
 ## Version History
+
+### 0.34.0: February 5, 2026
+
+- Update XID Edges tutorial to show claim detail carried on the target object rather than on the edge subject.
+- Update `bc-envelope` dependency from ^0.42.0 to ^0.43.0.
+- Update `bc-envelope-pattern` dependency from ^0.13.0 to ^0.14.0.
+- Update `bc-xid` dependency from ^0.21.0 to ^0.22.0.
+- Update `provenance-mark` dependency from ^0.22.0 to ^0.23.0.
 
 ### 0.33.0: February 1, 2026
 
