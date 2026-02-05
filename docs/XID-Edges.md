@@ -10,6 +10,8 @@ An edge is a Gordian Envelope with:
   - `'source'` — the XID of the entity making the claim
   - `'target'` — the XID of the entity the claim is about
 
+No other assertions are permitted on the edge subject. The substance of the claim — names, dates, roles, or any other detail — is carried as assertions on the **target** object.
+
 ## Setup
 
 We'll use Alice and Bob for our examples. First, set up their XID documents:
@@ -27,7 +29,7 @@ BOB_XID=$(envelope xid id "$BOB_DOC")
 
 ## Edge Structure
 
-An edge envelope has a string subject (the claim identifier) and exactly three required assertions. Here is how to create one using the `envelope` command:
+An edge envelope has a string subject (the claim identifier) and exactly three required assertions. Here is how to create a minimal edge using the `envelope` command:
 
 ```
 EDGE=$(envelope subject type string "self-description")
@@ -44,21 +46,62 @@ envelope format "$EDGE"
 │ ]
 ```
 
-In this self-description edge, Alice is both the source (claimant) and the target (subject of the claim).
+In this self-description edge, Alice is both the source (claimant) and the target (subject of the claim). The edge identifies what kind of claim is being made (`'isA'`), by whom (`'source'`), and about whom (`'target'`), but it doesn't yet carry any detail about the claim itself. The next section shows how to add that detail.
+
+## Adding Claim Detail to the Target
+
+Per [BCR-2026-003](https://github.com/BlockchainCommons/Research/blob/master/papers/bcr-2026-003-xid-edges.md), the substance of a claim is carried as assertions on the **target** object, not on the edge subject. To do this, build a target envelope with assertions before adding it to the edge.
+
+First, create the target envelope from Alice's XID and add claim-detail assertions to it:
+
+```
+TARGET=$(envelope subject type ur "$ALICE_XID")
+TARGET=$(envelope assertion add pred-obj string "foaf:firstName" string "Alice" "$TARGET")
+TARGET=$(envelope assertion add pred-obj string "foaf:lastName" string "Smith" "$TARGET")
+
+envelope format "$TARGET"
+
+│ XID(93a4d4e7) [
+│     "foaf:firstName": "Alice"
+│     "foaf:lastName": "Smith"
+│ ]
+```
+
+Now build the edge using this enriched target. Use `envelope` as the type so the target's assertions are preserved:
+
+```
+EDGE=$(envelope subject type string "self-description")
+EDGE=$(envelope assertion add pred-obj known isA string "foaf:Person" "$EDGE")
+EDGE=$(envelope assertion add pred-obj known source ur "$ALICE_XID" "$EDGE")
+EDGE=$(envelope assertion add pred-obj known target envelope "$TARGET" "$EDGE")
+
+envelope format "$EDGE"
+
+│ "self-description" [
+│     'isA': "foaf:Person"
+│     'source': XID(93a4d4e7)
+│     'target': XID(93a4d4e7) [
+│         "foaf:firstName": "Alice"
+│         "foaf:lastName": "Smith"
+│     ]
+│ ]
+```
+
+The edge still has exactly three assertions on its subject (`'isA'`, `'source'`, `'target'`), so it passes validation. The claim detail lives on the target object, where verifiers expect to find it.
 
 ## Using Known Values for Ontological Concepts
 
-The example above uses a plain string (`string "foaf:Person"`) for the `'isA'` claim type. This works, but Gordian Envelope supports *known values* — compact integer-based identifiers that map to ontological concepts from standard vocabularies like FOAF, Schema.org, Dublin Core, and others.
+The examples above use plain strings (`string "foaf:Person"`) for the `'isA'` claim type. This works, but Gordian Envelope supports *known values* — compact integer-based identifiers that map to ontological concepts from standard vocabularies like FOAF, Schema.org, Dublin Core, and others.
 
 When known values are available, you can use `known` instead of `string` for the `'isA'` object:
 
 ```
-EDGE=$(envelope subject type string "self-description")
-EDGE=$(envelope assertion add pred-obj known isA known "foaf:Person" "$EDGE")
-EDGE=$(envelope assertion add pred-obj known source ur "$ALICE_XID" "$EDGE")
-EDGE=$(envelope assertion add pred-obj known target ur "$ALICE_XID" "$EDGE")
+EDGE_KV=$(envelope subject type string "self-description")
+EDGE_KV=$(envelope assertion add pred-obj known isA known "foaf:Person" "$EDGE_KV")
+EDGE_KV=$(envelope assertion add pred-obj known source ur "$ALICE_XID" "$EDGE_KV")
+EDGE_KV=$(envelope assertion add pred-obj known target ur "$ALICE_XID" "$EDGE_KV")
 
-envelope format "$EDGE"
+envelope format "$EDGE_KV"
 
 │ "self-description" [
 │     'isA': 'foaf:Person'
@@ -74,6 +117,7 @@ Notice that the output shows `'foaf:Person'` (single-quoted known value) rather 
 > Some known values are built in to the `envelope` tool, and you've already seen some used above, like `'isA'`, `'source'`, and `'target'`. Many available known values are not built in and are resolved from JSON registry files in `~/.known-values/`. If the registry files for a given ontology are not installed, using `known "foaf:Person"` will produce an error.
 >
 > The remainder of this tutorial uses strings for portability, but known values are preferred when the registries are available.
+>
 > - [BCR-2023-002](https://github.com/BlockchainCommons/Research/blob/master/papers/bcr-2023-002-known-value.md) describes the known values system in detail.
 > - The JSON registry files can be found [here](https://github.com/BlockchainCommons/Research/tree/master/known-value-assignments/json).
 
@@ -90,7 +134,10 @@ envelope format "$XID_DOC"
 │     'edge': "self-description" [
 │         'isA': "foaf:Person"
 │         'source': XID(93a4d4e7)
-│         'target': XID(93a4d4e7)
+│         'target': XID(93a4d4e7) [
+│             "foaf:firstName": "Alice"
+│             "foaf:lastName": "Smith"
+│         ]
 │     ]
 │     'key': PublicKeys(cab108a0, ...) [
 │         ...
@@ -106,16 +153,33 @@ envelope xid edge count "$XID_DOC"
 │ 1
 ```
 
-## Adding Multiple Edges
+## Adding a Relationship Edge
 
-You can add multiple edges to the same XID document. Each edge has its own unique subject identifier:
+A relationship edge connects two different XIDs. Here Alice claims Bob as a colleague. The claim detail — Bob's name and department — goes on the target:
 
 ```
+BOB_TARGET=$(envelope subject type ur "$BOB_XID")
+BOB_TARGET=$(envelope assertion add pred-obj string "foaf:firstName" string "Bob" "$BOB_TARGET")
+BOB_TARGET=$(envelope assertion add pred-obj string "department" string "Engineering" "$BOB_TARGET")
+
 EDGE2=$(envelope subject type string "knows-bob")
 EDGE2=$(envelope assertion add pred-obj known isA string "schema:colleague" "$EDGE2")
 EDGE2=$(envelope assertion add pred-obj known source ur "$ALICE_XID" "$EDGE2")
-EDGE2=$(envelope assertion add pred-obj known target ur "$BOB_XID" "$EDGE2")
+EDGE2=$(envelope assertion add pred-obj known target envelope "$BOB_TARGET" "$EDGE2")
 
+envelope format "$EDGE2"
+
+│ "knows-bob" [
+│     'isA': "schema:colleague"
+│     'source': XID(93a4d4e7)
+│     'target': XID(f1199a75) [
+│         "department": "Engineering"
+│         "foaf:firstName": "Bob"
+│     ]
+│ ]
+```
+
+```
 XID_DOC=$(envelope xid edge add "$EDGE2" "$XID_DOC")
 
 envelope xid edge count "$XID_DOC"
@@ -164,8 +228,8 @@ envelope xid edge find --source "$SOURCE" "$XID_DOC"
 ### Find by Target
 
 ```
-TARGET=$(envelope subject type ur "$BOB_XID")
-envelope xid edge find --target "$TARGET" "$XID_DOC"
+TARGET_FILTER=$(envelope subject type ur "$BOB_XID")
+envelope xid edge find --target "$TARGET_FILTER" "$XID_DOC"
 ```
 
 ### Find by Subject Identifier
@@ -209,16 +273,20 @@ The edge to remove is identified by its exact envelope.
 
 ## Working with Signed XID Documents
 
-When working with signed XID documents, use `--verify inception` and `--sign inception` to maintain signature integrity:
+When working with signed XID documents, use `--sign inception` to maintain signature integrity:
 
 ```
 XID_DOC=$(envelope xid new "$ALICE_PRVKEYS")
 ALICE_XID=$(envelope xid id "$XID_DOC")
 
+TARGET=$(envelope subject type ur "$ALICE_XID")
+TARGET=$(envelope assertion add pred-obj string "foaf:firstName" string "Alice" "$TARGET")
+TARGET=$(envelope assertion add pred-obj string "foaf:lastName" string "Smith" "$TARGET")
+
 EDGE=$(envelope subject type string "self-description")
 EDGE=$(envelope assertion add pred-obj known isA string "foaf:Person" "$EDGE")
 EDGE=$(envelope assertion add pred-obj known source ur "$ALICE_XID" "$EDGE")
-EDGE=$(envelope assertion add pred-obj known target ur "$ALICE_XID" "$EDGE")
+EDGE=$(envelope assertion add pred-obj known target envelope "$TARGET" "$EDGE")
 
 XID_DOC=$(envelope xid edge add "$EDGE" --sign inception "$XID_DOC")
 
@@ -233,31 +301,23 @@ The edge is included in the signature, so modifying or removing edges requires r
 XID_DOC=$(envelope xid edge remove "$EDGE" --verify inception --sign inception "$XID_DOC")
 ```
 
-## Relationship Edges
-
-A relationship edge connects two different XIDs. Alice claims a relationship with Bob:
-
-```
-EDGE=$(envelope subject type string "alice-bob-colleague")
-EDGE=$(envelope assertion add pred-obj known isA string "schema:colleague" "$EDGE")
-EDGE=$(envelope assertion add pred-obj known source ur "$ALICE_XID" "$EDGE")
-EDGE=$(envelope assertion add pred-obj known target ur "$BOB_XID" "$EDGE")
-
-XID_DOC=$(envelope xid edge add "$EDGE" --sign inception "$XID_DOC")
-```
-
 ## Third-Party Credentials
 
 A third party (e.g., a university) can create and sign an edge, which the target entity then adds to their own XID document. This allows verifiable credentials from external issuers.
 
-The edge should be constructed by the issuer, wrapped and signed with their key, then provided to the target entity for inclusion:
+The edge should be constructed by the issuer, wrapped and signed with their key, then provided to the target entity for inclusion. The target object carries the credential details:
 
 ```
-# Issuer creates and signs the edge
+# Issuer builds the target with credential detail
+CREDENTIAL_TARGET=$(envelope subject type ur "$BOB_XID")
+CREDENTIAL_TARGET=$(envelope assertion add pred-obj string "schema:name" string "Master of Science in Computer Science" "$CREDENTIAL_TARGET")
+CREDENTIAL_TARGET=$(envelope assertion add pred-obj string "schema:credentialCategory" string "degree" "$CREDENTIAL_TARGET")
+
+# Issuer creates the edge
 CREDENTIAL=$(envelope subject type string "degree-2024")
 CREDENTIAL=$(envelope assertion add pred-obj known isA string "schema:EducationalOccupationalCredential" "$CREDENTIAL")
 CREDENTIAL=$(envelope assertion add pred-obj known source ur "$ISSUER_XID" "$CREDENTIAL")
-CREDENTIAL=$(envelope assertion add pred-obj known target ur "$BOB_XID" "$CREDENTIAL")
+CREDENTIAL=$(envelope assertion add pred-obj known target envelope "$CREDENTIAL_TARGET" "$CREDENTIAL")
 SIGNED_CREDENTIAL=$(envelope sign --signer "$ISSUER_PRVKEYS" "$CREDENTIAL")
 
 # Bob adds the signed credential to his XID document
