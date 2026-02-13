@@ -23,7 +23,7 @@ cargo install bc-envelope-cli
 To install a specific version:
 
 ```bash
-cargo install bc-envelope-cli --version 0.34.0
+cargo install bc-envelope-cli --version 0.34.1
 ```
 
 ### From Source
@@ -82,6 +82,12 @@ See the [docs](docs/README.md) directory for more information.
 **NOTE:** The `envelope` tool does *not* have the same command line syntax as the Swift `envelope` tool.
 
 ## Version History
+
+### 0.34.1: February 13, 2026
+
+- Add `examples/generate_xid_provenance_sequence.py` to generate XID provenance sequence artifacts.
+- Add `examples/README.md` walkthrough for producing and understanding XID provenance sequence output.
+- Add `examples/.gitignore` entries for generated example outputs.
 
 ### 0.34.0: February 5, 2026
 
