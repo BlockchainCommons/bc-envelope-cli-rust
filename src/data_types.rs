@@ -133,9 +133,7 @@ fn parse_digest(s: &str) -> Result<Envelope> {
 }
 
 /// Parse an Envelope from a string.
-fn parse_envelope(s: &str) -> Result<Envelope> {
-    Ok(Envelope::from_ur_string(s)?)
-}
+fn parse_envelope(s: &str) -> Result<Envelope> { crate::read_envelope(Some(s)) }
 
 /// Parse a KnownValue from a string.
 ///
@@ -178,6 +176,8 @@ fn parse_ur(s: &str, cbor_tag_value: Option<u64>) -> Result<Envelope> {
     if ur.ur_type_str() == "envelope" {
         let envelope = Envelope::from_ur(&ur)?;
         Ok(envelope.wrap())
+    } else if let Ok(envelope) = Envelope::from_tagged_cbor(ur.cbor()) {
+        Ok(envelope)
     } else {
         let cbor_tag = with_format_context!(|context: &FormatContext| {
             let store = context.tags();
@@ -211,7 +211,7 @@ fn parse_uuid(s: &str) -> Result<Envelope> {
 
 /// Parse a wrapped envelope from a ur:envelope string.
 fn parse_wrapped_envelope(s: &str) -> Result<Envelope> {
-    let envelope = Envelope::from_ur_string(s)?;
+    let envelope = crate::read_envelope(Some(s))?;
     Ok(envelope.wrap())
 }
 
