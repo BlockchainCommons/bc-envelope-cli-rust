@@ -44,7 +44,9 @@ impl crate::Exec for CommandArgs {
         let result = assertions
             .iter()
             .filter(|&a| {
-                a.clone().as_predicate().unwrap().digest() == predicate.digest()
+                a.as_predicate()
+                    .map(|p| p.digest() == predicate.digest())
+                    .unwrap_or(false)
             })
             .cloned()
             .collect::<Vec<_>>()
