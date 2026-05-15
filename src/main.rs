@@ -22,6 +22,8 @@ mod subject_args;
 pub use subject_args::*;
 #[doc(hidden)]
 mod utils;
+use std::io::{self, ErrorKind, Write};
+
 use anyhow::Result;
 use clap::{Parser, Subcommand};
 pub use utils::*;
@@ -102,8 +104,19 @@ fn main() -> Result<()> {
         MainCommands::Xid(args) => args.exec(),
     };
     let output = output?;
-    if !output.is_empty() {
-        println!("{}", output);
-    }
+    write_output(&output)?;
     Ok(())
+}
+
+fn write_output(output: &str) -> Result<()> {
+    if output.is_empty() {
+        return Ok(());
+    }
+
+    let mut stdout = io::stdout().lock();
+    match writeln!(stdout, "{output}") {
+        Ok(()) => Ok(()),
+        Err(error) if error.kind() == ErrorKind::BrokenPipe => Ok(()),
+        Err(error) => Err(error.into()),
+    }
 }

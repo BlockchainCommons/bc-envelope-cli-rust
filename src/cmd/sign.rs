@@ -43,10 +43,17 @@ impl EnvelopeArgsLike for CommandArgs {
 
 impl crate::Exec for CommandArgs {
     fn exec(&self) -> Result<String> {
-        let envelope = self.read_envelope()?;
         if self.signer.is_empty() {
+            if let Some(envelope_arg) = self.envelope()
+                && looks_like_signer(envelope_arg)
+            {
+                bail!(
+                    "signer keys must be passed with --signer/-s; did you mean: envelope sign --signer <key> [ENVELOPE]?"
+                );
+            }
             bail!("at least one signer must be provided");
         }
+        let envelope = self.read_envelope()?;
         let mut private_key_bases: Vec<PrivateKeyBase> = Vec::new();
         let mut private_keys: Vec<PrivateKeys> = Vec::new();
         let mut signing_private_keys: Vec<SigningPrivateKey> = Vec::new();
@@ -114,4 +121,10 @@ impl crate::Exec for CommandArgs {
             Ok(envelope.add_signatures_opt(&signers).ur_string())
         }
     }
+}
+
+fn looks_like_signer(value: &str) -> bool {
+    PrivateKeyBase::from_ur_string(value).is_ok()
+        || PrivateKeys::from_ur_string(value).is_ok()
+        || SigningPrivateKey::from_ur_string(value).is_ok()
 }
