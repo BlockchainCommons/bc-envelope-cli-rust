@@ -14,7 +14,7 @@ use crate::{
     EnvelopeArgs, EnvelopeArgsLike,
     xid::{
         GeneratorOptions, OutputOptions, PrivateOptions, ReadWritePasswordArgs,
-        SigningArgs, VerifyArgs, XIDDocumentReadable,
+        SigningArgs, SigningOption, VerifyArgs, XIDDocumentReadable,
         xid_document_to_ur_string,
     },
 };
@@ -85,7 +85,10 @@ impl crate::Exec for CommandArgs {
                 | (PrivateOptions::Include, GeneratorOptions::Include)
         );
 
-        if can_use_envelope_elision {
+        if can_use_envelope_elision
+            && self.signing_args.sign == SigningOption::None
+            && self.signing_args.signing_key.is_none()
+        {
             return self.elide_at_envelope_level(private_opts, generator_opts);
         }
 
