@@ -11,6 +11,7 @@ The following docs exemplify the basic functionality of the `envelope` tool. The
 * [Verifiable Credential with Detailed Elision Example](VCElisionExample.md) — Eliding some of a credential.
 * [Attachments](Attachments.md) — Standardized third-party attachments for envelopes.
 * [Signing Envelopes](Signing.md) — Signing and verifying signatures on envelopes.
+* [CLI Key Formats](Key-Formats.md) — Inspecting key URs and native key interoperability.
 * [XID Documents](XID.md) — Overview of XID support.
     * [XID Basics](XID-Basics.md) — Creating and identifying XID documents.
     * [XID Export](XID-Export.md) — Exporting with controlled private key handling.
