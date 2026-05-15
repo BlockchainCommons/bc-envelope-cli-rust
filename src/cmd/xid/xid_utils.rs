@@ -256,6 +256,16 @@ pub fn xid_document_to_ur_string(
         XIDGeneratorOptions::from(generator_opts)
     };
 
+    if matches!(signing_options, XIDSigningOptions::Inception)
+        && let Some(inception_key) = xid_document.inception_key()
+        && inception_key.private_keys().is_none()
+        && inception_key.has_encrypted_private_keys()
+    {
+        bail!(
+            "could not decrypt the inception key; check the decryption password"
+        );
+    }
+
     let envelope = xid_document.to_envelope(
         private_key_options,
         generator_options,
