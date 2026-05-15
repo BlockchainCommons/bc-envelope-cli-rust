@@ -23,7 +23,7 @@ cargo install bc-envelope-cli
 To install a specific version:
 
 ```bash
-cargo install bc-envelope-cli --version 0.34.1
+cargo install bc-envelope-cli --version 0.35.0
 ```
 
 ### From Source
@@ -82,6 +82,19 @@ See the [docs](docs/README.md) directory for more information.
 **NOTE:** The `envelope` tool does *not* have the same command line syntax as the Swift `envelope` tool.
 
 ## Version History
+
+### 0.35.0: May 15, 2026
+
+- Handle broken stdout pipes gracefully when downstream pipeline consumers exit early.
+- Improve `envelope sign` diagnostics when signer keys are passed positionally instead of with `--signer`/`-s`.
+- Accept full XID document URs as envelope data and in read-only XID commands.
+- Fix read-only XID id, key, provenance, and resolution commands on enriched or signed XID documents.
+- Ensure `xid export` honors requested signing options when exporting with elision.
+- Improve encrypted inception-key signing failures when the decryption password is missing or wrong.
+- Avoid assertion find panics on elided assertions.
+- Add key-format documentation and multipart UR examples.
+- Update `bc-xid` dependency from ^0.22.0 to ^0.23.0 and `provenance-mark` dependency from ^0.23.0 to ^0.24.0.
+- Add regression tests for fixed GitHub issues and custom XID assertion preservation.
 
 ### 0.34.1: February 13, 2026
 
