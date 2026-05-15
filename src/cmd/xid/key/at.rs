@@ -1,13 +1,14 @@
 use anyhow::{Result, anyhow};
 use bc_envelope::known_values;
 use bc_ur::prelude::*;
-use bc_xid::XIDDocument;
+use bc_xid::{XIDDocument, XIDVerifySignature};
 use clap::Args;
 
 use crate::{
     EnvelopeArgs, EnvelopeArgsLike,
     xid::{
         ReadPasswordArgs, VerifyArgs, XIDDocumentReadable, get_private_key_ur,
+        xid_document_envelope, xid_from_document_envelope,
     },
 };
 
@@ -57,18 +58,19 @@ impl crate::Exec for CommandArgs {
                 .ok_or_else(|| anyhow!("Index out of bounds"))?;
             get_private_key_ur(key, &self.password_args)
         } else {
-            // Return public key (original behavior)
             let envelope = self.read_envelope()?;
-            XIDDocument::from_envelope(
-                &envelope,
-                None,
-                self.verify_args.verify_signature(),
-            )?; // Validation only
-            // Unwrap if signed to get at the KEY assertions
-            let inner_envelope = if envelope.subject().is_wrapped() {
-                envelope.subject().try_unwrap()?
+            let inner_envelope = if self.verify_args.verify_signature()
+                == XIDVerifySignature::None
+            {
+                xid_from_document_envelope(&envelope)?;
+                xid_document_envelope(&envelope)?
             } else {
-                envelope
+                XIDDocument::from_envelope(
+                    &envelope,
+                    None,
+                    self.verify_args.verify_signature(),
+                )?;
+                xid_document_envelope(&envelope)?
             };
             let key_assertions =
                 inner_envelope.assertions_with_predicate(known_values::KEY);

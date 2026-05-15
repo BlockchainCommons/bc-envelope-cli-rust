@@ -1,5 +1,5 @@
 use anyhow::{Result, bail};
-use bc_components::{PrivateKeys, URI};
+use bc_components::{PrivateKeys, URI, XID};
 use bc_envelope::{Envelope, PrivateKeyBase, PublicKeys};
 use bc_ur::prelude::*;
 use bc_xid::{
@@ -134,6 +134,19 @@ pub trait XIDDocumentReadable: EnvelopeArgsLike {
             verify,
         )?)
     }
+}
+
+pub fn xid_document_envelope(envelope: &Envelope) -> Result<Envelope> {
+    if envelope.subject().is_wrapped() {
+        envelope.subject().try_unwrap().map_err(Into::into)
+    } else {
+        Ok(envelope.clone())
+    }
+}
+
+pub fn xid_from_document_envelope(envelope: &Envelope) -> Result<XID> {
+    let envelope = xid_document_envelope(envelope)?;
+    Ok(envelope.subject().try_leaf()?.try_into()?)
 }
 
 /// Get the private key from a key, optionally decrypting it.
